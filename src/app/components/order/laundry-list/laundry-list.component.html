@@ -1,0 +1,11 @@
+<div class="flex flex-wrap gap-1 p-6 justify-center">
+    <app-laundry-card
+    *ngFor="let laundry of laundries"
+    [name]="laundry.name"
+    [location]="laundry.location"
+    [rating]="laundry.rating"
+    [imageUrl]="laundry.imageUrl">
+    </app-laundry-card>
+</div>
+  
+  
