@@ -1,0 +1,25 @@
+<div class="bg-white shadow-md rounded-xl m-4 p-8 w-80 border border-gray-200 relative">
+    <!-- Favorite Button -->
+    <button class="absolute top-3 right-3 text-blue-500 hover:text-blue-700">
+      ❤️
+    </button>
+  
+    <!-- Laundry Image -->
+    <div class="flex justify-center mb-4">
+      <img [src]="imageUrl" alt="Laundry Image" class="w-32 h-32 object-contain">
+    </div>
+  
+    <!-- Name and Location -->
+    <h3 class="text-xl font-semibold text-gray-900 text-center">{{ name }}</h3>
+    <p class="text-sm text-gray-500 text-center">{{ location }}</p>
+  
+    <!-- Star Ratings -->
+    <div class="flex justify-center mt-2 space-x-1 text-yellow-500">
+      <span *ngFor="let star of getStars(rating)">⭐</span>
+    </div>
+  
+    <!-- Select Button -->
+    <button class="mt-4 w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600">
+      Select Laundry
+    </button>
+  </div>
