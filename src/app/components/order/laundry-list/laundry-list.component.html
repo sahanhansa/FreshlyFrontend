@@ -1,11 +1,33 @@
+<div class="flex justify-between items-center p-6 ">
+  <div class="flex flex-col gap-2 pl-16">
+    <h2 class="text-xl font-semibold">All Laundries</h2>
+    <p>Select a Laundry to proceed with your order</p>
+  </div>
+
+  <div class="pr-12">
+    <input
+    type="text"
+    [(ngModel)]="searchQuery"
+    (ngModelChange)="filterLaundries()"
+    placeholder="Search for Laundry"
+    aria-label="Search for Laundry"
+    class="border border-gray-300 rounded-lg px-4 py-2 w-80 focus:outline-none focus:ring-2 focus:ring-blue-300"
+    />
+  </div>
+</div>
+
+<div *ngIf="filteredLaundries.length === 0" class="text-center text-gray-500">
+  No laundries found.
+</div>
+
 <div class="flex flex-wrap gap-1 p-6 justify-center">
-    <app-laundry-card
-    *ngFor="let laundry of laundries"
+  <app-laundry-card
+    *ngFor="let laundry of filteredLaundries"
     [name]="laundry.name"
     [location]="laundry.location"
     [rating]="laundry.rating"
-    [imageUrl]="laundry.imageUrl">
-    </app-laundry-card>
+    [imageUrl]="laundry.imageUrl"
+  >
+  </app-laundry-card>
 </div>
-  
-  
+
