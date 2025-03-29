@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -8,9 +8,20 @@ import { CommonModule } from '@angular/common';
   templateUrl: './item-category.component.html',
   styleUrls: ['./item-category.component.css']
 })
-//single category component
 export class ItemCategoryComponent {
-  @Input() icon!: string; //!means that value will be provided in the parent component
-  @Input() label!: string;
-  @Input() isActive: boolean = false;
+  @Output() categorySelected = new EventEmitter<string>(); // Emits the selected category
+
+  categories = [
+    { name: 'Ladies', image: './assets/ladies.png' },
+    { name: 'Gents', image: './assets/gents.png' },
+    { name: 'Kids', image: './assets/kids.png' },
+    { name: 'Other', image: './assets/other.png' }
+  ];
+
+  selectedCategory = 'Ladies'; // Default selected category
+
+  selectCategory(category: string): void {
+    this.selectedCategory = category;
+    this.categorySelected.emit(category); // Emit the selected category
+  }
 }
