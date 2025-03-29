@@ -13,22 +13,32 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./laundry-list.component.css']
 })
 export class LaundryListComponent implements OnInit {
-  laundries: Laundry[] = []; // Holds the full list of laundries
-  filteredLaundries: Laundry[] = []; // Holds the filtered list of laundries
-  searchQuery: string = ''; // Holds the search input value
+  laundries: Laundry[] = []; // Full list of laundries
+  filteredLaundries: Laundry[] = []; // Filtered list of laundries
+  searchQuery: string = ''; // Search input value
+  selectedLocation: string = ''; // Selected location filter
+  selectedRating: string = ''; // Selected rating filter
+  uniqueLocations: string[] = []; // Unique locations for the dropdown
+  uniqueRatings: number[] = []; // Unique ratings for the dropdown
 
   constructor(private laundryService: LaundryService) {}
 
   ngOnInit() {
     this.laundries = this.laundryService.getLaundries();
     this.filteredLaundries = [...this.laundries]; // Initialize with the full list
+
+    // Extract unique locations and ratings
+    this.uniqueLocations = [...new Set(this.laundries.map((laundry) => laundry.location))];
+    this.uniqueRatings = [...new Set(this.laundries.map((laundry) => laundry.rating))].sort();
   }
 
   filterLaundries() {
-    console.log('Search Query:', this.searchQuery);
-    this.filteredLaundries = this.laundries.filter((laundry) =>
-      laundry.name.toLowerCase().includes(this.searchQuery.toLowerCase())
-    );
-    console.log('Filtered Laundries:', this.filteredLaundries);
+    this.filteredLaundries = this.laundries.filter((laundry) => {
+      const matchesSearchQuery = laundry.name.toLowerCase().includes(this.searchQuery.toLowerCase());
+      const matchesLocation = this.selectedLocation ? laundry.location === this.selectedLocation : true;
+      const matchesRating = this.selectedRating ? laundry.rating === +this.selectedRating : true;
+
+      return matchesSearchQuery && matchesLocation && matchesRating;
+    });
   }
 }
