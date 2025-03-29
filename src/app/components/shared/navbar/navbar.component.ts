@@ -2,13 +2,13 @@ import { RouterLink } from '@angular/router';
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-header',
+  selector: 'app-navbar',
   standalone: true,
   imports: [RouterLink ],
-  templateUrl: './header.component.html',
-  styleUrl: './header.component.css'
+  templateUrl: './navbar.component.html',
+  styleUrl: './navbar.component.css'
 })
-export class HeaderComponent {
+export class NavbarComponent{
   logourl:string="images/logo.png" ;
 
 }
