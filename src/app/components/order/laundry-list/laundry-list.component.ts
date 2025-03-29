@@ -24,12 +24,27 @@ export class LaundryListComponent implements OnInit {
   constructor(private laundryService: LaundryService) {}
 
   ngOnInit() {
-    this.laundries = this.laundryService.getLaundries();
+    this.laundries = this.laundryService.getLaundries().map((laundry) => ({
+      ...laundry,
+      isFavorite: false // Initialize `isFavorite` to false
+    }));
     this.filteredLaundries = [...this.laundries]; // Initialize with the full list
 
     // Extract unique locations and ratings
     this.uniqueLocations = [...new Set(this.laundries.map((laundry) => laundry.location))];
     this.uniqueRatings = [...new Set(this.laundries.map((laundry) => laundry.rating))].sort();
+  }
+
+  toggleFavorite(laundry: Laundry) {
+    laundry.isFavorite = !laundry.isFavorite; // Toggle the favorite status
+    this.sortLaundries(); // Sort the laundries to pin favorites to the top
+  }
+
+  sortLaundries() {
+    this.filteredLaundries.sort((a, b) => {
+      if (a.isFavorite === b.isFavorite) return 0; // Keep the order if both are favorites or non-favorites
+      return a.isFavorite ? -1 : 1; // Favorites come first
+    });
   }
 
   filterLaundries() {
@@ -40,5 +55,7 @@ export class LaundryListComponent implements OnInit {
 
       return matchesSearchQuery && matchesLocation && matchesRating;
     });
+
+    this.sortLaundries(); // Ensure favorites are always pinned to the top
   }
 }

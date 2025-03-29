@@ -14,8 +14,23 @@ export class LaundryService {
     { id: 5, name: 'Clean & Fresh', location: 'Maharagama', rating: 2, imageUrl: 'assets/laundry.png' },
     { id: 6, name: 'Quick Wash', location: 'Dehiwala', rating: 4, imageUrl: 'assets/laundry.png' },
     { id: 7, name: 'Laundry Experts', location: 'Nugegoda', rating: 5, imageUrl: 'assets/laundry.png' },
-    { id: 8, name: 'Clean & Clean', location: 'Kollupitiya', rating: 3, imageUrl: 'assets/laundry.png' }   
- 
+    { id: 8, name: 'Clean & Clean', location: 'Kollupitiya', rating: 3, imageUrl: 'assets/laundry.png' },
+    { id: 9, name: 'Spark Cleaners', location: 'Negombo', rating: 5, imageUrl: 'assets/laundry.png' },
+    { id: 10, name: 'Fresh Wash', location: 'Bambalapitiya', rating: 4, imageUrl: 'assets/laundry.png' },
+    { id: 11, name: 'Quick Dry', location: 'Colombo 7', rating: 4, imageUrl: 'assets/laundry.png' },
+    { id: 12, name: 'Laundry Express', location: 'Narahenpita', rating: 3, imageUrl: 'assets/laundry.png' },
+    { id: 13, name: 'Clean & Fresh', location: 'Maharagama', rating: 2, imageUrl: 'assets/laundry.png' },
+    { id: 14, name: 'Quick Wash', location: 'Dehiwala', rating: 4, imageUrl: 'assets/laundry.png' },
+    { id: 15, name: 'Laundry Experts', location: 'Nugegoda', rating: 5, imageUrl: 'assets/laundry.png' },
+    { id: 16, name: 'Clean & Clean', location: 'Kollupitiya', rating: 3, imageUrl: 'assets/laundry.png' },
+    { id: 17, name: 'Spark Cleaners', location: 'Negombo', rating: 5, imageUrl: 'assets/laundry.png' },
+    { id: 18, name: 'Fresh Wash', location: 'Bambalapitiya', rating: 4, imageUrl: 'assets/laundry.png' },
+    { id: 19, name: 'Quick Dry', location: 'Colombo 7', rating: 4, imageUrl: 'assets/laundry.png' },
+    { id: 20, name: 'Laundry Express', location: 'Narahenpita', rating: 3, imageUrl: 'assets/laundry.png' },
+    { id: 21, name: 'Clean & Fresh', location: 'Maharagama', rating: 2, imageUrl: 'assets/laundry.png' },
+    { id: 22, name: 'Quick Wash', location: 'Dehiwala', rating: 4, imageUrl: 'assets/laundry.png' },
+    { id: 23, name: 'Laundry Experts', location: 'Nugegoda', rating: 5, imageUrl: 'assets/laundry.png' },
+    { id: 24, name: 'Clean & Clean', location: 'Kollupitiya', rating: 3, imageUrl: 'assets/laundry.png' }
   ];
 
   getLaundries(): Laundry[] {
