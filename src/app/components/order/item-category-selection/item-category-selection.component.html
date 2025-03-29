@@ -1,0 +1,6 @@
+<div class="flex justify-center space-x-4 bg-gray-100 p-4 rounded-lg">
+    <div *ngFor="let category of categories(); let i = index" (click)="selectCategory(i)">
+      <app-item-category [icon]="category.icon" [label]="category.label" [isActive]="category.active"></app-item-category>
+    </div>
+  </div>
+    

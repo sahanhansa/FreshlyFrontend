@@ -1,0 +1,7 @@
+<div 
+  [ngClass]="{'bg-blue-500 text-white': isActive, 'bg-white text-blue-500': !isActive}"
+  class="flex items-center space-x-2 px-6 py-3 rounded-lg shadow cursor-pointer transition duration-200"
+> <!-- ngClass is used to add classes dynamically. ngClass is taken from commonmodules -->
+    <img [src]="icon" alt="icon" class="w-6 h-6" />
+    <span class="font-semibold">{{ label }}</span>
+</div>
