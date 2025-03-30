@@ -1,29 +1,37 @@
 import { Component, OnInit } from '@angular/core';
 import { Item } from '../../../models/item.model';
 import { ItemService } from '../../../services/item.service';
-import { ItemCategoryComponent } from '../../../components/order/item-category/item-category.component';
-import { ItemCardListComponent } from '../../../components/order/item-card-list/item-card-list.component';
-import { FooterComponent } from '../../../components/shared/footer/footer.component';
+import { ItemCardListComponent } from "../../../components/order/item-card-list/item-card-list.component";
+import { FooterComponent } from "../../../components/shared/footer/footer.component";
+import { CommonModule } from '@angular/common'; // Import CommonModule for ngFor and ngIf
 
 @Component({
   selector: 'app-items-list-page',
   standalone: true,
-  imports: [ItemCategoryComponent, ItemCardListComponent, FooterComponent],
   templateUrl: './items-list-page.component.html',
-  styleUrls: ['./items-list-page.component.css']
+  styleUrls: ['./items-list-page.component.css'],
+  imports: [ItemCardListComponent, FooterComponent, CommonModule] // Import ItemCardListComponent and CommonModule for structural directives
 })
 export class ItemsListPageComponent implements OnInit {
   items: Item[] = [];
   filteredItems: Item[] = [];
+  selectedCategory = 'Ladies'; // Default category
+  categories = [
+    { name: 'Ladies' },
+    { name: 'Gents' },
+    { name: 'Kids' },
+    { name: 'Other' }
+  ];
 
   constructor(private itemService: ItemService) {}
 
   ngOnInit(): void {
     this.items = this.itemService.getItems();
-    this.filterItemsByCategory('Ladies'); // Default category
+    this.filterItemsByCategory(this.selectedCategory); // Default category
   }
 
   onCategorySelected(category: string): void {
+    this.selectedCategory = category;
     this.filterItemsByCategory(category);
   }
 
