@@ -3,25 +3,22 @@ import { Item } from '../../../models/item.model';
 import { ItemService } from '../../../services/item.service';
 import { ItemCardListComponent } from "../../../components/order/item-card-list/item-card-list.component";
 import { FooterComponent } from "../../../components/shared/footer/footer.component";
-import { CommonModule } from '@angular/common'; // Import CommonModule for ngFor and ngIf
+import { CommonModule } from '@angular/common';
+import { ItemCategoryComponent } from "../../../components/order/item-category/item-category.component";
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-items-list-page',
   standalone: true,
   templateUrl: './items-list-page.component.html',
   styleUrls: ['./items-list-page.component.css'],
-  imports: [ItemCardListComponent, FooterComponent, CommonModule] // Import ItemCardListComponent and CommonModule for structural directives
+  imports: [ItemCardListComponent, FooterComponent, CommonModule, ItemCategoryComponent, FormsModule]
 })
 export class ItemsListPageComponent implements OnInit {
   items: Item[] = [];
   filteredItems: Item[] = [];
   selectedCategory = 'Ladies'; // Default category
-  categories = [
-    { name: 'Ladies' },
-    { name: 'Gents' },
-    { name: 'Kids' },
-    { name: 'Other' }
-  ];
+  searchQuery = ''; // Search query for filtering items
 
   constructor(private itemService: ItemService) {}
 
@@ -32,7 +29,12 @@ export class ItemsListPageComponent implements OnInit {
 
   onCategorySelected(category: string): void {
     this.selectedCategory = category;
+    this.searchQuery = ''; // Reset search query when category changes
     this.filterItemsByCategory(category);
+  }
+
+  onSearch(): void {
+    this.filterItemsByCategory(this.selectedCategory); // Reapply filtering with the search query
   }
 
   private filterItemsByCategory(category: string): void {
@@ -43,8 +45,10 @@ export class ItemsListPageComponent implements OnInit {
       Other: ['Curtains', 'Bedsheets', 'Table Clothes', 'Scarf', 'Gloves', 'Winter wear']
     };
 
+    // Filter items by category and search query
     this.filteredItems = this.items.filter(item =>
-      categoryMapping[category]?.includes(item.name)
+      categoryMapping[category]?.includes(item.name) &&
+      item.name.toLowerCase().includes(this.searchQuery.toLowerCase())
     );
   }
 }
