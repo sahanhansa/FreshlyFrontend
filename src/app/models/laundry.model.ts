@@ -5,5 +5,6 @@ export interface Laundry {
     location: string; //Location of the laundry
     rating: number;   //Rating (ex:out of 5)
     imageUrl: string; //Image URL for the laundry
+    isFavorite?: boolean;
   }
   
