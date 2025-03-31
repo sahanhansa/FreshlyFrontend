@@ -70,8 +70,8 @@
       [imageUrl]="laundry.imageUrl"
       [isFavorite]="laundry.isFavorite ?? false"
       (favoriteToggled)="toggleFavorite(laundry)"
-      class="w-full"
-    >
+      (selectLaundry)="onSelectLaundry(laundry.id)"
+      class="w-full">
     </app-laundry-card>
   </div>
 </div>

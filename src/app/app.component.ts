@@ -9,7 +9,7 @@ import { ItemCategoryComponent } from "./components/order/item-category/item-cat
 
 @Component({
   selector: 'app-root',
-  imports: [FooterComponent, LaundryListComponent, RouterOutlet, ItemCardComponent, ItemCardListComponent, ItemsListPageComponent, ItemCategoryComponent],
+  imports: [ RouterOutlet],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })

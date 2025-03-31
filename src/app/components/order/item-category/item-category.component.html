@@ -1,14 +1,11 @@
-<div class="flex justify-center gap-4 bg-white pt-6">
+<div class="flex flex-wrap gap-2 sm:gap-4 border-b border-gray-300 px-4 sm:px-8 md:px-12 lg:px-36 pt-6 justify-center md:justify-start">
   <button
     *ngFor="let category of categories"
-    (click)="selectCategory(category.name)"
-    [class.bg-blue-500]="selectedCategory === category.name"
-    [class.text-white]="selectedCategory === category.name"
-    [class.bg-white]="selectedCategory !== category.name"
-    [class.text-blue-500]="selectedCategory !== category.name"
-    class="flex items-center gap-3 px-5 py-3 rounded-lg shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transform transition-transform duration-200 hover:scale-105"
+    (click)="onCategorySelected(category.name)"
+    [class.text-blue-500]="selectedCategory === category.name"
+    [class.border-blue-500]="selectedCategory === category.name"
+    class="px-4 py-2 text-md sm:text-md text-gray-600 border-b-2 hover:text-blue-500 hover:border-blue-500 transition"
   >
-    <img [src]="category.image" [alt]="category.name" class="w-8 h-8 object-contain" />
-    <span class="text-md font-medium">{{ category.name }}</span>
+    {{ category.name }}
   </button>
 </div>

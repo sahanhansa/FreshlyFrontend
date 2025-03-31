@@ -20,14 +20,14 @@ export class ItemService {
     { id: 12, name: 'Jacket', price: 250, description: 'Gents wear', image: './assets/jacket.png' },
     { id: 13, name: 'Baby Frock', price: 250, description: 'Baby wear', image: './assets/baby-frock.png' },
     { id: 14, name: 'Baby T-shirt', price: 250, description: 'Baby wear', image: './assets/baby-tshirt.png' },
-    { id: 15, name: 'Baby Shorts', price: 250, description: 'Baby wear', image: './assets/baby-shorts.png' },
-    { id: 16, name: 'Baby Dress', price: 250, description: 'Baby wear', image: './assets/baby-dress.png' },
+    { id: 15, name: 'Baby Short', price: 250, description: 'Baby wear', image: './assets/baby-short.png' },
+    { id: 16, name: 'Baby Pajama', price: 250, description: 'Baby wear', image: './assets/baby-pajama.png' },
     { id: 17, name: 'Curtains', price: 250, description: 'Household items', image: './assets/curtains.png' },
     { id: 18, name: 'Bedsheets', price: 250, description: 'Household items', image: './assets/bedsheets.png' },
-    { id: 19, name: 'Table Clothes', price: 250, description: 'Household items', image: './assets/table-clothes.png' },
+    { id: 19, name: 'Table Clothe', price: 250, description: 'Household items', image: './assets/tablecloth.png' },
     { id: 20, name: 'Scarf', price: 250, description: 'Household items', image: './assets/scarf.png' },
     { id: 21, name: 'Gloves', price: 250, description: 'Household items', image: './assets/gloves.png' },
-    { id: 22, name: 'Winter wear', price: 250, description: 'Household items', image: './assets/winter-wear.png' }
+    { id: 22, name: 'Winter wear', price: 250, description: 'Household items', image: './assets/winterwear.png' }
   ];
 
   getItems(): Item[] {

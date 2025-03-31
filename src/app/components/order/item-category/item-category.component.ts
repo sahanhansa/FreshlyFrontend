@@ -9,18 +9,17 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./item-category.component.css']
 })
 export class ItemCategoryComponent {
-  @Output() categorySelected = new EventEmitter<string>(); // Emits the selected category
+  @Output() categorySelected = new EventEmitter<string>(); // Emit selected category to parent
 
+  selectedCategory = 'Ladies'; // Default category
   categories = [
-    { name: 'Ladies', image: './assets/ladies.png' },
-    { name: 'Gents', image: './assets/gents.png' },
-    { name: 'Kids', image: './assets/kids.png' },
-    { name: 'Other', image: './assets/other.png' }
+    { name: 'Ladies' },
+    { name: 'Gents' },
+    { name: 'Kids' },
+    { name: 'Other' }
   ];
 
-  selectedCategory = 'Ladies'; // Default selected category
-
-  selectCategory(category: string): void {
+  onCategorySelected(category: string): void {
     this.selectedCategory = category;
     this.categorySelected.emit(category); // Emit the selected category
   }
