@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router'; // Import Router
 import { Laundry } from '../../../models/laundry.model';
 import { LaundryService } from '../../../services/laundry.service';
 import { LaundryCardComponent } from '../laundry-card/laundry-card.component';
@@ -21,7 +22,7 @@ export class LaundryListComponent implements OnInit {
   uniqueLocations: string[] = []; // Unique locations for the dropdown
   uniqueRatings: number[] = []; // Unique ratings for the dropdown
 
-  constructor(private laundryService: LaundryService) {}
+  constructor(private laundryService: LaundryService, private router: Router) {}
 
   ngOnInit() {
     this.laundries = this.laundryService.getLaundries().map((laundry) => ({
@@ -57,5 +58,9 @@ export class LaundryListComponent implements OnInit {
     });
 
     this.sortLaundries(); // Ensure favorites are always pinned to the top
+  }
+
+  onSelectLaundry(laundryId: number) {
+    this.router.navigate(['/items', laundryId]); // Navigate to the items list page with the laundry ID
   }
 }

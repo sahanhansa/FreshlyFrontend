@@ -13,11 +13,16 @@ export class LaundryCardComponent {
   @Input() public location!: string;
   @Input() public rating!: number;
   @Input() public imageUrl!: string;
-  @Input() public isFavorite: boolean = false; // Input to track if the card is a favorite
-  @Output() public favoriteToggled = new EventEmitter<void>(); // Event emitter for toggling favorite
+  @Input() public isFavorite: boolean = false;
+  @Output() public favoriteToggled = new EventEmitter<void>();
+  @Output() public selectLaundry = new EventEmitter<void>(); // Emit event for selecting laundry
 
   toggleFavorite() {
-    this.favoriteToggled.emit(); // Emit the event to the parent component
+    this.favoriteToggled.emit();
+  }
+
+  onSelectLaundry() {
+    this.selectLaundry.emit(); // Emit the event to the parent component
   }
 
   getStars(rating: number): number[] {
