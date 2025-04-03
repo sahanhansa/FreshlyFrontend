@@ -1,0 +1,45 @@
+<div class="max-w-4xl mx-auto p-4 sm:p-6 bg-white shadow-md rounded-lg">
+  <!-- Header -->
+  <div class="flex justify-between items-center mb-6">
+    <div>
+      <h2 class="text-xl font-semibold text-gray-800">Order Summary</h2>
+      <p class="text-sm text-gray-600">Laundry 1, Colombo 7</p>
+    </div>
+    <div class="text-sm text-gray-500">Order id: <span class="font-medium">#123456</span></div>
+  </div>
+
+  <!-- Items List -->
+  <div class="space-y-4">
+    <div *ngFor="let item of orderItems" class="flex items-center gap-4 border-b pb-4">
+      <!-- Item Image -->
+      <img [src]="item.image" alt="{{ item.name }}" class="w-16 h-16 object-cover rounded-md">
+
+      <!-- Item Details -->
+      <div class="flex-1">
+        <h3 class="text-md font-medium text-gray-800">{{ item.name }}</h3>
+        <p class="text-sm text-gray-600">{{ item.details }}</p>
+        <p class="text-sm text-gray-500">Rs. {{ item.price }} x {{ item.quantity }}</p>
+      </div>
+
+      <!-- Item Total -->
+      <div class="text-right">
+        <p class="text-lg font-semibold text-gray-800">Rs. {{ item.price * item.quantity }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer Buttons -->
+  <div class="flex justify-between items-center mt-6">
+    <button class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition">
+      Edit
+    </button>
+    <div class="flex gap-4">
+      <button class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition">
+        Delete
+      </button>
+      <button class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition">
+        Order Now
+      </button>
+    </div>
+  </div>
+</div>
