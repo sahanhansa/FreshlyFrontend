@@ -1,42 +1,98 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
+interface OrderItem {
+  id: number;
+  name: string;
+  material: string;
+  washMethod: string;
+  price: number;
+  quantity: number;
+  image: string;
+}
+
 @Component({
   selector: 'app-order-summary',
-  imports: [CommonModule],
   standalone: true,
+  imports: [CommonModule],
   templateUrl: './order-summary.component.html',
-  styleUrls: ['./order-summary.component.css']
+  styleUrl: './order-summary.component.css'
 })
 export class OrderSummaryComponent {
-  orderItems = [
+  orderId: string = '#123456';
+  laundryName: string = 'Laundry 1, Colombo 7';
+  
+  orderItems: OrderItem[] = [
     {
+      id: 1,
       name: 'T-shirt',
-      details: 'Cotton, Wash and Dry',
+      material: 'Cotton',
+      washMethod: 'Wash and Dry',
       price: 250,
       quantity: 3,
-      image: './assets/tshirt.png'
+      image: 'assets/tshirt.png'
     },
     {
+      id: 2,
       name: 'Frock',
-      details: 'Linen, Dry clean',
+      material: 'Linen',
+      washMethod: 'Dry clean',
       price: 600,
       quantity: 1,
-      image: './assets/frock.png'
+      image: 'assets/frock.png'
     },
     {
+      id: 3,
       name: 'Trouser',
-      details: 'Cotton, Wash and Dry',
+      material: 'Cotton',
+      washMethod: 'Wash and Dry',
       price: 400,
       quantity: 2,
-      image: './assets/trousers.png'
+      image: 'assets/trousers.png'
     },
     {
+      id: 4,
       name: 'Jacket',
-      details: 'Polyester, Iron only',
+      material: 'Polyester',
+      washMethod: 'Iron only',
       price: 300,
       quantity: 1,
-      image: './assets/jacket.png'
+      image: 'assets/jacket.png'
     }
   ];
+
+  get total(): number {
+    return this.orderItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  }
+
+  editOrder() {
+    console.log('Edit order clicked');
+    // Implement edit functionality
+  }
+
+  deleteOrder() {
+    console.log('Delete order clicked');
+    // Implement delete functionality
+  }
+
+  placeOrder() {
+    console.log('Order now clicked');
+    // Implement place order functionality
+  }
+
+  deleteItem(itemId: number) {
+    // Find the item index
+    const index = this.orderItems.findIndex(item => item.id === itemId);
+    
+    // Remove the item if found
+    if (index !== -1) {
+      this.orderItems.splice(index, 1);
+      
+      // You might want to show a confirmation message
+      console.log(`Item with ID ${itemId} has been removed`);
+      
+      // If you're using a service for state management, update the state
+      // this.orderService.updateOrderItems(this.orderItems);
+    }
+  }
 }
