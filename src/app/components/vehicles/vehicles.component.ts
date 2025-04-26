@@ -1,0 +1,54 @@
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+
+interface Vehicle {
+  vehicleId: string;
+  vehicleType: string;
+  driver: string;
+  driverId: string;
+  status: 'idle' | 'delivering';
+}
+
+@Component({
+  selector: 'app-vehicles',
+  standalone: true,
+  imports: [CommonModule, FormsModule],
+  templateUrl: './vehicles.component.html',
+  styleUrls: ['./vehicles.component.scss']
+})
+export class VehiclesComponent implements OnInit {
+  vehicles: Vehicle[] = [
+    { vehicleId: '#4621', vehicleType: '345', driver: 'Matt Dickerson', driverId: '#4621', status: 'idle' },
+    { vehicleId: '#0998', vehicleType: '3223', driver: 'Wiktoria', driverId: '#0998', status: 'delivering' },
+    { vehicleId: '#3762', vehicleType: 'Trixie Byrd', driver: 'Trixie Byrd', driverId: '#3762', status: 'delivering' },
+    { vehicleId: '#6689', vehicleType: 'Brad Mason', driver: 'Brad Mason', driverId: '#6689', status: 'delivering' },
+    { vehicleId: '#5690', vehicleType: 'Sanderson', driver: 'Sanderson', driverId: '#5690', status: 'idle' },
+    { vehicleId: '#4811', vehicleType: 'Jun Redfern', driver: 'Jun Redfern', driverId: '#4811', status: 'idle' },
+    { vehicleId: '#7046', vehicleType: 'Miriam Kidd', driver: 'Miriam Kidd', driverId: '#7046', status: 'delivering' },
+    { vehicleId: '#1265', vehicleType: 'Dominic', driver: 'Dominic', driverId: '#1265', status: 'delivering' },
+    { vehicleId: '#6800', vehicleType: 'Shanice', driver: 'Shanice', driverId: '#6800', status: 'delivering' }
+  ];
+
+  currentPage = 1;
+  itemsPerPage = 9;
+  searchQuery = '';
+
+  ngOnInit() {
+    // Initialize component
+  }
+
+  onSearch(query: string) {
+    this.searchQuery = query;
+    // Implement search functionality
+  }
+
+  onPageChange(page: number) {
+    this.currentPage = page;
+  }
+
+  onEntriesChange(entries: number) {
+    this.itemsPerPage = entries;
+    this.currentPage = 1;
+  }
+} 

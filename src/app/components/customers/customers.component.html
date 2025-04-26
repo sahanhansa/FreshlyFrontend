@@ -1,0 +1,119 @@
+<!-- Customer Details Section -->
+<div class="customers-container">
+  <!-- Header Controls -->
+  <div class="controls">
+    <div class="entries-control">
+      Show 
+      <select [(ngModel)]="entriesPerPage">
+        <option value="10">10</option>
+        <option value="25">25</option>
+        <option value="50">50</option>
+      </select>
+      entries
+    </div>
+    <div class="search-control">
+      <input type="text" [(ngModel)]="searchQuery" placeholder="Search..." (input)="searchCustomers()">
+    </div>
+  </div>
+
+  <!-- Customer Details Card -->
+  <div class="customer-details" *ngIf="selectedCustomer">
+    <h2>Customer Details</h2>
+    <div class="details-card">
+      <div class="left-section">
+        <div class="profile-section">
+          <img [src]="selectedCustomer.profileImage" [alt]="selectedCustomer.name" class="profile-image">
+          <div class="customer-id">
+            <h3>{{ selectedCustomer.name }}</h3>
+            <p>#{{ selectedCustomer.id }}</p>
+          </div>
+        </div>
+        <div class="info-section">
+          <div class="info-row">
+            <i class="fas fa-envelope"></i>
+            <span class="label">Email</span>
+            <span class="value">: {{ selectedCustomer.email }}</span>
+          </div>
+          <div class="info-row">
+            <i class="fas fa-phone"></i>
+            <span class="label">Contact No</span>
+            <span class="value">: {{ selectedCustomer.contactNo }}</span>
+          </div>
+          <div class="info-row">
+            <i class="fas fa-home"></i>
+            <span class="label">Home Address</span>
+            <span class="value">: {{ selectedCustomer.homeAddress }}</span>
+          </div>
+          <div class="info-row">
+            <i class="fas fa-building"></i>
+            <span class="label">Office Address</span>
+            <span class="value">: {{ selectedCustomer.officeAddress }}</span>
+          </div>
+          <div class="info-row">
+            <i class="fas fa-map-marker-alt"></i>
+            <span class="label">Location</span>
+            <span class="value">: {{ selectedCustomer.location }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="right-section">
+        <button class="action-btn present">Present Orders</button>
+        <button class="action-btn past">Past Orders</button>
+        <button class="action-btn complaints">Complaints</button>
+        <button class="remove-btn" (click)="removeCustomer()">Remove User</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Orders Section -->
+  <div class="recent-orders" *ngIf="selectedCustomer">
+    <h2>Recent Orders</h2>
+    <div class="orders-table" *ngFor="let order of selectedCustomer.recentOrders">
+      <div class="order-header">
+        <div class="order-info">
+          <span>Order ID: {{ order.orderId }}</span>
+          <span>Date: {{ order.date }}</span>
+          <span class="status">Status: {{ order.status }}</span>
+          <span>Driver ID: {{ order.driverId }}</span>
+          <span>Laundry ID: {{ order.laundryId }}</span>
+        </div>
+        <button class="view-more">View More</button>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Process</th>
+            <th>Clothe type</th>
+            <th>Count</th>
+            <th>Price per Item(Rs.)</th>
+            <th>Total Price(Rs.)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of order.items">
+            <td>{{ item.item }}</td>
+            <td>{{ item.process }}</td>
+            <td>{{ item.clotheType }}</td>
+            <td>{{ item.count }}</td>
+            <td>{{ item.pricePerItem }}</td>
+            <td>{{ item.totalPrice }}</td>
+          </tr>
+          <tr class="subtotal-row">
+            <td colspan="5" class="text-right">Subtotal (Rs.)</td>
+            <td>{{ order.subtotal }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination">
+    <button (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 1">Previous</button>
+    <button [class.active]="currentPage === 1" (click)="onPageChange(1)">1</button>
+    <button [class.active]="currentPage === 2" (click)="onPageChange(2)">2</button>
+    <button [class.active]="currentPage === 3" (click)="onPageChange(3)">3</button>
+    <button (click)="onPageChange(currentPage + 1)">Next</button>
+  </div>
+</div> 

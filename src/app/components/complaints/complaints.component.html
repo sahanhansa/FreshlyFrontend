@@ -1,0 +1,102 @@
+<div class="complaints-container">
+  <div class="show-entries">
+    <select #entriesSelect (change)="onEntriesChange(+entriesSelect.value)">
+      <option value="9">9</option>
+      <option value="25">25</option>
+      <option value="50">50</option>
+      <option value="100">100</option>
+    </select>
+    <span>entries</span>
+    
+    <div class="search-box">
+      <input 
+        type="text" 
+        [(ngModel)]="searchQuery"
+        (input)="onSearch(searchQuery)"
+        placeholder="Search..."
+      >
+    </div>
+  </div>
+
+  <h1 class="page-title">Complaints</h1>
+
+  <div class="complaints-table">
+    <table>
+      <thead>
+        <tr>
+          <th>Complaint ID</th>
+          <th>Date</th>
+          <th>Status</th>
+          <th>Customer ID</th>
+          <th>Order ID</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let complaint of paginatedComplaints">
+          <tr [class.alternate-row]="true">
+            <td>{{ complaint.complaintId }}</td>
+            <td>{{ complaint.date }}</td>
+            <td>
+              <span class="status-badge" [class.resolved]="complaint.status === 'resolved'" [class.unresolved]="complaint.status === 'unresolved'">
+                {{ complaint.status }}
+              </span>
+            </td>
+            <td>{{ complaint.customerId }}</td>
+            <td>{{ complaint.orderId }}</td>
+            <td>
+              <button class="view-more-btn" (click)="toggleDetails(complaint)">
+                <i class="fas" [class.fa-eye]="!complaint.isExpanded" [class.fa-eye-slash]="complaint.isExpanded"></i>
+                {{ complaint.isExpanded ? 'View Less' : 'View More' }}
+              </button>
+            </td>
+          </tr>
+          <tr *ngIf="complaint.isExpanded" class="details-row">
+            <td colspan="6">
+              <div class="complaint-details">
+                <div class="description">{{ complaint.details?.description }}</div>
+                <div class="rating">
+                  <i *ngFor="let star of [1,2,3,4,5]" 
+                     class="fas fa-star"
+                     [class.active]="star <= (complaint.details?.rating || 0)">
+                  </i>
+                </div>
+                <div class="detail-row">
+                  <span class="label">Customer Name:</span>
+                  <span class="value">{{ complaint.details?.customerName }}</span>
+                </div>
+                <div class="detail-row">
+                  <span class="label">Laundry/Driver ID:</span>
+                  <span class="value">{{ complaint.details?.laundryDriverId }}</span>
+                </div>
+                <div class="detail-row">
+                  <span class="label">Laundry/Driver name:</span>
+                  <span class="value">{{ complaint.details?.laundryDriverName }}</span>
+                </div>
+                <div class="detail-row">
+                  <span class="label">Region:</span>
+                  <span class="value">{{ complaint.details?.region }}</span>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="pagination">
+    <button class="page-btn" [disabled]="currentPage === 1" (click)="onPageChange(currentPage - 1)">Previous</button>
+    <div class="page-numbers">
+      <button 
+        *ngFor="let page of pageNumbers" 
+        class="page-number" 
+        [class.active]="currentPage === page"
+        (click)="onPageChange(page)"
+      >
+        {{ page }}
+      </button>
+    </div>
+    <button class="page-btn" [disabled]="currentPage === totalPages" (click)="onPageChange(currentPage + 1)">Next</button>
+  </div>
+</div> 

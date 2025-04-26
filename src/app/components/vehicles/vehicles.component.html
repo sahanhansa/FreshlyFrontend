@@ -1,0 +1,83 @@
+<div class="p-6">
+  <div class="flex items-center justify-between mb-6">
+    <div class="flex items-center gap-4">
+      <select class="px-3 py-2 border rounded-md" #entriesSelect (change)="onEntriesChange(+entriesSelect.value)">
+        <option value="9">9</option>
+        <option value="25">25</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+      </select>
+      <span class="text-gray-600">entries</span>
+    </div>
+    
+    <div class="relative">
+      <input 
+        type="text" 
+        [(ngModel)]="searchQuery"
+        (input)="onSearch(searchQuery)"
+        placeholder="Search..."
+        class="pl-10 pr-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+      >
+      <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+    </div>
+  </div>
+
+  <h1 class="text-2xl font-bold mb-6">Vehicles List</h1>
+
+  <div class="bg-white rounded-lg shadow overflow-hidden">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Vehicle ID</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Vehicle type</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Driver</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Driver ID</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200">
+        <tr *ngFor="let vehicle of vehicles" class="hover:bg-gray-50">
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ vehicle.vehicleId }}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ vehicle.vehicleType }}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ vehicle.driver }}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ vehicle.driverId }}</td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
+                  [class.bg-green-100]="vehicle.status === 'idle'"
+                  [class.text-green-800]="vehicle.status === 'idle'"
+                  [class.bg-blue-100]="vehicle.status === 'delivering'"
+                  [class.text-blue-800]="vehicle.status === 'delivering'">
+              {{ vehicle.status }}
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="flex items-center justify-between mt-6">
+    <button class="px-4 py-2 border rounded-md text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            [disabled]="currentPage === 1" 
+            (click)="onPageChange(currentPage - 1)">
+      Previous
+    </button>
+    <div class="flex gap-2">
+      <button 
+        *ngFor="let page of [1, 2, 3]" 
+        class="w-10 h-10 flex items-center justify-center border rounded-md"
+        [class.bg-blue-500]="currentPage === page"
+        [class.text-white]="currentPage === page"
+        [class.text-gray-700]="currentPage !== page"
+        [class.hover:bg-gray-50]="currentPage !== page"
+        (click)="onPageChange(page)"
+      >
+        {{ page }}
+      </button>
+    </div>
+    <button class="px-4 py-2 border rounded-md text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            [disabled]="currentPage === 3" 
+            (click)="onPageChange(currentPage + 1)">
+      Next
+    </button>
+  </div>
+</div> 

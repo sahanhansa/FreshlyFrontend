@@ -1,0 +1,137 @@
+<!-- Driver Details Section -->
+<div class="drivers-container">
+  <!-- Header Controls -->
+  <div class="controls">
+    <div class="entries-control">
+      Show 
+      <select [(ngModel)]="entriesPerPage">
+        <option value="10">10</option>
+        <option value="25">25</option>
+        <option value="50">50</option>
+      </select>
+      entries
+    </div>
+    <div class="search-control">
+      <input type="text" [(ngModel)]="searchQuery" placeholder="Search..." (input)="searchDrivers()">
+    </div>
+  </div>
+
+  <!-- Driver Details Card -->
+  <div class="driver-details" *ngIf="selectedDriver">
+    <h2>Driver Details</h2>
+    <div class="details-card">
+      <div class="left-section">
+        <div class="profile-section">
+          <img [src]="selectedDriver.profileImage" [alt]="selectedDriver.name" class="profile-image">
+          <div class="driver-id">
+            <h3>{{ selectedDriver.name }}</h3>
+            <p>#{{ selectedDriver.id }}</p>
+          </div>
+        </div>
+        <div class="info-section">
+          <div class="info-row">
+            <i class="fas fa-envelope"></i>
+            <span class="label">Email</span>
+            <span class="value">: {{ selectedDriver.email }}</span>
+          </div>
+          <div class="info-row">
+            <i class="fas fa-phone"></i>
+            <span class="label">Contact No</span>
+            <span class="value">: {{ selectedDriver.contactNo }}</span>
+          </div>
+          <div class="info-row">
+            <i class="fas fa-home"></i>
+            <span class="label">Home Address</span>
+            <span class="value">: {{ selectedDriver.homeAddress }}</span>
+          </div>
+          <div class="info-row">
+            <i class="fas fa-truck"></i>
+            <span class="label">Vehicle No</span>
+            <span class="value">: {{ selectedDriver.vehicleNo }}</span>
+          </div>
+          <div class="info-row">
+            <i class="fas fa-map-marker-alt"></i>
+            <span class="label">Location</span>
+            <span class="value">: {{ selectedDriver.location }}</span>
+          </div>
+          <div class="info-row">
+            <i class="fas fa-map"></i>
+            <span class="label">Region</span>
+            <span class="value">: {{ selectedDriver.region }}</span>
+          </div>
+          <div class="info-row">
+            <i class="fas fa-university"></i>
+            <span class="label">Bank Name</span>
+            <span class="value">: {{ selectedDriver.bankDetails.bankName }}</span>
+          </div>
+          <div class="info-row bank-details">
+            <span class="label">-Branch</span>
+            <span class="value">: {{ selectedDriver.bankDetails.branch }}</span>
+          </div>
+          <div class="info-row bank-details">
+            <span class="label">-Account No</span>
+            <span class="value">: {{ selectedDriver.bankDetails.accountNo }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="right-section">
+        <button class="action-btn picked">Picked Orders</button>
+        <button class="action-btn reserved">Reserved Orders</button>
+        <button class="action-btn complaints">Complaints</button>
+        <button class="remove-btn">Remove User</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Orders Section -->
+  <div class="recent-orders" *ngIf="selectedDriver">
+    <h2>Recent Orders</h2>
+    <div class="orders-table" *ngFor="let order of selectedDriver.recentOrders">
+      <div class="order-header">
+        <div class="order-info">
+          <span>Order ID: {{ order.orderId }}</span>
+          <span>Date: {{ order.date }}</span>
+          <span class="status">Status: {{ order.status }}</span>
+          <span>Driver ID: {{ order.driverId }}</span>
+          <span>Laundry ID: {{ order.laundryId }}</span>
+        </div>
+        <button class="view-more">View More</button>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Process</th>
+            <th>Clothe type</th>
+            <th>Count</th>
+            <th>Price per Item(Rs.)</th>
+            <th>Total Price(Rs.)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of order.items">
+            <td>{{ item.item }}</td>
+            <td>{{ item.process }}</td>
+            <td>{{ item.clotheType }}</td>
+            <td>{{ item.count }}</td>
+            <td>{{ item.pricePerItem }}</td>
+            <td>{{ item.totalPrice }}</td>
+          </tr>
+          <tr class="subtotal-row">
+            <td colspan="5" class="text-right">Subtotal (Rs.)</td>
+            <td>{{ order.subtotal }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination">
+    <button (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 1">Previous</button>
+    <button [class.active]="currentPage === 1" (click)="onPageChange(1)">1</button>
+    <button [class.active]="currentPage === 2" (click)="onPageChange(2)">2</button>
+    <button [class.active]="currentPage === 3" (click)="onPageChange(3)">3</button>
+    <button (click)="onPageChange(currentPage + 1)">Next</button>
+  </div>
+</div> 

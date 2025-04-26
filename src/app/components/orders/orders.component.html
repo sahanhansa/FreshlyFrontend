@@ -1,0 +1,98 @@
+<div class="orders-container">
+  <h1>Orders</h1>
+
+  <div class="table-controls">
+    <div class="entries-control">
+      <span>Show</span>
+      <select [(ngModel)]="itemsPerPage">
+        <option value="9">9</option>
+        <option value="25">25</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+      </select>
+      <span>entries</span>
+    </div>
+    <div class="search-control">
+      <input type="text" placeholder="Search..." />
+    </div>
+  </div>
+
+  <div class="orders-table">
+    <table>
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>Date</th>
+          <th>Status</th>
+          <th>Customer ID</th>
+          <th>Driver ID</th>
+          <th>Laundry ID</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let order of orders">
+          <tr [class.expanded]="selectedOrder?.id === order.id">
+            <td>{{ order.id }}</td>
+            <td>{{ order.date }}</td>
+            <td>
+              <span [class]="'status-badge ' + getStatusClass(order.status)">
+                {{ order.status }}
+              </span>
+            </td>
+            <td>{{ order.customerId }}</td>
+            <td>{{ order.driverId }}</td>
+            <td>{{ order.laundryId }}</td>
+            <td>
+              <button class="view-btn" (click)="toggleOrderDetails(order)">
+                {{ selectedOrder?.id === order.id ? 'View Less' : 'View More' }}
+              </button>
+            </td>
+          </tr>
+          <tr *ngIf="selectedOrder?.id === order.id" class="details-row">
+            <td colspan="7">
+              <div class="order-details">
+                <table class="items-table">
+                  <thead>
+                    <tr>
+                      <th>Item</th>
+                      <th>Process</th>
+                      <th>Clothe type</th>
+                      <th>Count</th>
+                      <th>Price per item(Rs.)</th>
+                      <th>Total Price(Rs.)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let item of order.items">
+                      <td>{{ item.item }}</td>
+                      <td>{{ item.process }}</td>
+                      <td>{{ item.clotheType }}</td>
+                      <td>{{ item.count }}</td>
+                      <td>{{ item.pricePerItem }}</td>
+                      <td>{{ item.totalPrice }}</td>
+                    </tr>
+                    <tr class="subtotal-row">
+                      <td colspan="5" class="text-right">Subtotal (Rs.)</td>
+                      <td>{{ order.items | subtotal }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="pagination">
+    <button [disabled]="currentPage === 1" (click)="currentPage = currentPage - 1">Previous</button>
+    <div class="page-numbers">
+      <button [class.active]="currentPage === 1" (click)="currentPage = 1">1</button>
+      <button [class.active]="currentPage === 2" (click)="currentPage = 2">2</button>
+      <button [class.active]="currentPage === 3" (click)="currentPage = 3">3</button>
+    </div>
+    <button [disabled]="currentPage === 3" (click)="currentPage = currentPage + 1">Next</button>
+  </div>
+</div> 

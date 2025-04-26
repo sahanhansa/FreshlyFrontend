@@ -1,0 +1,167 @@
+<!-- Laundry Details Section -->
+<div class="laundry-container">
+  <div class="show-entries">
+    <span>Show</span>
+    <select [(ngModel)]="itemsPerPage">
+      <option value="9">9</option>
+      <option value="25">25</option>
+      <option value="50">50</option>
+      <option value="100">100</option>
+    </select>
+    <span>entries</span>
+    <div class="search-box">
+      <input type="text" placeholder="Search...">
+    </div>
+  </div>
+
+  <h1 class="page-title">Laundry Details</h1>
+
+  <div class="laundry-card">
+    <div class="laundry-info">
+      <div class="profile-section">
+        <div class="logo-container">
+          <i class="fas fa-tshirt"></i>
+          <img [src]="laundry.image" alt="Laundry Profile" class="profile-image">
+        </div>
+        <div class="laundry-name">
+          <h2>{{ laundry.name }}</h2>
+          <span class="laundry-id">{{ laundry.id }}</span>
+        </div>
+      </div>
+
+      <div class="contact-details">
+        <div class="detail-row">
+          <i class="fas fa-envelope"></i>
+          <span class="label">Email</span>
+          <span class="value">: {{ laundry.email }}</span>
+        </div>
+        <div class="detail-row">
+          <i class="fas fa-phone"></i>
+          <span class="label">Contact No</span>
+          <span class="value">: {{ laundry.contactNo }}</span>
+        </div>
+        <div class="detail-row">
+          <i class="fas fa-home"></i>
+          <span class="label">Address</span>
+          <span class="value">: {{ laundry.address }}</span>
+        </div>
+        <div class="detail-row">
+          <i class="fas fa-map-marker-alt"></i>
+          <span class="label">Location</span>
+          <span class="value">: {{ laundry.location }}</span>
+        </div>
+        <div class="detail-row">
+          <i class="fas fa-university"></i>
+          <span class="label">Bank Name</span>
+          <span class="value">: {{ laundry.bankDetails.name }}</span>
+        </div>
+        <div class="detail-row bank-details">
+          <span class="label">Branch</span>
+          <span class="value">: {{ laundry.bankDetails.branch }}</span>
+        </div>
+        <div class="detail-row bank-details">
+          <span class="label">Account No</span>
+          <span class="value">: {{ laundry.bankDetails.accountNo }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="laundry-actions">
+      <button class="action-btn received-orders">
+        <span>Received Orders</span>
+        <i class="fas fa-chevron-right"></i>
+      </button>
+      <button class="action-btn completed-orders">
+        <span>Completed Orders</span>
+        <i class="fas fa-chevron-right"></i>
+      </button>
+      <button class="action-btn processing-orders">
+        <span>Processing Orders</span>
+        <i class="fas fa-chevron-right"></i>
+      </button>
+      <button class="action-btn complaints">
+        <span>Complaints</span>
+        <i class="fas fa-chevron-right"></i>
+      </button>
+      <button class="action-btn remove-user" (click)="removeUser()">Remove User</button>
+    </div>
+  </div>
+
+  <!-- Recent Orders Section -->
+  <h2 class="section-title">Recent Orders</h2>
+
+  <div class="orders-section">
+    <div class="order-card" *ngFor="let order of laundry.recentOrders">
+      <div class="order-header">
+        <div class="order-info">
+          <span class="info-label">Order ID</span>
+          <span class="info-value">{{ order.orderId }}</span>
+        </div>
+        <div class="order-info">
+          <span class="info-label">Date</span>
+          <span class="info-value">{{ order.date }}</span>
+        </div>
+        <div class="order-info">
+          <span class="info-label">Status</span>
+          <span class="info-value status-badge" [class.processing]="order.status === 'Processing'">
+            {{ order.status }}
+          </span>
+        </div>
+        <div class="order-info">
+          <span class="info-label">Driver ID</span>
+          <span class="info-value">{{ order.driverId }}</span>
+        </div>
+        <div class="order-info">
+          <span class="info-label">Laundry ID</span>
+          <span class="info-value">{{ order.laundryId }}</span>
+        </div>
+        <button class="view-more-btn" (click)="toggleOrderDetails(order)">
+          <i class="fas" [class.fa-eye]="!order.isExpanded" [class.fa-eye-slash]="order.isExpanded"></i>
+          {{ order.isExpanded ? 'View Less' : 'View More' }}
+        </button>
+      </div>
+
+      <div class="order-details" [class.expanded]="order.isExpanded">
+        <table class="items-table">
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>Process</th>
+              <th>Clothe type</th>
+              <th>Count</th>
+              <th>Price per Item(Rs.)</th>
+              <th>Total Price(Rs.)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of order.items">
+              <td>{{ item.item }}</td>
+              <td>{{ item.process }}</td>
+              <td>{{ item.clotheType }}</td>
+              <td>{{ item.count }}</td>
+              <td>{{ item.pricePerItem }}</td>
+              <td>{{ item.totalPrice }}</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="5" class="subtotal-label">Subtotal (Rs.)</td>
+              <td class="subtotal-value">{{ calculateSubtotal(order.items) }}</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination">
+    <button class="page-btn previous" [disabled]="currentPage === 1">Previous</button>
+    <div class="page-numbers">
+      <button class="page-number active">1</button>
+      <button class="page-number">2</button>
+      <button class="page-number">3</button>
+    </div>
+    <button class="page-btn next">Next</button>
+  </div>
+</div>
