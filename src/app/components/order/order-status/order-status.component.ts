@@ -6,14 +6,23 @@ interface OrderItem {
   quantity: number;
 }
 
+export type OrderStatusStep = 
+  'Order placed' | 
+  'Order pickup scheduled' | 
+  'Picked up' | 
+  'Processing in laundry' | 
+  'Finished processing' | 
+  'Out for delivery' | 
+  'Completed';
+
 export interface OrderDetails {
   id: string;
   laundryName: string;
   date: string; // This is the order placed date
   totalAmount: number;
   items: OrderItem[];
-  status: 'processing' | 'ready' | 'delivered' | 'cancelled';
-  currentStep: string;
+  status: 'ongoing' | 'completed'; // High-level status
+  currentStep: OrderStatusStep; // Detailed status step
 }
 
 @Component({
@@ -30,9 +39,9 @@ export class OrderStatusComponent {
   @Output() cancel = new EventEmitter<string>();
   
   // Define all possible order status steps
-  orderStatusSteps = [
+  orderStatusSteps: OrderStatusStep[] = [
     'Order placed',
-    'Pickup scheduled',
+    'Order pickup scheduled',
     'Picked up',
     'Processing in laundry',
     'Finished processing',
@@ -54,16 +63,16 @@ export class OrderStatusComponent {
   canCancelOrder(): boolean {
     if (!this.order) return false;
     
-    const cancelableStatuses = ['Order placed', 'Pickup scheduled'];
-    return cancelableStatuses.includes(this.order.currentStep);
+    const cancelableStatuses: OrderStatusStep[] = ['Order placed', 'Order pickup scheduled'];
+    return cancelableStatuses.includes(this.order.currentStep as OrderStatusStep);
   }
   
   // Helper methods for status timeline
   isStepCompleted(step: string): boolean {
     if (!this.order) return false;
     
-    const currentStepIndex = this.orderStatusSteps.indexOf(this.order.currentStep);
-    const stepIndex = this.orderStatusSteps.indexOf(step);
+    const currentStepIndex = this.orderStatusSteps.indexOf(this.order.currentStep as OrderStatusStep);
+    const stepIndex = this.orderStatusSteps.indexOf(step as OrderStatusStep);
     
     return stepIndex <= currentStepIndex;
   }

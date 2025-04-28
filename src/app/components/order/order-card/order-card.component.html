@@ -4,23 +4,17 @@
       <!-- Status Icon - Styled based on status -->
       <div class="mr-5 flex-shrink-0">
         <div [ngClass]="{
-          'bg-yellow-100': status === 'processing' || status === 'ready',
-          'bg-green-100': status === 'delivered',
-          'bg-red-100': status === 'cancelled'
+          'bg-yellow-100': isOngoing(),
+          'bg-green-100': isCompleted()
         }" class="w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110">
-          <!-- Processing or Ready icon (ongoing) - Clock/loading icon -->
-          <svg *ngIf="status === 'processing' || status === 'ready'" xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <!-- Ongoing orders - Clock/loading icon -->
+          <svg *ngIf="isOngoing()" xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
           
-          <!-- Delivered icon (past completed) - Checkmark in circle -->
-          <svg *ngIf="status === 'delivered'" xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <!-- Completed orders - Checkmark in circle -->
+          <svg *ngIf="isCompleted()" xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          
-          <!-- Cancelled icon -->
-          <svg *ngIf="status === 'cancelled'" xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </div>
       </div>

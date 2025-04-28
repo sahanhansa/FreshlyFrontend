@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { OrderCardComponent } from '../order-card/order-card.component';
-import { OrderStatusComponent, OrderDetails } from '../order-status/order-status.component';
+import { OrderStatusComponent, OrderDetails, OrderStatusStep } from '../order-status/order-status.component';
 
 interface OrderItem {
   name: string;
@@ -14,8 +14,8 @@ interface Order {
   date: string;
   totalAmount: number;
   items: OrderItem[];
-  status: 'processing' | 'ready';
-  currentStep: string;
+  status: 'ongoing';
+  currentStep: OrderStatusStep;
 }
 
 @Component({
@@ -40,7 +40,7 @@ export class OngoingOrderListComponent {
         { name: 'Shirt', quantity: 2 },
         { name: 'Trouser', quantity: 1 }
       ],
-      status: 'processing',
+      status: 'ongoing',
       currentStep: 'Picked up'
     },
     {
@@ -54,7 +54,7 @@ export class OngoingOrderListComponent {
         { name: 'Trouser', quantity: 1 },
         { name: 'Saree', quantity: 3 }
       ],
-      status: 'ready',
+      status: 'ongoing',
       currentStep: 'Out for delivery'
     },
     {
@@ -66,7 +66,7 @@ export class OngoingOrderListComponent {
         { name: 'Bedsheet', quantity: 2 },
         { name: 'Pillowcase', quantity: 4 }
       ],
-      status: 'processing',
+      status: 'ongoing',
       currentStep: 'Order placed'
     }
   ];
