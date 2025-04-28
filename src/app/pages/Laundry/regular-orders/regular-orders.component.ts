@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { SearchBarComponent } from '../../../components/laundry/search-bar/search-bar.component';
+import { SearchBarComponent } from '../../../components/shared/search-bar/search-bar.component';
 import { TableComponent } from '../../../components/laundry/table2/table2.component';
 import { PaginationComponent } from '../../../components/shared/pagination/pagination.component';
 import { FooterComponent } from '../../../components/shared/footer/footer.component';
