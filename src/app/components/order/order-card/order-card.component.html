@@ -1,0 +1,53 @@
+<div class="max-w-4xl mx-auto p-1 sm:p-5">
+  <div class="border border-gray-200 rounded-lg shadow-sm hover:shadow-lg transition-all duration-300 ease-in-out cursor-pointer bg-white transform hover:scale-[1.02] hover:border-gray-300" (click)="viewOrderDetails()">
+    <div class="px-5 py-4 flex">
+      <!-- Status Icon - Styled based on status -->
+      <div class="mr-5 flex-shrink-0">
+        <div [ngClass]="{
+          'bg-yellow-100': status === 'processing' || status === 'ready',
+          'bg-green-100': status === 'delivered',
+          'bg-red-100': status === 'cancelled'
+        }" class="w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110">
+          <!-- Processing or Ready icon (ongoing) - Clock/loading icon -->
+          <svg *ngIf="status === 'processing' || status === 'ready'" xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          
+          <!-- Delivered icon (past completed) - Checkmark in circle -->
+          <svg *ngIf="status === 'delivered'" xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          
+          <!-- Cancelled icon -->
+          <svg *ngIf="status === 'cancelled'" xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </div>
+      </div>
+  
+      <!-- Order Details -->
+      <div class="flex-grow">
+        <div class="flex flex-col md:flex-row md:justify-between">
+          <!-- Left side: Order ID and Info -->
+          <div>
+            <h3 class="text-base font-semibold text-gray-900 group-hover:text-gray-800">Order id: #{{ orderId }}</h3>
+            <p class="text-sm text-gray-600 mt-1">{{ laundryName }}</p>
+            
+            <!-- Order Items -->
+            <div class="mt-1">
+              <div *ngFor="let item of items" class="text-sm text-gray-600">
+                {{ item.name }} x{{ item.quantity }}
+              </div>
+            </div>
+          </div>
+          
+          <!-- Right side: Date and Amount -->
+          <div class="mt-2 md:mt-0 md:text-right">
+            <p class="text-sm text-gray-500">{{ date }}</p>
+            <p class="text-lg font-bold text-gray-900 mt-6">Rs. {{ totalAmount }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
