@@ -14,16 +14,16 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have the 'FreshlyFrontend' title`, () => {
+  it(`should have the 'AngularAuthUI' title`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    expect(app.title).toEqual('FreshlyFrontend');
+    expect(app.title).toEqual('AngularAuthUI');
   });
 
   it('should render title', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, FreshlyFrontend');
+    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, AngularAuthUI');
   });
 });

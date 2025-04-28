@@ -1,0 +1,182 @@
+<div class="min-h-screen flex items-center justify-center bg-gray-100">
+  <div class="container mx-auto px-4">
+    <div class="flex justify-center">
+      <div class="w-full max-w-md">
+        <div class="bg-white border rounded-lg shadow-lg">
+
+          <!-- Title -->
+          <div class="text-center border-b p-4">
+            <h3 class="pt-3 font-bold text-2xl">Sign Up</h3>
+          </div>
+
+          <div class="p-6">
+            <form [formGroup]="signupForm">
+
+              <!-- Username -->
+              <div class="pt-3"></div>
+              <div class="relative mb-4">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                  <i class="fa fa-user"></i>
+                </span>
+                <input 
+                  formControlName="username"
+                  type="text"
+                  placeholder="Username"
+                  [ngClass]="{
+                    'border-red-500': signupForm.controls['username'].dirty && signupForm.controls['username'].hasError('required'),
+                    'border-gray-300': !(signupForm.controls['username'].dirty && signupForm.controls['username'].hasError('required'))
+                  }"
+                  class="w-full pl-10 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                />
+              </div>
+              <small *ngIf="signupForm.controls['username'].dirty && signupForm.controls['username'].hasError('required')" class="text-red-500">
+                *Username is required
+              </small>
+
+              <!-- Address -->
+              <div class="pt-3"></div>
+              <div class="relative mb-4">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                  <i class="fa fa-map-marker"></i>
+                </span>
+                <input 
+                  formControlName="address"
+                  type="text"
+                  placeholder="Address"
+                  [ngClass]="{
+                    'border-red-500': signupForm.controls['address'].dirty && signupForm.controls['address'].hasError('required'),
+                    'border-gray-300': !(signupForm.controls['address'].dirty && signupForm.controls['address'].hasError('required'))
+                  }"
+                  class="w-full pl-10 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                />
+              </div>
+              <small *ngIf="signupForm.controls['address'].dirty && signupForm.controls['address'].hasError('required')" class="text-red-500">
+                *Address is required
+              </small>
+
+              <!-- Contact No 1 -->
+              <div class="pt-3"></div>
+              <div class="relative mb-4">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                  <i class="fa fa-phone"></i>
+                </span>
+                <input 
+                  formControlName="contact1"
+                  type="text"
+                  placeholder="Contact No 1"
+                  [ngClass]="{
+                    'border-red-500': signupForm.controls['contact1'].dirty && signupForm.controls['contact1'].hasError('required'),
+                    'border-gray-300': !(signupForm.controls['contact1'].dirty && signupForm.controls['contact1'].hasError('required'))
+                  }"
+                  class="w-full pl-10 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                />
+              </div>
+              <small *ngIf="signupForm.controls['contact1'].dirty && signupForm.controls['contact1'].hasError('required')" class="text-red-500">
+                *Contact number is required
+              </small>
+
+              <!-- Contact No 2 -->
+              <div class="pt-3"></div>
+              <div class="relative mb-4">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                  <i class="fa fa-phone"></i>
+                </span>
+                <input 
+                  formControlName="contact2"
+                  type="text"
+                  placeholder="Contact No 2"
+                  class="w-full pl-10 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                />
+              </div>
+
+              <!-- Email -->
+              <div class="pt-3"></div>
+              <div class="relative mb-4">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                  <i class="fa fa-envelope"></i>
+                </span>
+                <input 
+                  formControlName="email"
+                  type="email"
+                  placeholder="Email"
+                  [ngClass]="{
+                    'border-red-500': signupForm.controls['email'].dirty && signupForm.controls['email'].hasError('required'),
+                    'border-gray-300': !(signupForm.controls['email'].dirty && signupForm.controls['email'].hasError('required'))
+                  }"
+                  class="w-full pl-10 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                />
+              </div>
+              <small *ngIf="signupForm.controls['email'].dirty && signupForm.controls['email'].hasError('required')" class="text-red-500">
+                *Email is required
+              </small>
+
+              <!-- Password -->
+              <div class="pt-3">
+                <div class="relative mb-4">
+                  <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                    <i class="fa fa-lock"></i>
+                  </span>
+                  <input 
+                    formControlName="password"
+                    [type]="type"
+                    placeholder="Password"
+                    [ngClass]="{
+                      'border-red-500': signupForm.controls['password'].dirty && signupForm.controls['password'].hasError('required'),
+                      'border-gray-300': !(signupForm.controls['password'].dirty && signupForm.controls['password'].hasError('required'))
+                    }"
+                    class="w-full pl-10 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  />
+                  <span (click)="hideShowPass()" class="absolute right-3 top-3 cursor-pointer">
+                    <i class="fa" [ngClass]="eyeIcon"></i>
+                  </span>
+                </div>
+              </div>
+
+              <!-- Re-enter Password -->
+              <div class="pt-3">
+                <div class="relative mb-4">
+                  <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                    <i class="fa fa-lock"></i>
+                  </span>
+                  <input 
+                    formControlName="repassword"
+                    [type]="type"
+                    placeholder="Re-enter Password"
+                    class="w-full pl-10 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  />
+                  <span (click)="hideShowPass()" class="absolute right-3 top-3 cursor-pointer">
+                    <i class="fa" [ngClass]="eyeIcon"></i>
+                  </span>
+                </div>
+              </div>
+
+              <!-- Forgot Password -->
+              <div class="flex justify-end mt-4 text-sm">
+                <a id="forgot" class="font-bold text-blue-500 hover:underline cursor-pointer">Forgot Password?</a>
+              </div>
+
+              <!-- Submit Button -->
+              <button 
+                (click)="onSignup()" 
+                type="submit"
+                class="btn w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 rounded mt-4"
+              >
+                Sign Up
+              </button>
+
+              <!-- Already Have Account -->
+              <div class="text-center pt-4 text-gray-600 text-sm">
+                Already have an account?
+                <a href="/login" class="text-blue-500 font-bold hover:underline">Login</a>
+              </div>
+
+            </form>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  
