@@ -1,0 +1,24 @@
+button {
+    background-color: #007bff; /* Pink background */
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 50px; /* Fully rounded */
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background-color 0.3s ease, transform 0.2s;
+  }
+  
+button:hover {
+    background-color: #0056b3; /* Darker pink on hover */
+    transform: scale(1.05);
+  }
+  
+button:active {
+    transform: scale(0.95);
+  }

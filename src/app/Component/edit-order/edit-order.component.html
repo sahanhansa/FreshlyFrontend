@@ -1,0 +1,45 @@
+<div class="max-w-4xl mx-auto p-6">
+    <h1 class="text-4xl font-semibold text-center mb-6">Review Customer Order</h1>
+  
+    <table class="w-full border-collapse">
+      <thead>
+        <tr class="bg-sky-100">
+          <th class="text-left p-3 font-semibold">Item</th>
+          <th class="p-3 font-semibold">Quantity</th>
+          <th class="p-3 font-semibold">Driver Update</th>
+          <th class="p-3 font-semibold">Quantity</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of orderItems" class="border-t hover:bg-blue-50">
+          <td class="p-3">{{ item.name }}</td>
+          <td class="p-3 text-center">{{ item.quantity }}</td>
+          <td class="p-3 text-center">
+            <select [(ngModel)]="item.driverUpdate" class="border rounded px-2 py-1">
+              <option [ngValue]="true">✅</option>
+              <option [ngValue]="false">❌</option>
+            </select>
+          </td>
+          <td class="p-3 text-center">{{ item.driverUpdate ? item.quantity : 0 }}</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr class="bg-sky-100">
+          <td class="p-3 font-semibold">Total items</td>
+          <td class="p-3 text-center font-semibold">{{ totalItems() }}</td>
+          <td class="p-3"></td>
+          <td class="p-3 text-center font-semibold">{{ totalConfirmedItems() }}</td>
+        </tr>
+      </tfoot>
+    </table>
+  
+    <div class="flex justify-between mt-6">
+      <button (click)="goBack()"  >
+        ⬅ Back to Order Details
+      </button>
+      <button (click)="saveOrder()" >
+        Save
+      </button>
+    </div>
+  </div>
+  

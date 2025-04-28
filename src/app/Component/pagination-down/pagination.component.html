@@ -1,0 +1,13 @@
+
+<p>previous </p>
+<div class="pagination">
+    @for (page of [].constructor(totalPages); track page; let i = $index) {
+      <button
+        [class.active]="i + 1 === currentPage"
+        (click)="setPage(i + 1)"
+      >
+        {{ i + 1 }}
+      </button>
+    }
+  </div> 
+  <p>next</p> 
