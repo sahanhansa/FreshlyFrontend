@@ -15,8 +15,8 @@
       </button>
     </div>
     
-    <!-- Custom styling for cards with NO spacing -->
-    <div class="space-y-0">
+    <!-- Custom styling for cards with reduced spacing -->
+    <div class="space-y-0 -mt-2">
       <app-order-card 
         *ngFor="let order of ongoingOrders"
         [orderId]="order.id"
@@ -26,7 +26,8 @@
         [items]="order.items"
         [status]="order.status"
         [currentStep]="order.currentStep"
-        (orderClicked)="showOrderStatus(order)">
+        (orderClicked)="showOrderStatus(order)"
+        class="block mb-2">
       </app-order-card>
     </div>
   </div>
