@@ -1,0 +1,29 @@
+<app-header></app-header>
+<div class="mt-8 ml-10">
+    <h1 class="text-[50px] font-bold leading-tight font-inter">
+      Welcome <span class="text-[#0A84FF]">{{ laundryName }}!</span>
+    </h1>
+</div>
+<img src="assets/Home/home.png" alt="Home Image" class="absolute top-30 right-0 w-[400px] h-[430px] object-cover">
+
+<div class="flex space-x-4 mt-25 ml-20">
+    <button (click)="goToRegularOrder()" class="rounded-xl shadow-md border border-gray-200 px-5 py-5 text-l items-center hover:bg-gray-200 transition duration-300">
+      <span class="text-xl text-center">Regular Orders</span>
+      <div class="w-[200px] h-[200px] flex items-center justify-center">
+        <img src="assets/Home/regular.png" alt="Regular Orders Icon">
+      </div>
+    </button>
+
+  
+  
+    <button  (click)="goToExpressOrder()"class="rounded-xl shadow-md border border-gray-200 px-5 py-5 text-l  items-center  hover:bg-gray-200 transition duration-300">
+        <span class="text-xl text-center">Express Deliveries</span>
+      <div class="w-[200px] h-[200px] flex items-center justify-center">
+        <img src="assets/Home/express.png" alt="Icon 2">
+      </div>
+    </button>
+  </div>
+  <app-footer></app-footer>
+  
+  
+  
