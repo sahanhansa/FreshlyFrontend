@@ -6,35 +6,20 @@ import { Laundry } from '../models/laundry.model';
   providedIn: 'root' //Angular creates a singleton instance of this service and makes it available throughout the application
 })
 export class LaundryService {
-  private laundries: Laundry[] = [ //Each object follows the Laundry interface, with properties like id, name, location, rating, and imageUrl
-    { id: 1, name: 'Spark Cleaners', location: 'Negombo', rating: 5, imageUrl: 'assets/images/laundry1.jpg' },
-    { id: 2, name: 'Fresh Wash', location: 'Bambalapitiya', rating: 4, imageUrl: 'assets/images/laundry2.jpg' },
-    { id: 3, name: 'Quick Dry', location: 'Colombo 7', rating: 4, imageUrl: 'assets/images/laundry3.jpg' },
-    { id: 4, name: 'Laundry Express', location: 'Narahenpita', rating: 3, imageUrl: 'assets/images/laundry4.jpg' },
-    { id: 5, name: 'Clean & Fresh', location: 'Maharagama', rating: 2, imageUrl: 'assets/images/laundry5.jpg' },
-    { id: 6, name: 'Quick Wash', location: 'Dehiwala', rating: 4, imageUrl: 'assets/images/laundry3.jpg' },
-    { id: 7, name: 'Laundry Experts', location: 'Nugegoda', rating: 5, imageUrl: 'assets/images/laundry4.jpg' },
-    { id: 8, name: 'Clean & Clean', location: 'Kollupitiya', rating: 3, imageUrl: 'assets/images/laundry5.jpg' },
-    { id: 9, name: 'Spark Cleaners', location: 'Negombo', rating: 5, imageUrl: 'assets/images/laundry1.jpg' },
-    { id: 10, name: 'Fresh Wash', location: 'Bambalapitiya', rating: 4, imageUrl: 'assets/images/laundry2.jpg' },
-    { id: 11, name: 'Quick Dry', location: 'Colombo 7', rating: 4, imageUrl: 'assets/images/laundry3.jpg' },
-    { id: 12, name: 'Laundry Express', location: 'Narahenpita', rating: 3, imageUrl: 'assets/images/laundry4.jpg' },
-    { id: 13, name: 'Clean & Fresh', location: 'Maharagama', rating: 2, imageUrl: 'assets/images/laundry5.jpg' },
-    { id: 14, name: 'Quick Wash', location: 'Dehiwala', rating: 4, imageUrl: 'assets/images/laundry3.jpg' },
-    { id: 15, name: 'Laundry Experts', location: 'Nugegoda', rating: 5, imageUrl: 'assets/images/laundry4.jpg' },
-    { id: 16, name: 'Clean & Clean', location: 'Kollupitiya', rating: 3, imageUrl: 'assets/images/laundry5.jpg' },
-    { id: 17, name: 'Laundry Experts', location: 'Nugegoda', rating: 5, imageUrl: 'assets/images/laundry4.jpg' },
-    { id: 18, name: 'Clean & Clean', location: 'Kollupitiya', rating: 3, imageUrl: 'assets/images/laundry5.jpg' },
-    { id: 19, name: 'Spark Cleaners', location: 'Negombo', rating: 5, imageUrl: 'assets/images/laundry1.jpg' },
-    { id: 20, name: 'Fresh Wash', location: 'Bambalapitiya', rating: 4, imageUrl: 'assets/images/laundry2.jpg' },
-    
- 
+  private laundries: Laundry[] = [ //Each object follows the Laundry interface, with properties like id, name, location, rating, imageUrl, and itemIds
+    { id: 1, name: 'Spark Cleaners', location: 'Negombo', rating: 5, imageUrl: 'assets/laundry.png', itemIds: [1, 2, 3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22] },
+    { id: 2, name: 'Fresh Wash', location: 'Bambalapitiya', rating: 4, imageUrl: 'assets/laundry.png', itemIds: [1, 2, 3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22]  },
+    { id: 3, name: 'Quick Dry', location: 'Colombo 7', rating: 4, imageUrl: 'assets/laundry.png', itemIds: [1, 2, 3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22] },
+    { id: 4, name: 'Laundry Express', location: 'Narahenpita', rating: 3, imageUrl: 'assets/laundry.png',itemIds: [1, 2, 3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22]  },
+    { id: 5, name: 'Clean & Fresh', location: 'Maharagama', rating: 2, imageUrl: 'assets/laundry.png',itemIds: [1, 2, 3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22] },
+    { id: 6, name: 'Quick Wash', location: 'Dehiwala', rating: 4, imageUrl: 'assets/laundry.png', itemIds: [1, 2, 3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22]  },
+    { id: 7, name: 'Laundry Experts', location: 'Nugegoda', rating: 5, imageUrl: 'assets/laundry.png', itemIds: [1, 2, 3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22]  },
+    { id: 8, name: 'Clean & Clean', location: 'Kollupitiya', rating: 3, imageUrl: 'assets/laundry.png', itemIds: [1, 2, 3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22]  }
   ];
 
   getLaundries(): Laundry[] {
     return this.laundries;
   }
-  
 }
 
 // How these interact
