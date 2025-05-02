@@ -1,0 +1,88 @@
+<!-- Order Status Popup Modal with Less Blurred Background -->
+<div *ngIf="visible" 
+     class="modal-backdrop fixed inset-0 z-40 backdrop-blur-[2px] backdrop-filter transition-all duration-300" 
+     (click)="closeModal()">
+  <!-- Empty div for blur effect only -->
+</div>
+
+<!-- Modal Content - Smaller Height -->
+<div *ngIf="visible" 
+     class="fixed inset-0 z-50 flex items-center justify-center p-4 animate-fade-in">
+  <div class="bg-white rounded-lg shadow-xl max-w-md w-11/12 mx-auto p-5 transform transition-all duration-300 animate-scale-in" 
+       (click)="$event.stopPropagation()">
+    <!-- Modal Header -->
+    <div class="flex justify-between items-center mb-3">
+      <h3 class="text-lg font-bold text-gray-800">Order Status</h3>
+      <button class="text-gray-500 hover:text-gray-700 p-1 rounded-full hover:bg-gray-100 transition-colors duration-200" 
+              (click)="closeModal()">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Order Info - Condensed -->
+    <div class="mb-3 pb-2 border-b border-gray-100">
+      <p class="text-sm text-gray-600">Order ID: <span class="font-semibold">{{ order?.id }}</span></p>
+      <p class="text-sm text-gray-600">{{ order?.laundryName }}</p>
+    </div>
+
+    <!-- Status Timeline - Condensed -->
+    <div class="space-y-3 mb-3">
+      <div *ngFor="let step of orderStatusSteps; let i = index" 
+           class="flex items-start transition-all duration-300"
+           [ngClass]="{
+             'opacity-100': isStepCompleted(step),
+             'opacity-50': !isStepCompleted(step)
+           }">
+        <!-- Status Icon with line connecting to next step -->
+        <div class="relative">
+          <div [ngClass]="{
+              'bg-green-100 text-green-600': isStepCompleted(step),
+              'bg-gray-100 text-gray-400': !isStepCompleted(step),
+              'ring-2 ring-green-600 ring-offset-1': isCurrentStep(step)
+            }" class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mr-3 z-10">
+            <svg *ngIf="isStepCompleted(step)" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            </svg>
+            <span *ngIf="!isStepCompleted(step)" class="text-xs font-bold">{{ i + 1 }}</span>
+          </div>
+          
+          <!-- Connecting line (except for the last item) -->
+          <div *ngIf="i < orderStatusSteps.length - 1" 
+               [ngClass]="{'bg-green-500': isStepCompleted(step), 'bg-gray-200': !isStepCompleted(step)}"
+               class="absolute left-4 top-8 w-0.5 h-7 -z-10 transform -translate-x-1/2">
+          </div>
+        </div>
+        
+        <!-- Status Text -->
+        <div class="flex-grow pt-1">
+          <p class="text-sm font-medium" [ngClass]="{'text-gray-900': isStepCompleted(step), 'text-gray-500': !isStepCompleted(step)}">
+            {{ step }}
+          </p>
+          <p *ngIf="isCurrentStep(step)" class="text-xs text-green-600 font-medium">
+            Current status
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Estimated Time - Condensed -->
+    <div class="bg-blue-50 p-2 rounded text-center mb-3">
+      <p class="text-xs text-blue-800">
+        <span *ngIf="isDeliveryToday()">Estimated delivery: Today by 7:00 PM</span>
+        <span *ngIf="!isDeliveryToday()">
+          Estimated delivery: {{ getEstimatedDeliveryDate() }} by 7:00 PM
+        </span>
+      </p>
+    </div>
+
+    <!-- Cancel Order Button - Only shown for order placed or pickup scheduled status -->
+    <div *ngIf="canCancelOrder()" class="text-center">
+      <button class="bg-red-500 hover:bg-red-600 text-white py-1.5 px-6 rounded-md transition-colors duration-200 text-sm font-medium" 
+              (click)="cancelOrder()">
+        Cancel Order
+      </button>
+    </div>
+  </div>
+</div>
