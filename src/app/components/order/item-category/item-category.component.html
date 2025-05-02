@@ -2,10 +2,15 @@
   <button
     *ngFor="let category of categories"
     (click)="onCategorySelected(category.name)"
-    [class.text-blue-500]="selectedCategory === category.name"
-    [class.border-blue-500]="selectedCategory === category.name"
-    class="px-4 py-2 text-md sm:text-md text-gray-600 border-b-2 hover:text-blue-500 hover:border-blue-500 transition"
+    class="px-4 py-2 text-md sm:text-md text-gray-600 relative group"
   >
     {{ category.name }}
+    <span 
+      class="absolute bottom-0 left-1/2 transform -translate-x-1/2 h-0.5 transition-all duration-200 ease-out"
+      [ngClass]="{
+        'bg-blue-500 w-3/4': selectedCategory === category.name,
+        'bg-transparent w-0 group-hover:w-1/2 group-hover:bg-blue-500': selectedCategory !== category.name
+      }"
+    ></span>
   </button>
 </div>
