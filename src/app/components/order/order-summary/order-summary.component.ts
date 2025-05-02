@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 interface OrderItem {
@@ -24,7 +24,10 @@ export class OrderSummaryComponent implements OnInit {
   @Input() items: OrderItem[] = [];
   @Input() showLaundryInfo: boolean = true;
 
+  @Output() deleteOrderEvent = new EventEmitter<string>(); // Output event
+
   orderItems: OrderItem[] = [];
+  showDeleteConfirmation: boolean = false;
 
   ngOnInit() {
     // Use the provided items or fallback to default
@@ -40,7 +43,17 @@ export class OrderSummaryComponent implements OnInit {
   }
 
   deleteOrder() {
-    console.log(`Delete order: ${this.orderId}`);
+    this.showDeleteConfirmation = true;
+  }
+
+  confirmDelete() {
+    console.log(`Order ${this.orderId} deleted`);
+    this.showDeleteConfirmation = false;
+    this.deleteOrderEvent.emit(this.orderId); // Emit the order ID
+  }
+
+  cancelDelete() {
+    this.showDeleteConfirmation = false;
   }
 
   placeOrder() {

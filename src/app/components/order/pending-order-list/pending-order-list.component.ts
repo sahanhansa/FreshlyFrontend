@@ -68,4 +68,9 @@ export class PendingOrderListComponent {
   createNewOrder() {
     this.router.navigate(['/laundries']);
   }
+
+  onDeleteOrder(orderId: string) {
+    // Find and remove the order with the matching ID
+    this.pendingOrders = this.pendingOrders.filter(order => order.id !== orderId);
+  }
 }
