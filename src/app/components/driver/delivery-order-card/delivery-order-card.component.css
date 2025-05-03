@@ -1,0 +1,65 @@
+.order-card {
+    background-color: #d4f6ff; /* Light blue background */
+    padding: 20px;
+    border-radius: 15px;
+    width: 280px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+  }
+  
+  .order-id {
+    font-weight: bold;
+    font-size: 18px;
+    color: #000;
+    margin-bottom: 10px;
+  }
+  
+  .status {
+    background-color: #ff2f7a; /* Pink button */
+    color: white;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: bold;
+    display: inline-block;
+    margin-bottom: 10px;
+  }
+  
+  .order-details {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 15px;
+  }
+  
+  .order-details p {
+    margin: 4px 0;
+  }
+  
+  .button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+    transition: transform 0.2s;
+  }
+  
+  .button:hover {
+    transform: scale(1.05);
+  }
+  
+  .route-btn {
+    background-color: black;
+    color: white;
+    margin-bottom: 10px;
+  }
+  
+  .order-btn {
+    background-color: #007bff;
+    color: white;
+  }
+  

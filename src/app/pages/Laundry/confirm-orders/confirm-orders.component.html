@@ -1,0 +1,66 @@
+<div class="p-8">
+  <div class="flex justify-between items-center mb-8">
+    <img src="images/logo.png" alt="Freshly Logo" class="h-12">
+    <div class="text-right">
+      <p class="font-bold">Tracking ID : #{{ trackingId }}</p>
+      <p class="font-bold mt-1">Delivery Due By: {{ deliveryDate }}</p>
+    </div>
+  </div>
+
+ 
+  <div *ngFor="let section of sections" class="mb-8">
+    <h2 class="bg-[#007AFF] text-white text-center py-2 rounded-t-lg">{{ section.name }}</h2>
+    
+   
+    <div class="overflow-x-auto">
+      <table class="w-full text-center border border-gray-300/50">
+
+
+        <thead class="bg-white border border-gray-300/50 ">
+          <tr >
+            <th class="p-2 border">Item ID</th>
+            <th class="p-2 border">Item</th>
+            <th class="p-2 border">Quantity</th>
+            <th class="p-2 border">Unit Price</th>
+          </tr>
+        </thead>
+        <tbody class="border border-gray-300/50 ">
+          <tr *ngFor="let item of section.items" class="odd:bg-[#D0F6FF]">
+            <td class="p-2 border">#{{ item.id }}</td>
+            <td class="p-2 border">{{ item.name }}</td>
+            <td class="p-2 border">
+              <div class="flex justify-center items-center space-x-2">
+                <button type="button" (click)="decreaseQuantity(section, item)" class="text-Black text-xl"><img src="/assets/decreasetriangle.png"></button>
+                <span>{{ item.quantity }}</span>
+                <button type="button" (click)="increaseQuantity(section, item)" class="text-black text-xl"><img src="/assets/increasetriangle.png"></button>
+              </div>
+            </td>
+            <td class="p-2 border">{{ item.unitPrice }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+   
+    <div class="bg-[#007AFF] text-white text-right py-2 px-4 rounded-b-lg ">
+     Total {{ section.total }}
+    </div>
+  </div>
+
+ 
+  <div class="bg-[#007AFF] text-white text-2xl text-center py-4 rounded-lg mb-8">
+    Total Bill {{ totalBill }}
+  </div>
+
+
+  <div class="flex justify-center">
+    <button routerLink="/invoice-successed" class="bg-black text-white py-2 px-6 rounded-full hover:bg-gray-800 transition">
+      Send Invoice
+    </button>
+  </div>
+</div>
+<app-footer></app-footer>
+
+
+
+

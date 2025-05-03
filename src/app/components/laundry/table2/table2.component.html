@@ -1,0 +1,27 @@
+<div class="overflow-x-auto mx-10 ml-1">
+    <table class="table-auto w-full">
+      <thead>
+        <tr class="bg-white text-black">
+          <th *ngFor="let col of columns" class="px-4 py-3 text-lg font-semibold">
+            {{ col }}
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of tableData; let i = index" class="odd:bg-[#D0F6FF] even:bg-white">
+          <td *ngFor="let cell of row; let colIndex = index" class="px-3 py-3 text-mdgf text-center">
+          
+            <ng-container *ngIf="colIndex === row.length - 1; else showText">
+              <button  routerLink="/confirm-orders" class="px-2 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+                View Details
+              </button>
+            </ng-container>
+            <ng-template #showText>
+              {{ cell }}
+            </ng-template>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  

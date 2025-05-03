@@ -1,0 +1,84 @@
+.contact-container {
+    display: flex;
+    background-color: #eaf6ff; /* Light blue background */
+    border-radius: 15px;
+    padding: 20px;
+    width: 90%;
+    max-width: 900px;
+    margin: auto;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .contact-info {
+    background-color: #008cff; /* Blue background */
+    color: white;
+    padding: 20px;
+    border-radius: 15px 0 0 15px;
+    width: 40%;
+  }
+  
+  .contact-info h2 {
+    font-size: 20px;
+    font-weight: bold;}
+  
+  .contact-info p {
+    font-size: 14px;
+    margin: 10px 0;
+  }
+  
+  .contact-info i {
+    margin-right: 8px;
+  }
+  
+  .contact-form {
+    width: 60%;
+    padding: 20px;
+  }
+  
+  .input-group {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .input-field {
+    width: 48%;
+  }
+  
+  input, textarea {
+    width: 100%;
+    padding: 8px;
+    border: none;
+    border-bottom: 2px solid #000;
+    background: transparent;
+    outline: none;
+    font-size: 14px;
+  }
+  
+  .radio-group {
+    display: flex;
+    gap: 15px;
+    margin: 10px 0;
+  }
+  
+  .radio-group label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 14px;
+  }
+  
+  .send-button {
+    background-color: black;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  
+  .send-button:hover {
+    transform: scale(1.05);
+  }
+  
