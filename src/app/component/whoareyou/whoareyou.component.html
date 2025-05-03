@@ -1,0 +1,33 @@
+
+<div class="min-h-screen flex flex-col items-center justify-center bg-gray-100">
+  <!-- Logo -->
+  <!-- <div class="absolute top-5 left-5 flex items-center space-x-2">
+    <img src="assets/logo.png" alt="Freshly Logo" class="h-24" />
+  </div> -->
+  <h1 class="text-2xl font-bold text-gray-800 mb-24">Who Are You?</h1>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-36 max-w-screen-lg mx-auto">
+  
+   
+    <!-- Customer -->
+    <div (click)="goTo('customer')" class="bg-white p-6 rounded-xl shadow-lg text-center cursor-pointer hover:scale-105 transition">
+      <img src="assets/customer-img.jpeg" alt="Customer" class="w-48 h-48 mx-auto mb-3" />
+      <h2 class="text-lg font-semibold text-red-600">Customer</h2>
+      <p class="text-gray-500">Click here to login/signup</p>
+    </div>
+  
+    <!-- Laundry -->
+    <div (click)="goTo('driver')" class="bg-white p-6 rounded-xl shadow-lg text-center cursor-pointer hover:scale-105 transition">
+      <img src="assets/laundry.avif" alt="Driver" class="w-48 h-48 mx-auto mb-3" />
+      <h2 class="text-lg font-semibold text-red-600">Laundry</h2>
+      <p class="text-gray-500">Click here to login/signup</p>
+    </div>
+  
+    <!-- Admin -->
+    <div (click)="goTo('admin')" class="bg-white p-6 rounded-xl shadow-lg text-center cursor-pointer hover:scale-105 transition">
+      <img src="assets/admin-img.jpeg" alt="Admin" class="w-48 h-48 mx-auto mb-3" />
+      <h2 class="text-lg font-semibold text-red-600">Admin</h2>
+      <p class="text-gray-500">Click here to login</p>
+    </div>
+  
+  </div>
+  
