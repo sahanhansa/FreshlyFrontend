@@ -11,8 +11,6 @@ import { PastOrderListComponent } from '../../../components/order/past-order-lis
   standalone: true,
   imports: [
     CommonModule,
-    NavbarOrderComponent,
-    FooterComponent,
     PendingOrderListComponent,
     OngoingOrderListComponent,
     PastOrderListComponent,
