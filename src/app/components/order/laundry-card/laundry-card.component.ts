@@ -9,9 +9,9 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./laundry-card.component.css']
 })
 export class LaundryCardComponent {
-  @Input() public name!: string;
-  @Input() public location!: string;
-  @Input() public rating!: number;
+  @Input() public name: string = 'Unnamed Laundry'; // Provide defaults
+  @Input() public location: string = 'Location not available';
+  @Input() public rating: number = 0;
   @Input() public imageUrl!: string;
   @Input() public isFavorite: boolean = false;
   @Output() public favoriteToggled = new EventEmitter<void>();

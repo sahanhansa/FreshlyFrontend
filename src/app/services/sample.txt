@@ -1,0 +1,12 @@
+// How these interact
+
+// Data Flow:
+// The LaundryService provides the list of laundries.
+// The LaundryListComponent fetches the list of laundries from the LaundryService.
+// The LaundryListComponent loops through the list and creates a LaundryCardComponent for each laundry item.
+// The LaundryCardComponent receives the data for each laundry item and displays it.
+
+// Interaction:
+// Service to List: The LaundryListComponent calls the getLaundries() method from the LaundryService to get the data.
+// List to Card: The LaundryListComponent passes the data for each laundry item to the LaundryCardComponent using @Input() properties.
+// Card Displays Data: The LaundryCardComponent takes the data and displays it in the UI.

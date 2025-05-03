@@ -7,6 +7,9 @@ import { ItemCardListComponent } from "../../../components/order/item-card-list/
 import { CommonModule } from '@angular/common';
 import { ItemCategoryComponent } from "../../../components/order/item-category/item-category.component";
 import { FormsModule } from '@angular/forms';
+import { Laundry } from '../../../models/laundry.model';
+import { switchMap, map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-items-list-page',
@@ -20,8 +23,11 @@ export class ItemsListPageComponent implements OnInit {
   filteredItems: Item[] = [];
   selectedCategory = 'Ladies'; // Default category
   searchQuery = ''; // Search input value
-  laundryId!: number; // Store the selected laundry ID
-  
+  laundryId: number = 0; // Store the selected laundry ID
+  laundry: Laundry | null = null;
+  loading = true;
+  error = '';
+
   // Category mapping: Map UI category names to item description values
   categoryMapping: { [key: string]: string[] } = {
     'Ladies': ['Ladies wear'],
@@ -33,21 +39,56 @@ export class ItemsListPageComponent implements OnInit {
   constructor(private itemService: ItemService, private route: ActivatedRoute, private laundryService: LaundryService) {}
 
   ngOnInit(): void {
-    this.laundryId = +this.route.snapshot.paramMap.get('id')!; // Get the laundry ID from the route
+    this.route.params.subscribe(params => {
+      this.laundryId = +params['id']; // Convert to number with '+'
+      this.loadLaundryDetails();
+    });
     this.items = this.itemService.getItems(); // Fetch all items
-    this.filterItemsByLaundry(); // Filter items for the selected laundry
+  }
+
+  loadLaundryDetails(): void {
+    this.loading = true;
+    
+    // Option 1: Use getLaundryById if it's implemented
+    this.laundryService.getLaundryById(this.laundryId).subscribe({
+      next: (laundry) => {
+        this.laundry = laundry;
+        this.loading = false;
+        this.filterItemsByLaundry(); // Filter items for the selected laundry
+      },
+      error: (err) => {
+        this.error = 'Failed to load laundry details';
+        this.loading = false;
+        console.error(err);
+      }
+    });
+
+    // Option 2: If you need to filter from the full list
+    /*
+    this.laundryService.getLaundries().pipe(
+      map(laundries => laundries.find(laundry => laundry.id === this.laundryId))
+    ).subscribe({
+      next: (laundry) => {
+        this.laundry = laundry || null;
+        this.loading = false;
+      },
+      error: (err) => {
+        this.error = 'Failed to load laundry details';
+        this.loading = false;
+        console.error(err);
+      }
+    });
+    */
   }
 
   filterItemsByLaundry() {
-    const selectedLaundry = this.laundryService.getLaundries().find(laundry => laundry.id === this.laundryId);
-
-    if (!selectedLaundry) {
+    if (!this.laundry) {
       this.filteredItems = [];
       return;
     }
 
     this.filteredItems = this.items.filter((item) => {
-      const belongsToLaundry = selectedLaundry.itemIds.includes(item.id); // Check if the item belongs to the selected laundry
+      const belongsToLaundry = this.laundry!.itemIds.includes(item.id); // Check if the item belongs to the selected laundry
       
       // Use the category mapping to match descriptions
       const matchesCategory = this.selectedCategory 

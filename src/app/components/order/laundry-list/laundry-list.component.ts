@@ -21,19 +21,42 @@ export class LaundryListComponent implements OnInit {
   selectedRating: string = ''; // Selected rating filter
   uniqueLocations: string[] = []; // Unique locations for the dropdown
   uniqueRatings: number[] = []; // Unique ratings for the dropdown
+  loading = true;
+  error = '';
 
   constructor(private laundryService: LaundryService, private router: Router) {}
 
   ngOnInit() {
-    this.laundries = this.laundryService.getLaundries().map((laundry) => ({
-      ...laundry,
-      isFavorite: false // Initialize `isFavorite` to false
-    }));
-    this.filteredLaundries = [...this.laundries]; // Initialize with the full list
+    this.loadLaundries();
+  }
 
-    // Extract unique locations and ratings
-    this.uniqueLocations = [...new Set(this.laundries.map((laundry) => laundry.location))];
-    this.uniqueRatings = [...new Set(this.laundries.map((laundry) => laundry.rating))].sort();
+  loadLaundries(): void {
+    this.loading = true;
+    this.error = '';
+    
+    this.laundryService.getLaundries().subscribe({
+      next: (data) => {
+        this.laundries = data.map((laundry) => ({
+          ...laundry,
+          isFavorite: false // Initialize `isFavorite` to false
+        }));
+        this.filteredLaundries = [...this.laundries]; // Initialize with the full list
+        this.loading = false;
+
+        // Extract unique locations and ratings
+        this.uniqueLocations = [...new Set(this.laundries.map((laundry) => laundry.location))];
+        this.extractUniqueRatings();
+      },
+      error: (err) => {
+        this.error = err.message || 'Failed to load laundries';
+        this.loading = false;
+      }
+    });
+  }
+
+  extractUniqueRatings(): void {
+    // Extract unique ratings from the loaded data
+    this.uniqueRatings = [...new Set(this.laundries.map(laundry => laundry.rating))].sort();
   }
 
   toggleFavorite(laundry: Laundry) {
