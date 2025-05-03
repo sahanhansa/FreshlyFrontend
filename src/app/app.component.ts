@@ -2,13 +2,28 @@ import { Component } from '@angular/core';
 // import { ReactiveFormsModule } from '@angular/forms';
 import { RouterOutlet } from '@angular/router';
 
+
+
 @Component({
   selector: 'app-root',
-  standalone:true,
+  standalone: true,
+
   imports: [RouterOutlet],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'AngularAuthUI';
+
+  title = 'feature-laundry';
+
+  searchTerm: string = '';
+
+
+onSearchChanged(term: string) {
+  this.searchTerm = term;
+  console.log('Search term:', term);
+
+
+}
+  
 }
