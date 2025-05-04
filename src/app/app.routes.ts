@@ -1,8 +1,8 @@
 import { Routes } from '@angular/router';
 
-import { LoginComponent } from './component/login-customer/login.component';
-import { SignupComponent } from './component/signup/signup.component';
-import { WhoAreYouComponent } from './component/whoareyou/whoareyou.component';
+import { LoginComponent } from './components/login-customer/login.component';
+import { SignupComponent } from './components/signup/signup.component';
+import { WhoAreYouComponent } from './components/whoareyou/whoareyou.component';
 import { NgModule } from '@angular/core';
 import { RouterModule} from '@angular/router';
 import { RegularOrdersComponent } from './pages/Laundry/regular-orders/regular-orders.component';
