@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "AngularAuthUI": {
+    "FreshlyFrontend": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/angular-auth-ui",
+            "outputPath": "dist/freshly-frontend",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -67,10 +67,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "AngularAuthUI:build:production"
+              "buildTarget": "FreshlyFrontend:build:production"
             },
             "development": {
-              "buildTarget": "AngularAuthUI:build:development"
+              "buildTarget": "FreshlyFrontend:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -100,5 +100,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "82969fc4-a253-4678-a657-e58cfc717294"
   }
 }
