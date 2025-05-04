@@ -38,7 +38,7 @@ interface OrderItem {
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './customers.component.html',
-  styleUrls: ['./customers.component.scss']
+  styleUrl: './customers.component.css'
 })
 export class CustomersComponent implements OnInit {
   customers: Customer[] = [
@@ -97,4 +97,4 @@ export class CustomersComponent implements OnInit {
   removeCustomer(): void {
     // Implement customer removal
   }
-} 
+}

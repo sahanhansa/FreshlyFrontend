@@ -24,7 +24,7 @@ interface Complaint {
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './complaints.component.html',
-  styleUrls: ['./complaints.component.scss']
+  styleUrl: './complaints.component.css'
 })
 export class ComplaintsComponent implements OnInit {
   complaints: Complaint[] = [
@@ -111,4 +111,4 @@ export class ComplaintsComponent implements OnInit {
   toggleDetails(complaint: Complaint) {
     complaint.isExpanded = !complaint.isExpanded;
   }
-} 
+}

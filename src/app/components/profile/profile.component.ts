@@ -15,7 +15,7 @@ interface Profile {
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './profile.component.html',
-  styleUrls: ['./profile.component.scss']
+  styleUrl: './profile.component.css'
 })
 export class ProfileComponent implements OnInit {
   profile: Profile = {
@@ -56,4 +56,4 @@ export class ProfileComponent implements OnInit {
       }
     });
   }
-} 
+}

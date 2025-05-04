@@ -33,7 +33,7 @@ Chart.register(
   standalone: true,
   imports: [CommonModule, RouterModule, HttpClientModule],
   templateUrl: './admin-dashboard.component.html',
-  styleUrls: ['./admin-dashboard.component.scss']
+  styleUrl: './admin-dashboard.component.css'
 })
 export class AdminDashboardComponent implements OnInit, AfterViewInit {
   @ViewChild('revenueChart') revenueChart!: ElementRef<HTMLCanvasElement>;
@@ -55,29 +55,29 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit {
   ];
 
   laundries: Laundry[] = [
-    { id: 1, name: 'Laundry 1', location: 'Nugegoda', rating: 4.8, logo: 'assets/images/laundry1.jpg' },
-    { id: 2, name: 'Laundry 2', location: 'Maharagama', rating: 4.7, logo: 'assets/images/laundry2.jpg' },
-    { id: 3, name: 'Laundry 3', location: 'Bambalapitiya', rating: 4.9, logo: 'assets/images/laundry3.jpg' },
-    { id: 4, name: 'Laundry 4', location: 'Piliyandala', rating: 4.6, logo: 'assets/images/laundry4.jpg' },
-    { id: 5, name: 'Laundry 5', location: 'Nugegoda', rating: 4.8, logo: 'assets/images/laundry5.jpg' },
-    { id: 6, name: 'Laundry 6', location: 'Dehiwala', rating: 4.7, logo: 'assets/images/laundry6.jpg' },
-    { id: 7, name: 'Laundry 7', location: 'Mount Lavinia', rating: 4.9, logo: 'assets/images/laundry7.jpg' },
-    { id: 8, name: 'Laundry 8', location: 'Ratmalana', rating: 4.8, logo: 'assets/images/laundry8.jpg' },
-    { id: 9, name: 'Laundry 9', location: 'Moratuwa', rating: 4.7, logo: 'assets/images/laundry9.jpg' },
-    { id: 10, name: 'Laundry 10', location: 'Panadura', rating: 4.9, logo: 'assets/images/laundry10.jpg' }
+    { id: 1, name: 'Laundry 1', location: 'Nugegoda', rating: 4.8, logo: 'assets/images/laundry.png' },
+    { id: 2, name: 'Laundry 2', location: 'Maharagama', rating: 4.7, logo: 'assets/images/laundry.png' },
+    { id: 3, name: 'Laundry 3', location: 'Bambalapitiya', rating: 4.9, logo: 'assets/images/laundry.png' },
+    { id: 4, name: 'Laundry 4', location: 'Piliyandala', rating: 4.6, logo: 'assets/images/laundry.png' },
+    { id: 5, name: 'Laundry 5', location: 'Nugegoda', rating: 4.8, logo: 'assets/images/laundry.png' },
+    { id: 6, name: 'Laundry 6', location: 'Dehiwala', rating: 4.7, logo: 'assets/images/laundry.png' },
+    { id: 7, name: 'Laundry 7', location: 'Mount Lavinia', rating: 4.9, logo: 'assets/images/laundry.png' },
+    { id: 8, name: 'Laundry 8', location: 'Ratmalana', rating: 4.8, logo: 'assets/images/laundry.png' },
+    { id: 9, name: 'Laundry 9', location: 'Moratuwa', rating: 4.7, logo: 'assets/images/laundry.png' },
+    { id: 10, name: 'Laundry 10', location: 'Panadura', rating: 4.9, logo: 'assets/images/laundry.png' }
   ];
 
   drivers: Driver[] = [
-    { id: 1, name: 'Driver 1', location: 'Nugegoda', rating: 4.8, photo: 'assets/images/driver1.jpg' },
-    { id: 2, name: 'Driver 2', location: 'Maharagama', rating: 4.7, photo: 'assets/images/driver2.jpg' },
-    { id: 3, name: 'Driver 3', location: 'Bambalapitiya', rating: 4.9, photo: 'assets/images/driver3.jpg' },
-    { id: 4, name: 'Driver 4', location: 'Piliyandala', rating: 4.6, photo: 'assets/images/driver4.jpg' },
-    { id: 5, name: 'Driver 5', location: 'Nugegoda', rating: 4.8, photo: 'assets/images/driver5.jpg' },
-    { id: 6, name: 'Driver 6', location: 'Dehiwala', rating: 4.7, photo: 'assets/images/driver6.jpg' },
-    { id: 7, name: 'Driver 7', location: 'Mount Lavinia', rating: 4.9, photo: 'assets/images/driver7.jpg' },
-    { id: 8, name: 'Driver 8', location: 'Ratmalana', rating: 4.8, photo: 'assets/images/driver8.jpg' },
-    { id: 9, name: 'Driver 9', location: 'Moratuwa', rating: 4.7, photo: 'assets/images/driver9.jpg' },
-    { id: 10, name: 'Driver 10', location: 'Panadura', rating: 4.9, photo: 'assets/images/driver10.jpg' }
+    { id: 1, name: 'Driver 1', location: 'Nugegoda', rating: 4.8, photo: 'assets/images/driver.png' },
+    { id: 2, name: 'Driver 2', location: 'Maharagama', rating: 4.7, photo: 'assets/images/driver.png' },
+    { id: 3, name: 'Driver 3', location: 'Bambalapitiya', rating: 4.9, photo: 'assets/images/driver.png' },
+    { id: 4, name: 'Driver 4', location: 'Piliyandala', rating: 4.6, photo: 'assets/images/driver.png' },
+    { id: 5, name: 'Driver 5', location: 'Nugegoda', rating: 4.8, photo: 'assets/images/driver.png' },
+    { id: 6, name: 'Driver 6', location: 'Dehiwala', rating: 4.7, photo: 'assets/images/driver.png' },
+    { id: 7, name: 'Driver 7', location: 'Mount Lavinia', rating: 4.9, photo: 'assets/images/driver.png' },
+    { id: 8, name: 'Driver 8', location: 'Ratmalana', rating: 4.8, photo: 'assets/images/driver.png' },
+    { id: 9, name: 'Driver 9', location: 'Moratuwa', rating: 4.7, photo: 'assets/images/driver.png' },
+    { id: 10, name: 'Driver 10', location: 'Panadura', rating: 4.9, photo: 'assets/images/driver.png' }
   ];
 
   pendingActions: PendingAction[] = [

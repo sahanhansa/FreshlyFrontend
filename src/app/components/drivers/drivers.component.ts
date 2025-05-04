@@ -44,7 +44,7 @@ interface OrderItem {
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './drivers.component.html',
-  styleUrls: ['./drivers.component.scss']
+  styleUrl: './drivers.component.css'
 })
 export class DriversComponent implements OnInit {
   drivers: Driver[] = [
@@ -62,7 +62,7 @@ export class DriversComponent implements OnInit {
         branch: 'Galle Fort',
         accountNo: '0123 456 789'
       },
-      profileImage: '/assets/images/driver-profile.jpg',
+      profileImage: 'assets/sec/driver-profile.jpg',
       recentOrders: [
         {
           orderId: '#04',
@@ -105,4 +105,4 @@ export class DriversComponent implements OnInit {
   onPageChange(page: number): void {
     this.currentPage = page;
   }
-} 
+}

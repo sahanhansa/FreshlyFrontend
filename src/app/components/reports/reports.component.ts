@@ -30,7 +30,7 @@ interface RevenueData {
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './reports.component.html',
-  styleUrls: ['./reports.component.scss']
+  styleUrl: './reports.component.css'
 })
 export class ReportsComponent implements OnInit {
   fromDate: string = '12/24/2024';
@@ -106,4 +106,4 @@ export class ReportsComponent implements OnInit {
   downloadReport(): void {
     // Implement download functionality
   }
-} 
+}

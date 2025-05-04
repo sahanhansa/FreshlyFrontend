@@ -1,75 +1,76 @@
-<div class="admin-dashboard">
-  <div class="welcome-section">
-    <div class="welcome-content">
-      <div class="welcome-text">
-        <h1>
-          <span class="welcome-line">Welcome</span>
-          <span class="welcome-line">{{ adminName }}!</span>
+<div class="block p-4 bg-gray-50 min-h-[calc(100vh-64px)] opacity-100 visible">
+  <!-- Welcome Section -->
+  <div class="bg-transparent p-8 mb-8 relative overflow-visible">
+    <div class="relative mb-12 flex items-start justify-between">
+      <div class="relative z-10 max-w-[60%]">
+        <h1 class="font-inter font-bold text-5xl text-gray-800 leading-tight mb-4">
+          <span class="block">Welcome</span>
+          <span class="block">{{ adminName }}!</span>
         </h1>
-        <p>Manage Your Pickups And Delivery Tasks Efficiently</p>
+        <p class="text-gray-600 text-xl mt-4">Manage Your Pickups And Delivery Tasks Efficiently</p>
       </div>
-      <div class="welcome-image">
-        <img src="assets/images/presentation.png" alt="Analytics Presentation" class="presentation-img">
+      <div class="relative w-[40%]">
+        <img src="assets/images/presentation.png" alt="Analytics Presentation" class="w-full h-auto object-contain">
       </div>
     </div>
-    <div class="stats-cards">
-      <div class="stat-card">
-        <i class="fas fa-box"></i>
-        <div class="stat-content">
-          <h2>{{ stats.totalPickups }}</h2>
-          <p>Total Pickups</p>
+    <div class="grid grid-cols-4 gap-6 mt-8">
+      <div class="bg-white p-6 rounded-xl shadow-sm flex items-center gap-4 transition-transform hover:-translate-y-1">
+        <i class="fas fa-box text-3xl text-blue-500"></i>
+        <div>
+          <h2 class="text-2xl font-semibold text-gray-800 mb-1">{{ stats.totalPickups }}</h2>
+          <p class="text-gray-600">Total Pickups</p>
         </div>
       </div>
-      <div class="stat-card">
-        <i class="fas fa-truck"></i>
-        <div class="stat-content">
-          <h2>{{ stats.totalDeliveries }}</h2>
-          <p>Total Deliveries</p>
+      <div class="bg-white p-6 rounded-xl shadow-sm flex items-center gap-4 transition-transform hover:-translate-y-1">
+        <i class="fas fa-truck text-3xl text-blue-500"></i>
+        <div>
+          <h2 class="text-2xl font-semibold text-gray-800 mb-1">{{ stats.totalDeliveries }}</h2>
+          <p class="text-gray-600">Total Deliveries</p>
         </div>
       </div>
-      <div class="stat-card">
-        <i class="fas fa-dollar-sign"></i>
-        <div class="stat-content">
-          <h2>${{ stats.totalRevenue }}</h2>
-          <p>Revenue</p>
+      <div class="bg-white p-6 rounded-xl shadow-sm flex items-center gap-4 transition-transform hover:-translate-y-1">
+        <i class="fas fa-dollar-sign text-3xl text-blue-500"></i>
+        <div>
+          <h2 class="text-2xl font-semibold text-gray-800 mb-1">${{ stats.totalRevenue }}</h2>
+          <p class="text-gray-600">Revenue</p>
         </div>
       </div>
-      <div class="stat-card">
-        <i class="fas fa-clock"></i>
-        <div class="stat-content">
-          <h2>{{ stats.totalHours }}</h2>
-          <p>Hours</p>
+      <div class="bg-white p-6 rounded-xl shadow-sm flex items-center gap-4 transition-transform hover:-translate-y-1">
+        <i class="fas fa-clock text-3xl text-blue-500"></i>
+        <div>
+          <h2 class="text-2xl font-semibold text-gray-800 mb-1">{{ stats.totalHours }}</h2>
+          <p class="text-gray-600">Hours</p>
         </div>
       </div>
     </div>
   </div>
 
   <!-- Revenue Chart Section -->
-  <div class="revenue-chart-section">
-    <h2 class="section-title">Total Revenue</h2>
-    <div class="chart-container">
+  <div class="bg-white rounded-xl p-8 mb-8 shadow-sm opacity-100 visible">
+    <h2 class="text-2xl font-semibold text-gray-800 mb-6">Total Revenue</h2>
+    <div class="w-full">
       <canvas #revenueChart></canvas>
     </div>
   </div>
 
   <!-- Admin Panel Section -->
-  <div class="admin-panel-section">
-    <h2 class="section-title">Admin Panel Members</h2>
-    <div class="admin-cards">
-      <div class="admin-card" *ngFor="let member of adminPanel">
-          <div class="admin-image-container">
-          <img [src]="member.image" [alt]="member.name" class="admin-image">
+  <div class="bg-white rounded-xl p-8 mb-8 shadow-sm">
+    <h2 class="text-2xl font-semibold text-gray-800 mb-6">Admin Panel Members</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-4 -mx-4">
+      <div class="bg-white rounded-xl overflow-hidden shadow-sm transition-all hover:-translate-y-1 hover:shadow-md flex flex-col" *ngFor="let member of adminPanel">
+        <div class="relative pt-[100%] w-full overflow-hidden">
+          <img [src]="member.image" [alt]="member.name" class="absolute top-0 left-0 w-full h-full object-contain bg-gray-50 p-4" (error)="member.image = 'assets/images/admin.jpg'">
         </div>
-        <div class="admin-info">
-          <div class="admin-details">
-            <h3>{{ member.name }}</h3>
-            <p class="role">{{ member.role }}</p>
+        <div class="p-6 flex-1 flex flex-col gap-4 bg-white">
+          <div>
+            <h3 class="text-xl font-semibold text-gray-800 mb-2">{{ member.name }}</h3>
+            <p class="text-gray-600 text-sm">{{ member.role }}</p>
           </div>
-          <div class="admin-actions">
-            <button class="action-btn message">
+          <div class="flex gap-3 mt-auto">
+            <button class="flex items-center justify-center w-9 h-9 rounded-lg bg-blue-50 text-blue-500 hover:bg-blue-100 transition-all">
               <i class="fas fa-envelope"></i>
             </button>
-            <button class="action-btn profile">
+            <button class="flex items-center justify-center w-9 h-9 rounded-lg bg-green-50 text-green-500 hover:bg-green-100 transition-all">
               <i class="fas fa-user"></i>
             </button>
           </div>
@@ -79,43 +80,50 @@
   </div>
 
   <!-- Laundries Section -->
-  <div class="laundries-section">
-    <h2 class="section-title">Registered Laundries</h2>
-    <div class="laundry-cards">
-      <div class="laundry-card" *ngFor="let laundry of paginatedLaundries">
-        <img [src]="laundry.logo" [alt]="laundry.name" class="laundry-logo">
-        <div class="laundry-info">
-          <h3>{{ laundry.name }}</h3>
-          <p class="location"><i class="fas fa-map-marker-alt"></i> {{ laundry.location }}</p>
-          <div class="rating">
-            <i class="fas fa-star"></i>
-            <span>{{ laundry.rating }}/5</span>
+  <div class="bg-white rounded-xl p-8 mb-8 shadow-sm">
+    <h2 class="text-2xl font-semibold text-gray-800 mb-6">Registered Laundries</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 p-4 -mx-4">
+      <div class="bg-white rounded-xl overflow-hidden shadow-sm transition-all hover:-translate-y-1 hover:shadow-md flex flex-col h-full" *ngFor="let laundry of paginatedLaundries">
+        <img [src]="laundry.logo" [alt]="laundry.name" class="w-full h-48 object-contain bg-gray-50 p-4" (error)="laundry.logo = 'assets/images/laundry.png'">
+        <div class="p-6 flex-1 flex flex-col gap-3">
+          <h3 class="text-xl font-semibold text-gray-800">{{ laundry.name }}</h3>
+          <p class="text-gray-600 text-sm flex items-center gap-2">
+            <i class="fas fa-map-marker-alt text-blue-500"></i>
+            {{ laundry.location }}
+          </p>
+          <div class="flex items-center gap-2 mt-auto text-gray-600">
+            <i class="fas fa-star text-amber-400"></i>
+            <span class="text-sm">{{ laundry.rating }}/5</span>
           </div>
         </div>
       </div>
     </div>
-
-    <div class="pagination">
-      <button class="page-btn" (click)="prevPage()" [disabled]="currentPage === 1">Prev</button>
-      <div class="page-numbers">
-        <div class="page-number" *ngFor="let page of totalPagesArray()" (click)="goToPage(page)" [ngClass]="{'active': page === currentPage}">{{ page }}</div>
+    <div class="flex justify-center items-center gap-4 mt-8" *ngIf="laundries.length > itemsPerPage">
+      <button class="px-4 py-2 border border-gray-200 rounded-md hover:border-blue-500 hover:text-blue-500 disabled:opacity-50 disabled:cursor-not-allowed" (click)="prevPage()" [disabled]="currentPage === 1">Prev</button>
+      <div class="flex gap-2">
+        <button class="w-8 h-8 flex items-center justify-center border border-gray-200 rounded-md transition-all" *ngFor="let page of totalPagesArray()" (click)="goToPage(page)" [class.bg-blue-500]="page === currentPage" [class.text-white]="page === currentPage" [class.border-blue-500]="page === currentPage">
+          {{ page }}
+        </button>
       </div>
-      <button class="page-btn" (click)="nextPage()" [disabled]="currentPage === totalPages">Next</button>
+      <button class="px-4 py-2 border border-gray-200 rounded-md hover:border-blue-500 hover:text-blue-500 disabled:opacity-50 disabled:cursor-not-allowed" (click)="nextPage()" [disabled]="currentPage === totalPages">Next</button>
     </div>
   </div>
 
   <!-- Drivers Section -->
-  <div class="drivers-section">
-    <h2 class="section-title">Active Drivers</h2>
-    <div class="driver-cards">
-      <div class="driver-card" *ngFor="let driver of drivers">
-        <img [src]="driver.photo" [alt]="driver.name" class="driver-photo">
-        <div class="driver-info">
-          <h3>{{ driver.name }}</h3>
-          <p class="location"><i class="fas fa-map-marker-alt"></i> {{ driver.location }}</p>
-          <div class="rating">
-            <i class="fas fa-star"></i>
-            <span>{{ driver.rating }}/5</span>
+  <div class="bg-white rounded-xl p-8 mb-8 shadow-sm">
+    <h2 class="text-2xl font-semibold text-gray-800 mb-6">Active Drivers</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 p-4 -mx-4">
+      <div class="bg-white rounded-xl overflow-hidden shadow-sm transition-all hover:-translate-y-1 hover:shadow-md flex flex-col h-full" *ngFor="let driver of drivers">
+        <img [src]="driver.photo" [alt]="driver.name" class="w-full h-48 object-contain bg-gray-50 p-4" (error)="driver.photo = 'assets/images/driver.png'">
+        <div class="p-6 flex-1 flex flex-col gap-3">
+          <h3 class="text-xl font-semibold text-gray-800">{{ driver.name }}</h3>
+          <p class="text-gray-600 text-sm flex items-center gap-2">
+            <i class="fas fa-map-marker-alt text-blue-500"></i>
+            {{ driver.location }}
+          </p>
+          <div class="flex items-center gap-2 mt-auto text-gray-600">
+            <i class="fas fa-star text-amber-400"></i>
+            <span class="text-sm">{{ driver.rating }}/5</span>
           </div>
         </div>
       </div>

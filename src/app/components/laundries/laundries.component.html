@@ -1,167 +1,181 @@
-<!-- Laundry Details Section -->
-<div class="laundry-container">
-  <div class="show-entries">
+<div class="p-8 bg-gray-100 min-h-screen font-inter">
+  <div class="flex items-center gap-4 mb-8">
     <span>Show</span>
-    <select [(ngModel)]="itemsPerPage">
+    <select [(ngModel)]="itemsPerPage" 
+            class="px-4 py-2 border border-gray-200 rounded outline-none focus:border-blue-500 bg-white">
       <option value="9">9</option>
       <option value="25">25</option>
       <option value="50">50</option>
       <option value="100">100</option>
     </select>
     <span>entries</span>
-    <div class="search-box">
-      <input type="text" placeholder="Search...">
+    <div class="ml-auto">
+      <input type="text" placeholder="Search..." 
+             class="px-4 py-2 border border-gray-200 rounded outline-none w-60 focus:border-blue-500 placeholder-gray-400">
     </div>
   </div>
 
-  <h1 class="page-title">Laundry Details</h1>
+  <h1 class="text-4xl text-gray-800 mb-8 font-inter drop-shadow-lg">Laundry Details</h1>
 
-  <div class="laundry-card">
-    <div class="laundry-info">
-      <div class="profile-section">
-        <div class="logo-container">
-          <i class="fas fa-tshirt"></i>
-          <img [src]="laundry.image" alt="Laundry Profile" class="profile-image">
+  <div class="bg-blue-500 rounded-[20px] p-8 flex gap-8 mb-8 shadow-lg">
+    <div class="flex-1">
+      <div class="flex items-center gap-6 mb-8">
+        <div class="relative w-24 h-24 rounded-full overflow-hidden border-2 border-gray-100 bg-white flex items-center justify-center">
+          <i class="fas fa-tshirt absolute text-4xl text-blue-500 opacity-20 transition-all duration-300 hover:opacity-40 hover:scale-110"></i>
+          <img [src]="laundry.image" alt="Laundry Profile" class="relative w-full h-full object-cover z-10">
         </div>
-        <div class="laundry-name">
-          <h2>{{ laundry.name }}</h2>
-          <span class="laundry-id">{{ laundry.id }}</span>
+        <div>
+          <h2 class="text-2xl font-medium text-white m-0">{{ laundry.name }}</h2>
+          <span class="text-white/80 text-lg">{{ laundry.id }}</span>
         </div>
       </div>
 
-      <div class="contact-details">
-        <div class="detail-row">
-          <i class="fas fa-envelope"></i>
-          <span class="label">Email</span>
-          <span class="value">: {{ laundry.email }}</span>
-        </div>
-        <div class="detail-row">
-          <i class="fas fa-phone"></i>
-          <span class="label">Contact No</span>
-          <span class="value">: {{ laundry.contactNo }}</span>
-        </div>
-        <div class="detail-row">
-          <i class="fas fa-home"></i>
-          <span class="label">Address</span>
-          <span class="value">: {{ laundry.address }}</span>
-        </div>
-        <div class="detail-row">
-          <i class="fas fa-map-marker-alt"></i>
-          <span class="label">Location</span>
-          <span class="value">: {{ laundry.location }}</span>
-        </div>
-        <div class="detail-row">
-          <i class="fas fa-university"></i>
-          <span class="label">Bank Name</span>
-          <span class="value">: {{ laundry.bankDetails.name }}</span>
-        </div>
-        <div class="detail-row bank-details">
-          <span class="label">Branch</span>
-          <span class="value">: {{ laundry.bankDetails.branch }}</span>
-        </div>
-        <div class="detail-row bank-details">
-          <span class="label">Account No</span>
-          <span class="value">: {{ laundry.bankDetails.accountNo }}</span>
+      <div class="bg-white rounded-xl p-6 text-gray-800">
+        <div class="space-y-4">
+          <div class="flex items-center">
+            <i class="fas fa-envelope w-6 text-blue-500 mr-4"></i>
+            <span class="w-32 font-medium">Email</span>
+            <span class="text-gray-600">: {{ laundry.email }}</span>
+          </div>
+          <div class="flex items-center">
+            <i class="fas fa-phone w-6 text-blue-500 mr-4"></i>
+            <span class="w-32 font-medium">Contact No</span>
+            <span class="text-gray-600">: {{ laundry.contactNo }}</span>
+          </div>
+          <div class="flex items-center">
+            <i class="fas fa-home w-6 text-blue-500 mr-4"></i>
+            <span class="w-32 font-medium">Address</span>
+            <span class="text-gray-600">: {{ laundry.address }}</span>
+          </div>
+          <div class="flex items-center">
+            <i class="fas fa-map-marker-alt w-6 text-blue-500 mr-4"></i>
+            <span class="w-32 font-medium">Location</span>
+            <span class="text-gray-600">: {{ laundry.location }}</span>
+          </div>
+          <div class="flex items-center">
+            <i class="fas fa-university w-6 text-blue-500 mr-4"></i>
+            <span class="w-32 font-medium">Bank Name</span>
+            <span class="text-gray-600">: {{ laundry.bankDetails.name }}</span>
+          </div>
+          <div class="flex items-center ml-10">
+            <span class="w-32 font-medium">Branch</span>
+            <span class="text-gray-600">: {{ laundry.bankDetails.branch }}</span>
+          </div>
+          <div class="flex items-center ml-10">
+            <span class="w-32 font-medium">Account No</span>
+            <span class="text-gray-600">: {{ laundry.bankDetails.accountNo }}</span>
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="laundry-actions">
-      <button class="action-btn received-orders">
+    <div class="w-52 flex flex-col gap-4">
+      <button class="px-4 py-3 rounded-lg bg-white text-blue-500 font-medium hover:bg-blue-50 transition-all duration-300 flex justify-between items-center group">
         <span>Received Orders</span>
-        <i class="fas fa-chevron-right"></i>
+        <i class="fas fa-chevron-right group-hover:translate-x-1 transition-transform"></i>
       </button>
-      <button class="action-btn completed-orders">
+      <button class="px-4 py-3 rounded-lg bg-white text-green-500 font-medium hover:bg-green-50 transition-all duration-300 flex justify-between items-center group">
         <span>Completed Orders</span>
-        <i class="fas fa-chevron-right"></i>
+        <i class="fas fa-chevron-right group-hover:translate-x-1 transition-transform"></i>
       </button>
-      <button class="action-btn processing-orders">
+      <button class="px-4 py-3 rounded-lg bg-white text-orange-500 font-medium hover:bg-orange-50 transition-all duration-300 flex justify-between items-center group">
         <span>Processing Orders</span>
-        <i class="fas fa-chevron-right"></i>
+        <i class="fas fa-chevron-right group-hover:translate-x-1 transition-transform"></i>
       </button>
-      <button class="action-btn complaints">
+      <button class="px-4 py-3 rounded-lg bg-white text-red-500 font-medium hover:bg-red-50 transition-all duration-300 flex justify-between items-center group">
         <span>Complaints</span>
-        <i class="fas fa-chevron-right"></i>
+        <i class="fas fa-chevron-right group-hover:translate-x-1 transition-transform"></i>
       </button>
-      <button class="action-btn remove-user" (click)="removeUser()">Remove User</button>
+      <button class="px-4 py-3 rounded-lg bg-red-500 text-white font-medium hover:bg-red-600 transition-colors mt-auto" 
+              (click)="removeUser()">Remove User</button>
     </div>
   </div>
 
-  <!-- Recent Orders Section -->
-  <h2 class="section-title">Recent Orders</h2>
+  <h2 class="text-2xl font-semibold text-gray-800 mb-6">Recent Orders</h2>
 
-  <div class="orders-section">
-    <div class="order-card" *ngFor="let order of laundry.recentOrders">
-      <div class="order-header">
-        <div class="order-info">
-          <span class="info-label">Order ID</span>
-          <span class="info-value">{{ order.orderId }}</span>
+  <div class="space-y-6">
+    <div class="bg-white rounded-xl overflow-hidden shadow-sm" *ngFor="let order of laundry.recentOrders">
+      <div class="flex justify-between items-center p-6 bg-gray-50 border-b border-gray-100">
+        <div class="grid grid-cols-5 gap-8">
+          <div>
+            <span class="text-sm text-gray-500">Order ID</span>
+            <p class="font-medium text-gray-700">{{ order.orderId }}</p>
+          </div>
+          <div>
+            <span class="text-sm text-gray-500">Date</span>
+            <p class="font-medium text-gray-700">{{ order.date }}</p>
+          </div>
+          <div>
+            <span class="text-sm text-gray-500">Status</span>
+            <p class="px-3 py-1 rounded-full text-sm font-medium inline-block"
+               [class]="order.status === 'Processing' ? 'bg-orange-100 text-orange-600' : ''">
+              {{ order.status }}
+            </p>
+          </div>
+          <div>
+            <span class="text-sm text-gray-500">Driver ID</span>
+            <p class="font-medium text-gray-700">{{ order.driverId }}</p>
+          </div>
+          <div>
+            <span class="text-sm text-gray-500">Laundry ID</span>
+            <p class="font-medium text-gray-700">{{ order.laundryId }}</p>
+          </div>
         </div>
-        <div class="order-info">
-          <span class="info-label">Date</span>
-          <span class="info-value">{{ order.date }}</span>
-        </div>
-        <div class="order-info">
-          <span class="info-label">Status</span>
-          <span class="info-value status-badge" [class.processing]="order.status === 'Processing'">
-            {{ order.status }}
-          </span>
-        </div>
-        <div class="order-info">
-          <span class="info-label">Driver ID</span>
-          <span class="info-value">{{ order.driverId }}</span>
-        </div>
-        <div class="order-info">
-          <span class="info-label">Laundry ID</span>
-          <span class="info-value">{{ order.laundryId }}</span>
-        </div>
-        <button class="view-more-btn" (click)="toggleOrderDetails(order)">
+        <button class="px-4 py-2 bg-blue-50 text-blue-500 rounded hover:bg-blue-100 transition-colors flex items-center gap-2"
+                (click)="toggleOrderDetails(order)">
           <i class="fas" [class.fa-eye]="!order.isExpanded" [class.fa-eye-slash]="order.isExpanded"></i>
           {{ order.isExpanded ? 'View Less' : 'View More' }}
         </button>
       </div>
 
-      <div class="order-details" [class.expanded]="order.isExpanded">
-        <table class="items-table">
-          <thead>
-            <tr>
-              <th>Item</th>
-              <th>Process</th>
-              <th>Clothe type</th>
-              <th>Count</th>
-              <th>Price per Item(Rs.)</th>
-              <th>Total Price(Rs.)</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let item of order.items">
-              <td>{{ item.item }}</td>
-              <td>{{ item.process }}</td>
-              <td>{{ item.clotheType }}</td>
-              <td>{{ item.count }}</td>
-              <td>{{ item.pricePerItem }}</td>
-              <td>{{ item.totalPrice }}</td>
-            </tr>
-          </tbody>
-          <tfoot>
-            <tr>
-              <td colspan="5" class="subtotal-label">Subtotal (Rs.)</td>
-              <td class="subtotal-value">{{ calculateSubtotal(order.items) }}</td>
-            </tr>
-          </tfoot>
-        </table>
+      <div class="overflow-hidden transition-all duration-300"
+           [class]="order.isExpanded ? 'max-h-[500px] p-4' : 'max-h-0'">
+        <div class="overflow-x-auto">
+          <table class="w-full">
+            <thead>
+              <tr class="bg-gray-50">
+                <th class="p-4 text-left font-medium text-gray-700 border-b border-gray-100">Item</th>
+                <th class="p-4 text-left font-medium text-gray-700 border-b border-gray-100">Process</th>
+                <th class="p-4 text-left font-medium text-gray-700 border-b border-gray-100">Clothe type</th>
+                <th class="p-4 text-left font-medium text-gray-700 border-b border-gray-100">Count</th>
+                <th class="p-4 text-left font-medium text-gray-700 border-b border-gray-100">Price per Item(Rs.)</th>
+                <th class="p-4 text-left font-medium text-gray-700 border-b border-gray-100">Total Price(Rs.)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of order.items" class="even:bg-blue-50">
+                <td class="p-4 text-gray-700">{{ item.item }}</td>
+                <td class="p-4 text-gray-700">{{ item.process }}</td>
+                <td class="p-4 text-gray-700">{{ item.clotheType }}</td>
+                <td class="p-4 text-gray-700">{{ item.count }}</td>
+                <td class="p-4 text-gray-700">{{ item.pricePerItem }}</td>
+                <td class="p-4 text-gray-700">{{ item.totalPrice }}</td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr class="bg-gray-50 font-medium">
+                <td colspan="5" class="p-4 text-right text-gray-700">Subtotal (Rs.)</td>
+                <td class="p-4 text-blue-500">{{ calculateSubtotal(order.items) }}</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Pagination -->
-  <div class="pagination">
-    <button class="page-btn previous" [disabled]="currentPage === 1">Previous</button>
-    <div class="page-numbers">
-      <button class="page-number active">1</button>
-      <button class="page-number">2</button>
-      <button class="page-number">3</button>
+  <div class="flex justify-center items-center gap-2 mt-8">
+    <button class="px-4 py-2 border border-gray-200 rounded text-gray-700 hover:border-blue-500 hover:text-blue-500 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:border-gray-200 disabled:hover:text-gray-700 transition-colors"
+            [disabled]="currentPage === 1">Previous</button>
+    <div class="flex gap-1">
+      <button *ngFor="let page of [1, 2, 3]"
+              class="min-w-[32px] h-8 flex items-center justify-center border border-gray-200 rounded transition-colors"
+              [class]="currentPage === page ? 'bg-blue-500 text-white border-blue-500' : 'text-gray-700 hover:border-blue-500 hover:text-blue-500'">
+        {{ page }}
+      </button>
     </div>
-    <button class="page-btn next">Next</button>
+    <button class="px-4 py-2 border border-gray-200 rounded text-gray-700 hover:border-blue-500 hover:text-blue-500 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:border-gray-200 disabled:hover:text-gray-700 transition-colors">
+      Next
+    </button>
   </div>
 </div>

@@ -5,7 +5,11 @@
   "projects": {
     "FreshlyFrontend": {
       "projectType": "application",
-      "schematics": {},
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",
@@ -13,10 +17,6 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "styles": [
-              "src/styles.css",
-              "src/app/styles/shared.scss"
-            ],
             "outputPath": "dist/freshly-frontend",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -28,7 +28,15 @@
               "src/favicon.ico",
               "src/assets"
             ],
-            "scripts": []
+            "styles": [
+              "src/styles.css"
+            ],
+            "scripts": [],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "src/app/styles"
+              ]
+            }
           },
           "configurations": {
             "production": {

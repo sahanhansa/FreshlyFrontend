@@ -1,27 +1,38 @@
 import { Routes } from '@angular/router';
-import { AdminDashboardComponent } from './components/admin/admin-dashboard/admin-dashboard.component';
-import { DriversComponent } from './components/drivers/drivers.component';
-import { CustomersComponent } from './components/customers/customers.component';
-import { LaundriesComponent } from './components/laundries/laundries.component';
-import { OrdersComponent } from './components/orders/orders.component';
-import { VehiclesComponent } from './components/vehicles/vehicles.component';
-import { ComplaintsComponent } from './components/complaints/complaints.component';
-import { ReportsComponent } from './components/reports/reports.component';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'admin/dashboard', pathMatch: 'full' },
+  { path: '', redirectTo: 'admin', pathMatch: 'full' },
   {
     path: 'admin',
-    children: [
-      { path: 'dashboard', component: AdminDashboardComponent },
-      { path: 'drivers', component: DriversComponent },
-      { path: 'customers', component: CustomersComponent },
-      { path: 'laundries', component: LaundriesComponent },
-      { path: 'orders', component: OrdersComponent },
-      { path: 'vehicles', component: VehiclesComponent },
-      { path: 'complaints', component: ComplaintsComponent },
-      { path: 'reports', component: ReportsComponent },
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
-    ]
-  }
+    loadComponent: () => import('./components/admin/admin-dashboard/admin-dashboard.component').then(m => m.AdminDashboardComponent)
+  },
+  {
+    path: 'drivers',
+    loadComponent: () => import('./components/drivers/drivers.component').then(m => m.DriversComponent)
+  },
+  {
+    path: 'customers',
+    loadComponent: () => import('./components/customers/customers.component').then(m => m.CustomersComponent)
+  },
+  {
+    path: 'laundries',
+    loadComponent: () => import('./components/laundries/laundries.component').then(m => m.LaundriesComponent)
+  },
+  {
+    path: 'orders',
+    loadComponent: () => import('./components/orders/orders.component').then(m => m.OrdersComponent)
+  },
+  {
+    path: 'vehicles',
+    loadComponent: () => import('./components/vehicles/vehicles.component').then(m => m.VehiclesComponent)
+  },
+  {
+    path: 'complaints',
+    loadComponent: () => import('./components/complaints/complaints.component').then(m => m.ComplaintsComponent)
+  },
+  {
+    path: 'reports',
+    loadComponent: () => import('./components/reports/reports.component').then(m => m.ReportsComponent)
+  },
+  { path: '**', redirectTo: 'admin' }
 ];

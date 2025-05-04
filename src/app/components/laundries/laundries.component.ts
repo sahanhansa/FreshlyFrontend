@@ -42,7 +42,7 @@ interface Laundry {
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './laundries.component.html',
-  styleUrls: ['./laundries.component.scss']
+  styleUrl: './laundries.component.css'
 })
 export class LaundriesComponent implements OnInit {
   laundry: Laundry = {
@@ -57,7 +57,7 @@ export class LaundriesComponent implements OnInit {
       branch: 'Katubedda',
       accountNo: '0987 654 321'
     },
-    image: 'assets/images/laundry1.jpg',
+    image: 'assets/sec/laundry1.jpg',
     recentOrders: [
       {
         orderId: '#04',
@@ -109,4 +109,4 @@ export class LaundriesComponent implements OnInit {
   toggleOrderDetails(order: LaundryOrder): void {
     order.isExpanded = !order.isExpanded;
   }
-} 
+}

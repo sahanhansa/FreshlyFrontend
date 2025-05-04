@@ -27,7 +27,7 @@ interface Order {
   standalone: true,
   imports: [CommonModule, FormsModule, SubtotalPipe],
   templateUrl: './orders.component.html',
-  styleUrls: ['./orders.component.scss']
+  styleUrl: './orders.component.css'
 })
 export class OrdersComponent implements OnInit {
   orders: Order[] = [
@@ -199,4 +199,4 @@ export class OrdersComponent implements OnInit {
         return '';
     }
   }
-} 
+}

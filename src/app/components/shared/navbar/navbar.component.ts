@@ -1,19 +1,31 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive],
-  templateUrl: './navbar.component.html',
-  styleUrls: ['./navbar.component.scss']
+  imports: [RouterModule, CommonModule],
+  templateUrl: './navbar.component.html'
 })
-export class NavbarComponent {
-  adminName: string = 'Admin';
+export class NavbarComponent implements OnInit {
+  tabs: { label: string, path: string }[] = [];
+  logoUrl: string = "assets/images/freshly-logo.png";
 
-  onLogout() {
-    // TODO: Implement logout functionality
-    console.log('Logout clicked');
+  ngOnInit() {
+    this.initializeTabs();
+  }
+
+  private initializeTabs() {
+    this.tabs = [
+      { label: 'Home', path: '/admin' },
+      { label: 'Drivers', path: '/drivers' },
+      { label: 'Customers', path: '/customers' },
+      { label: 'Laundries', path: '/laundries' },
+      { label: 'Orders', path: '/orders' },
+      { label: 'Vehicles', path: '/vehicles' },
+      { label: 'Complaints', path: '/complaints' },
+      { label: 'Reports', path: '/reports' }
+    ];
   }
 }

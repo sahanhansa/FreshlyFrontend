@@ -15,7 +15,7 @@ interface Vehicle {
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './vehicles.component.html',
-  styleUrls: ['./vehicles.component.scss']
+  styleUrl: './vehicles.component.css'
 })
 export class VehiclesComponent implements OnInit {
   vehicles: Vehicle[] = [
@@ -51,4 +51,4 @@ export class VehiclesComponent implements OnInit {
     this.itemsPerPage = entries;
     this.currentPage = 1;
   }
-} 
+}

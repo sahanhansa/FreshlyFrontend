@@ -12,5 +12,13 @@
       "fileMatch": ["angular.json"],
       "url": "./node_modules/@angular/cli/lib/config/schema.json"
     }
-  ]
+  ],
+  "css.validate": false,
+  "tailwindCSS.includeLanguages": {
+    "typescript": "javascript",
+    "typescriptreact": "javascript"
+  },
+  "editor.quickSuggestions": {
+    "strings": true
+  }
 }

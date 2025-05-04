@@ -1,17 +1,17 @@
-<div class="profile-container">
-  <div class="profile-card">
-    <h1>Profile Settings</h1>
+<div class="p-8 min-h-screen bg-gray-100 flex justify-center items-start">
+  <div class="bg-white p-8 rounded-lg shadow-sm w-full max-w-[600px]">
+    <h1 class="text-4xl text-gray-800 mb-8 text-center">Profile Settings</h1>
     
-    <div *ngIf="successMessage" class="alert alert-success">
+    <div *ngIf="successMessage" class="p-4 mb-4 rounded-md bg-green-50 text-green-600 border border-green-600">
       {{ successMessage }}
     </div>
-    <div *ngIf="errorMessage" class="alert alert-error">
+    <div *ngIf="errorMessage" class="p-4 mb-4 rounded-md bg-red-50 text-red-600 border border-red-600">
       {{ errorMessage }}
     </div>
 
-    <form (ngSubmit)="onSubmit()" #profileForm="ngForm">
-      <div class="form-group">
-        <label for="name">Name</label>
+    <form (ngSubmit)="onSubmit()" #profileForm="ngForm" class="space-y-6">
+      <div class="space-y-2">
+        <label for="name" class="block text-gray-700 font-medium">Name</label>
         <input 
           type="text" 
           id="name" 
@@ -20,14 +20,15 @@
           required 
           #name="ngModel"
           placeholder="Enter your name"
+          class="w-full px-3 py-3 border border-gray-200 rounded-md outline-none transition-colors focus:border-blue-500"
         >
-        <div *ngIf="name.invalid && (name.dirty || name.touched)" class="error-message">
+        <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-red-500 text-sm mt-1">
           Name is required
         </div>
       </div>
 
-      <div class="form-group">
-        <label for="email">Email</label>
+      <div class="space-y-2">
+        <label for="email" class="block text-gray-700 font-medium">Email</label>
         <input 
           type="email" 
           id="email" 
@@ -37,25 +38,31 @@
           email
           #email="ngModel"
           placeholder="Enter your email"
+          class="w-full px-3 py-3 border border-gray-200 rounded-md outline-none transition-colors focus:border-blue-500"
         >
-        <div *ngIf="email.invalid && (email.dirty || email.touched)" class="error-message">
+        <div *ngIf="email.invalid && (email.dirty || email.touched)" class="text-red-500 text-sm mt-1">
           <div *ngIf="email.errors?.['required']">Email is required</div>
           <div *ngIf="email.errors?.['email']">Please enter a valid email</div>
         </div>
       </div>
 
-      <div class="form-group">
-        <label for="role">Role</label>
+      <div class="space-y-2">
+        <label for="role" class="block text-gray-700 font-medium">Role</label>
         <input 
           type="text" 
           id="role" 
           name="role" 
           [(ngModel)]="profile.role" 
           readonly
+          class="w-full px-3 py-3 border border-gray-200 rounded-md bg-gray-50 cursor-not-allowed"
         >
       </div>
 
-      <button type="submit" [disabled]="profileForm.invalid">Save Changes</button>
+      <button type="submit" 
+              [disabled]="profileForm.invalid"
+              class="w-full py-4 bg-blue-500 text-white rounded-md font-medium transition-colors hover:bg-blue-600 disabled:opacity-70 disabled:cursor-not-allowed">
+        Save Changes
+      </button>
     </form>
   </div>
-</div> 
+</div>

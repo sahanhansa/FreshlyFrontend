@@ -1,119 +1,127 @@
-<!-- Customer Details Section -->
-<div class="customers-container">
+<div class="p-8 bg-gray-100 min-h-screen">
   <!-- Header Controls -->
-  <div class="controls">
-    <div class="entries-control">
-      Show 
-      <select [(ngModel)]="entriesPerPage">
+  <div class="flex justify-between items-center mb-8 bg-white p-4 rounded-lg shadow-sm">
+    <div class="flex items-center gap-2">
+      <span>Show</span>
+      <select [(ngModel)]="entriesPerPage" class="px-3 py-1 border border-gray-200 rounded outline-none focus:border-blue-500">
         <option value="10">10</option>
         <option value="25">25</option>
         <option value="50">50</option>
       </select>
-      entries
+      <span>entries</span>
     </div>
-    <div class="search-control">
-      <input type="text" [(ngModel)]="searchQuery" placeholder="Search..." (input)="searchCustomers()">
+    <div>
+      <input type="text" [(ngModel)]="searchQuery" placeholder="Search..." (input)="searchCustomers()" 
+             class="px-4 py-2 border border-gray-200 rounded outline-none w-60 focus:border-blue-500">
     </div>
   </div>
 
   <!-- Customer Details Card -->
-  <div class="customer-details" *ngIf="selectedCustomer">
-    <h2>Customer Details</h2>
-    <div class="details-card">
-      <div class="left-section">
-        <div class="profile-section">
-          <img [src]="selectedCustomer.profileImage" [alt]="selectedCustomer.name" class="profile-image">
-          <div class="customer-id">
-            <h3>{{ selectedCustomer.name }}</h3>
-            <p>#{{ selectedCustomer.id }}</p>
+  <div class="mb-8" *ngIf="selectedCustomer">
+    <h2 class="text-2xl font-semibold mb-4 text-gray-800">Customer Details</h2>
+    <div class="flex bg-blue-500 rounded-[20px] overflow-hidden text-white shadow-lg">
+      <div class="flex-1 p-8">
+        <div class="flex items-center mb-8">
+          <img [src]="selectedCustomer.profileImage" [alt]="selectedCustomer.name" 
+               class="w-24 h-24 rounded-full object-cover mr-4">
+          <div>
+            <h3 class="text-2xl font-medium m-0">{{ selectedCustomer.name }}</h3>
+            <p class="mt-2 opacity-90">#{{ selectedCustomer.id }}</p>
           </div>
         </div>
-        <div class="info-section">
-          <div class="info-row">
-            <i class="fas fa-envelope"></i>
-            <span class="label">Email</span>
-            <span class="value">: {{ selectedCustomer.email }}</span>
+        <div class="space-y-4">
+          <div class="flex items-center">
+            <i class="fas fa-envelope w-5 mr-4"></i>
+            <span class="w-32">Email</span>
+            <span>: {{ selectedCustomer.email }}</span>
           </div>
-          <div class="info-row">
-            <i class="fas fa-phone"></i>
-            <span class="label">Contact No</span>
-            <span class="value">: {{ selectedCustomer.contactNo }}</span>
+          <div class="flex items-center">
+            <i class="fas fa-phone w-5 mr-4"></i>
+            <span class="w-32">Contact No</span>
+            <span>: {{ selectedCustomer.contactNo }}</span>
           </div>
-          <div class="info-row">
-            <i class="fas fa-home"></i>
-            <span class="label">Home Address</span>
-            <span class="value">: {{ selectedCustomer.homeAddress }}</span>
+          <div class="flex items-center">
+            <i class="fas fa-home w-5 mr-4"></i>
+            <span class="w-32">Home Address</span>
+            <span>: {{ selectedCustomer.homeAddress }}</span>
           </div>
-          <div class="info-row">
-            <i class="fas fa-building"></i>
-            <span class="label">Office Address</span>
-            <span class="value">: {{ selectedCustomer.officeAddress }}</span>
+          <div class="flex items-center">
+            <i class="fas fa-building w-5 mr-4"></i>
+            <span class="w-32">Office Address</span>
+            <span>: {{ selectedCustomer.officeAddress }}</span>
           </div>
-          <div class="info-row">
-            <i class="fas fa-map-marker-alt"></i>
-            <span class="label">Location</span>
-            <span class="value">: {{ selectedCustomer.location }}</span>
+          <div class="flex items-center">
+            <i class="fas fa-map-marker-alt w-5 mr-4"></i>
+            <span class="w-32">Location</span>
+            <span>: {{ selectedCustomer.location }}</span>
           </div>
         </div>
       </div>
-      <div class="right-section">
-        <button class="action-btn present">Present Orders</button>
-        <button class="action-btn past">Past Orders</button>
-        <button class="action-btn complaints">Complaints</button>
-        <button class="remove-btn" (click)="removeCustomer()">Remove User</button>
+      <div class="w-52 p-8 flex flex-col gap-4 bg-white rounded-r-[20px]">
+        <button class="px-4 py-3 rounded-lg bg-blue-50 text-blue-500 font-medium hover:bg-blue-100 transition-colors">Present Orders</button>
+        <button class="px-4 py-3 rounded-lg bg-blue-50 text-blue-500 font-medium hover:bg-blue-100 transition-colors">Past Orders</button>
+        <button class="px-4 py-3 rounded-lg bg-blue-50 text-blue-500 font-medium hover:bg-blue-100 transition-colors">Complaints</button>
+        <button class="px-4 py-3 rounded-lg bg-red-500 text-white font-medium hover:bg-red-600 transition-colors mt-auto" 
+                (click)="removeCustomer()">Remove User</button>
       </div>
     </div>
   </div>
 
   <!-- Recent Orders Section -->
-  <div class="recent-orders" *ngIf="selectedCustomer">
-    <h2>Recent Orders</h2>
-    <div class="orders-table" *ngFor="let order of selectedCustomer.recentOrders">
-      <div class="order-header">
-        <div class="order-info">
+  <div class="bg-white rounded-lg p-8 shadow-sm" *ngIf="selectedCustomer">
+    <h2 class="text-2xl font-semibold mb-6 text-gray-800">Recent Orders</h2>
+    <div class="mb-8 border border-gray-100 rounded-lg overflow-hidden" *ngFor="let order of selectedCustomer.recentOrders">
+      <div class="flex justify-between items-center p-4 bg-gray-50 border-b border-gray-100">
+        <div class="flex gap-8">
           <span>Order ID: {{ order.orderId }}</span>
           <span>Date: {{ order.date }}</span>
-          <span class="status">Status: {{ order.status }}</span>
+          <span class="text-orange-500">Status: {{ order.status }}</span>
           <span>Driver ID: {{ order.driverId }}</span>
           <span>Laundry ID: {{ order.laundryId }}</span>
         </div>
-        <button class="view-more">View More</button>
+        <button class="px-4 py-2 bg-blue-50 text-blue-500 rounded hover:bg-blue-100 transition-colors">View More</button>
       </div>
-      <table>
-        <thead>
-          <tr>
-            <th>Item</th>
-            <th>Process</th>
-            <th>Clothe type</th>
-            <th>Count</th>
-            <th>Price per Item(Rs.)</th>
-            <th>Total Price(Rs.)</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let item of order.items">
-            <td>{{ item.item }}</td>
-            <td>{{ item.process }}</td>
-            <td>{{ item.clotheType }}</td>
-            <td>{{ item.count }}</td>
-            <td>{{ item.pricePerItem }}</td>
-            <td>{{ item.totalPrice }}</td>
-          </tr>
-          <tr class="subtotal-row">
-            <td colspan="5" class="text-right">Subtotal (Rs.)</td>
-            <td>{{ order.subtotal }}</td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <thead>
+            <tr class="bg-gray-50">
+              <th class="p-4 text-left font-medium text-gray-700 border-b border-gray-100">Item</th>
+              <th class="p-4 text-left font-medium text-gray-700 border-b border-gray-100">Process</th>
+              <th class="p-4 text-left font-medium text-gray-700 border-b border-gray-100">Clothe type</th>
+              <th class="p-4 text-left font-medium text-gray-700 border-b border-gray-100">Count</th>
+              <th class="p-4 text-left font-medium text-gray-700 border-b border-gray-100">Price per Item(Rs.)</th>
+              <th class="p-4 text-left font-medium text-gray-700 border-b border-gray-100">Total Price(Rs.)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of order.items" class="even:bg-blue-50">
+              <td class="p-4 text-gray-700">{{ item.item }}</td>
+              <td class="p-4 text-gray-700">{{ item.process }}</td>
+              <td class="p-4 text-gray-700">{{ item.clotheType }}</td>
+              <td class="p-4 text-gray-700">{{ item.count }}</td>
+              <td class="p-4 text-gray-700">{{ item.pricePerItem }}</td>
+              <td class="p-4 text-gray-700">{{ item.totalPrice }}</td>
+            </tr>
+            <tr class="bg-gray-50 font-medium">
+              <td colspan="5" class="p-4 text-right text-gray-700">Subtotal (Rs.)</td>
+              <td class="p-4 text-gray-700">{{ order.subtotal }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 
   <!-- Pagination -->
-  <div class="pagination">
-    <button (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 1">Previous</button>
-    <button [class.active]="currentPage === 1" (click)="onPageChange(1)">1</button>
-    <button [class.active]="currentPage === 2" (click)="onPageChange(2)">2</button>
-    <button [class.active]="currentPage === 3" (click)="onPageChange(3)">3</button>
-    <button (click)="onPageChange(currentPage + 1)">Next</button>
+  <div class="flex justify-center items-center gap-2 mt-8">
+    <button class="px-4 py-2 border border-gray-200 rounded text-gray-700 hover:border-blue-500 hover:text-blue-500 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:border-gray-200 disabled:hover:text-gray-700 transition-colors"
+            (click)="onPageChange(currentPage - 1)" 
+            [disabled]="currentPage === 1">Previous</button>
+    <button *ngFor="let page of [1, 2, 3]"
+            class="min-w-[32px] h-8 flex items-center justify-center border border-gray-200 rounded transition-colors"
+            [class]="currentPage === page ? 'bg-blue-500 text-white border-blue-500' : 'text-gray-700 hover:border-blue-500 hover:text-blue-500'"
+            (click)="onPageChange(page)">{{ page }}</button>
+    <button class="px-4 py-2 border border-gray-200 rounded text-gray-700 hover:border-blue-500 hover:text-blue-500 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:border-gray-200 disabled:hover:text-gray-700 transition-colors"
+            (click)="onPageChange(currentPage + 1)">Next</button>
   </div>
-</div> 
+</div>

@@ -1,10 +1,13 @@
 import { Component, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { Chart, registerables } from 'chart.js';
+import { CommonModule } from '@angular/common';
 
 Chart.register(...registerables);
 
 @Component({
   selector: 'app-dashboard',
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
