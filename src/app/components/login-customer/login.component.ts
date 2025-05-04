@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -15,7 +16,7 @@ export class LoginComponent implements OnInit {
   eyeIcon: string = "fa-eye-slash";
   loginForm!: FormGroup;
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder, private auth: AuthService) {}
 
   ngOnInit(): void {
     this.loginForm = this.fb.group({
@@ -33,6 +34,18 @@ export class LoginComponent implements OnInit {
   onSubmit() {
     if (this.loginForm.valid) {
       console.log(this.loginForm.value);
+      const formData = {
+        Username: this.loginForm.value.username,
+        Password: this.loginForm.value.password
+      }
+      this.auth.login_async(formData).subscribe({
+        next: (response) => {
+          console.log('Data received:', response);
+        },
+        error: (err) => {
+          console.error('Error:', err);
+        },
+      })
     } else {
       console.log("Form is not valid..");
       this.validateAllFormFields(this.loginForm);
