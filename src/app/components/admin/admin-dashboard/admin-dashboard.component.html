@@ -1,78 +1,90 @@
 <div class="block p-4 bg-gray-50 min-h-[calc(100vh-64px)] opacity-100 visible">
   <!-- Welcome Section -->
   <div class="bg-transparent p-8 mb-8 relative overflow-visible">
-    <div class="relative mb-12 flex items-start justify-between">
+    <div class="relative mb-6 flex items-start justify-between">
       <div class="relative z-10 max-w-[60%]">
-        <h1 class="font-inter font-bold text-5xl text-gray-800 leading-tight mb-4">
-          <span class="block">Welcome</span>
-          <span class="block">{{ adminName }}!</span>
+        <h1 class="font-inter font-bold text-gray-800 leading-tight mb-4">
+          <span class="block text-[68px]">Welcome</span>
+          <span class="block text-[68px]">{{ adminName }}!</span>
         </h1>
-        <p class="text-gray-600 text-xl mt-4">Manage Your Pickups And Delivery Tasks Efficiently</p>
+        <p class="text-gray-600 text-[24px] mb-6">Manage Your Pickups And Delivery Tasks Efficiently</p>
+        
+        <!-- Stats Cards in 2x2 Grid -->
+        <div class="grid grid-cols-2 gap-6">
+          <div class="bg-white rounded-xl shadow-sm flex items-center gap-4 transition-transform hover:-translate-y-1" style="width: 340px; height: 170px;">
+            <div class="flex items-center gap-4 p-6 w-full h-full">
+              <i class="fas fa-box text-3xl text-blue-500"></i>
+              <div>
+                <h2 class="text-2xl font-semibold text-gray-800 mb-1">{{ stats.totalPickups }}</h2>
+                <p class="text-gray-600">Total Pickups</p>
+              </div>
+            </div>
+          </div>
+          <div class="bg-white rounded-xl shadow-sm flex items-center gap-4 transition-transform hover:-translate-y-1" style="width: 340px; height: 170px;">
+            <div class="flex items-center gap-4 p-6 w-full h-full">
+              <i class="fas fa-truck text-3xl text-blue-500"></i>
+              <div>
+                <h2 class="text-2xl font-semibold text-gray-800 mb-1">{{ stats.totalDeliveries }}</h2>
+                <p class="text-gray-600">Total Deliveries</p>
+              </div>
+            </div>
+          </div>
+          <div class="bg-white rounded-xl shadow-sm flex items-center gap-4 transition-transform hover:-translate-y-1" style="width: 340px; height: 170px;">
+            <div class="flex items-center gap-4 p-6 w-full h-full">
+              <i class="fas fa-clock text-3xl text-blue-500"></i>
+              <div>
+                <h2 class="text-2xl font-semibold text-gray-800 mb-1">{{ stats.totalHours }}</h2>
+                <p class="text-gray-600">Hours</p>
+              </div>
+            </div>
+          </div>
+          <div class="bg-white rounded-xl shadow-sm flex items-center gap-4 transition-transform hover:-translate-y-1" style="width: 340px; height: 170px;">
+            <div class="flex items-center gap-4 p-6 w-full h-full">
+              <i class="fas fa-dollar-sign text-3xl text-blue-500"></i>
+              <div>
+                <h2 class="text-2xl font-semibold text-gray-800 mb-1">${{ stats.totalRevenue }}</h2>
+                <p class="text-gray-600">Revenue</p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="relative w-[40%]">
         <img src="assets/images/presentation.png" alt="Analytics Presentation" class="w-full h-auto object-contain">
       </div>
     </div>
-    <div class="grid grid-cols-4 gap-6 mt-8">
-      <div class="bg-white p-6 rounded-xl shadow-sm flex items-center gap-4 transition-transform hover:-translate-y-1">
-        <i class="fas fa-box text-3xl text-blue-500"></i>
-        <div>
-          <h2 class="text-2xl font-semibold text-gray-800 mb-1">{{ stats.totalPickups }}</h2>
-          <p class="text-gray-600">Total Pickups</p>
-        </div>
-      </div>
-      <div class="bg-white p-6 rounded-xl shadow-sm flex items-center gap-4 transition-transform hover:-translate-y-1">
-        <i class="fas fa-truck text-3xl text-blue-500"></i>
-        <div>
-          <h2 class="text-2xl font-semibold text-gray-800 mb-1">{{ stats.totalDeliveries }}</h2>
-          <p class="text-gray-600">Total Deliveries</p>
-        </div>
-      </div>
-      <div class="bg-white p-6 rounded-xl shadow-sm flex items-center gap-4 transition-transform hover:-translate-y-1">
-        <i class="fas fa-dollar-sign text-3xl text-blue-500"></i>
-        <div>
-          <h2 class="text-2xl font-semibold text-gray-800 mb-1">${{ stats.totalRevenue }}</h2>
-          <p class="text-gray-600">Revenue</p>
-        </div>
-      </div>
-      <div class="bg-white p-6 rounded-xl shadow-sm flex items-center gap-4 transition-transform hover:-translate-y-1">
-        <i class="fas fa-clock text-3xl text-blue-500"></i>
-        <div>
-          <h2 class="text-2xl font-semibold text-gray-800 mb-1">{{ stats.totalHours }}</h2>
-          <p class="text-gray-600">Hours</p>
-        </div>
-      </div>
-    </div>
   </div>
 
   <!-- Revenue Chart Section -->
-  <div class="bg-white rounded-xl p-8 mb-8 shadow-sm opacity-100 visible">
+  <div class="bg-white rounded-xl p-8 mb-8 shadow-sm opacity-100 visible flex flex-col items-center">
     <h2 class="text-2xl font-semibold text-gray-800 mb-6">Total Revenue</h2>
-    <div class="w-full">
-      <canvas #revenueChart></canvas>
+    <div class="flex justify-center" style="width: 970px; height: 430px;">
+      <canvas #revenueChart class="w-full h-full"></canvas>
     </div>
   </div>
 
   <!-- Admin Panel Section -->
   <div class="bg-white rounded-xl p-8 mb-8 shadow-sm">
     <h2 class="text-2xl font-semibold text-gray-800 mb-6">Admin Panel Members</h2>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-4 -mx-4">
-      <div class="bg-white rounded-xl overflow-hidden shadow-sm transition-all hover:-translate-y-1 hover:shadow-md flex flex-col" *ngFor="let member of adminPanel">
-        <div class="relative pt-[100%] w-full overflow-hidden">
-          <img [src]="member.image" [alt]="member.name" class="absolute top-0 left-0 w-full h-full object-contain bg-gray-50 p-4" (error)="member.image = 'assets/images/admin.jpg'">
-        </div>
-        <div class="p-6 flex-1 flex flex-col gap-4 bg-white">
-          <div>
-            <h3 class="text-xl font-semibold text-gray-800 mb-2">{{ member.name }}</h3>
-            <p class="text-gray-600 text-sm">{{ member.role }}</p>
+    <div class="overflow-x-auto" style="scrollbar-width: thin;">
+      <div class="flex gap-6 p-4 min-w-max">
+        <div class="bg-white rounded-xl overflow-hidden shadow-sm transition-all hover:-translate-y-1 hover:shadow-md flex flex-col w-[300px]" *ngFor="let member of adminPanel">
+          <div class="relative pt-[100%] w-full overflow-hidden">
+            <img [src]="member.image" [alt]="member.name" class="absolute top-0 left-0 w-full h-full object-contain bg-gray-50 p-4" (error)="member.image = 'assets/images/admin.jpg'">
           </div>
-          <div class="flex gap-3 mt-auto">
-            <button class="flex items-center justify-center w-9 h-9 rounded-lg bg-blue-50 text-blue-500 hover:bg-blue-100 transition-all">
-              <i class="fas fa-envelope"></i>
-            </button>
-            <button class="flex items-center justify-center w-9 h-9 rounded-lg bg-green-50 text-green-500 hover:bg-green-100 transition-all">
-              <i class="fas fa-user"></i>
-            </button>
+          <div class="p-6 flex-1 flex flex-col gap-4 bg-white">
+            <div>
+              <h3 class="text-xl font-semibold text-gray-800 mb-2">{{ member.name }}</h3>
+              <p class="text-gray-600 text-sm">{{ member.role }}</p>
+            </div>
+            <div class="flex gap-3 mt-auto">
+              <button class="flex items-center justify-center w-9 h-9 rounded-lg bg-blue-50 text-blue-500 hover:bg-blue-100 transition-all">
+                <i class="fas fa-envelope"></i>
+              </button>
+              <button class="flex items-center justify-center w-9 h-9 rounded-lg bg-green-50 text-green-500 hover:bg-green-100 transition-all">
+                <i class="fas fa-user"></i>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -82,48 +94,43 @@
   <!-- Laundries Section -->
   <div class="bg-white rounded-xl p-8 mb-8 shadow-sm">
     <h2 class="text-2xl font-semibold text-gray-800 mb-6">Registered Laundries</h2>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 p-4 -mx-4">
-      <div class="bg-white rounded-xl overflow-hidden shadow-sm transition-all hover:-translate-y-1 hover:shadow-md flex flex-col h-full" *ngFor="let laundry of paginatedLaundries">
-        <img [src]="laundry.logo" [alt]="laundry.name" class="w-full h-48 object-contain bg-gray-50 p-4" (error)="laundry.logo = 'assets/images/laundry.png'">
-        <div class="p-6 flex-1 flex flex-col gap-3">
-          <h3 class="text-xl font-semibold text-gray-800">{{ laundry.name }}</h3>
-          <p class="text-gray-600 text-sm flex items-center gap-2">
-            <i class="fas fa-map-marker-alt text-blue-500"></i>
-            {{ laundry.location }}
-          </p>
-          <div class="flex items-center gap-2 mt-auto text-gray-600">
-            <i class="fas fa-star text-amber-400"></i>
-            <span class="text-sm">{{ laundry.rating }}/5</span>
+    <div class="overflow-x-auto" style="scrollbar-width: thin;">
+      <div class="flex gap-6 p-4 min-w-max">
+        <div class="bg-white rounded-xl overflow-hidden shadow-sm transition-all hover:-translate-y-1 hover:shadow-md flex flex-col w-[300px]" *ngFor="let laundry of laundries">
+          <img [src]="laundry.logo" [alt]="laundry.name" class="w-full h-48 object-contain bg-gray-50 p-4" (error)="laundry.logo = 'assets/images/laundry.png'">
+          <div class="p-6 flex-1 flex flex-col gap-3">
+            <h3 class="text-xl font-semibold text-gray-800">{{ laundry.name }}</h3>
+            <p class="text-gray-600 text-sm flex items-center gap-2">
+              <i class="fas fa-map-marker-alt text-blue-500"></i>
+              {{ laundry.location }}
+            </p>
+            <div class="flex items-center gap-2 mt-auto text-gray-600">
+              <i class="fas fa-star text-amber-400"></i>
+              <span class="text-sm">{{ laundry.rating }}/5</span>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="flex justify-center items-center gap-4 mt-8" *ngIf="laundries.length > itemsPerPage">
-      <button class="px-4 py-2 border border-gray-200 rounded-md hover:border-blue-500 hover:text-blue-500 disabled:opacity-50 disabled:cursor-not-allowed" (click)="prevPage()" [disabled]="currentPage === 1">Prev</button>
-      <div class="flex gap-2">
-        <button class="w-8 h-8 flex items-center justify-center border border-gray-200 rounded-md transition-all" *ngFor="let page of totalPagesArray()" (click)="goToPage(page)" [class.bg-blue-500]="page === currentPage" [class.text-white]="page === currentPage" [class.border-blue-500]="page === currentPage">
-          {{ page }}
-        </button>
-      </div>
-      <button class="px-4 py-2 border border-gray-200 rounded-md hover:border-blue-500 hover:text-blue-500 disabled:opacity-50 disabled:cursor-not-allowed" (click)="nextPage()" [disabled]="currentPage === totalPages">Next</button>
     </div>
   </div>
 
   <!-- Drivers Section -->
   <div class="bg-white rounded-xl p-8 mb-8 shadow-sm">
     <h2 class="text-2xl font-semibold text-gray-800 mb-6">Active Drivers</h2>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 p-4 -mx-4">
-      <div class="bg-white rounded-xl overflow-hidden shadow-sm transition-all hover:-translate-y-1 hover:shadow-md flex flex-col h-full" *ngFor="let driver of drivers">
-        <img [src]="driver.photo" [alt]="driver.name" class="w-full h-48 object-contain bg-gray-50 p-4" (error)="driver.photo = 'assets/images/driver.png'">
-        <div class="p-6 flex-1 flex flex-col gap-3">
-          <h3 class="text-xl font-semibold text-gray-800">{{ driver.name }}</h3>
-          <p class="text-gray-600 text-sm flex items-center gap-2">
-            <i class="fas fa-map-marker-alt text-blue-500"></i>
-            {{ driver.location }}
-          </p>
-          <div class="flex items-center gap-2 mt-auto text-gray-600">
-            <i class="fas fa-star text-amber-400"></i>
-            <span class="text-sm">{{ driver.rating }}/5</span>
+    <div class="overflow-x-auto" style="scrollbar-width: thin;">
+      <div class="flex gap-6 p-4 min-w-max">
+        <div class="bg-white rounded-xl overflow-hidden shadow-sm transition-all hover:-translate-y-1 hover:shadow-md flex flex-col w-[300px]" *ngFor="let driver of drivers">
+          <img [src]="driver.photo" [alt]="driver.name" class="w-full h-48 object-contain bg-gray-50 p-4" (error)="driver.photo = 'assets/images/driver.png'">
+          <div class="p-6 flex-1 flex flex-col gap-3">
+            <h3 class="text-xl font-semibold text-gray-800">{{ driver.name }}</h3>
+            <p class="text-gray-600 text-sm flex items-center gap-2">
+              <i class="fas fa-map-marker-alt text-blue-500"></i>
+              {{ driver.location }}
+            </p>
+            <div class="flex items-center gap-2 mt-auto text-gray-600">
+              <i class="fas fa-star text-amber-400"></i>
+              <span class="text-sm">{{ driver.rating }}/5</span>
+            </div>
           </div>
         </div>
       </div>

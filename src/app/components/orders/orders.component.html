@@ -1,23 +1,23 @@
 <div class="p-8 bg-gray-100 min-h-screen">
-  <h1 class="text-4xl font-semibold text-gray-800 mb-8">Orders</h1>
-
-  <div class="flex justify-between items-center mb-4">
+  <!-- Header Controls -->
+  <div class="flex justify-between items-center mb-8 bg-white p-4 rounded-lg shadow-sm">
     <div class="flex items-center gap-2">
       <span>Show</span>
       <select [(ngModel)]="itemsPerPage" 
-              class="px-4 py-2 border border-gray-200 rounded outline-none focus:border-blue-500 bg-white">
+              class="px-3 py-1 mx-2 border border-gray-200 rounded outline-none focus:border-blue-500">
         <option value="9">9</option>
         <option value="25">25</option>
         <option value="50">50</option>
-        <option value="100">100</option>
       </select>
       <span>entries</span>
     </div>
     <div>
-      <input type="text" placeholder="Search..." 
+      <input type="text" [(ngModel)]="searchQuery" placeholder="Search..." (input)="onSearch(searchQuery)"
              class="px-4 py-2 border border-gray-200 rounded outline-none w-60 focus:border-blue-500">
     </div>
   </div>
+
+  <h1 class="text-4xl text-gray-800 mb-8 font-inter drop-shadow-lg">Orders List</h1>
 
   <div class="bg-white rounded-lg shadow-sm overflow-hidden mb-8">
     <div class="overflow-x-auto">
@@ -34,8 +34,8 @@
           </tr>
         </thead>
         <tbody>
-          <ng-container *ngFor="let order of orders">
-            <tr [class]="selectedOrder?.id === order.id ? 'bg-blue-50' : 'even:bg-gray-50 hover:bg-gray-50'">
+          <ng-container *ngFor="let order of paginatedOrders; let i = index">
+            <tr [class]="selectedOrder?.id === order.id ? 'bg-blue-50' : ''" [ngClass]="{'bg-[#D0F6FF]': i % 2 === 1 && (!selectedOrder?.id || selectedOrder?.id !== order.id)}" class="hover:bg-gray-100 transition-colors duration-150">
               <td class="p-4 text-gray-700">{{ order.id }}</td>
               <td class="p-4 text-gray-700">{{ order.date }}</td>
               <td class="p-4">
@@ -73,7 +73,7 @@
                         </tr>
                       </thead>
                       <tbody>
-                        <tr *ngFor="let item of order.items" class="even:bg-blue-50">
+                        <tr *ngFor="let item of order.items; let i = index" [ngClass]="{'bg-[#D0F6FF]': i % 2 === 1}" class="hover:bg-gray-100 transition-colors duration-150">
                           <td class="p-4 text-gray-700 border border-gray-100">{{ item.item }}</td>
                           <td class="p-4 text-gray-700 border border-gray-100">{{ item.process }}</td>
                           <td class="p-4 text-gray-700 border border-gray-100">{{ item.clotheType }}</td>

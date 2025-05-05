@@ -176,10 +176,16 @@ export class OrdersComponent implements OnInit {
   selectedOrder: Order | null = null;
   itemsPerPage = 9;
   currentPage = 1;
+  searchQuery = '';
 
   constructor() { }
 
   ngOnInit(): void { }
+
+  onSearch(query: string): void {
+    this.searchQuery = query;
+    this.currentPage = 1;
+  }
 
   toggleOrderDetails(order: Order): void {
     this.selectedOrder = this.selectedOrder?.id === order.id ? null : order;
@@ -198,5 +204,22 @@ export class OrdersComponent implements OnInit {
       default:
         return '';
     }
+  }
+
+  get filteredOrders(): Order[] {
+    return this.orders.filter(order => 
+      this.searchQuery ? 
+        order.id.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+        order.customerId.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+        order.driverId.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+        order.laundryId.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+        order.status.toLowerCase().includes(this.searchQuery.toLowerCase())
+      : true
+    );
+  }
+
+  get paginatedOrders(): Order[] {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    return this.filteredOrders.slice(startIndex, startIndex + this.itemsPerPage);
   }
 }

@@ -17,14 +17,16 @@
     </div>
   </div>
 
+  <h1 class="text-4xl text-gray-800 mb-8 font-inter drop-shadow-lg">Driver Details</h1>
+
   <!-- Driver Details Card -->
   <div class="mb-8" *ngIf="selectedDriver">
-    <h2 class="text-2xl font-semibold mb-4 text-gray-800">Driver Details</h2>
     <div class="flex bg-blue-500 rounded-[20px] overflow-hidden text-white shadow-lg">
       <div class="flex-1 p-8">
         <div class="flex items-center mb-8">
           <img [src]="selectedDriver.profileImage" [alt]="selectedDriver.name" 
-               class="w-24 h-24 rounded-full object-cover mr-4">
+               class="w-24 h-24 rounded-full object-cover mr-4"
+               (error)="selectedDriver.profileImage = 'assets/images/driver.png'">
           <div>
             <h3 class="text-2xl font-medium m-0">{{ selectedDriver.name }}</h3>
             <p class="mt-2 opacity-90">#{{ selectedDriver.id }}</p>
@@ -97,9 +99,13 @@
           <span>Driver ID: {{ order.driverId }}</span>
           <span>Laundry ID: {{ order.laundryId }}</span>
         </div>
-        <button class="px-4 py-2 bg-blue-50 text-blue-500 rounded hover:bg-blue-100 transition-colors">View More</button>
+        <button class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors text-sm"
+                (click)="toggleOrderDetails(order)">
+          <i class="fas" [class.fa-eye]="!order.isExpanded" [class.fa-eye-slash]="order.isExpanded"></i>
+          {{ order.isExpanded ? 'View Less' : 'View More' }}
+        </button>
       </div>
-      <div class="overflow-x-auto">
+      <div class="overflow-x-auto" *ngIf="order.isExpanded">
         <table class="w-full">
           <thead>
             <tr class="bg-gray-50">

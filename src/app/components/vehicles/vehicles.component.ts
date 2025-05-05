@@ -34,13 +34,30 @@ export class VehiclesComponent implements OnInit {
   itemsPerPage = 9;
   searchQuery = '';
 
+  get filteredVehicles(): Vehicle[] {
+    return this.vehicles.filter(vehicle => 
+      this.searchQuery ? 
+        vehicle.vehicleId.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+        vehicle.vehicleType.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+        vehicle.driver.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+        vehicle.driverId.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+        vehicle.status.toLowerCase().includes(this.searchQuery.toLowerCase())
+      : true
+    );
+  }
+
+  get paginatedVehicles(): Vehicle[] {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    return this.filteredVehicles.slice(startIndex, startIndex + this.itemsPerPage);
+  }
+
   ngOnInit() {
     // Initialize component
   }
 
   onSearch(query: string) {
     this.searchQuery = query;
-    // Implement search functionality
+    this.currentPage = 1;
   }
 
   onPageChange(page: number) {
