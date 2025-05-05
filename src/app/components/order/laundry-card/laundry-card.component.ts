@@ -1,10 +1,11 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { StarRatingComponent } from '../../order/star-rating/star-rating.component';
 
 @Component({
   selector: 'app-laundry-card',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, StarRatingComponent, StarRatingComponent],
   templateUrl: './laundry-card.component.html',
   styleUrls: ['./laundry-card.component.css']
 })
@@ -12,6 +13,7 @@ export class LaundryCardComponent {
   @Input() public name: string = 'Unnamed Laundry'; // Provide defaults
   @Input() public location: string = 'Location not available';
   @Input() public rating: number = 0;
+  @Input() public hasRatings: boolean = false; // New property
   @Input() public imageUrl!: string;
   @Input() public isFavorite: boolean = false;
   @Output() public favoriteToggled = new EventEmitter<void>();
@@ -23,9 +25,5 @@ export class LaundryCardComponent {
 
   onSelectLaundry() {
     this.selectLaundry.emit(); // Emit the event to the parent component
-  }
-
-  getStars(rating: number): number[] {
-    return Array(Math.floor(rating)).fill(0);
   }
 }

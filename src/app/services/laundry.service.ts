@@ -14,7 +14,8 @@ export class LaundryService {
 
   // Get all laundries from the API
   getLaundries(): Observable<Laundry[]> {
-    return this.http.get<LaundryWithAddressDTO[]>(this.apiUrl)
+    // Use the new endpoint 'laundry-list-for-customer'
+    return this.http.get<LaundryWithAddressDTO[]>(`${this.apiUrl}/laundry-list-for-customer`)
       .pipe(
         map(dtos => {
           console.log('Raw API response:', dtos);
@@ -46,12 +47,21 @@ export class LaundryService {
 
   // Helper method to convert a single DTO to domain model
   private mapDtoToLaundry(dto: any): Laundry {
-    // This function will work regardless of casing
+    // Get rating with case-insensitive lookup
+    const averageRating = dto.averageRating ?? dto.AverageRating ?? 0;
+    
+    // Check if there are any ratings
+    const hasRatings = averageRating > 0;
+    
+    // Round rating to nearest integer for display
+    const roundedRating = Math.round(averageRating);
+    
     return {
       id: parseInt(dto.laundryId || dto.LaundryId || '0'),
       name: dto.laundryName || dto.LaundryName || 'Unnamed Laundry',
       location: dto.city || dto.City || 'Location not available',
-      rating: 5,
+      rating: roundedRating,
+      hasRatings: hasRatings,
       imageUrl: 'assets/laundry.png',
       itemIds: []
     };
