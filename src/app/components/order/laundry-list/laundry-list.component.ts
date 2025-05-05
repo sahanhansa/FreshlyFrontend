@@ -5,11 +5,17 @@ import { LaundryService } from '../../../services/laundry.service';
 import { LaundryCardComponent } from '../laundry-card/laundry-card.component';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { SearchBarComponent } from '../../shared/search-bar/search-bar.component';
 
 @Component({
   selector: 'app-laundry-list',
   standalone: true,
-  imports: [CommonModule, LaundryCardComponent, FormsModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    LaundryCardComponent,
+    SearchBarComponent
+  ],
   templateUrl: './laundry-list.component.html',
   styleUrls: ['./laundry-list.component.css']
 })
@@ -85,5 +91,10 @@ export class LaundryListComponent implements OnInit {
 
   onSelectLaundry(laundryId: number) {
     this.router.navigate(['/items', laundryId]); // Navigate to the items list page with the laundry ID
+  }
+
+  onSearchChanged(query: string): void {
+    this.searchQuery = query;
+    this.filterLaundries();
   }
 }

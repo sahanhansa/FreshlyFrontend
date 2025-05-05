@@ -10,14 +10,12 @@
   <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-6 md:pl-6">
     <!-- Search Bar -->
     <div class="w-full sm:flex-1">
-      <input
-        type="text"
-        [(ngModel)]="searchQuery"
-        (ngModelChange)="filterLaundries()"
+      <app-search-bar
         placeholder="Search for Laundry"
-        aria-label="Search for Laundry"
-        class="border border-gray-300 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-300"
-      />
+        ariaLabel="Search for Laundry"
+        [initialValue]="searchQuery"
+        (searchChanged)="onSearchChanged($event)"
+      ></app-search-bar>
     </div>
 
     <!-- Location Filter -->
