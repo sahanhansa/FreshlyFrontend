@@ -12,28 +12,29 @@ import { InvoiceSuccessedComponent } from './pages/Laundry/invoice-successed/inv
 import { ConfirmOrdersComponent } from './pages/Laundry/confirm-orders/confirm-orders.component';
 
 export const routes: Routes = [
-    { path: '', component: WhoAreYouComponent }, 
+    { path: '', redirectTo: '/whoareyou', pathMatch: 'full' },
+    { path: 'whoareyou', component: WhoAreYouComponent }, 
     {path:'login', component: LoginComponent},
     {path:'signup', component: SignupComponent},
     // {path:'laundrysign', component: laut},
     
 ];
 
-export const routes: Routes = [
-  { path: '', redirectTo: '/home', pathMatch: 'full' },
-    { path: 'home', component: HomeComponent },
-    { path: 'regular-order', component: RegularOrdersComponent },
-    { path: 'express-order', component:ExpressOrderComponent},
-    { path: 'orders', component: OrdersComponent },
-    {path:'invoice-successed' , component:InvoiceSuccessedComponent },
-    {path: 'confirm-orders', component: ConfirmOrdersComponent}
+// export const routes: Routes = [
+//   { path: '', redirectTo: '/home', pathMatch: 'full' },
+//     { path: 'home', component: HomeComponent },
+//     { path: 'regular-order', component: RegularOrdersComponent },
+//     { path: 'express-order', component:ExpressOrderComponent},
+//     { path: 'orders', component: OrdersComponent },
+//     {path:'invoice-successed' , component:InvoiceSuccessedComponent },
+//     {path: 'confirm-orders', component: ConfirmOrdersComponent}
 
-    { path: '', component: WhoAreYouComponent }, 
-    {path:'login', component: LoginComponent},
-    {path:'signup', component: SignupComponent},
-    // {path:'laundrysign', component: laut},
+//     { path: '', component: WhoAreYouComponent }, 
+//     {path:'login', component: LoginComponent},
+//     {path:'signup', component: SignupComponent},
+//     // {path:'laundrysign', component: laut},
 
-];
+// ];
   @NgModule({
     imports: [RouterModule.forRoot(routes)],
     exports: [RouterModule]
