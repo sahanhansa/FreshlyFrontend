@@ -11,12 +11,12 @@
 
   <!-- Name and Price Side by Side -->
   <div class="flex justify-between items-center w-full mb-2">
-    <h3 class="text-2xl font-semibold text-gray-900">{{ item.itemName }}</h3>
-    <p class="text-xl text-red-500 font-bold">Rs.{{ currentPrice }}</p>
+    <h3 class="text-xl font-semibold text-gray-900">{{ item.itemName }}</h3>
+    <p class="text-lg text-red-500 font-bold">Rs.{{ currentPrice }}</p>
   </div>
 
   <!-- Description -->
-  <p class="text-gray-600 text-sm mb-1">{{ item.description }}</p>
+  <p class="text-gray-600 text-sm mb-1">This is a {{ item.categoryName }} item</p>
 
   <!-- Fabric Type -->
   <div class="mt-1 w-full flex flex-col md:flex-row items-center gap-2">
