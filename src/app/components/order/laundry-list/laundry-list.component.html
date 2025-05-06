@@ -1,95 +1,42 @@
-<!-- Header Section -->
-<div class="p-4 md:p-6">
-  <!-- Title Section -->
-  <div class="text-center md:text-left mb-6 md:mb-4 md:pl-6">
-    <h2 class="text-xl font-semibold">All Laundries</h2>
-    <p class="mt-1">Select a Laundry to proceed with your order</p>
+<div class="min-h-screen flex flex-col">
+  <!-- Loading state -->
+  <div *ngIf="loading" class="text-center py-10">
+    <div class="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+    <p class="mt-2 text-gray-600">Loading laundries...</p>
   </div>
 
-  <!-- Filter Controls -->
-  <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-6 md:pl-6">
-    <!-- Search Bar -->
-    <div class="w-full sm:flex-1">
-      <app-search-bar
-        placeholder="Search for Laundry"
-        ariaLabel="Search for Laundry"
-        [initialValue]="searchQuery"
-        (searchChanged)="onSearchChanged($event)"
-      ></app-search-bar>
-    </div>
+  <!-- Error state -->
+  <div *ngIf="error" class="text-center text-red-500 py-10">
+    {{ error }}
+    <br />
+    <button (click)="retryLoading.emit()" class="mt-3 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+      Try Again
+    </button>
+  </div>
 
-    <!-- Location Filter -->
-    <div class="w-full sm:w-auto">
-      <select
-        [(ngModel)]="selectedLocation"
-        (change)="filterLaundries()"
-        class="border border-gray-300 rounded-lg px-4 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-300 bg-white appearance-none w-full"
-        style="background-image: url('data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 fill=%27none%27 viewBox=%270 0 24 24%27 stroke=%27%23000000%27 stroke-width=%272%27%3E%3Cpath stroke-linecap=%27round%27 stroke-linejoin=%27round%27 d=%27M19 9l-7 7-7-7%27 /%3E%3C/svg%3E'); background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 1rem;"
-      >
-        <option value="">All Locations</option>
-        <option *ngFor="let location of uniqueLocations" [value]="location">
-          {{ location }}
-        </option>
-      </select>
-    </div>
+  <!-- Empty State Message -->
+  <div *ngIf="laundries.length === 0 && !loading && !error" class="text-center text-gray-500 py-10 px-4">
+    No laundries found. Try adjusting your filters.
+  </div>
 
-    <!-- Rating Filter -->
-    <div class="w-full sm:w-auto">
-      <select
-        [(ngModel)]="selectedRating"
-        (change)="filterLaundries()"
-        class="border border-gray-300 rounded-lg px-4 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-300 bg-white appearance-none w-full"
-        style="background-image: url('data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 fill=%27none%27 viewBox=%270 0 24 24%27 stroke=%27%23000000%27 stroke-width=%272%27%3E%3Cpath stroke-linecap=%27round%27 stroke-linejoin=%27round%27 d=%27M19 9l-7 7-7-7%27 /%3E%3C/svg%3E'); background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 1rem;"
-      >
-        <option value="">All Ratings</option>
-        <option *ngFor="let rating of uniqueRatings" [value]="rating">
-          {{ rating }} Stars
-        </option>
-      </select>
+  <!-- Content when data is loaded -->
+  <div *ngIf="!loading && !error && laundries.length > 0">
+    <!-- Laundry Cards Grid -->
+    <div class="px-4 md:px-6 pb-8">
+      <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+        <app-laundry-card
+          *ngFor="let laundry of laundries"
+          [name]="laundry.name"
+          [location]="laundry.location"
+          [rating]="laundry.rating"
+          [hasRatings]="laundry.hasRatings"
+          [imageUrl]="laundry.imageUrl"
+          [isFavorite]="laundry.isFavorite ?? false"
+          (favoriteToggled)="toggleFavorite(laundry)"
+          (selectLaundry)="onSelectLaundry(laundry.id)"
+          class="w-full">
+        </app-laundry-card>
+      </div>
     </div>
   </div>
 </div>
-
-<!-- Loading state -->
-<div *ngIf="loading" class="text-center py-10">
-  <div class="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
-  <p class="mt-2 text-gray-600">Loading laundries...</p>
-</div>
-
-<!-- Error state -->
-<div *ngIf="error" class="text-center text-red-500 py-10">
-  {{ error }}
-  <br />
-  <button (click)="loadLaundries()" class="mt-3 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-    Try Again
-  </button>
-</div>
-
-<!-- Empty State Message -->
-<div *ngIf="filteredLaundries.length === 0 && !loading && !error" class="text-center text-gray-500 py-10 px-4">
-  No laundries found. Try adjusting your filters.
-</div>
-
-<!-- Content when data is loaded -->
-<div *ngIf="!loading && !error">
-  <!-- Laundry Cards Grid -->
-  <div class="px-4 md:px-6 pb-8">
-    <div
-      class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6"
-    >
-      <app-laundry-card
-        *ngFor="let laundry of filteredLaundries"
-        [name]="laundry.name"
-        [location]="laundry.location"
-        [rating]="laundry.rating"
-        [hasRatings]="laundry.hasRatings"
-        [imageUrl]="laundry.imageUrl"
-        [isFavorite]="laundry.isFavorite ?? false"
-        (favoriteToggled)="toggleFavorite(laundry)"
-        (selectLaundry)="onSelectLaundry(laundry.id)"
-        class="w-full">
-      </app-laundry-card>
-    </div>
-  </div>
-</div>
-
