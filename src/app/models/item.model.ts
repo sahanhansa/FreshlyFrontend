@@ -4,10 +4,13 @@ export interface ServiceWithPrice {
   price: number | null;
 }
 
-export class Item {
-  itemId: string = '';
-  itemName: string = '';
-  description: string = '';
-  image: string = '';
-  services: ServiceWithPrice[] = [];
+export interface Item {
+  itemId: string;
+  itemName: string | null;
+  categoryName: string | null; // Added categoryName property
+  description?: string;
+  image?: string;
+  services: ServiceWithPrice[];
 }
+
+export type ItemCategory = 'ladies' | 'gents' | 'kids' | 'other';
