@@ -11,8 +11,8 @@ export class ItemService {
 
   constructor(private http: HttpClient) { }
 
-  getItems(): Observable<Item[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/GetItemsWithServices`)
+  getItems(laundryId: string): Observable<Item[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/GetItemsByLaundryId/${laundryId}`)
       .pipe(
         map(items => {
           console.log('Raw API response:', items);

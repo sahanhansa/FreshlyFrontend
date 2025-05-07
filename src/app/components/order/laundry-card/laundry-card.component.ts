@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { StarRatingComponent } from '../../order/star-rating/star-rating.component';
-
+import {Router} from "@angular/router"; // Import Router for navigation
 @Component({
   selector: 'app-laundry-card',
   standalone: true,
@@ -16,14 +16,18 @@ export class LaundryCardComponent {
   @Input() public hasRatings: boolean = false; // New property
   @Input() public imageUrl!: string;
   @Input() public isFavorite: boolean = false;
+  @Input() public id!: string; // New property for laundry ID
   @Output() public favoriteToggled = new EventEmitter<void>();
-  @Output() public selectLaundry = new EventEmitter<void>(); // Emit event for selecting laundry
+  @Output() public selectLaundry = new EventEmitter<string>(); // Emit event for selecting laundry
 
+
+  constructor(private router: Router) {} // Inject Router for navigation
   toggleFavorite() {
     this.favoriteToggled.emit();
   }
 
   onSelectLaundry() {
-    this.selectLaundry.emit(); // Emit the event to the parent component
+    this.router.navigate([`/laundry/${this.id}`]);
+    
   }
 }

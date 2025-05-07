@@ -91,8 +91,8 @@ export class LaundryPageComponent implements OnInit {
   }
 
   // Replace the navigation function with an empty method
-  onSelectLaundry(laundryId: number) {
-    // Do nothing - navigation removed
+  onSelectLaundry(laundryId: string) {
+    
     console.log('Laundry selected:', laundryId);
   }
 

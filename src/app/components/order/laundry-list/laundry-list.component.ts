@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { Laundry } from '../../../models/laundry.model';
+import { Laundry, LaundryWithAddressDTO } from '../../../models/laundry.model';
 import { LaundryCardComponent } from '../laundry-card/laundry-card.component';
 import { CommonModule } from '@angular/common';
 
@@ -18,7 +18,7 @@ export class LaundryListComponent {
   @Input() loading = false;
   @Input() error = '';
   
-  @Output() selectLaundry = new EventEmitter<number>();
+  @Output() selectLaundry = new EventEmitter<string>();
   @Output() favoriteToggled = new EventEmitter<Laundry>();
   @Output() retryLoading = new EventEmitter<void>();
 
@@ -26,7 +26,7 @@ export class LaundryListComponent {
     this.favoriteToggled.emit(laundry);
   }
 
-  onSelectLaundry(laundryId: number) {
+  onSelectLaundry(laundryId: string) {
     this.selectLaundry.emit(laundryId);
   }
 }

@@ -9,7 +9,7 @@ import { FooterComponent } from "./components/shared/footer/footer.component";
     RouterOutlet,
     NavbarOrderComponent,
     FooterComponent
-  ],
+],
   standalone: true,
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'

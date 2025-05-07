@@ -26,6 +26,7 @@
       <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
         <app-laundry-card
           *ngFor="let laundry of laundries"
+          [id]="laundry.id.toString()"
           [name]="laundry.name"
           [location]="laundry.location"
           [rating]="laundry.rating"
@@ -33,7 +34,7 @@
           [imageUrl]="laundry.imageUrl"
           [isFavorite]="laundry.isFavorite ?? false"
           (favoriteToggled)="toggleFavorite(laundry)"
-          (selectLaundry)="onSelectLaundry(laundry.id)"
+          (selectLaundry)="onSelectLaundry(laundry.id.toString())"
           class="w-full">
         </app-laundry-card>
       </div>

@@ -5,6 +5,7 @@ import { ItemService } from '../../../services/item.service';
 import { ItemListComponent } from '../../../components/order/item-list/item-list.component';
 import { SearchBarComponent } from '../../../components/shared/search-bar/search-bar.component';
 import { Item, ItemCategory } from '../../../models/item.model';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-item-page',
@@ -34,18 +35,26 @@ export class ItemPageComponent implements OnInit {
   // Loading and error states
   loading = false;
   error = '';
+  laundryId: string | null = null; // Laundry ID from route parameter
+  // laundryId: string | null= null; // Laundry ID from route parameter
 
-  constructor(private itemService: ItemService) {}
+  constructor(private itemService: ItemService, private route: ActivatedRoute) {}
 
   ngOnInit() {
-    this.loadItems();
+    this.laundryId = (this.route.snapshot.paramMap.get('id'));
+    
+    if (this.laundryId) {
+      this.loadItems();
+    } else {
+      this.error = 'Laundry ID is missing in the URL.';
+    }
   }
 
   loadItems(): void {
     this.loading = true;
     this.error = '';
     
-    this.itemService.getItems().subscribe({
+    this.itemService.getItems(this.laundryId || "").subscribe({
       next: (data) => {
         console.log('Received items:', data);
         this.allItems = data;

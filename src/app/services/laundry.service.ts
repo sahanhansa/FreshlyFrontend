@@ -57,7 +57,7 @@ export class LaundryService {
     const roundedRating = Math.round(averageRating);
     
     return {
-      id: parseInt(dto.laundryId || dto.LaundryId || '0'),
+      id: dto.laundryId || "",
       name: dto.laundryName || dto.LaundryName || 'Unnamed Laundry',
       location: dto.city || dto.City || 'Location not available',
       rating: roundedRating,
