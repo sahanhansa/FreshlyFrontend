@@ -9,6 +9,7 @@
           </div>
 
           <div class="p-6">
+            
             <form [formGroup]="loginForm">
 
               <!-- Username Field -->
@@ -43,7 +44,7 @@
                 </span>
                 <input 
                   formControlName="password" 
-                  [type]="type"
+                  [type]="inputType"
                    
                   placeholder="Password"
                   [ngClass]="{
@@ -74,7 +75,15 @@
               <!-- Signup Link -->
               <div class="text-center pt-4 text-gray-600 text-sm">
                 Don't have an account?
-                <a href="/signup" class="text-blue-500 font-bold hover:underline">Signup</a>
+               <!-- Use button instead of <a> for Angular click handler -->
+                <button type="button" (click)="goToSignup()" class="text-blue-500 font-bold hover:underline bg-transparent border-none p-0 cursor-pointer">
+                  Signup
+                </button>
+                
+                
+                
+
+
               </div>
 
             </form>

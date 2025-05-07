@@ -11,17 +11,21 @@ export class WhoAreYouComponent {
   constructor(private router: Router) {}
 
   goTo(role: string) {
+    localStorage.setItem("Role",role);
     switch(role) {
       case 'customer':
         this.router.navigate(['/login']);
         break;
-      case 'driver':
-        this.router.navigate(['login']);
+      case 'laundry':
+        this.router.navigate(['/login']);
         break;
       case 'admin':
-        this.router.navigate(['login']);
+        this.router.navigate(['/login']);
         break;
     }
   }
+  selectRole(role: string) {
+    // Store in route (via query parameter)
+    this.router.navigate(['/login'], { queryParams: { role: role } });
 }
-
+}

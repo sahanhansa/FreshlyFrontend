@@ -1,0 +1,31 @@
+<div class="min-h-screen bg-white">
+
+<div>
+    <app-header></app-header>
+</div>
+ <!-- Hero Section -->
+    <div class="flex flex-col md:flex-row items-center justify-between px-8  bg-white">
+      <!-- Left Content -->
+      <div class="max-w-xl">
+        <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-2 ">
+          Welcome <span class="text-blue-600">{{ customerName }}!</span>
+        </h1>
+        <p class="text-gray-600 mb-6 leading-relaxed">
+          Lorem Ipsum Dolor Sit Amet, Consectetur Adipiscing Elit. Vivamus Sit Amet Mi Nec Massa Triducint Blandit Et Eu Sem. Meaecenas Laoreet Ultrices Diam Dignissim.
+        </p>
+        <a
+          routerLink="/how-it-works"
+          class="inline-flex items-center px-5 py-2 bg-blue-500 text-white rounded shadow hover:bg-blue-600 transition"
+        >
+          See How It Works
+          <span class="ml-2">→</span>
+        </a>
+      </div>
+  
+      <!-- Right Image -->
+      <div class="mt-10 md:mt-0 md:w-1/2">
+        <img src="assets/map.webp" alt="Customer Laundry Illustration" class="w-full" />
+      </div>
+    </div>
+  </div>
+  
