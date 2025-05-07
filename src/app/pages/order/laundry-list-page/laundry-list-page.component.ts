@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router'; // Import Router
+// Remove Router import
 import { Laundry } from '../../../models/laundry.model';
 import { LaundryService } from '../../../services/laundry.service';
 import { CommonModule } from '@angular/common';
@@ -30,7 +30,8 @@ export class LaundryPageComponent implements OnInit {
   loading = true;
   error = '';
 
-  constructor(private laundryService: LaundryService, private router: Router) {}
+  // Remove Router from constructor
+  constructor(private laundryService: LaundryService) {}
 
   ngOnInit() {
     this.loadLaundries();
@@ -89,8 +90,10 @@ export class LaundryPageComponent implements OnInit {
     this.sortLaundries(); // Ensure favorites are always pinned to the top
   }
 
+  // Replace the navigation function with an empty method
   onSelectLaundry(laundryId: number) {
-    this.router.navigate(['/items', laundryId]); // Navigate to the items list page with the laundry ID
+    // Do nothing - navigation removed
+    console.log('Laundry selected:', laundryId);
   }
 
   onSearchChanged(query: string): void {
