@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Item, ServiceWithPrice } from '../../../models/item.model';
 import { FabricTypeService } from '../../../services/fabric-type.service';
-import { WashMethodService } from '../../../services/wash-method.service';
 
 @Component({
   selector: 'app-item-card',
@@ -21,28 +20,19 @@ export class ItemCardComponent implements OnInit {
   quantity = new FormControl(1);
   
   fabricTypes: string[] = [];
-  washMethods: string[] = [];
   currentPrice: number = 0;
   
   constructor(
-    private fabricTypeService: FabricTypeService,
-    private washMethodService: WashMethodService
+    private fabricTypeService: FabricTypeService
   ) {}
   
   ngOnInit(): void {
     // Get fabric types from the service
     this.fabricTypes = this.fabricTypeService.getFabricTypes();
     
-    // Get wash methods from the service
-    this.washMethods = this.washMethodService.getWashMethods();
-    
     // Set default values
     if (this.fabricTypes.length > 0) {
       this.selectedGarment.setValue(this.fabricTypes[0]);
-    }
-    
-    if (this.washMethods.length > 0) {
-      this.selectedWashMethod.setValue(this.washMethods[0]);
     }
     
     // Set default service if available
