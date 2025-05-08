@@ -10,22 +10,28 @@ import {Router} from "@angular/router"; // Import Router for navigation
   styleUrls: ['./laundry-card.component.css']
 })
 export class LaundryCardComponent {
-  @Input() public name: string = 'Unnamed Laundry'; // Provide defaults
+  // Input properties for the laundry
+  @Input() public id!: string;
+  @Input() public name: string = 'Unnamed Laundry'; 
   @Input() public location: string = 'Location not available';
   @Input() public rating: number = 0;
-  @Input() public hasRatings: boolean = false; // New property
+  @Input() public hasRatings: boolean = false; 
   @Input() public imageUrl!: string;
   @Input() public isFavorite: boolean = false;
-  @Input() public id!: string; // New property for laundry ID
+
+  // Output event emitters
   @Output() public favoriteToggled = new EventEmitter<void>();
-  @Output() public selectLaundry = new EventEmitter<string>(); // Emit event for selecting laundry
+  @Output() public selectLaundry = new EventEmitter<string>(); 
 
+  // Constructor to inject Router for navigation
+  constructor(private router: Router) {} 
 
-  constructor(private router: Router) {} // Inject Router for navigation
+  // Method called when the favorite icon is clicked
   toggleFavorite() {
     this.favoriteToggled.emit();
   }
 
+  // Method called when the "Select Laundry" button is clicked
   onSelectLaundry() {
     this.router.navigate([`/laundry/${this.id}`]);
     

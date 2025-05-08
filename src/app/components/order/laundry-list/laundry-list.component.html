@@ -1,11 +1,11 @@
 <div class="min-h-screen flex flex-col">
-  <!-- Loading state -->
+  <!-- Loading state displayed while data is being fetched-->
   <div *ngIf="loading" class="text-center py-10">
     <div class="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
     <p class="mt-2 text-gray-600">Loading laundries...</p>
   </div>
 
-  <!-- Error state -->
+  <!-- Error state when API request fails-->
   <div *ngIf="error" class="text-center text-red-500 py-10">
     {{ error }}
     <br />
@@ -14,7 +14,7 @@
     </button>
   </div>
 
-  <!-- Empty State Message -->
+  <!-- Empty State Message when no laundries match the filter criteria -->
   <div *ngIf="laundries.length === 0 && !loading && !error" class="text-center text-gray-500 py-10 px-4">
     No laundries found. Try adjusting your filters.
   </div>
@@ -24,6 +24,7 @@
     <!-- Laundry Cards Grid -->
     <div class="px-4 md:px-6 pb-8">
       <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+        <!-- Pass laundry data to card -->
         <app-laundry-card
           *ngFor="let laundry of laundries"
           [id]="laundry.id.toString()"

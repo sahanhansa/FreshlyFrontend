@@ -1,6 +1,6 @@
 <div class="min-h-screen flex flex-col">
   <div class="flex-grow w-full max-w-7xl mx-auto">
-    <!-- Header Section (Moved from laundry-list component) -->
+    <!-- Header Section -->
     <div class="p-4 md:p-6">
       <!-- Title Section -->
       <div class="text-center md:text-left mb-6 mt-6 md:mb-4">
@@ -10,7 +10,8 @@
 
       <!-- Filter Controls -->
       <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-6">
-        <!-- Search Bar -->
+
+        <!-- Search bar component -->
         <div class="w-full sm:flex-1">
           <app-search-bar
             placeholder="Search for Laundry"
@@ -20,7 +21,7 @@
           ></app-search-bar>
         </div>
 
-        <!-- Location Filter -->
+        <!-- Location Filter Dropdown -->
         <div class="w-full sm:w-auto">
           <select
             [(ngModel)]="selectedLocation"
@@ -35,7 +36,7 @@
           </select>
         </div>
 
-        <!-- Rating Filter -->
+        <!-- Rating Filter Dropdown -->
         <div class="w-full sm:w-auto">
           <select
             [(ngModel)]="selectedRating"
@@ -52,7 +53,7 @@
       </div>
     </div>
 
-    <!-- Laundry List Component (simplified) -->
+    <!-- Pass Data to Laundry List Component -->
     <app-laundry-list
       [laundries]="filteredLaundries"
       [loading]="loading"
