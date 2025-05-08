@@ -11,5 +11,6 @@ import { ItemCardComponent } from '../item-card/item-card.component';
   styleUrl: './item-list.component.css'
 })
 export class ItemListComponent {
+  // Input property to receive an array of items from the parent component
   @Input() items: Item[] = [];
 }

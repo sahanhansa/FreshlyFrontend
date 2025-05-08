@@ -20,9 +20,9 @@ import { ActivatedRoute } from '@angular/router';
   styleUrl: './item-list-page.component.css'
 })
 export class ItemPageComponent implements OnInit {
-  // All items loaded from service
+  // All unfiltered items fetched from the API
   allItems: Item[] = [];
-  
+
   // Filtered items to display
   displayedItems: Item[] = [];
   
@@ -31,18 +31,18 @@ export class ItemPageComponent implements OnInit {
   
   // Search query
   searchQuery: string = '';
-  
-  // Loading and error states
-  loading = false;
-  error = '';
-  laundryId: string | null = null; // Laundry ID from route parameter
-  // laundryId: string | null= null; // Laundry ID from route parameter
+ 
+  loading = false; // Indicates if data is currently being fetched
+  error = ''; // Holds error message if API call fails
+  laundryId: string | null = null; // Laundry ID extracted from the URL parameter
 
+  // Injecting  required services
   constructor(private itemService: ItemService, private route: ActivatedRoute) {}
 
   ngOnInit() {
     this.laundryId = (this.route.snapshot.paramMap.get('id'));
     
+    // Load items only if we have a valid laundry ID
     if (this.laundryId) {
       this.loadItems();
     } else {
@@ -50,10 +50,12 @@ export class ItemPageComponent implements OnInit {
     }
   }
 
+  // Method to fetch items from the API for the selected laundry
   loadItems(): void {
     this.loading = true;
     this.error = '';
     
+    // Service method call to get items
     this.itemService.getItems(this.laundryId || "").subscribe({
       next: (data) => {
         console.log('Received items:', data);
@@ -69,18 +71,20 @@ export class ItemPageComponent implements OnInit {
     });
   }
 
+  // Method to change the active category tab
   setActiveTab(tab: ItemCategory): void {
     this.activeTab = tab;
     this.filterItemsByCategory();
   }
 
+  // Handler for search bar input changes
   onSearchChanged(query: string): void {
     this.searchQuery = query;
     this.filterItemsByCategory();
   }
 
+  // Method to filter items based on active category and search query
   filterItemsByCategory(): void {
-    // Filter by category using the categoryName from the API
     let filteredItems = this.allItems.filter(item => {
       const category = this.mapCategoryNameToTabCategory(item.categoryName);
       return category === this.activeTab;
@@ -95,6 +99,7 @@ export class ItemPageComponent implements OnInit {
       );
     }
     
+    // Update the displayed items
     this.displayedItems = filteredItems;
   }
   
@@ -104,6 +109,7 @@ export class ItemPageComponent implements OnInit {
     
     const lowerCaseName = categoryName.toLowerCase();
     
+    // Map to 'category' if it contains category-related terms
     if (lowerCaseName.includes('lady') || lowerCaseName.includes('women') || lowerCaseName === 'ladies') {
       return 'ladies';
     } else if (lowerCaseName.includes('gent') || lowerCaseName.includes('men') || lowerCaseName === 'gents') {
@@ -115,6 +121,7 @@ export class ItemPageComponent implements OnInit {
     }
   }
   
+  // Method to retry loading items if the initial load failed
   retryLoading(): void {
     this.loadItems();
   }

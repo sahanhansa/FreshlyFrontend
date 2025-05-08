@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { Item, ServiceWithPrice } from '../../../models/item.model';
+import { Item } from '../../../models/item.model';
 import { FabricTypeService } from '../../../services/fabric-type.service';
 
 @Component({
@@ -12,16 +12,21 @@ import { FabricTypeService } from '../../../services/fabric-type.service';
   styleUrls: ['./item-card.component.css']
 })
 export class ItemCardComponent implements OnInit {
-  @Input() item!: Item;
+  // Input property to receive item data from parent component
+  @Input() item!: Item; 
 
+  // Form controls for each selectable field
   selectedGarment = new FormControl('Cotton');
   selectedService = new FormControl('');
   selectedWashMethod = new FormControl('');
   quantity = new FormControl(1);
   
-  fabricTypes: string[] = [];
+  // Array to store available fabric types
+  fabricTypes: string[] = []; 
+  // Store the calculated price based on service and quantity
   currentPrice: number = 0;
   
+  // Inject FabricTypeService to get available fabric types
   constructor(
     private fabricTypeService: FabricTypeService
   ) {}
@@ -35,18 +40,18 @@ export class ItemCardComponent implements OnInit {
       this.selectedGarment.setValue(this.fabricTypes[0]);
     }
     
-    // Set default service if available
+    // Set default service if the item has services
     if (this.item.services && this.item.services.length > 0) {
       this.selectedService.setValue(this.item.services[0].serviceId);
       this.updatePrice();
     }
     
-    // Listen for service selection changes
+    // Listen for service selection changes to update price
     this.selectedService.valueChanges.subscribe(() => {
       this.updatePrice();
     });
 
-    // Add this: Listen for quantity changes
+    // Listen for quantity changes to update price
     this.quantity.valueChanges.subscribe(() => {
       this.updatePrice();
     });
@@ -63,6 +68,7 @@ export class ItemCardComponent implements OnInit {
     this.currentPrice = basePrice * qty;
   }
   
+  // Handles the "Add to Basket" button click
   onAddToBasket(): void {
     console.log('Item:', this.item.itemName);
     console.log('Fabric Type:', this.selectedGarment.value);
@@ -70,9 +76,10 @@ export class ItemCardComponent implements OnInit {
     console.log('Wash Method:', this.selectedWashMethod.value);
     console.log('Price:', this.currentPrice);
     console.log('Quantity:', this.quantity.value);
-    // Call your cart service to add item
+    // TODO:Call your basket service to add item
   }
   
+  // Helper method to get service name from service ID
   getSelectedServiceName(): string {
     const selectedServiceId = this.selectedService.value;
     const service = this.item.services.find(s => s.serviceId === selectedServiceId);
