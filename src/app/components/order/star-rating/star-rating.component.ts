@@ -9,6 +9,6 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./star-rating.component.css']
 })
 export class StarRatingComponent {
-  @Input() rating: number = 0;
-  @Input() hasRatings: boolean = true;
+  @Input() rating: number = 0; // Input property to receive rating value
+  @Input() hasRatings: boolean = true; // Input flag to indicate if the item has ratings
 }

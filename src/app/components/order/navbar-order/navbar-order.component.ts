@@ -12,6 +12,7 @@ import { RouterLink } from '@angular/router';
 export class NavbarOrderComponent {
   isMenuOpen = false;
 
+  // Method to toggle mobile menu visibility
   toggleMenu() {
     this.isMenuOpen = !this.isMenuOpen;
   }

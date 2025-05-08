@@ -5,7 +5,6 @@ import { Observable, of } from 'rxjs';
   providedIn: 'root'
 })
 export class FabricTypeService {
-  // Define fabric types here instead of in the component
   private fabricTypes: string[] = ['Cotton', 'Polyester', 'Linen', 'Wool', 'Silk', 'Other'];
 
   constructor() { }
@@ -15,7 +14,7 @@ export class FabricTypeService {
     return this.fabricTypes;
   }
 
-  // Alternative method that returns an Observable (useful for async operations)
+  // Asynchronous method that returns the fabric types as an Observable
   getFabricTypesAsObservable(): Observable<string[]> {
     return of(this.fabricTypes);
   }

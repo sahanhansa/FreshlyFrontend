@@ -7,6 +7,7 @@
   
   <!-- Orders Container -->
   <div class="space-y-4 animate-fadeIn">
+
     <!-- Show when no orders are available -->
     <div *ngIf="pendingOrders.length === 0" class="rounded-lg p-8 text-center">
       <p class="text-gray-500 mb-4">You don't have any pending orders</p>
@@ -15,7 +16,7 @@
       </button>
     </div>
     
-    <!-- Show when orders are available -->
+    <!-- Pass data to order card component when orders are available -->
     <div *ngIf="pendingOrders.length > 0">
       <div *ngFor="let order of pendingOrders">
         <app-order-summary

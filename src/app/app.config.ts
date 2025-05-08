@@ -5,7 +5,6 @@ import { LaundryPageComponent } from './pages/order/laundry-list-page/laundry-li
 import { BasketComponent } from './pages/order/basket/basket.component';
 import { ItemPageComponent } from './pages/order/item-list-page/item-list-page.component';
 
-// Define routes
 const routes: Routes = [
   { path: '', redirectTo: 'order', pathMatch: 'full' },
   { path: 'order', component: LaundryPageComponent },
@@ -22,6 +21,5 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
     provideHttpClient(withFetch()),
-    // other providers...
   ],
 };
