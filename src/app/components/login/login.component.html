@@ -1,29 +1,38 @@
-<div class="min-h-screen flex items-center justify-center bg-gray-100">
+<!-- Full screen centered container with light background -->
+ <div class="min-h-screen flex items-center justify-center bg-gray-100">
   <div class="container mx-auto px-4">
     <div class="flex justify-center">
       <div class="w-full max-w-md">
+
+         <!-- Login card container -->
         <div class="bg-white border rounded-lg shadow-lg">
-          
+
+          <!-- Card header -->
           <div class="text-center border-b p-4">
             <h3 class="pt-3 font-bold text-2xl">Login</h3>
           </div>
 
+         <!-- Card body -->
           <div class="p-6">
-            
-            <form [formGroup]="loginForm">
+
+             <!-- Login form bound to Angular FormGroup -->
+               <form [formGroup]="loginForm">
 
               <!-- Username Field -->
               <div class="pt-3"></div>
-
               <div class="relative mb-4">
+
+                <!-- Username icon -->
                 <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
                   <i class="fa fa-user"></i>
                 </span>
+
+                <!-- Username input with validation styles -->
                 <input 
                   formControlName="username" 
                   type="text" 
-                  
                   placeholder="Username"
+                  
                   [ngClass]="{
                     'border-red-500': loginForm.controls['username'].dirty && loginForm.controls['username'].hasError('required'),
                     'border-gray-300': !(loginForm.controls['username'].dirty && loginForm.controls['username'].hasError('required'))
@@ -31,17 +40,22 @@
                   class="w-full pl-10 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 flex-1 bg-transparent outline-none text-gray-400 focus:text-gray-700"
                 />
               </div>
+
+              <!-- Username validation message -->
               <small *ngIf="loginForm.controls['username'].dirty && loginForm.controls['username'].hasError('required')" class="text-red-500">
                 *Username is required
               </small>
 
-              <!-- Password Field -->
+              <!-- Password Input Field -->
               <div class="pt-3"></div>
-
               <div class="relative mb-4">
+
+                 <!-- Password icon -->
                 <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
                   <i class="fa fa-lock"></i>
                 </span>
+
+                <!-- Password input with toggleable type and validation -->
                 <input 
                   formControlName="password" 
                   [type]="inputType"
@@ -54,6 +68,8 @@
                   class="w-full pl-10 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 flex-1 bg-transparent outline-none text-gray-400 focus:text-gray-700"
                 />
               </div>
+
+               <!-- Password validation message -->
               <small *ngIf="loginForm.controls['password'].dirty && loginForm.controls['password'].hasError('required')" class="text-red-500">
                 *Password is required
               </small>
@@ -63,7 +79,7 @@
                 <a id="forgot" class="font-bold text-blue-500 hover:underline cursor-pointer">Forget Password?</a>
               </div>
 
-              <!-- Submit Button -->
+              <!-- Login Button -->
               <button 
                 (click)="onSubmit()" 
                 type="submit"
@@ -72,23 +88,17 @@
                 Login
               </button>
 
-              <!-- Signup Link -->
+               <!-- Signup Navigation -->
               <div class="text-center pt-4 text-gray-600 text-sm">
                 Don't have an account?
+
                <!-- Use button instead of <a> for Angular click handler -->
                 <button type="button" (click)="goToSignup()" class="text-blue-500 font-bold hover:underline bg-transparent border-none p-0 cursor-pointer">
                   Signup
                 </button>
-                
-                
-                
-
-
               </div>
-
             </form>
           </div>
-
         </div>
       </div>
     </div>

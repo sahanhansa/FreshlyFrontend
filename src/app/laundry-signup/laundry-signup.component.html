@@ -1,20 +1,26 @@
+<!-- Outer wrapper that centers the form -->
 <div class="min-h-screen flex items-center justify-center bg-gray-100">
     <div class="container mx-auto px-4">
       <div class="flex justify-center">
         <div class="w-full max-w-md">
+
+          <!-- Card container -->
           <div class="bg-white border rounded-lg shadow-lg">
   
             <!-- Title  -->
             <div class="text-center border-b p-4">
                 <h3 class="pt-3 font-bold text-2xl">Sign Up</h3>
               </div>
-    
+
+            <!-- Form Container -->
               <div class="p-6">
                 <form [formGroup]="signupForm">
     
                   <!-- LaundryName -->
                   <div class="pt-3"></div>
                   <div class="relative mb-4">
+
+                    <!-- Icon -->
                     <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
                       <i class="fa fa-user"></i>
                     </span>
@@ -29,12 +35,13 @@
                       class="w-full pl-10 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 flex-1 bg-transparent outline-none text-gray-400 focus:text-gray-700"
                     />
                   </div>
+
+                  <!-- Error message for laundry name -->
                   <small *ngIf="signupForm.controls['laundry'].dirty && signupForm.controls['laundry'].hasError('required')" class="text-red-500">
                     *Laundry name is required
                   </small>
     
-                  <!-- Address -->
-                <!-- Single Address Field (Visible initially) -->
+                 <!-- Address Field - Initially Collapsed -->
 <div *ngIf="!isAddressClicked" class="pt-3">
     <div class="relative mb-4" (click)="isAddressClicked = true">
       <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
@@ -49,7 +56,7 @@
     </div>
   </div>
   
-  <!-- Split Fields (Shown after click) -->
+  <!-- Expanded Address Fields -->
   <div *ngIf="isAddressClicked">
     <!-- House No -->
     <div class="pt-3"></div>
@@ -60,10 +67,12 @@
       <input 
         formControlName="houseNo"
         type="text"
+        maxlength="5"
         placeholder="House No"
         class="w-full pl-10 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 bg-transparent outline-none text-gray-400 focus:text-gray-700"
       />
     </div>
+    <!-- Error message -->
     <small *ngIf="signupForm.controls['houseNo'].dirty && signupForm.controls['houseNo'].hasError('required')" class="text-red-500">
         *House No number is required
       </small>
@@ -81,6 +90,7 @@
         class="w-full pl-10 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 bg-transparent outline-none text-gray-400 focus:text-gray-700"
       />
     </div>
+    <!-- Error message -->
     <small *ngIf="signupForm.controls['street'].dirty && signupForm.controls['street'].hasError('street')" class="text-red-500">
         *Street is required
       </small>
@@ -107,8 +117,12 @@
       </span>
       <input 
         formControlName="postalCode"
+        maxlength="5"
         type="text"
         placeholder="Postal Code"
+        inputmode="numeric"
+  pattern="[0-9]*"
+  (keypress)="allowOnlyDigits($event)"
         class="w-full pl-10 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 bg-transparent outline-none text-gray-400 focus:text-gray-700"
       />
     </div>
@@ -123,6 +137,10 @@
                     </span>
                     <input 
                       formControlName="contact1"
+                      maxlength="10"
+                      inputmode="numeric"
+                      pattern="[0-9]*"
+                      (keypress)="allowOnlyDigits($event)"
                       type="text"
                       placeholder="Contact No 1"
                       [ngClass]="{
@@ -132,6 +150,7 @@
                       class="w-full pl-10 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 flex-1 bg-transparent outline-none text-gray-400 focus:text-gray-700"
                     />
                   </div>
+                   <!-- Error -->
                   <small *ngIf="signupForm.controls['contact1'].dirty && signupForm.controls['contact1'].hasError('required')" class="text-red-500">
                     *Contact number is required
                   </small>
@@ -144,6 +163,10 @@
                     </span>
                     <input 
                       formControlName="contact2"
+                      maxlength="10"
+                      inputmode="numeric"
+                      pattern="[0-9]*"
+                      (keypress)="allowOnlyDigits($event)"
                       type="text"
                       placeholder="Contact No 2"
                       class="w-full pl-10 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 flex-1 bg-transparent outline-none text-gray-400 focus:text-gray-700"
@@ -161,62 +184,73 @@
                       type="email"
                       placeholder="Laundry Email"
                       [ngClass]="{
-                        'border-red-500': signupForm.controls['email'].dirty && signupForm.controls['email'].hasError('required'),
-                        'border-gray-300': !(signupForm.controls['email'].dirty && signupForm.controls['email'].hasError('required'))
+                        'border-red-500': signupForm.controls['laundryemail'].dirty && signupForm.controls['laundryemail'].hasError('required'),
+                        'border-gray-300': !(signupForm.controls['laundryemail'].dirty && signupForm.controls['laundryemail'].hasError('required'))
                       }"
                       class="w-full pl-10 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 flex-1 bg-transparent outline-none text-gray-400 focus:text-gray-700"
                     />
                   </div>
-                  <small *ngIf="signupForm.controls['email'].dirty && signupForm.controls['email'].hasError('required')" class="text-red-500">
+                  <!-- Error -->
+                  <small *ngIf="signupForm.controls['laundryemail'].dirty && signupForm.controls['laundryemail'].hasError('required')" class="text-red-500">
                     *Laundry Email is required
                   </small>
+
                    <!-- Owner name -->
-                 <!-- Single Owner Name Field (Visible initially) -->
-<div *ngIf="!isOwnerClicked" class="pt-3">
-    <div class="relative mb-4" (click)="isOwnerClicked = true">
-      <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-        <i class="fa fa-user"></i>
-      </span>
-      <input 
-        type="text"
-        placeholder="Owner Name (Click to split)"
-        class="w-full pl-10 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 bg-transparent outline-none text-gray-400 focus:text-gray-700"
-        readonly
-      />
+               <div *ngIf="!isOwnerClicked " class="pt-3">
+               <div class="relative mb-4" (click)="isOwnerClicked = true">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+               <i class="fa fa-map-marker"></i>
+            </span>
+               <input 
+                type="text"
+                placeholder="Owner Name(Click to edit parts)"
+                class="w-full pl-10 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 bg-transparent outline-none text-gray-400 focus:text-gray-700"
+               readonly/>
     </div>
   </div>
   
-  <!-- Split Fields: First Name & Last Name (Shown after click) -->
-  <div *ngIf="isOwnerClicked">
-    <!-- First Name -->
-    <div class="pt-3"></div>
-    <div class="relative mb-4">
-      <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-        <i class="fa fa-user"></i>
-      </span>
-      <input 
-        formControlName="firstName"
+             <!-- Split Fields (Shown after click) -->
+            <div *ngIf="isOwnerClicked">
+
+             <!-- Owner first name-->
+          <div class="pt-3"></div>
+          <div class="relative mb-4">
+          <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+            <i class="fa fa-home"></i>
+          </span>
+       <input 
+        formControlName="firstname"
         type="text"
         placeholder="First Name"
         class="w-full pl-10 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 bg-transparent outline-none text-gray-400 focus:text-gray-700"
       />
     </div>
+    <!-- Error -->
+    <small *ngIf="signupForm.controls['firstname'].dirty && signupForm.controls['firstname'].hasError('required')" class="text-red-500">
+        *First name is required
+      </small>
   
-    <!-- Last Name -->
+    <!-- Owner last name -->
     <div class="pt-3"></div>
     <div class="relative mb-4">
       <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-        <i class="fa fa-user"></i>
+        <i class="fa fa-road"></i>
       </span>
       <input 
-        formControlName="lastName"
+        formControlName="lastname"
         type="text"
         placeholder="Last Name"
         class="w-full pl-10 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 bg-transparent outline-none text-gray-400 focus:text-gray-700"
       />
     </div>
+    <!-- Error -->
+    <small *ngIf="signupForm.controls['lastname'].dirty && signupForm.controls['lastname'].hasError('lastname')" class="text-red-500">
+        *Last name is required
+      </small>
+  
   </div>
   
+   
   
                        <!-- Owner Email -->
                        <div class="pt-3"></div>
@@ -235,6 +269,7 @@
                            class="w-full pl-10 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 flex-1 bg-transparent outline-none text-gray-400 focus:text-gray-700"
                          />
                        </div>
+                       <!-- Error -->
                        <small *ngIf="signupForm.controls['owneremail'].dirty && signupForm.controls['owneremail'].hasError('required')" class="text-red-500">
                          *Owner Email is required
                        </small>
@@ -257,7 +292,14 @@
                       />
                       <span (click)="hideShowPass()" class="absolute right-3 top-3 cursor-pointer">
                         <i class="fa" [ngClass]="eyeIcon"></i>
+                        
                       </span>
+                      <div *ngIf="signupForm.controls['password'].touched && signupForm.controls['password'].invalid" class="text-red-500 text-sm">
+                        <div *ngIf="signupForm.controls['password'].errors?.['required']">Password is required</div>
+                        <div *ngIf="signupForm.controls['password'].errors?.['pattern']">
+                          Password is not strong. Must contain at least 8 characters, 1 uppercase, 1 lowercase, 1 number, and 1 special character.
+                        </div>
+                      </div>
                     </div>
                   </div>
     
@@ -276,6 +318,10 @@
                       <span (click)="hideShowPass()" class="absolute right-3 top-3 cursor-pointer">
                         <i class="fa" [ngClass]="eyeIcon"></i>
                       </span>
+                      
+                    </div>
+                    <div *ngIf="signupForm.errors?.['passwordMismatch'] && signupForm.get('repassword')?.touched" class="text-red-500">
+                      *Passwords do not match
                     </div>
                   </div>
     
@@ -299,13 +345,13 @@
                     <a href="/login" class="text-blue-500 font-bold hover:underline">Login</a>
                   </div>
     
-                </form>
-              </div>
+                <!-- </form> -->
+              <!-- </div> 
     
-            </div>
-          </div>
-        </div>
-      </div>
+             </div> 
+          </div> 
+        </div> 
+       </div> -->
     
        
     

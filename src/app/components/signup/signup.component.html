@@ -1,7 +1,16 @@
-<div class="min-h-screen flex items-center justify-center bg-gray-100">
+<!-- Full-height screen with centered content and light gray background -->
+ <div class="min-h-screen flex items-center justify-center bg-gray-100">
+
+  <!-- Responsive container with horizontal padding -->
   <div class="container mx-auto px-4">
+
+     <!-- Flex to horizontally center the signup card -->
     <div class="flex justify-center">
+
+      <!-- Limit form width for better UX on larger screens -->
       <div class="w-full max-w-md">
+
+        <!-- Card-like white background with border and shadow -->
         <div class="bg-white border rounded-lg shadow-lg">
 
           <!-- Title -->
@@ -9,50 +18,134 @@
             <h3 class="pt-3 font-bold text-2xl">Sign Up</h3>
           </div>
 
+           <!-- Card content area -->
           <div class="p-6">
             <form [formGroup]="signupForm">
 
-              <!-- Username -->
-              <div class="pt-3"></div>
-              <div class="relative mb-4">
-                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-                  <i class="fa fa-user"></i>
-                </span>
-                <input 
-                  formControlName="username"
-                  type="text"
-                  placeholder="Username"
-                  [ngClass]="{
-                    'border-red-500': signupForm.controls['username'].dirty && signupForm.controls['username'].hasError('required'),
-                    'border-gray-300': !(signupForm.controls['username'].dirty && signupForm.controls['username'].hasError('required'))
-                  }"
-                  class="w-full pl-10 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 flex-1 bg-transparent outline-none text-gray-400 focus:text-gray-700"
-                />
-              </div>
-              <small *ngIf="signupForm.controls['username'].dirty && signupForm.controls['username'].hasError('required')" class="text-red-500">
-                *Username is required
-              </small>
+         <!-- User first name-->
+         <div class="pt-3"></div>
+         <div class="relative mb-4">
+         <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+         <i class="fa fa-user"></i>
+      </span>
+      <input 
+        formControlName="firstname"
+        type="text"
+        placeholder="First Name"
+        class="w-full pl-10 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 bg-transparent outline-none text-gray-400 focus:text-gray-700"
+      />
+    </div>
 
-              <!-- Address -->
-              <div class="pt-3"></div>
-              <div class="relative mb-4">
-                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-                  <i class="fa fa-map-marker"></i>
-                </span>
-                <input 
-                  formControlName="address"
-                  type="text"
-                  placeholder="Address"
-                  [ngClass]="{
-                    'border-red-500': signupForm.controls['address'].dirty && signupForm.controls['address'].hasError('required'),
-                    'border-gray-300': !(signupForm.controls['address'].dirty && signupForm.controls['address'].hasError('required'))
-                  }"
-                  class="w-full pl-10 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 flex-1 bg-transparent outline-none text-gray-400 focus:text-gray-700"
-                />
-              </div>
-              <small *ngIf="signupForm.controls['address'].dirty && signupForm.controls['address'].hasError('required')" class="text-red-500">
-                *Address is required
-              </small>
+    <!-- First name validation message -->
+    <small *ngIf="signupForm.controls['firstname'].dirty && signupForm.controls['firstname'].hasError('required')" class="text-red-500">
+        *First name is required
+      </small>
+  
+    <!--  Last name -->
+    <div class="pt-3"></div>
+    <div class="relative mb-4">
+      <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+        <i class="fa fa-user"></i>
+      </span>
+      <input 
+        formControlName="lastname"
+        type="text"
+        placeholder="Last Name"
+        class="w-full pl-10 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 bg-transparent outline-none text-gray-400 focus:text-gray-700"
+      />
+    </div>
+
+     <!-- Last name validation -->
+    <small *ngIf="signupForm.controls['lastname'].dirty && signupForm.controls['lastname'].hasError('required')" class="text-red-500">
+      *Last name is required
+    </small>
+    
+  <!-- Collapsed address field shown initially, expands on click -->            
+    <div *ngIf="!isAddressClicked" class="pt-3">
+    <div class="relative mb-4" (click)="isAddressClicked = true">
+    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+      <i class="fa fa-map-marker"></i>
+    </span>
+    <input 
+      type="text"
+      placeholder="Address (Click to edit parts)"
+      class="w-full pl-10 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 bg-transparent outline-none text-gray-400 focus:text-gray-700"
+      readonly
+    />
+  </div>
+</div>
+
+<!-- Expanded multi-field address entry -->
+<div *ngIf="isAddressClicked">
+
+  <!-- House No -->
+  <div class="pt-3"></div>
+  <div class="relative mb-4">
+    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+      <i class="fa fa-home"></i>
+    </span>
+    <input 
+      formControlName="houseNo"
+      type="text"
+      maxlength="5"
+      placeholder="House No"
+      class="w-full pl-10 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 bg-transparent outline-none text-gray-400 focus:text-gray-700"
+    />
+  </div>
+  <small *ngIf="signupForm.controls['HouseNo'].dirty && signupForm.controls['HouseNo'].hasError('required')" class="text-red-500">
+      *House No number is required
+    </small>
+
+  <!-- Street -->
+  <div class="pt-3"></div>
+  <div class="relative mb-4">
+    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+      <i class="fa fa-road"></i>
+    </span>
+    <input 
+      formControlName="street"
+      type="text"
+      placeholder="Street"
+      class="w-full pl-10 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 bg-transparent outline-none text-gray-400 focus:text-gray-700"
+    />
+  </div>
+  <small *ngIf="signupForm.controls['street'].dirty && signupForm.controls['street'].hasError('required')" class="text-red-500">
+    *Street is required
+  </small>
+  
+
+  <!-- City -->
+  <div class="pt-3"></div>
+  <div class="relative mb-4">
+    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+      <i class="fa fa-building"></i>
+    </span>
+    <input 
+      formControlName="city"
+      type="text"
+      placeholder="City"
+      class="w-full pl-10 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 bg-transparent outline-none text-gray-400 focus:text-gray-700"
+    />
+  </div>
+
+  <!-- Postal Code -->
+  <div class="pt-3"></div>
+  <div class="relative mb-4">
+    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+      <i class="fa fa-envelope"></i>
+    </span>
+    <input 
+      formControlName="postalCode"
+      maxlength="5"
+      type="text"
+      placeholder="Postal Code"
+      inputmode="numeric"
+pattern="[0-9]*"
+(keypress)="allowOnlyDigits($event)"
+      class="w-full pl-10 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 bg-transparent outline-none text-gray-400 focus:text-gray-700"
+    />
+  </div>
+</div>
 
               <!-- Contact No 1 -->
               <div class="pt-3"></div>
@@ -62,6 +155,10 @@
                 </span>
                 <input 
                   formControlName="contact1"
+                  maxlength="10"
+                  inputmode="numeric"
+                  pattern="[0-9]*"
+                  (keypress)="allowOnlyDigits($event)"
                   type="text"
                   placeholder="Contact No 1"
                   [ngClass]="{
@@ -83,6 +180,10 @@
                 </span>
                 <input 
                   formControlName="contact2"
+                  maxlength="10"
+                  inputmode="numeric"
+                  pattern="[0-9]*"
+                  (keypress)="allowOnlyDigits($event)"
                   type="text"
                   placeholder="Contact No 2"
                   class="w-full pl-10 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 flex-1 bg-transparent outline-none text-gray-400 focus:text-gray-700"
@@ -109,47 +210,78 @@
               <small *ngIf="signupForm.controls['email'].dirty && signupForm.controls['email'].hasError('required')" class="text-red-500">
                 *Email is required
               </small>
+         <!-- User name-->
+        <div class="pt-3"></div>
+        <div class="relative mb-4">
+              <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                <i class="fa fa-user"></i>
+              </span>
+        <input 
+        formControlName="username"
+        type="text"
+        placeholder="User Name"
+        class="w-full pl-10 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 bg-transparent outline-none text-gray-400 focus:text-gray-700"
+    />
+  </div>
+       <small *ngIf="signupForm.controls['username'].dirty && signupForm.controls['username'].hasError('required')" class="text-red-500">
+        *User name is required
+       </small>
+             
+                  <!-- Password input with toggle visibility -->
+                  <div class="pt-3">
+                    <div class="relative mb-4">
+                      <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                        <i class="fa fa-lock"></i>
+                      </span>
+                      <input 
+                        formControlName="password"
+                        [type]="type"
+                        placeholder="Password"
+                        [ngClass]="{
+                          'border-red-500': signupForm.controls['password'].dirty && signupForm.controls['password'].hasError('required'),
+                          'border-gray-300': !(signupForm.controls['password'].dirty && signupForm.controls['password'].hasError('required'))
+                        }"
+                        class="w-full pl-10 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 flex-1 bg-transparent outline-none text-gray-400 focus:text-gray-700"
+                      />
 
-              <!-- Password -->
-              <div class="pt-3">
-                <div class="relative mb-4">
-                  <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-                    <i class="fa fa-lock"></i>
-                  </span>
-                  <input 
-                    formControlName="password"
-                    [type]="type"
-                    placeholder="Password"
-                    [ngClass]="{
-                      'border-red-500': signupForm.controls['password'].dirty && signupForm.controls['password'].hasError('required'),
-                      'border-gray-300': !(signupForm.controls['password'].dirty && signupForm.controls['password'].hasError('required'))
-                    }"
-                    class="w-full pl-10 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 flex-1 bg-transparent outline-none text-gray-400 focus:text-gray-700"
-                  />
-                  <span (click)="hideShowPass()" class="absolute right-3 top-3 cursor-pointer">
-                    <i class="fa" [ngClass]="eyeIcon"></i>
-                  </span>
-                </div>
-              </div>
+                      <!-- Eye icon to toggle password visibility -->
+                      <span (click)="hideShowPass()" class="absolute right-3 top-3 cursor-pointer">
+                        <i class="fa" [ngClass]="eyeIcon"></i>
+                       </span>
 
-              <!-- Re-enter Password -->
-              <div class="pt-3">
-                <div class="relative mb-4">
-                  <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-                    <i class="fa fa-lock"></i>
-                  </span>
-                  <input 
-                    formControlName="repassword"
-                    [type]="type"
-                    placeholder="Re-enter Password"
-                    class="w-full pl-10 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 flex-1 bg-transparent outline-none text-gray-400 focus:text-gray-700"
-                  />
-                  <span (click)="hideShowPass()" class="absolute right-3 top-3 cursor-pointer">
-                    <i class="fa" [ngClass]="eyeIcon"></i>
-                  </span>
-                </div>
-              </div>
+                       <!-- Password validation messages -->
+                      <div *ngIf="signupForm.controls['password'].touched && signupForm.controls['password'].invalid" class="text-red-500 text-sm">
+                        <div *ngIf="signupForm.controls['password'].errors?.['required']">Password is required</div>
+                        <div *ngIf="signupForm.controls['password'].errors?.['pattern']">
+                          Password is not strong. Must contain at least 8 characters, 1 uppercase, 1 lowercase, 1 number, and 1 special character.
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+    
+                  <!-- Re-enter Password -->
+                  <div class="pt-3">
+                    <div class="relative mb-4">
+                      <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                        <i class="fa fa-lock"></i>
+                      </span>
+                      <input 
+                        formControlName="repassword"
+                        [type]="type"
+                        placeholder="Re-enter Password"
+                        class="w-full pl-10 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 flex-1 bg-transparent outline-none text-gray-400 focus:text-gray-700"
+                      />
+                      <span (click)="hideShowPass()" class="absolute right-3 top-3 cursor-pointer">
+                        <i class="fa" [ngClass]="eyeIcon"></i>
+                      </span>
+                    </div>
 
+                    <!-- Password mismatch validation -->
+                    <div *ngIf="signupForm.errors?.['passwordMismatch'] && signupForm.get('repassword')?.touched" class="text-red-500">
+                      *Passwords do not match
+                    </div>
+                  </div>
+  
               <!-- Forgot Password -->
               <div class="flex justify-end mt-4 text-sm">
                 <a id="forgot" class="font-bold text-blue-500 hover:underline cursor-pointer">Forgot Password?</a>
@@ -170,13 +302,8 @@
                 <a href="/login" class="text-blue-500 font-bold hover:underline">Login</a>
               </div>
 
-            </form>
-          </div>
+           
+          
 
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
 
   

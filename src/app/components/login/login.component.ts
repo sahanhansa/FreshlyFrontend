@@ -2,8 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
-import { ActivatedRoute} from '@angular/router';
 import { Router } from '@angular/router'; // 
+
 
 
 @Component({
@@ -14,75 +14,45 @@ import { Router } from '@angular/router'; //
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
+  // Object to store login input data 
   loginData = {
     username: '',
     password: '',
     role: ''
   };
+
+  
+  // Password visibility toggle variables
   isText: boolean = false;
   eyeIcon: string = 'fa-eye-slash';
   inputType: string = 'password';
+
+  // Login form declaration
   loginForm!: FormGroup; 
 
-
+  // Constructor injects services for form building, navigation, and authentication
   constructor(
     private fb: FormBuilder,
     private router: Router,
-     private auth: AuthService,
-     private route: ActivatedRoute) {}
+     private auth: AuthService
+    ) {}
 
+ // Initialize form controls with validators
   ngOnInit(): void {
     this.loginForm = this.fb.group({
       username: ['', Validators.required],
       password: ['', Validators.required]
     });
-    // this.route.queryParams.subscribe(params => {
-    //   this.loginData.role = params['role'] || ''; // get role from URL
-    //   console.log('Selected role:', this.loginData.role);
-      
-    // });
-    
+   
   }
 
-  
+  // Toggle password visibility
   hideShowPass() {
     this.isText = !this.isText;
     this.eyeIcon = this.isText ? 'fa-eye' : 'fa-eye-slash';
     this.inputType = this.isText ? 'text' : 'password';
   }
-  onSubmit() {
-    if (this.loginForm.valid) {
-      const formData = {
-        Username: this.loginForm.value.username,
-        Password: this.loginForm.value.password,
-        Role: localStorage.getItem("Role")
-      };
-
-      this.auth.login_async(formData).subscribe({
-        next: (response: any) => {
-          console.log('Data received:', response);
-          const role = response?.result.role
-          // Navigate based on role
-          if (role === 'Customer') {
-            this.router.navigate(['/cus-home']);
-          } else if (role === 'Laundry') {
-            this.router.navigate(['/laundry-home']);
-          } else if (role === 'Admin') {
-            this.router.navigate(['/admin-home']);
-          }
-        },
-        error: (err) => {
-          console.error('Error:', err);
-        },
-      });
-
-    } else {
-      console.log("Form is not valid.");
-      this.validateAllFormFields(this.loginForm);
-      alert("Your form is invalid.");
-    }
-    
-  }
+  
 
   // Validate all fields
   private validateAllFormFields(formGroup: FormGroup) {
@@ -95,6 +65,46 @@ export class LoginComponent implements OnInit {
       }
     });
   }
+
+  // Handle login form submission
+  onSubmit() {
+    if (this.loginForm.valid) {
+      const formData = {
+        Username: this.loginForm.value.username,
+        Password: this.loginForm.value.password,
+        Role: localStorage.getItem("Role")
+      };
+  
+  // Call login service
+      this.auth.login_async(formData).subscribe({
+        next: (response: any) => {
+          console.log('Data received:', response);
+  
+  // Navigate to the correct dashboard based on role
+          if (formData.Role === 'customer') {
+            this.router.navigate(['/cus-home']);
+          } else if (formData.Role === 'laundry') {
+            this.router.navigate(['/laundry-home']);
+          } else if (formData.Role === 'admin') {
+            this.router.navigate(['/admin-home']);
+          } else {
+            alert("Invalid role.");
+          }
+        },
+        error: (err) => {
+          console.error('Login failed:', err);
+          alert("Login failed. Please check credentials.");
+        },
+      });
+  
+    } else {
+      console.log("Form is not valid.");
+      this.validateAllFormFields(this.loginForm);
+      alert("Your form is invalid.");
+    }
+  }
+
+   // Navigate to the correct signup page based on stored role
   goToSignup() {
     const role = localStorage.getItem("Role");
     if (role === 'customer') {
