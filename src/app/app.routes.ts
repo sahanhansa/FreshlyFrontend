@@ -1,13 +1,13 @@
 import { Routes } from '@angular/router';
-import { LoginComponent } from './components/login/login.component';
-import { SignupComponent } from './components/signup/signup.component';
-import { WhoAreYouComponent } from './components/whoareyou/whoareyou.component';
+import { LoginComponent } from './components/customer/login/login.component';
+import { SignupComponent } from './components/customer/signup/signup.component';
+import { WhoAreYouComponent } from './components/customer/whoareyou/whoareyou.component';
 import { NgModule } from '@angular/core';
 import { RouterModule} from '@angular/router';
-import { LaundryHomeComponent } from './components/laundry-home/laundry-home.component';
+import { LaundryHomeComponent } from './components/customer/laundry-home/laundry-home.component';
 import { AdminHomeComponent } from './components/admin-home/admin-home.component';
 import { CusHomeComponent } from './components/cus-home/cus-home.component';
-import { LaundrySignupComponent } from './laundry-signup/laundry-signup.component';
+import { LaundrySignupComponent } from './components/customer/laundry-signup/laundry-signup.component';
 
 // Define the application's routes
 export const routes: Routes = [
