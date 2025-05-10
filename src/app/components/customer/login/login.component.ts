@@ -76,9 +76,9 @@ export class LoginComponent implements OnInit {
       };
   
   // Call login service
-      this.auth.login_async(formData).subscribe({
-        next: (response: any) => {
-          console.log('Data received:', response);
+      // this.auth.login_async(formData).subscribe({
+      //   next: (response: any) => {
+      //     console.log('Data received:', response);
   
   // Navigate to the correct dashboard based on role
           if (formData.Role === 'customer') {
@@ -90,19 +90,19 @@ export class LoginComponent implements OnInit {
           } else {
             alert("Invalid role.");
           }
-        },
-        error: (err) => {
-          console.error('Login failed:', err);
-          alert("Login failed. Please check credentials.");
-        },
-      });
+        // },
+  //       error: (err) => {
+  //         console.error('Login failed:', err);
+  //         alert("Login failed. Please check credentials.");
+  //       },
+  //     });
   
-    } else {
-      console.log("Form is not valid.");
-      this.validateAllFormFields(this.loginForm);
-      alert("Your form is invalid.");
-    }
-  }
+  //   } else {
+  //     console.log("Form is not valid.");
+  //     this.validateAllFormFields(this.loginForm);
+  //     alert("Your form is invalid.");
+   }
+   }
 
    // Navigate to the correct signup page based on stored role
   goToSignup() {
@@ -121,4 +121,4 @@ export class LoginComponent implements OnInit {
 }
  
    
-    
+
