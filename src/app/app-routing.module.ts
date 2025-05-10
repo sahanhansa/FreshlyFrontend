@@ -1,61 +1,58 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-const routes: Routes = [
-  { path: '', redirectTo: 'admin', pathMatch: 'full' },
+const routes: Routes = [  { path: '', redirectTo: 'admin', pathMatch: 'full' },
   {
     path: 'admin',
     loadComponent: () =>
-      import('./admin/dashboard/dashboard.component').then(
+      import('./components/admin/dashboard/dashboard.component').then(
         (m) => m.DashboardComponent
       ),
-  },
-  {
+  },  {
     path: 'drivers',
     loadComponent: () =>
-      import('./components/drivers/drivers.component').then(
+      import('./components/admin/drivers/drivers.component').then(
         (m) => m.DriversComponent
       ),
   },
   {
     path: 'customers',
     loadComponent: () =>
-      import('./components/customers/customers.component').then(
+      import('./components/admin/customers/customers.component').then(
         (m) => m.CustomersComponent
       ),
   },
   {
     path: 'laundries',
     loadComponent: () =>
-      import('./components/laundries/laundries.component').then(
+      import('./components/admin/laundries/laundries.component').then(
         (m) => m.LaundriesComponent
       ),
   },
   {
     path: 'orders',
     loadComponent: () =>
-      import('./components/orders/orders.component').then(
+      import('./components/admin/orders/orders.component').then(
         (m) => m.OrdersComponent
       ),
   },
   {
     path: 'vehicles',
     loadComponent: () =>
-      import('./components/vehicles/vehicles.component').then(
+      import('./components/admin/vehicles/vehicles.component').then(
         (m) => m.VehiclesComponent
       ),
   },
   {
     path: 'complaints',
     loadComponent: () =>
-      import('./components/complaints/complaints.component').then(
+      import('./components/admin/complaints/complaints.component').then(
         (m) => m.ComplaintsComponent
       ),
-  },
-  {
+  },  {
     path: 'reports',
     loadComponent: () =>
-      import('./components/reports/reports.component').then(
+      import('./components/admin/reports/reports.component').then(
         (m) => m.ReportsComponent
       ),
   },

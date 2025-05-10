@@ -7,7 +7,6 @@ interface Driver {
   name: string;
   email: string;
   contactNo: string;
-  homeAddress: string;
   vehicleNo: string;
   location: string;
   region: string;
@@ -54,7 +53,6 @@ export class DriversComponent implements OnInit {
       name: 'Arthur Morgan',
       email: 'am@gmail.com',
       contactNo: '079 123 4567',
-      homeAddress: 'No.62, YakabeddaRoad, Akuressa, Matara',
       vehicleNo: '2456',
       location: 'Location',
       region: 'Aviswawella',

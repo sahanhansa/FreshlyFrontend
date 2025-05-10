@@ -1,7 +1,9 @@
+// Angular core imports for component, lifecycle hooks, and DOM access
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+// Import interfaces for type safety
 import { AdminStats, AdminPanelMember, Laundry, Driver, PendingAction } from '../../../models/admin.interface';
 import {
   Chart,
@@ -27,7 +29,7 @@ Chart.register(
   Legend,
   Tooltip
 );
-
+//Component decorator with metadata
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
@@ -38,7 +40,9 @@ Chart.register(
 export class AdminDashboardComponent implements OnInit, AfterViewInit {
   @ViewChild('revenueChart') revenueChart!: ElementRef<HTMLCanvasElement>;
   
+  // Admin's display name
   adminName: string = 'John Doe';
+  // Dashboard statistics 
   stats: AdminStats = {
     totalPickups: 75,
     totalDeliveries: 357,
@@ -95,12 +99,13 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit {
   constructor() {
     console.log('AdminDashboardComponent: Constructor called');
   }
-
+// Angular lifecycle hook: runs after component initialization
   ngOnInit() {
     console.log('AdminDashboardComponent: ngOnInit');
     this.initializeData();
   }
 
+  // Angular lifecycle hook
   ngAfterViewInit() {
     const ctx = this.revenueChart.nativeElement.getContext('2d');
     if (ctx) {
@@ -143,6 +148,7 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit {
     }
   }
   
+   // Helper method to initialize or log data
   private initializeData() {
     console.log('AdminDashboardComponent: Initializing data');
     console.log('Stats:', this.stats);

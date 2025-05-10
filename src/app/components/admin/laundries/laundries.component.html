@@ -17,52 +17,52 @@
     </div>
   </div>
 
-  <div *ngFor="let laundry of paginatedLaundries">
-    <h1 class="text-4xl text-gray-800 mb-8 font-inter drop-shadow-lg">Laundry Details</h1>
+  <h1 class="text-4xl text-gray-800 mb-8 font-inter drop-shadow-lg">Laundry Details</h1>
 
+  <div *ngIf="paginatedLaundries.length > 0">
     <div class="bg-blue-500 rounded-[20px] p-8 flex gap-8 mb-8 shadow-lg">
       <div class="flex-1 text-white">
         <div class="flex items-center mb-8">
-          <img [src]="laundry.image" [alt]="laundry.name" 
+          <img [src]="paginatedLaundries[0].image" [alt]="paginatedLaundries[0].name" 
                class="w-24 h-24 rounded-full object-cover mr-4">
           <div>
-            <h3 class="text-2xl font-medium m-0">{{ laundry.name }}</h3>
-            <p class="mt-2 opacity-90">#{{ laundry.id }}</p>
+            <h3 class="text-2xl font-medium m-0">{{ paginatedLaundries[0].name }}</h3>
+            <p class="mt-2 opacity-90">#{{ paginatedLaundries[0].id }}</p>
           </div>
         </div>
         <div class="space-y-4">
           <div class="flex items-center">
             <i class="fas fa-envelope w-5 mr-4"></i>
             <span class="w-32">Email</span>
-            <span>: {{ laundry.email }}</span>
+            <span>: {{ paginatedLaundries[0].email }}</span>
           </div>
           <div class="flex items-center">
             <i class="fas fa-phone w-5 mr-4"></i>
             <span class="w-32">Contact No</span>
-            <span>: {{ laundry.contactNo }}</span>
+            <span>: {{ paginatedLaundries[0].contactNo }}</span>
           </div>
           <div class="flex items-center">
             <i class="fas fa-home w-5 mr-4"></i>
             <span class="w-32">Address</span>
-            <span>: {{ laundry.address }}</span>
+            <span>: {{ paginatedLaundries[0].address }}</span>
           </div>
           <div class="flex items-center">
             <i class="fas fa-map-marker-alt w-5 mr-4"></i>
             <span class="w-32">Location</span>
-            <span>: {{ laundry.location }}</span>
+            <span>: {{ paginatedLaundries[0].location }}</span>
           </div>
           <div class="flex items-center">
             <i class="fas fa-university w-5 mr-4"></i>
             <span class="w-32">Bank Name</span>
-            <span>: {{ laundry.bankDetails.name }}</span>
+            <span>: {{ paginatedLaundries[0].bankDetails.name }}</span>
           </div>
           <div class="flex items-center ml-8">
             <span class="w-32">-Branch</span>
-            <span>: {{ laundry.bankDetails.branch }}</span>
+            <span>: {{ paginatedLaundries[0].bankDetails.branch }}</span>
           </div>
           <div class="flex items-center ml-8">
             <span class="w-32">-Account No</span>
-            <span>: {{ laundry.bankDetails.accountNo }}</span>
+            <span>: {{ paginatedLaundries[0].bankDetails.accountNo }}</span>
           </div>
         </div>
       </div>
@@ -89,9 +89,8 @@
     </div>
 
     <h2 class="text-2xl font-semibold text-gray-800 mb-6">Recent Orders</h2>
-
     <div class="space-y-6">
-      <div class="mb-8 border border-gray-100 rounded-lg overflow-hidden" *ngFor="let order of laundry.recentOrders">
+      <div class="mb-8 border border-gray-100 rounded-lg overflow-hidden" *ngFor="let order of paginatedLaundries[0].recentOrders">
         <div class="flex justify-between items-center p-4 bg-gray-50 border-b border-gray-100">
           <div class="flex gap-8">
             <span>Order ID: {{ order.orderId }}</span>

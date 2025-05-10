@@ -8,31 +8,31 @@ export const routes: Routes = [
   },
   {
     path: 'drivers',
-    loadComponent: () => import('./components/drivers/drivers.component').then(m => m.DriversComponent)
+    loadComponent: () => import('./components/admin/drivers/drivers.component').then(m => m.DriversComponent)
   },
   {
     path: 'customers',
-    loadComponent: () => import('./components/customers/customers.component').then(m => m.CustomersComponent)
+    loadComponent: () => import('./components/admin/customers/customers.component').then(m => m.CustomersComponent)
   },
   {
     path: 'laundries',
-    loadComponent: () => import('./components/laundries/laundries.component').then(m => m.LaundriesComponent)
+    loadComponent: () => import('./components/admin/laundries/laundries.component').then(m => m.LaundriesComponent)
   },
   {
     path: 'orders',
-    loadComponent: () => import('./components/orders/orders.component').then(m => m.OrdersComponent)
+    loadComponent: () => import('./components/admin/orders/orders.component').then(m => m.OrdersComponent)
   },
   {
     path: 'vehicles',
-    loadComponent: () => import('./components/vehicles/vehicles.component').then(m => m.VehiclesComponent)
+    loadComponent: () => import('./components/admin/vehicles/vehicles.component').then(m => m.VehiclesComponent)
   },
   {
     path: 'complaints',
-    loadComponent: () => import('./components/complaints/complaints.component').then(m => m.ComplaintsComponent)
+    loadComponent: () => import('./components/admin/complaints/complaints.component').then(m => m.ComplaintsComponent)
   },
   {
     path: 'reports',
-    loadComponent: () => import('./components/reports/reports.component').then(m => m.ReportsComponent)
+    loadComponent: () => import('./components/admin/reports/reports.component').then(m => m.ReportsComponent)
   },
   { path: '**', redirectTo: 'admin' }
 ];
