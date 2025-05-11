@@ -17,12 +17,14 @@ export class AuthService {
 
   login_async(data:any) {
     console.log("data in service",data)// Debug log
+
+    
     return this.http.post(`${this.baseUrl}/Auth/login`, data);
-    // return this.http.post("https://localhost:7276/api/Auth/login",data)// API call to login endpoin
+   
   }
   signup_async(data: any) {
     console.log("data in service (signup)", data);// Debug log
      return this.http.post(`${this.baseUrl}/Customer`, data);
-    // return this.http.post("https://localhost:7276/api/Customer", data);// API call to signup endpoint 
+    
   }
 }

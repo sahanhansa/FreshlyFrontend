@@ -6,8 +6,11 @@ import { NgModule } from '@angular/core';
 import { RouterModule} from '@angular/router';
 import { LaundryHomeComponent } from './components/customer/laundry-home/laundry-home.component';
 import { AdminHomeComponent } from './components/admin-home/admin-home.component';
-import { CusHomeComponent } from './components/cus-home/cus-home.component';
+import { CusHomeComponent } from './components/customer/cus-home/cus-home.component';
 import { LaundrySignupComponent } from './components/customer/laundry-signup/laundry-signup.component';
+import { HowItWorksComponent } from './components/customer/how-it-works/how-it-works.component';
+
+
 
 // Define the application's routes
 export const routes: Routes = [
@@ -34,7 +37,12 @@ export const routes: Routes = [
   { path: 'admin-home', component: AdminHomeComponent },
   
   // Route for laundry-specific signup
-  {path: 'laundry-signup', component:LaundrySignupComponent}
+  {path: 'laundry-signup', component:LaundrySignupComponent},
+
+ // Route for how-it-works
+   {path: 'how-it-works', component:HowItWorksComponent},
+
+   
     
   
     
