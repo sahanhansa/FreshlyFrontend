@@ -15,16 +15,41 @@ export class AuthService {
  // Injecting HttpClient to make HTTP requests
   constructor(private http:HttpClient) { }
 
-  login_async(data:any) {
-    console.log("data in service",data)// Debug log
+ customerLogin(data:any) {
+    console.log("data in service-> Customer",data)// Debug log
 
     
-    return this.http.post(`${this.baseUrl}/Auth/login`, data);
+    return this.http.post(`${this.baseUrl}/Auth/customer/login`, data);
    
   }
+   adminLogin(data:any) {
+    console.log("data in service -> Admin",data)// Debug log
+    return this.http.post(`${this.baseUrl}/Auth/admin/login`, data, {
+    headers: { 'Content-Type': 'application/json' }
+  });
+   
+  }
+   laundryLogin(data:any) {
+    console.log("data in service -> Laundry",data,{
+    headers: { 'Content-Type': 'application/json' }
+  })// Debug log
+
+    
+    return this.http.post(`${this.baseUrl}/Auth/laundry/login`, data);
+   
+  }
+  //  driverLogin(data:any) {
+  //   console.log("data in service",data)// Debug log
+
+    
+  //   return this.http.post(`${this.baseUrl}/Auth/driver/login`, data);
+   
+  // }
   signup_async(data: any) {
     console.log("data in service (signup)", data);// Debug log
-     return this.http.post(`${this.baseUrl}/Customer`, data);
+     return this.http.post(`${this.baseUrl}/Customer`, data, {
+    headers: { 'Content-Type': 'application/json' }
+  });
     
   }
 }
