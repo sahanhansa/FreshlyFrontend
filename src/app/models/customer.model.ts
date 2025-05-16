@@ -4,6 +4,7 @@ export interface Customer {
   lastName: string | null;
   email: string | null;
   username: string | null;
-  contacts: string[] | null;  // Allow null
+  addressId: string | null;
   address: string | null;
+  contacts: string[];
 }

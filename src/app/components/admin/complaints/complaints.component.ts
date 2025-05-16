@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { SharedImports } from '../../../shared/shared-imports';
-import { FeedbackService } from '../../../services/feedback.service';
+// Import the appropriate model and service for complaints
 import { Feedback } from '../../../models/feedback.model';
+import { FeedbackService } from '../../../services/feedback.service';
 
 @Component({
   selector: 'app-complaints',
@@ -19,15 +21,19 @@ export class ComplaintsComponent implements OnInit {
   selectedFeedback: Feedback | null = null;
   
   // UI state properties
-  loading = false;
+  showTable: boolean = true;
+  loading: boolean = false;
   error: string | null = null;
-  searchQuery = '';
-  itemsPerPage = 9;
-  currentPage = 1;
-  totalPages = 1;
+  searchQuery: string = '';
+  itemsPerPage: number = 9;
+  currentPage: number = 1;
+  totalPages: number = 1;
   pageNumbers: number[] = [];
   
-  constructor(private feedbackService: FeedbackService) { }
+  constructor(
+    private feedbackService: FeedbackService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.loadFeedbacks();

@@ -19,12 +19,13 @@ export class CustomersComponent implements OnInit {
   loading: boolean = false;
   error: string | null = null;
   searchText: string = '';
-  entriesPerPage: number = 10; // Default number of entries per page
+  entriesPerPage: number = 10;
   selectedCustomer: Customer | null = null;
   showDeleteConfirmation: boolean = false;
   deleteInProgress: boolean = false;
   deleteSuccess: boolean = false;
   deleteError: string | null = null;
+  currentPage: number = 1;
 
   constructor(
     private customerService: CustomerService,
@@ -32,70 +33,69 @@ export class CustomersComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Automatically fetch customers when the component initializes
     this.fetchCustomers();
   }
 
+  /**
+   * Get the current route
+   */
   getCurrentRoute(): string {
     return this.router.url;
   }
 
+  /**
+   * Fetch all customers from the backend
+   */
   fetchCustomers(): void {
     this.loading = true;
     this.error = null;
-    
-    this.customerService.getCustomerDetails().subscribe({
+
+    this.customerService.getCustomers().subscribe({
       next: (data) => {
-        // Ensure each customer has a contacts array
-        this.customers = data.map(customer => ({
-          ...customer,
-          contacts: customer.contacts || []
-        }));
-        
-        // Initialize filtered customers with all customers
+        this.customers = data;
         this.filteredCustomers = [...this.customers];
         this.loading = false;
-        
-        // Select the first customer by default
+
         if (this.filteredCustomers.length > 0 && !this.selectedCustomer) {
           this.selectedCustomer = this.filteredCustomers[0];
         }
       },
       error: (err) => {
-        console.error('Error details:', err);
-        this.error = 'Failed to fetch customers. Please check if the API is running.';
+        console.error('Error fetching customers:', err);
+        this.error = err.message;
         this.loading = false;
       }
     });
   }
 
+  /**
+   * Filter customers based on search text
+   */
   filterCustomers(): void {
     if (!this.searchText) {
       this.filteredCustomers = [...this.customers];
       return;
     }
-    
+
     const searchTermLower = this.searchText.toLowerCase();
-    
+
     this.filteredCustomers = this.customers.filter(customer => {
       const firstName = (customer.firstName || '').toLowerCase();
       const lastName = (customer.lastName || '').toLowerCase();
       const email = (customer.email || '').toLowerCase();
       const username = (customer.username || '').toLowerCase();
       const address = (customer.address || '').toLowerCase();
-      
+
       return firstName.includes(searchTermLower) ||
              lastName.includes(searchTermLower) ||
              email.includes(searchTermLower) ||
              username.includes(searchTermLower) ||
              address.includes(searchTermLower) ||
-             // Search in contacts if they exist
-             (customer.contacts && customer.contacts.some(contact => 
+             customer.contacts.some(contact => 
                contact.toLowerCase().includes(searchTermLower)
-             ));
+             );
     });
-    
-    // Update selected customer if needed
+
     if (this.filteredCustomers.length > 0) {
       if (!this.selectedCustomer || !this.filteredCustomers.includes(this.selectedCustomer)) {
         this.selectedCustomer = this.filteredCustomers[0];
@@ -105,26 +105,38 @@ export class CustomersComponent implements OnInit {
     }
   }
 
+  /**
+   * Select a customer for details view
+   */
   selectCustomer(customer: Customer): void {
     this.selectedCustomer = customer;
   }
 
+  /**
+   * Show delete confirmation dialog
+   */
   promptDeleteConfirmation(): void {
     this.showDeleteConfirmation = true;
   }
 
+  /**
+   * Cancel delete operation
+   */
   cancelDelete(): void {
     this.showDeleteConfirmation = false;
   }
 
+  /**
+   * Confirm and execute delete operation
+   */
   confirmDelete(): void {
     this.showDeleteConfirmation = false;
     this.removeCustomer();
   }
+
   /**
    * Remove the selected customer from the database
-   */
-  removeCustomer(): void {
+   */  removeCustomer(): void {
     if (!this.selectedCustomer || !this.selectedCustomer.customerId) {
       console.error('No customer selected or customer ID is missing');
       this.deleteError = 'Unable to remove customer: No customer selected';
@@ -135,40 +147,74 @@ export class CustomersComponent implements OnInit {
     this.deleteError = null;
     this.deleteSuccess = false;
 
-    console.log(`Attempting to delete customer with ID: ${this.selectedCustomer.customerId}`);    this.customerService.deleteCustomer(this.selectedCustomer.customerId).subscribe({
-      next: (response) => {
-        console.log('Delete successful, response:', response);
-        // Success - remove from local array
+    console.log(`Attempting to delete customer with ID: ${this.selectedCustomer.customerId}`);
+
+    this.customerService.deleteCustomer(this.selectedCustomer.customerId).subscribe({
+      next: () => {
+        console.log('Customer deleted successfully');
         this.customers = this.customers.filter(c => c.customerId !== this.selectedCustomer?.customerId);
         this.filteredCustomers = this.filteredCustomers.filter(c => c.customerId !== this.selectedCustomer?.customerId);
         this.deleteSuccess = true;
-        this.selectedCustomer = null;
+        this.selectedCustomer = this.filteredCustomers.length > 0 ? this.filteredCustomers[0] : null;
         this.deleteInProgress = false;
-        
-        // Refresh the customer list to ensure we have the latest data
-        this.fetchCustomers();
-        
-        // Reset success message after delay
+
         setTimeout(() => {
           this.deleteSuccess = false;
         }, 3000);
       },
       error: (err) => {
         console.error('Error deleting customer:', err);
-        // More detailed error message
-        let errorMessage = 'Unknown error occurred';
-        
-        if (err.status === 0) {
-          errorMessage = 'Cannot reach the server. Is the API running?';
-        } else if (err.message) {
-          errorMessage = err.message;
-        } else if (typeof err === 'string') {
-          errorMessage = err;
-        }
-        
-        this.deleteError = `Failed to delete customer: ${errorMessage}`;
+        this.deleteError = err.message;
         this.deleteInProgress = false;
       }
     });
+  }
+
+  /**
+   * Get paginated customers
+   */
+  get paginatedCustomers(): Customer[] {
+    const startIndex = (this.currentPage - 1) * this.entriesPerPage;
+    return this.filteredCustomers.slice(startIndex, startIndex + this.entriesPerPage);
+  }
+
+  /**
+   * Handle page change
+   */
+  onPageChange(page: number): void {
+    this.currentPage = page;
+  }
+
+  /**
+   * Handle entries per page change
+   */
+  onEntriesChange(entries: number): void {
+    this.entriesPerPage = entries;
+    this.currentPage = 1;
+  }
+  /**
+   * Get total number of pages
+   */
+  get totalPages(): number {
+    return Math.ceil(this.filteredCustomers.length / this.entriesPerPage);
+  }
+  
+  /**
+   * Get array of page numbers for pagination
+   */
+  get pages(): number[] {
+    const pageCount = this.totalPages;
+    if (pageCount <= 5) {
+      return Array.from({ length: pageCount }, (_, i) => i + 1);
+    }
+    
+    // Show 5 pages around current page
+    if (this.currentPage <= 3) {
+      return [1, 2, 3, 4, 5];
+    } else if (this.currentPage >= pageCount - 2) {
+      return [pageCount - 4, pageCount - 3, pageCount - 2, pageCount - 1, pageCount];
+    } else {
+      return [this.currentPage - 2, this.currentPage - 1, this.currentPage, this.currentPage + 1, this.currentPage + 2];
+    }
   }
 }

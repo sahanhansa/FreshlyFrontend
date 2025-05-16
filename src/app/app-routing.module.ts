@@ -1,14 +1,16 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-const routes: Routes = [  { path: '', redirectTo: 'admin', pathMatch: 'full' },
+const routes: Routes = [  
+  { path: '', redirectTo: 'admin', pathMatch: 'full' },
   {
     path: 'admin',
     loadComponent: () =>
       import('./components/admin/dashboard/dashboard.component').then(
         (m) => m.DashboardComponent
       ),
-  },  {
+  },  
+  {
     path: 'drivers',
     loadComponent: () =>
       import('./components/admin/drivers/drivers.component').then(
@@ -49,7 +51,8 @@ const routes: Routes = [  { path: '', redirectTo: 'admin', pathMatch: 'full' },
       import('./components/admin/complaints/complaints.component').then(
         (m) => m.ComplaintsComponent
       ),
-  },  {
+  },  
+  {
     path: 'reports',
     loadComponent: () =>
       import('./components/admin/reports/reports.component').then(

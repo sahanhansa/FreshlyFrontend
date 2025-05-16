@@ -75,7 +75,168 @@ app.put('/api/profile', (req, res) => {
   );
 });
 
+// Create customers table if it doesn't exist
+connection.query(`
+  CREATE TABLE IF NOT EXISTS customers (
+    customerId VARCHAR(36) PRIMARY KEY,
+    firstName VARCHAR(255),
+    lastName VARCHAR(255),
+    email VARCHAR(255),
+    username VARCHAR(255),
+    addressId VARCHAR(36),
+    address VARCHAR(255),
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  )
+`, (err) => {
+  if (err) {
+    console.error('Error creating customers table:', err);
+  }
+  
+  // Check if we need to seed sample data
+  connection.query('SELECT COUNT(*) as count FROM customers', (err, results) => {
+    if (err) {
+      console.error('Error checking customers count:', err);
+      return;
+    }
+    
+    if (results[0].count === 0) {
+      console.log('Seeding sample customers...');
+      
+      // Add some sample customers
+      const sampleCustomers = [
+        {
+          customerId: '1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed',
+          firstName: 'John',
+          lastName: 'Doe',
+          email: 'john.doe@example.com',
+          username: 'johndoe',
+          addressId: 'addr-001',
+          address: '123 Main St, Anytown, USA'
+        },
+        {
+          customerId: '2c9e7bce-ccfe-5c3e-0c6e-bc9efcce5cfe',
+          firstName: 'Jane',
+          lastName: 'Smith',
+          email: 'jane.smith@example.com',
+          username: 'janesmith',
+          addressId: 'addr-002',
+          address: '456 Oak Ave, Somewhere, USA'
+        },
+        {
+          customerId: '3d0f8cdf-ddff-6d4f-1d7f-cd0fddff6dff',
+          firstName: 'Robert',
+          lastName: 'Johnson',
+          email: 'robert.johnson@example.com',
+          username: 'robertj',
+          addressId: 'addr-003',
+          address: '789 Pine Blvd, Nowhere, USA'
+        }
+      ];
+      
+      sampleCustomers.forEach(customer => {
+        connection.query(
+          'INSERT INTO customers (customerId, firstName, lastName, email, username, addressId, address) VALUES (?, ?, ?, ?, ?, ?, ?)',
+          [
+            customer.customerId,
+            customer.firstName,
+            customer.lastName,
+            customer.email,
+            customer.username,
+            customer.addressId,
+            customer.address
+          ],
+          (err) => {
+            if (err) {
+              console.error(`Error inserting sample customer ${customer.firstName}:`, err);
+            }
+          }
+        );
+      });
+      
+      console.log('Sample customers seeded successfully');
+    }
+  });
+});
+
+// Customer API Routes
+app.get('/api/customer', (req, res) => {
+  connection.query('SELECT customerId, firstName, lastName, email, username, addressId, address, JSON_ARRAY() as contacts FROM customers', (err, results) => {
+    if (err) {
+      console.error('Error fetching customers:', err);
+      res.status(500).json({ error: 'Internal server error' });
+      return;
+    }
+    
+    // Add empty contacts array to each customer
+    const customers = results.map(customer => {
+      return {
+        ...customer,
+        contacts: []
+      };
+    });
+    
+    res.json(customers);
+  });
+});
+
+app.get('/api/customer/:id', (req, res) => {
+  const customerId = req.params.id;
+  
+  connection.query(
+    'SELECT customerId, firstName, lastName, email, username, addressId, address, JSON_ARRAY() as contacts FROM customers WHERE customerId = ?',
+    [customerId],
+    (err, results) => {
+      if (err) {
+        console.error(`Error fetching customer with ID ${customerId}:`, err);
+        res.status(500).json({ error: 'Internal server error' });
+        return;
+      }
+      
+      if (results.length === 0) {
+        res.status(404).json({ error: 'Customer not found' });
+        return;
+      }
+      
+      // Add empty contacts array
+      const customer = {
+        ...results[0],
+        contacts: []
+      };
+      
+      res.json(customer);
+    }
+  );
+});
+
+app.delete('/api/customer/:id', (req, res) => {
+  const customerId = req.params.id;
+  
+  console.log(`Received request to delete customer with ID: ${customerId}`);
+  
+  connection.query(
+    'DELETE FROM customers WHERE customerId = ?',
+    [customerId],
+    (err, results) => {
+      if (err) {
+        console.error(`Error deleting customer with ID ${customerId}:`, err);
+        res.status(500).json({ error: 'Internal server error' });
+        return;
+      }
+      
+      if (results.affectedRows === 0) {
+        console.log(`No customer found with ID ${customerId}`);
+        res.status(404).json({ error: 'Customer not found' });
+        return;
+      }
+      
+      console.log(`Successfully deleted customer with ID ${customerId}`);
+      res.sendStatus(204); // No content, operation successful
+    }
+  );
+});
+
+// Start server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
-}); 
+});

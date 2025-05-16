@@ -1,10 +1,30 @@
 <div class="p-8 bg-gray-100 min-h-screen">
-  <!-- Header Controls - Above the title, like in drivers component -->
+  <!-- Error Message -->
+  <div *ngIf="error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+    {{ error }}
+  </div>
+
+  <!-- Success Message -->
+  <div *ngIf="deleteSuccess" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+    Customer deleted successfully!
+  </div>
+
+  <!-- Delete Error Message -->
+  <div *ngIf="deleteError" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+    {{ deleteError }}
+  </div>
+
+  <!-- Loading Indicator -->
+  <div *ngIf="loading || deleteInProgress" class="flex justify-center mb-4">
+    <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+  </div>
+  <!-- Header Controls -->
   <div class="flex justify-between items-center mb-8 bg-white p-4 rounded-lg shadow-sm">
     <div class="flex items-center gap-2">
       <span>Show</span>
       <select [(ngModel)]="entriesPerPage" 
-              class="px-3 py-1 mx-2 border border-gray-200 rounded outline-none focus:border-blue-500">
+              class="px-3 py-1 mx-2 border border-gray-200 rounded outline-none focus:border-blue-500"
+              #entriesSelect (change)="onEntriesChange(+entriesSelect.value)">
         <option value="10">10</option>
         <option value="25">25</option>
         <option value="50">50</option>
@@ -12,154 +32,185 @@
       <span>entries</span>
     </div>
     <div>
-      <input type="text" [(ngModel)]="searchText" 
-             placeholder="Search..." 
-             (input)="filterCustomers()"
-             class="px-4 py-2 border border-gray-200 rounded outline-none w-60 focus:border-blue-500">
+      <input 
+        type="text" 
+        [(ngModel)]="searchText" 
+        (input)="filterCustomers()" 
+        placeholder="Search..." 
+        class="px-4 py-2 border border-gray-200 rounded outline-none w-60 focus:border-blue-500"
+      >
     </div>
   </div>
+  
+  <h1 class="text-4xl text-gray-800 mb-8 font-inter drop-shadow-lg">Customer Management</h1>
 
-  <!-- Title - Now below the search bar -->
-  <h1 class="text-4xl text-gray-800 mb-8 font-inter drop-shadow-lg">Customers</h1>
-
-  <!-- Customer Profile Card -->
-  <div class="mb-8" *ngIf="selectedCustomer">
-    <div class="flex bg-blue-500 rounded-[20px] overflow-hidden text-white shadow-lg">
+  <!-- Customer Profile Card - Placed at the top -->
+  <div *ngIf="selectedCustomer" class="mb-6">
+    <div class="flex flex-col md:flex-row bg-blue-500 rounded-[20px] overflow-hidden text-white shadow-lg">
       <div class="flex-1 p-8">
-        <div class="flex items-center mb-8">
-          <div class="w-24 h-24 rounded-full bg-white text-blue-500 flex items-center justify-center text-4xl font-bold mr-4">
-            {{ selectedCustomer.firstName?.charAt(0) || '' }}{{ selectedCustomer.lastName?.charAt(0) || '' }}
+        <div class="flex flex-col md:flex-row items-center md:items-start mb-8">
+          <!-- Customer Avatar Circle with Initials -->
+          <div class="w-24 h-24 rounded-full bg-white flex items-center justify-center text-3xl text-blue-600 font-bold mb-4 md:mb-0 md:mr-4">
+            {{ (selectedCustomer.firstName?.charAt(0) || '') + (selectedCustomer.lastName?.charAt(0) || '') }}
           </div>
-          <div>
-            <h3 class="text-2xl font-medium m-0">{{ selectedCustomer.username || 'No Username' }}</h3>
-            <p class="mt-2 opacity-90">#{{ selectedCustomer.customerId }}</p>
+          <div class="text-center md:text-left">
+            <h3 class="text-2xl font-medium m-0">
+              {{ (selectedCustomer.firstName || 'Unknown') + ' ' + (selectedCustomer.lastName || 'Customer') }}
+            </h3>
+            <p class="mt-2 opacity-90">#{{ selectedCustomer.customerId.substring(0, 8) }}</p>
           </div>
         </div>
         <div class="space-y-4">
           <div class="flex items-center">
-            <i class="fas fa-user w-5 mr-4"></i>
-            <span class="w-32">Full Name</span>
-            <span>: {{ (selectedCustomer.firstName || '') + ' ' + (selectedCustomer.lastName || '') }}</span>
-          </div>
-          <div class="flex items-center">
             <i class="fas fa-envelope w-5 mr-4"></i>
             <span class="w-32">Email</span>
-            <span>: {{ selectedCustomer.email || 'N/A' }}</span>
+            <span>: {{ selectedCustomer.email || 'Not provided' }}</span>
+          </div>
+          <div class="flex items-center">
+            <i class="fas fa-user w-5 mr-4"></i>
+            <span class="w-32">Username</span>
+            <span>: {{ selectedCustomer.username || 'Not provided' }}</span>
+          </div>
+          <div class="flex items-center">
+            <i class="fas fa-map-marker-alt w-5 mr-4"></i>
+            <span class="w-32">Address</span>
+            <span>: {{ selectedCustomer.address || 'Not provided' }}</span>
           </div>
           <div class="flex items-center">
             <i class="fas fa-phone w-5 mr-4"></i>
-            <span class="w-32">Contacts</span>
-            <span>: {{ selectedCustomer.contacts && selectedCustomer.contacts.length > 0 ? selectedCustomer.contacts.join(', ') : 'N/A' }}</span>
-          </div>
-          <div class="flex items-center">
-            <i class="fas fa-home w-5 mr-4"></i>
-            <span class="w-32">Address</span>
-            <span>: {{ selectedCustomer.address || 'N/A' }}</span>
+            <span class="w-32">Contact</span>
+            <span>: {{ selectedCustomer.contacts.length > 0 ? selectedCustomer.contacts.join(', ') : 'No contacts' }}</span>
           </div>
         </div>
       </div>
-      <div class="w-52 p-8 flex flex-col gap-4 bg-white rounded-r-[20px]">
-        <button class="px-4 py-3 rounded-lg bg-blue-50 text-blue-500 font-medium hover:bg-blue-100 transition-colors">View Orders</button>
-        <button class="px-4 py-3 rounded-lg bg-blue-50 text-blue-500 font-medium hover:bg-blue-100 transition-colors">Edit Details</button>
-        <button class="px-4 py-3 rounded-lg bg-orange-50 text-orange-500 font-medium hover:bg-orange-100 transition-colors">View Complaints</button>
-        <!-- Update the existing Remove User button -->
-        <button (click)="promptDeleteConfirmation()" 
-                class="px-4 py-3 rounded-lg bg-red-500 text-white font-medium hover:bg-red-600 transition-colors mt-auto">
+      <div class="w-full md:w-52 p-8 flex flex-col gap-4 bg-white md:rounded-r-[20px]">
+        <button class="px-4 py-3 rounded-lg bg-blue-50 text-blue-500 font-medium hover:bg-blue-100 transition-colors">
+          <i class="fas fa-clipboard-list mr-2"></i>
+          View Orders
+        </button>
+        <button class="px-4 py-3 rounded-lg bg-blue-50 text-blue-500 font-medium hover:bg-blue-100 transition-colors">
+          <i class="fas fa-edit mr-2"></i>
+          Edit Details
+        </button>
+        <button class="px-4 py-3 rounded-lg bg-blue-50 text-blue-500 font-medium hover:bg-blue-100 transition-colors">
+          <i class="fas fa-comment-alt mr-2"></i>
+          Complaints
+        </button>
+        <button 
+          (click)="promptDeleteConfirmation()" 
+          class="px-4 py-3 rounded-lg bg-red-500 text-white font-medium hover:bg-red-600 transition-colors mt-auto">
+          <i class="fas fa-trash-alt mr-2"></i>
           Remove User
         </button>
-        <div *ngIf="deleteSuccess" class="mt-2 text-sm text-green-600">
-          Customer successfully removed.
-        </div>
-        <div *ngIf="deleteError" class="mt-2 text-sm text-red-600">
-          {{ deleteError }}
-        </div>
       </div>
     </div>
-  </div>
-
-  <!-- Loading Indicator -->
-  <div *ngIf="loading" class="flex justify-center mb-6">
-    <div class="inline-flex items-center px-4 py-2 bg-blue-100 text-blue-800 rounded-lg">
-      <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-      </svg>
-      Loading customers...
+  </div>  <!-- Customer Table - Now below the profile card -->
+  <div class="bg-white rounded-lg shadow-md overflow-hidden">
+    <div class="flex flex-col md:flex-row items-center p-4 border-b border-gray-100">
+      <h2 class="text-xl font-semibold text-gray-800">Customer List</h2>
     </div>
-  </div>
-  
-  <!-- Error Alert -->
-  <div *ngIf="error" class="mb-6 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" role="alert">
-    <p>{{ error }}</p>
-    <button (click)="fetchCustomers()" class="mt-2 underline text-red-800">Retry</button>
-  </div>
 
-  <!-- Customers Table -->
-  <div class="bg-white rounded-lg shadow-sm overflow-hidden">
-    <div class="overflow-x-auto">
+    <div *ngIf="showTable && !loading" class="overflow-x-auto">
       <table class="w-full">
-        <thead>
-          <tr class="bg-gray-50">
-            <th class="p-4 text-left font-medium text-gray-700 whitespace-nowrap border-b border-gray-100">ID</th>
-            <th class="p-4 text-left font-medium text-gray-700 whitespace-nowrap border-b border-gray-100">Full Name</th>
+        <thead>          <tr class="bg-gray-50">
+            <th class="p-4 text-left font-medium text-gray-700 whitespace-nowrap border-b border-gray-100">Customer ID</th>
+            <th class="p-4 text-left font-medium text-gray-700 whitespace-nowrap border-b border-gray-100">Name</th>
             <th class="p-4 text-left font-medium text-gray-700 whitespace-nowrap border-b border-gray-100">Email</th>
-            <th class="p-4 text-left font-medium text-gray-700 whitespace-nowrap border-b border-gray-100">Contacts</th>
+            <th class="p-4 text-left font-medium text-gray-700 whitespace-nowrap border-b border-gray-100">Username</th>
             <th class="p-4 text-left font-medium text-gray-700 whitespace-nowrap border-b border-gray-100">Address</th>
-            <th class="p-4 text-left font-medium text-gray-700 whitespace-nowrap border-b border-gray-100">Action</th>
+            <th class="p-4 text-left font-medium text-gray-700 whitespace-nowrap border-b border-gray-100">Status</th>
+            <th class="p-4 text-left font-medium text-gray-700 whitespace-nowrap border-b border-gray-100">Details</th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let customer of filteredCustomers; let i = index"
-              [ngClass]="{'bg-[#D0F6FF]': i % 2 === 1, 'bg-blue-50': selectedCustomer?.customerId === customer.customerId}"
-              class="hover:bg-gray-100 transition-colors duration-150">
-            <td class="p-4 text-gray-700">{{ customer.customerId }}</td>
-            <td class="p-4 text-gray-700">{{ (customer.firstName || '') + ' ' + (customer.lastName || '') }}</td>
-            <td class="p-4 text-gray-700">{{ customer.email || 'N/A' }}</td>
-            <td class="p-4 text-gray-700">{{ customer.contacts && customer.contacts.length > 0 ? customer.contacts.join(', ') : 'N/A' }}</td>
-            <td class="p-4 text-gray-700">{{ customer.address || 'N/A' }}</td>
-            <td class="p-4">
-              <button (click)="selectCustomer(customer)" 
-                      class="px-3 py-1.5 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors text-sm">
-                View Details
+          <tr
+            *ngFor="let customer of paginatedCustomers; let i = index"
+            (click)="selectCustomer(customer)"
+            [class]="'whitespace-nowrap hover:bg-gray-100 transition-colors duration-150'"
+            [ngClass]="{'bg-[#D0F6FF]': i % 2 === 1, 'bg-blue-100': customer === selectedCustomer}"
+          >
+            <td class="p-4 text-gray-700 border-b border-gray-100">{{ customer.customerId.substring(0, 8) || '-' }}</td>
+            <td class="p-4 text-gray-700 border-b border-gray-100">{{ (customer.firstName || '') + ' ' + (customer.lastName || '') }}</td>
+            <td class="p-4 text-gray-700 border-b border-gray-100">{{ customer.email || '-' }}</td>
+            <td class="p-4 text-gray-700 border-b border-gray-100">{{ customer.username || '-' }}</td>
+            <td class="p-4 text-gray-700 border-b border-gray-100">{{ customer.address || '-' }}</td>
+            <td class="p-4 border-b border-gray-100">              <span class="px-3 py-1.5 rounded-full text-sm font-medium"
+                    [class.bg-green-100]="customer.contacts.length > 0"
+                    [class.text-green-800]="customer.contacts.length > 0"
+                    [class.bg-yellow-100]="customer.contacts.length === 0"
+                    [class.text-yellow-800]="customer.contacts.length === 0">
+                {{ customer.contacts.length > 0 ? 'Active' : 'Pending' }}
+              </span>
+            </td>            <td class="p-4 border-b border-gray-100">
+              <button
+                (click)="selectCustomer(customer); $event.stopPropagation()"
+                class="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600 transition-colors"
+              >
+                <i class="fas fa-eye mr-1"></i> View
               </button>
-            </td>
-          </tr>
-          <tr *ngIf="filteredCustomers.length === 0 && !loading">
-            <td colspan="6" class="p-4 text-center text-gray-500">
-              No customers found.
             </td>
           </tr>
         </tbody>
       </table>
     </div>
   </div>
+  
+  <!-- Pagination -->
+  <div class="flex items-center justify-between mt-6">
+    <button class="px-4 py-2 border rounded-md text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            [disabled]="currentPage === 1" 
+            (click)="onPageChange(currentPage - 1)">
+      Previous
+    </button>
+    <div class="flex gap-2">
+      <button 
+        *ngFor="let page of pages" 
+        class="w-10 h-10 flex items-center justify-center border rounded-md"
+        [class.bg-blue-500]="currentPage === page"
+        [class.text-white]="currentPage === page"
+        [class.text-gray-700]="currentPage !== page"
+        [class.hover:bg-gray-50]="currentPage !== page"
+        (click)="onPageChange(page)"
+      >
+        {{ page }}
+      </button>
+    </div>
+    <button class="px-4 py-2 border rounded-md text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            [disabled]="currentPage === totalPages" 
+            (click)="onPageChange(currentPage + 1)">
+      Next
+    </button>
+  </div>
 
-  <!-- Add this confirmation dialog at the bottom of your template -->
-  <div *ngIf="showDeleteConfirmation" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
-    <div class="bg-white rounded-lg shadow-xl p-6 max-w-md w-full mx-4">
-      <h3 class="text-xl font-bold text-gray-800 mb-4">Confirm Deletion</h3>
-      <p class="text-gray-600 mb-6">
-        Are you sure you want to delete customer <span class="font-medium">{{ selectedCustomer?.firstName }} {{ selectedCustomer?.lastName }}</span>? 
-        This action cannot be undone.
-      </p>
+  <!-- Delete Confirmation Dialog -->
+  <div *ngIf="showDeleteConfirmation" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white p-6 rounded-lg shadow-xl max-w-md w-full mx-4 animate-fadeIn">
+      <div class="flex items-center mb-4 pb-3 border-b border-gray-200">
+        <div class="bg-red-100 p-2 rounded-full">
+          <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+          </svg>
+        </div>
+        <h2 class="ml-3 text-xl font-bold text-gray-800">Confirm Deletion</h2>
+      </div>
+      
+      <div class="mb-6">
+        <p class="text-gray-700">Are you sure you want to delete customer <span class="font-semibold">{{ selectedCustomer?.firstName }} {{ selectedCustomer?.lastName }}</span>?</p>
+        <p class="mt-2 text-sm text-gray-600">This action cannot be undone. This will permanently delete the customer account and all associated data.</p>
+      </div>
+      
       <div class="flex justify-end space-x-3">
-        <button 
-          (click)="cancelDelete()" 
-          class="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition-colors">
-          No, Cancel
+        <button
+          (click)="cancelDelete()"
+          class="px-4 py-2 bg-gray-200 text-gray-800 font-medium rounded-md hover:bg-gray-300 transition focus:outline-none focus:ring-2 focus:ring-gray-300"
+        >
+          Cancel
         </button>
-        <button 
-          (click)="confirmDelete()" 
-          [disabled]="deleteInProgress"
-          class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors flex items-center">
-          <span *ngIf="!deleteInProgress">Yes, Delete</span>
-          <span *ngIf="deleteInProgress" class="flex items-center">
-            <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-            Deleting...
-          </span>
+        <button
+          (click)="confirmDelete()"
+          class="px-4 py-2 bg-red-600 text-white font-medium rounded-md hover:bg-red-700 transition focus:outline-none focus:ring-2 focus:ring-red-500"
+        >
+          Delete Customer
         </button>
       </div>
     </div>
