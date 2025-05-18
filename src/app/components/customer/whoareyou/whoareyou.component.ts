@@ -24,6 +24,8 @@ export class WhoAreYouComponent {
       case 'admin':
         this.router.navigate(['/login']);
         break;
+        case 'driver':
+          this.router.navigate(['login']);
     }
   }
 

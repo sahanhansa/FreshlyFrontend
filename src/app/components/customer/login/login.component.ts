@@ -150,6 +150,22 @@ export class LoginComponent implements OnInit {
             error: (err) => { }
           });
           break;
+            case 'driver':
+          this.auth.driverLogin(formData).subscribe({
+            next: (response: any) => {
+              this.router.navigate(['/driver-contactus-page']);
+            },
+            error: (err) => { }
+          });
+          break;
+            case 'admin':
+          this.auth.adminLogin(formData).subscribe({
+            next: (response: any) => {
+              this.router.navigate(['/admin-home']);
+            },
+            error: (err) => { }
+          });
+          break;
         default:
           alert("Invalid role. Please select your role.");
           this.router.navigate(['/whoareyou']);

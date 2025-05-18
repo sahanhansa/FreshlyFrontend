@@ -38,6 +38,12 @@ export class AuthService {
     return this.http.post(`${this.baseUrl}/Auth/laundry/login`, data);
    
   }
+   driverLogin(data:any) {
+    console.log("data in service -> Driver",data)// Debug log
+    return this.http.post(`${this.baseUrl}/Auth/driver/login`, data, {
+    headers: { 'Content-Type': 'application/json' }
+  });
+}
   //  driverLogin(data:any) {
   //   console.log("data in service",data)// Debug log
 
@@ -52,4 +58,5 @@ export class AuthService {
   });
     
   }
-}
+   }
+  

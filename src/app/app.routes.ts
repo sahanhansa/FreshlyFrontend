@@ -9,6 +9,7 @@ import { AdminHomeComponent } from './components/admin-home/admin-home.component
 import { CusHomeComponent } from './components/customer/cus-home/cus-home.component';
 import { LaundrySignupComponent } from './components/customer/laundry-signup/laundry-signup.component';
 import { HowItWorksComponent } from './components/customer/how-it-works/how-it-works.component';
+import { DriverContactusPageComponent } from './pages/Driver/driver-contactus-page/driver-contactus-page.component';
 
 
 
@@ -41,6 +42,8 @@ export const routes: Routes = [
 
  // Route for how-it-works
    {path: 'how-it-works', component:HowItWorksComponent},
+   // Route for diver login
+   {path: 'driver-contactus-page', component:DriverContactusPageComponent},
 
    
     
