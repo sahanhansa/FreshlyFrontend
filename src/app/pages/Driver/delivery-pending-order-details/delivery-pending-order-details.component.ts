@@ -5,10 +5,11 @@ import { DeliveryOrderDetailsComponent } from "../../../components/driver/delive
 import { DeliveryQuestion1Component } from "../../../components/driver/delivery-question-1/delivery-question-1.component";
 import { DeliveryQuestion2Component } from "../../../components/driver/delivery-question-2/delivery-question-2.component";
 import { FooterComponent } from "../../../components/shared/footer/footer.component";
+import { OrderDetailsHeaderComponent } from "../../../components/driver/order-details-header/order-details-header.component";
 
 @Component({
   selector: 'app-delivery-pending-order-details',
-  imports: [DriverNavbarComponent, DeliveryTaskHeaderComponent, DeliveryOrderDetailsComponent, DeliveryQuestion1Component, DeliveryQuestion2Component, FooterComponent],
+  imports: [DriverNavbarComponent,DeliveryOrderDetailsComponent, DeliveryQuestion1Component, DeliveryQuestion2Component, FooterComponent, OrderDetailsHeaderComponent],
   templateUrl: './delivery-pending-order-details.component.html',
   styleUrl: './delivery-pending-order-details.component.css'
 })

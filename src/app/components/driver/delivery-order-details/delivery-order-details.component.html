@@ -1,44 +1,62 @@
-<div class="order-card">
-    <div class="order-header">
-      <span class="order-title">Order :#{{ order.id }}</span>
-      <span class="status-badge">{{ order.status }}</span>
+<div class="order-card" *ngIf="deliveryOrder">
+  <div class="order-header">
+    <span class="order-title">Order ID: #{{ deliveryOrder.id }}</span>
+    
+    <span 
+    class="status-badge" 
+    [ngClass]="{
+      'delivery-pending': deliveryOrder.status === 'Delivery Pending',
+      'delivery-complete': deliveryOrder.status === 'Delivery Complete'
+    }">
+    {{ deliveryOrder.status }}
+  </span>
+
+    
+  </div>
+
+  <div class="order-details">
+    <div class="row">
+      <span class="label">Customer Name:</span>
+      <span class="value">{{ deliveryOrder.customerName }}</span>
     </div>
-  
-    <div class="order-details">
-      <div class="row">
-        <span class="label">Customer Name:</span>
-        <span class="value">{{ order.customerName }}</span>
-      </div>
-      <div class="row">
-        <span class="label">Address:</span>
-        <span class="value">{{ order.address }}</span>
-      </div>
-      <div class="row">
-        <span class="label">Contact:</span>
-        <span class="value">{{ order.contact }}</span>
-      </div>
-      <div class="row">
-        <span class="label">Order Items:</span>
-        <span class="value">{{ order.items }}</span>
-      </div>
-      <div class="row">
-        <span class="label">Laundry Name:</span>
-        <span class="value">{{ order.laundryName }}</span>
-      </div>
-      <div class="row">
-        <span class="label">Payment Method:</span>
-        <span class="value">{{ order.paymentMethod }}</span>
-      </div>
+    <div class="row">
+      <span class="label">Address:</span>
+      <span class="value">{{ deliveryOrder.address }}</span>
     </div>
-  
-    <div>
-      <label for="note" class="label">Add Note:</label>
-      <textarea id="note" class="note-input" [(ngModel)]="order.note" placeholder="Enter your notes here..."></textarea>
+    <div class="row">
+      <span class="label">Contact:</span>
+      <span class="value">{{ deliveryOrder.contact }}</span>
     </div>
-  
-    <div class="button-group">
-     
-      <button>Save</button>
+    <div class="row">
+      <span class="label">Order Items:</span>
+      <span class="value">
+        <ul>
+          <li *ngFor="let item of deliveryOrder?.orderItems">
+            {{ item }}
+          </li>
+        </ul>
+      </span>
+    </div>
+    <div class="row">
+      <span class="label">Laundry Name:</span>
+      <span class="value">{{ deliveryOrder.laundryName }}</span>
+    </div>
+    <div class="row">
+      <span class="label">Payment Method:</span>
+      <span class="value">Cash on Delivery</span>
     </div>
   </div>
-  
+
+  <div>
+    <label for="note" class="label">Add Note:</label>
+    <br>
+    <textarea id="note" class="note-input" placeholder="Enter your notes here..."></textarea>
+  </div>
+
+  <div class="button-group">
+    <button>Save</button>
+  </div>
+</div>
+
+<br>
+<br>

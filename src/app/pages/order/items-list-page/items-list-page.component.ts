@@ -4,6 +4,7 @@ import { Item } from '../../../models/item.model';
 import { ItemService } from '../../../services/item.service';
 import { LaundryService } from '../../../services/laundry.service';
 import { ItemCardListComponent } from "../../../components/order/item-card-list/item-card-list.component";
+import { FooterComponent } from "../../../components/shared/footer/footer.component";
 import { CommonModule } from '@angular/common';
 import { ItemCategoryComponent } from "../../../components/order/item-category/item-category.component";
 import { FormsModule } from '@angular/forms';
@@ -13,7 +14,7 @@ import { FormsModule } from '@angular/forms';
   standalone: true,
   templateUrl: './items-list-page.component.html',
   styleUrls: ['./items-list-page.component.css'],
-  imports: [ItemCardListComponent, CommonModule, ItemCategoryComponent, FormsModule]
+  imports: [ItemCardListComponent, FooterComponent, CommonModule, ItemCategoryComponent, FormsModule]
 })
 export class ItemsListPageComponent implements OnInit {
   items: Item[] = [];

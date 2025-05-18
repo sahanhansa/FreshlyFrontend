@@ -1,12 +1,39 @@
-import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, OnInit, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
+import { PickupsService, PickupOrder } from '../../../services/pickups.service';
+
 
 @Component({
   selector: 'app-order-details-pending',
-  imports: [RouterLink],
+  standalone: true,
+  imports: [
+    CommonModule
+    
+   
+  ],
   templateUrl: './order-details-pending.component.html',
-  styleUrl: './order-details-pending.component.css'
+  styleUrls: ['./order-details-pending.component.css']
 })
-export class OrderDetailsPendingComponent {
+export class OrderDetailsPendingComponent implements OnInit {
+  private route = inject(ActivatedRoute);
+  private pickupsService = inject(PickupsService);
 
+  pickupOrder: PickupOrder | null = null;
+
+  ngOnInit(): void {
+    const orderId = this.route.snapshot.paramMap.get('id');
+    if (orderId) {
+      this.pickupsService.getPickupById(orderId).subscribe({
+        next: (order) => {
+          this.pickupOrder = order;
+        },
+        error: (err) => {
+          console.error('Error fetching order by ID:', err);
+        }
+      });
+    } else {
+      console.warn('No order ID provided in route.');
+    }
+  }
 }
