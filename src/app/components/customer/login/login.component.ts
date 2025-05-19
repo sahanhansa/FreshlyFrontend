@@ -128,11 +128,11 @@ export class LoginComponent implements OnInit {
       };
 
       console.log('Form Data:', formData);
-
+    
       // let loginObservable;
 
       switch (localStorage.getItem("Role")) {
-        case 'customer':
+       case 'customer':
           this.auth.customerLogin(formData).subscribe({
             next: (response: any) => {
               this.router.navigate(['/cus-home']);
@@ -145,7 +145,7 @@ export class LoginComponent implements OnInit {
         case 'laundry':
           this.auth.laundryLogin(formData).subscribe({
             next: (response: any) => {
-              this.router.navigate(['/laundry']);
+              this.router.navigate(['/laundry-home']);
             },
             error: (err) => { }
           });
@@ -154,7 +154,8 @@ export class LoginComponent implements OnInit {
           alert("Invalid role. Please select your role.");
           this.router.navigate(['/whoareyou']);
           return;
-      }
+      } 
+    
 
       // Decide which service method to call based on role
       // switch (formData.Role) {
@@ -202,7 +203,7 @@ export class LoginComponent implements OnInit {
       //   console.log("Form is not valid.");
       //   this.validateAllFormFields(this.loginForm);
       //   alert("Your form is invalid.");
-      // }
+       }
+    
+      }
     }
-  }
-}
