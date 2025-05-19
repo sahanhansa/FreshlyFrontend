@@ -21,13 +21,21 @@
 }
 
 .status-badge {
-    background-color: #e91e63;
-    color: white;
+    
+    color: rgb(0, 0, 0);
     padding: 5px 12px;
     font-size: 14px;
     border-radius: 15px;
     font-weight: bold;
 }
+.delivery-pending {
+    background-color:  #facc15; /* Pink */
+  }
+  
+ 
+  .delivery-complete {
+    background-color: #00c750; /* Green */
+  }
 
 .order-details .row {
     display: flex;
@@ -59,18 +67,10 @@
     margin-top: 15px;
 }
 
-.edit-btn {
-    background-color: #11A54C;
-    color: white;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 20px;
-    font-size: 14px;
-    cursor: pointer;
-}
+
 
 button {
-    background-color: #11A54C;
+    background-color: #007bff; /* Blue button */
     color: white;
     border: none;
     padding: 10px 20px;
@@ -78,12 +78,14 @@ button {
     cursor: pointer;
     font-size: 16px;
     transition: background-color 0.3s ease, transform 0.2s;
-}
-
-button:hover {
+  }
+  
+  button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
     transform: scale(1.05);
-}
-
-button:active {
+  }
+  
+  button:active {
     transform: scale(0.95);
-}
+  }
+  

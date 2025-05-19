@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { OrderCardComponent } from './order-card.component';
+import { DriverHomePageComponent } from './driver-home-page.component';
 
-describe('OrderCardComponent', () => {
-  let component: OrderCardComponent;
-  let fixture: ComponentFixture<OrderCardComponent>;
+describe('DriverHomePageComponent', () => {
+  let component: DriverHomePageComponent;
+  let fixture: ComponentFixture<DriverHomePageComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [OrderCardComponent]
+      imports: [DriverHomePageComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(OrderCardComponent);
+    fixture = TestBed.createComponent(DriverHomePageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
