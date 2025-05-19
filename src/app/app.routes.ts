@@ -18,6 +18,11 @@ import { HowItWorksComponent } from './components/customer/how-it-works/how-it-w
 import { NewOrdersComponent } from './pages/Laundry/new-orders/new-orders.component';
 import { ConfirmOrdersComponent } from './pages/Laundry/confirm-orders/confirm-orders.component';
 import { InvoiceSuccessedComponent } from './pages/Laundry/invoice-successed/invoice-successed.component';
+import { LaundryFeedbacksComponent } from './pages/Laundry/laundry-feedbacks/laundry-feedbacks.component';
+import { LaundryItemsComponent } from './pages/Laundry/laundry-items/laundry-items.component';
+import { LaundryOrdersComponent } from './pages/Laundry/laundry-orders/laundry-orders.component';
+import { LaundryProfileComponent } from './pages/Laundry/laundry-profile/laundry-profile.component';
+import { LaundrySummaryComponent } from './pages/Laundry/laundry-summary/laundry-summary.component';
 
 
 
@@ -59,6 +64,21 @@ export const routes: Routes = [
 
   // Route for invoice success page
    {path: 'invoice-successed', component:InvoiceSuccessedComponent},
+
+    // Route for laundry-orders page
+   {path: 'laundry-orders', component:LaundryOrdersComponent},
+
+    // Route for laundry-feedbacks page
+   {path: 'laundry-feedbacks', component:LaundryFeedbacksComponent},
+
+    // Route for laundry-items page
+   {path: 'laundry-items', component:LaundryItemsComponent},
+
+    // Route for laundry-profile page
+    {path: 'laundry-profile', component:LaundryProfileComponent},
+
+    // Route for laundry-summary page
+    {path: 'laundry-summary', component:LaundrySummaryComponent},
 
   //driver routes
   {path: 'driver-home-page', component:DriverHomePageComponent },
