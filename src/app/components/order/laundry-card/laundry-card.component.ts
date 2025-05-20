@@ -33,7 +33,7 @@ export class LaundryCardComponent {
 
   // Method called when the "Select Laundry" button is clicked
   onSelectLaundry() {
-    this.router.navigate([`/laundry/${this.id}`]);
+    this.router.navigate([`/cus-home/laundry/${this.id}`]);
     
   }
 }

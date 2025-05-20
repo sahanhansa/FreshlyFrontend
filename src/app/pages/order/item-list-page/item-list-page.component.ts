@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ItemService } from '../../../services/item.service';
 import { ItemListComponent } from '../../../components/order/item-list/item-list.component';
 import { SearchBarComponent } from '../../../components/shared/search-bar/search-bar.component';
+import { FooterComponent } from '../../../components/shared/footer/footer.component';
 import { Item, ItemCategory } from '../../../models/item.model';
 import { ActivatedRoute } from '@angular/router';
 
@@ -17,7 +18,7 @@ import { ActivatedRoute } from '@angular/router';
     SearchBarComponent
   ],
   templateUrl: './item-list-page.component.html',
-  styleUrl: './item-list-page.component.css'
+  styleUrls: ['./item-list-page.component.css']
 })
 export class ItemPageComponent implements OnInit {
   // All unfiltered items fetched from the API
@@ -83,6 +84,11 @@ export class ItemPageComponent implements OnInit {
     this.filterItemsByCategory();
   }
 
+  onSearch(query: string): void {
+    this.searchQuery = query;
+    this.filterItems();
+  }
+
   // Method to filter items based on active category and search query
   filterItemsByCategory(): void {
     let filteredItems = this.allItems.filter(item => {
@@ -124,5 +130,10 @@ export class ItemPageComponent implements OnInit {
   // Method to retry loading items if the initial load failed
   retryLoading(): void {
     this.loadItems();
+  }
+
+  // Fix the filterItems method which was referenced but not defined
+  filterItems() {
+    this.filterItemsByCategory();
   }
 }

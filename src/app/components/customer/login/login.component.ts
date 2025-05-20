@@ -206,4 +206,8 @@ export class LoginComponent implements OnInit {
        }
     
       }
+
+      goDirectToCustomer() {
+        this.router.navigate(['/cus-home']);
+      }
     }

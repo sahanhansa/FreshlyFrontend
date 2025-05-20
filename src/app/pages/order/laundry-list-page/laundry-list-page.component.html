@@ -16,12 +16,10 @@
 
         <!-- Search bar component -->
         <div class="w-full sm:flex-1">
-          <app-search-bar
-            placeholder="Search for Laundry"
-            ariaLabel="Search for Laundry"
+          <app-search-bar 
             [initialValue]="searchQuery"
-            (searchChanged)="onSearchChanged($event)"
-          ></app-search-bar>
+            (searchChanged)="onSearchChanged($event)">
+          </app-search-bar>
         </div>
 
         <!-- Location Filter Dropdown -->
@@ -47,9 +45,9 @@
             class="border border-gray-300 rounded-lg px-4 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-300 bg-white appearance-none w-full"
             style="background-image: url('data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 fill=%27none%27 viewBox=%270 0 24 24%27 stroke=%27%23000000%27 stroke-width=%272%27%3E%3Cpath stroke-linecap=%27round%27 stroke-linejoin=%27round%27 d=%27M19 9l-7 7-7-7%27 /%3E%3C/svg%3E'); background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 1rem;"
           >
-            <option value="">All Ratings</option>
+            <option value="">Any Rating</option>
             <option *ngFor="let rating of uniqueRatings" [value]="rating">
-              {{ rating }} Stars
+              {{ rating }} ★
             </option>
           </select>
         </div>
@@ -67,8 +65,5 @@
     </app-laundry-list>
   </div>
   
-  <!-- Footer - Ensure it stays at bottom -->
-  <footer class="mt-auto w-full">
-    <app-footer></app-footer>
-  </footer>
+  
 </div>

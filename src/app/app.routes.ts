@@ -23,8 +23,10 @@ import { LaundryItemsComponent } from './pages/Laundry/laundry-items/laundry-ite
 import { LaundryOrdersComponent } from './pages/Laundry/laundry-orders/laundry-orders.component';
 import { LaundryProfileComponent } from './pages/Laundry/laundry-profile/laundry-profile.component';
 import { LaundrySummaryComponent } from './pages/Laundry/laundry-summary/laundry-summary.component';
-
-
+import { LaundryPageComponent } from './pages/order/laundry-list-page/laundry-list-page.component';
+import { BasketComponent } from './pages/order/basket/basket.component';
+import { ItemPageComponent } from './pages/order/item-list-page/item-list-page.component';
+import { CustomerLayoutComponent } from './components/customer/customer-layout/customer-layout.component';
 
 // Define the application's routes
 export const routes: Routes = [
@@ -42,7 +44,7 @@ export const routes: Routes = [
     {path:'signup', component: SignupComponent},
 
      // Route for customer home page
-    { path: 'cus-home', component: CusHomeComponent },
+    //{ path: 'cus-home', component: CusHomeComponent },
 
     // Route for laundry partner home page
   { path: 'laundry-home', component: HomeComponent},
@@ -54,7 +56,7 @@ export const routes: Routes = [
   {path: 'laundry-signup', component:LaundrySignupComponent},
 
  // Route for how-it-works
-   {path: 'how-it-works', component:HowItWorksComponent},
+   //{path: 'how-it-works', component:HowItWorksComponent},
 
   // Route for new orders page
   {path: 'new-orders', component:NewOrdersComponent},
@@ -80,6 +82,12 @@ export const routes: Routes = [
     // Route for laundry-summary page
     {path: 'laundry-summary', component:LaundrySummaryComponent},
 
+    //order routes
+  //   { path: '', redirectTo: 'order', pathMatch: 'full' },
+  // { path: 'order', component: LaundryPageComponent },
+  // { path: 'basket', component: BasketComponent },
+  // {path: 'laundry/:id', component: ItemPageComponent},
+
   //driver routes
   {path: 'driver-home-page', component:DriverHomePageComponent },
   {path: 'pickups-tasks-mainpage', component: PickupsTasksMainpageComponent },
@@ -87,6 +95,22 @@ export const routes: Routes = [
   {path: 'driver-contactus-page', component: DriverContactusPageComponent},
   {path: 'order-details-pending/:id', component: PickupsPendingOrderDetailsComponent}, 
   {path: 'delivery-order-details/:id', component: DeliveryPendingOrderDetailsComponent},
+
+  // Customer interface with layout (navbar + footer)
+  {
+    path: 'cus-home',
+    component: CustomerLayoutComponent,
+    children: [
+      { path: '', redirectTo: 'home', pathMatch: 'full' },
+      { path: 'home', component: CusHomeComponent }, 
+      {path: 'how-it-works', component:HowItWorksComponent},
+      { path: 'order', component: LaundryPageComponent },      // Laundry list page
+      { path: 'basket', component: BasketComponent },
+      {path: 'laundry/:id', component: ItemPageComponent},
+      // Replace with actual profile component if needed
+      // Add more customer pages as needed
+    ]
+  },
 
 ];
 // Define the routing module

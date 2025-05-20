@@ -1,17 +1,22 @@
 import { Component, OnInit } from '@angular/core';
-import { Laundry } from '../../../models/laundry.model';
-import { LaundryService } from '../../../services/laundry.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SearchBarComponent } from '../../../components/shared/search-bar/search-bar.component';
 import { LaundryListComponent } from '../../../components/order/laundry-list/laundry-list.component';
 import { FooterComponent } from '../../../components/shared/footer/footer.component';
-import { CommonModule } from '@angular/common';
+import { Laundry } from '../../../models/laundry.model';
+import { LaundryService } from '../../../services/laundry.service';
 
 @Component({
   selector: 'app-laundry-page',
   standalone: true,
-  imports: [CommonModule, LaundryListComponent, FooterComponent],
+  imports: [
+    CommonModule, 
+    FormsModule,
+    LaundryListComponent, 
+    FooterComponent,
+    SearchBarComponent
+  ],
   templateUrl: './laundry-list-page.component.html',
   styleUrls: ['./laundry-list-page.component.css']
 })
