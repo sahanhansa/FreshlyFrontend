@@ -16,6 +16,7 @@ import { CusHomeComponent } from './components/customer/cus-home/cus-home.compon
 import { LaundrySignupComponent } from './components/customer/laundry-signup/laundry-signup.component';
 import { HowItWorksComponent } from './components/customer/how-it-works/how-it-works.component';
 import { NewOrdersComponent } from './pages/Laundry/new-orders/new-orders.component';
+import { processingOrdersComponent } from './pages/Laundry/processing-orders/processing-orders.component';
 import { ConfirmOrdersComponent } from './pages/Laundry/confirm-orders/confirm-orders.component';
 import { InvoiceSuccessedComponent } from './pages/Laundry/invoice-successed/invoice-successed.component';
 import { LaundryFeedbacksComponent } from './pages/Laundry/laundry-feedbacks/laundry-feedbacks.component';
@@ -58,6 +59,9 @@ export const routes: Routes = [
 
   // Route for new orders page
   {path: 'new-orders', component:NewOrdersComponent},
+
+    // Route for processingorders page
+  {path: 'processing-orders', component:processingOrdersComponent},
 
  // Route for confirm orders page
   {path: 'confirm-orders', component:ConfirmOrdersComponent},

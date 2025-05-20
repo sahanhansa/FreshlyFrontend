@@ -10,11 +10,15 @@ import { HeaderComponent } from "../../../components/shared/header /header.compo
   styleUrl: './home.component.css'
 })
 export class HomeComponent {
-  @Input() laundryName: string = 'Sparkle';
+  @Input() laundryName: string = 'Laundry Name';
 
   constructor(private router: Router) {}
 
   goToNewOrder() {
     this.router.navigate(['/new-orders']);
+  }
+
+   goToProcessingOrder() {
+    this.router.navigate(['/processing-orders']);
   }
 }

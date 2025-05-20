@@ -23,7 +23,7 @@ export class NewOrdersComponent implements OnInit { // The component class that 
   constructor(private orderService: OrderService) {} // Inject the OrderService to interact with the backend API
 
   ngOnInit(): void {
-    this.loadNewOrders(); // Fetch the regular orders when the component is initialized
+    this.loadNewOrders(); // Fetch the new orders when the component is initialized
   }
 
   // Method to fetch regular orders from the backend

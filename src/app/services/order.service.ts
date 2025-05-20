@@ -9,12 +9,26 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class OrderService {
-  private apiUrl = `${environment.apiUrl}/api/Orders/neworders`; // ✅ Fixed: Use backticks
+  private baseUrl = `${environment.apiUrl}/api/Orders`;
+  // Temporary laundryId for testing - replace with actual ID in production
+  private readonly TEST_LAUNDRY_ID = 'efaa5020-331b-11f0-a791-c138d5830fc3';
 
   constructor(private http: HttpClient) {}
 
-  getNewOrders(): Observable<Order[]> {
-    return this.http.get<Order[]>(this.apiUrl).pipe(
+  getNewOrders(laundryId: string = this.TEST_LAUNDRY_ID): Observable<Order[]> {
+    return this.http.get<Order[]>(`${this.baseUrl}/${laundryId}/new-orders`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  getProcessingOrders(laundryId: string = this.TEST_LAUNDRY_ID): Observable<Order[]> {
+    return this.http.get<Order[]>(`${this.baseUrl}/${laundryId}/processing-orders`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  getAllOrders(laundryId: string = this.TEST_LAUNDRY_ID): Observable<Order[]> {
+    return this.http.get<Order[]>(`${this.baseUrl}/${laundryId}/all-orders`).pipe(
       catchError(this.handleError)
     );
   }

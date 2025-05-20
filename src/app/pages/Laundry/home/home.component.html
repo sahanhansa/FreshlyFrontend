@@ -4,12 +4,14 @@
   <app-header></app-header>
 
   <!-- Main Content -->
-  <div class="pt-24 flex-grow pb-16"> <!-- added pb-16 here -->
+  <div class="pt-24 flex-grow pb-16">
 
-    <div class="ml-10">
-      <h1 class="text-[50px] font-bold leading-tight font-inter">
-        Welcome <span class="text-[#0A84FF]">{{ laundryName }}!</span>
+    <div class="ml-4 sm:ml-10 -mt-6"> <!-- added negative margin here -->
+      <h1 class="text-3xl sm:text-5xl font-bold leading-tight font-inter">
+        <span>Welcome</span><br />
+        <span class="text-[#0A84FF]">{{ laundryName }}!</span>
       </h1>
+      <span class="text-base sm:text-lg">Manage your Orders efficiently</span>
     </div>
 
     <!-- Home Image slightly moved up -->
@@ -20,9 +22,19 @@
       <!-- New Orders Button -->
       <button
         (click)="goToNewOrder()"
-        class="rounded-xl shadow-md border border-gray-200 px-5 py-5 text-l items-center hover:bg-gray-200 transition duration-300"
+        class="rounded-xl shadow-md border border-gray-200 px-5 py-5 text-l items-center hover:bg-gray-200 transition duration-300 cursor-pointer"
       >
         <span class="text-xl text-center block">New Orders</span>
+        <div class="w-[200px] h-[200px] flex items-center justify-center">
+          <img src="assets/Home/neworders.png" alt="Regular Orders Icon" />
+        </div>
+      </button>
+
+      <button 
+        (click)="goToProcessingOrder()"
+        class="rounded-xl shadow-md border border-gray-200 px-5 py-5 text-l items-center hover:bg-gray-200 transition duration-300 cursor-pointer"
+      >
+        <span class="text-xl text-center block">Processing Orders</span>
         <div class="w-[200px] h-[200px] flex items-center justify-center">
           <img src="assets/Home/neworders.png" alt="Regular Orders Icon" />
         </div>
