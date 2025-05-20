@@ -5,16 +5,13 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SearchBarComponent } from '../../../components/shared/search-bar/search-bar.component';
 import { LaundryListComponent } from '../../../components/order/laundry-list/laundry-list.component';
+import { FooterComponent } from '../../../components/shared/footer/footer.component';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-laundry-page',
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    SearchBarComponent,
-    LaundryListComponent
-  ],
+  imports: [CommonModule, LaundryListComponent, FooterComponent],
   templateUrl: './laundry-list-page.component.html',
   styleUrls: ['./laundry-list-page.component.css']
 })

@@ -1,39 +1,19 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-search-bar',
-  standalone: true,
+  standalone: true,  // Important for imports to work
   imports: [CommonModule, FormsModule],
-  template: `
-    <div class="w-full">
-      <input
-        type="text"
-        [(ngModel)]="searchValue"
-        (ngModelChange)="onSearchChange()"
-        [placeholder]="placeholder"
-        [attr.aria-label]="ariaLabel"
-        class="border border-gray-300 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-300"
-      />
-    </div>
-  `,
-  styles: []
+  templateUrl: './search-bar.component.html'
 })
 export class SearchBarComponent {
-  @Input() placeholder: string = 'Search...';
-  @Input() ariaLabel: string = 'Search';
-  @Input() initialValue: string = '';
-  
-  @Output() searchChanged = new EventEmitter<string>();
-  
-  searchValue: string = '';
-  
-  ngOnInit() {
-    this.searchValue = this.initialValue;
-  }
-  
-  onSearchChange(): void {
-    this.searchChanged.emit(this.searchValue);
+  searchText: string = '';
+
+  @Output() search = new EventEmitter<string>();
+
+  onSearch() {
+    this.search.emit(this.searchText);
   }
 }

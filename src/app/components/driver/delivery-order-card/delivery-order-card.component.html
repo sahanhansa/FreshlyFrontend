@@ -1,0 +1,35 @@
+<div class="flex flex-wrap justify-center gap-6 mt-5 mb-5">
+  <div *ngFor="let delivery of sortedDeliveries" class="w-[22%] min-w-[240px] max-w-[300px]">
+    <div class="bg-[#d4f6ff] p-4 rounded-[15px] shadow-md font-sans transition-transform duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg">
+
+      <!-- Order -->
+      <div class="flex justify-between items-center mb-3">
+        <p class="order-id font-semibold text-sm break-words">Order ID: #{{ delivery.id }}</p>
+      </div>
+
+      <!-- Status -->
+      <span 
+        class="status text-sm font-medium px-3 py-1 rounded-full"
+        [ngClass]="{ 
+          'pending': delivery.status === 'Delivery Pending',
+          'complete': delivery.status === 'Delivery Complete'
+        }">
+        {{ delivery.status }}
+      </span>
+
+      <!-- Order Details -->
+      <div class="order-details text-sm mt-2 space-y-1">
+        <p><strong>Customer:</strong> {{ delivery.customerName }}</p>
+        <p><strong>Customer ID:</strong> {{ delivery.customerId }}</p>
+        <p><strong>Address:</strong> {{ delivery.address }}</p>
+        <p><strong>Contact:</strong> {{ delivery.contact }}</p>
+        <p><strong>Laundry Name:</strong> {{ delivery.laundryName }}</p>
+      </div>
+
+      <button class="view-button"
+        [routerLink]="['/delivery-order-details', delivery.id]">
+        View Order Details
+      </button>
+    </div>
+  </div>
+</div>

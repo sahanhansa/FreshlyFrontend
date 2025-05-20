@@ -1,0 +1,62 @@
+
+<div class="order-card" *ngIf="pickupOrder">
+  <div class="order-header">
+    <h3 class="order-title">Order ID: <span>{{ pickupOrder.id }}</span></h3>
+    
+    <span 
+    class="status-badge" 
+    [ngClass]="{
+      'pickup-pending': pickupOrder.status === 'Pickup Pending',
+      'pickup-complete': pickupOrder.status === 'Pickup Complete'
+    }">
+    {{ pickupOrder.status }}
+  </span>
+  
+
+
+  </div>
+
+  
+
+  <div class="order-details">
+    <div class="row">
+      <span class="label">Customer Name:</span>
+      <span class="value">{{ pickupOrder.customerName }}</span>
+    </div>
+    <div class="row">
+      <span class="label">Address:</span>
+      <span class="value">{{ pickupOrder.address }}</span>
+    </div>
+    <div class="row">
+      <span class="label">Contact:</span>
+      <span class="value">{{ pickupOrder.contact }}</span>
+    </div>
+    <div class="row">
+      <span class="label">Order Items:</span>
+      <span class="value">
+        <ul>
+          <li *ngFor="let item of pickupOrder.orderItems">
+            {{ item.itemName }} -{{ item.quantity }} 
+          </li>
+        </ul>
+      </span>
+    </div>
+    <div class="row">
+      <span class="label">Status:</span>
+      <span class="value">{{ pickupOrder.status }}</span>
+    </div>
+    <div class="row">
+      <span class="label">Laundry Name:</span>
+      <span class="value">{{ pickupOrder.laundryName }}</span>
+    </div>
+    <div class="row">
+      <span class="label">Add a Note:</span>
+    </div>
+    <textarea class="note-input" placeholder="Enter your note here..."></textarea>
+    
+    <div class="button">
+      <button class="save-btn">Save</button>
+    </div>
+  </div>
+</div>
+<br>

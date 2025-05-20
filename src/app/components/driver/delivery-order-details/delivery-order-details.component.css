@@ -1,0 +1,91 @@
+.order-card {
+    background-color: #d4f1ff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: auto;
+}
+
+.order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.order-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: #007bff;
+}
+
+.status-badge {
+    
+    color: rgb(0, 0, 0);
+    padding: 5px 12px;
+    font-size: 14px;
+    border-radius: 15px;
+    font-weight: bold;
+}
+.delivery-pending {
+    background-color:  #facc15; /* Pink */
+  }
+  
+ 
+  .delivery-complete {
+    background-color: #00c750; /* Green */
+  }
+
+.order-details .row {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+}
+
+.label {
+    font-weight: bold;
+}
+
+.value {
+    color: #333;
+}
+
+.note-input {
+    width: 100%;
+    height: 60px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.button-group {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 15px;
+}
+
+
+
+button {
+    background-color: #007bff; /* Blue button */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease, transform 0.2s;
+  }
+  
+  button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+    transform: scale(1.05);
+  }
+  
+  button:active {
+    transform: scale(0.95);
+  }
+  
