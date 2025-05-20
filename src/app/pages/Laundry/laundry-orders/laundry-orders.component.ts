@@ -1,3 +1,4 @@
+
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
@@ -5,9 +6,9 @@ import { OrderService } from '../../../services/order.service'; // Import OrderS
 import { Order } from '../../../models/order.model'; // Import Order model to type the orders array
 import { SearchBarComponent } from '../../../components/shared/search-bar/search-bar.component';
 import { PaginationComponent } from '../../../components/shared/pagination/pagination.component'; 
-import { FooterComponent } from '../../../components/shared/footer/footer.component'; 
-import { RouterModule } from '@angular/router';
-import { HeaderComponent } from '../../../components/shared/header /header.component'; 
+import { RouterModule } from '@angular/router';; 
+import { HeaderComponent } from '../../../components/laundry/header/header.component';
+import { FooterComponent } from '../../../components/shared/footer/footer.component';
 
 @Component({
   selector: 'app-laundry-orders',
