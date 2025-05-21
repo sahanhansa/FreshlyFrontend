@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 
 
 import { RouterOutlet } from '@angular/router';
+import { DeleteConfirmationComponent } from "./components/laundry/delete-confirmation/delete-confirmation.component";
 
 
 
@@ -9,7 +10,7 @@ import { RouterOutlet } from '@angular/router';
   selector: 'app-root',
   standalone: true,
 
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, DeleteConfirmationComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })

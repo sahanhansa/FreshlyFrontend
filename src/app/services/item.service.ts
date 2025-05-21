@@ -1,10 +1,24 @@
 import { Injectable } from '@angular/core';
 import { Item } from '../models/item.model';
+import { HttpClient} from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class ItemService {
+
+  private baseUrl = `${environment.apiUrl}/api/Orders`;
+  
+  // Temporary itemid for testing 
+  private readonly TEST_ITEM_ID = 'efaa5020-331b-11f0-a791-c138d5830fc3';
+
+  constructor(private http: HttpClient) {}
+
+
   private items: Item[] = [
     { id: 1, name: 'Frock', price: 250, description: 'Ladies wear', image: './assets/frock.png' },
     { id: 2, name: 'Blouse', price: 250, description: 'Ladies wear', image: './assets/blouse.png' },
@@ -30,6 +44,8 @@ export class ItemService {
     { id: 22, name: 'Winter wear', price: 250, description: 'Household items', image: './assets/winterwear.png' }
   ];
 
+ 
+
   getItems(): Item[] {
     return this.items;
   }
@@ -37,4 +53,9 @@ export class ItemService {
   getItemById(id: number): Item | undefined {
     return this.items.find(item => item.id === id);
   }
+
+   getDeleteItem(id: string = this.TEST_ITEM_ID): Observable<Item[]> {
+  return this.http.get<Item[]>(`${this.baseUrl}/orders/${id}`);
+}
+
 }
