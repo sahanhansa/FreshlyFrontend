@@ -10,8 +10,21 @@ import { NavbarComponent } from './components/admin/shared/navbar/navbar.compone
   templateUrl: './app.component.html',
   host: {
     class: 'block min-h-screen'
-  }
+  },
+  styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'FreshlyFrontend';
+
+  title = 'feature-laundry';
+
+  searchTerm: string = '';
+
+
+onSearchChanged(term: string) {
+  this.searchTerm = term;
+  console.log('Search term:', term);
+
+
+}
+  
 }

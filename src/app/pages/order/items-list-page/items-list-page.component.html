@@ -1,0 +1,36 @@
+<div class="flex flex-col gap-6">
+  <!-- Tab Navigation -->
+  <div>
+    <app-item-category (categorySelected)="onCategorySelected($event)"></app-item-category>
+  </div>
+  
+  <!-- Heading with Search Bar -->
+  <div class="px-4 sm:px-8 md:px-12 lg:px-36 flex flex-col md:flex-row items-center justify-between">
+    <!-- Heading -->
+    <div class="text-center md:text-left">
+      <h2 class="text-md sm:text-lg md:text-xl lg:text-2xl font-semibold text-gray-800">
+        {{ selectedCategory }} Items
+      </h2>
+      <p class="text-sm sm:text-base md:text-md text-gray-600 mt-1">
+        Add the items you need to be cleaned to your basket.
+      </p>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="mt-4 md:mt-0">
+      <input
+        type="text"
+        [(ngModel)]="searchQuery"
+        (input)="onSearch()"
+        placeholder="Search items..."
+        class="border border-gray-300 rounded-lg px-4 py-2 w-full md:w-68 focus:outline-none focus:ring-2 focus:ring-blue-300"
+      />
+    </div>
+  </div>
+
+  <!-- Item Card List -->
+  <div class="w-full">
+    <app-item-card-list [items]="filteredItems"></app-item-card-list>
+  </div>
+
+</div>

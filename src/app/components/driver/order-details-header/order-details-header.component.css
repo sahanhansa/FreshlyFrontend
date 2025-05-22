@@ -1,0 +1,19 @@
+.order-details-container {
+    text-align: center;
+    margin-top: 20px;
+  }
+  
+  .order-title {
+    font-size: 68px;
+    font-weight: bold;
+    font-family: "Inter", sans-serif;
+    color: #1a202c;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  }
+  
+  .order-description {
+    font-family: "Inter", sans-serif;
+    font-size: 28px;
+    color: #4a5568;
+  }
+  
