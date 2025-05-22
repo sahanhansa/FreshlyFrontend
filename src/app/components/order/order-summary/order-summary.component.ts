@@ -23,6 +23,7 @@ export class OrderSummaryComponent implements OnInit {
   @Input() laundryName: string = '';
   @Input() items: OrderItem[] = [];
   @Input() showLaundryInfo: boolean = true;
+  @Input() laundry: any = null; // Added to accept laundry object
 
   @Output() deleteOrderEvent = new EventEmitter<string>(); // Output event
 

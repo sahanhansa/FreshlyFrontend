@@ -1,0 +1,27 @@
+.primary {
+    color: #00b0ff;
+}
+
+.bg-primary {
+    background-color: #00b0ff;
+}
+
+.text-primary {
+    color: #00b0ff;
+}
+
+.border-primary {
+    border-color: #00b0ff;
+}
+
+.hover\:bg-primary-dark:hover {
+    background-color: #0091ea;
+}
+
+.disabled\:bg-gray-400:disabled {
+    background-color: #cbd5e0;
+}
+
+.disabled\:cursor-not-allowed:disabled {
+    cursor: not-allowed;
+}

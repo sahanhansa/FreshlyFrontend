@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router'; // Import Router
 import { Laundry } from '../../../models/laundry.model';
 import { LaundryService } from '../../../services/laundry.service';
@@ -19,6 +19,8 @@ export class LaundryListComponent implements OnInit {
   searchQuery: string = ''; // Search input value
   selectedLocation: string = ''; // Selected location filter
   selectedRating: string = ''; // Selected rating filter
+  
+  @Output() laundrySelected = new EventEmitter<Laundry>(); // Output event for selected laundry
   uniqueLocations: string[] = []; // Unique locations for the dropdown
   uniqueRatings: number[] = []; // Unique ratings for the dropdown
 
