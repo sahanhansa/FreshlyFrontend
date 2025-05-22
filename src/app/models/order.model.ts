@@ -1,4 +1,8 @@
-export interface OrderStatus {
+export interface Order {
+    orderId: string;
+    placedDate: string | null;
+
+  } export interface OrderStatus {
   statusId: String;
   statusName: string;
 }

@@ -1,36 +1,67 @@
-//helper that provides data or functionality to your components
-import { Injectable } from '@angular/core'; //marks the class as a service that can be injected into other Angular components or services
-import { Laundry } from '../models/laundry.model';
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
+import { Laundry, LaundryWithAddressDTO } from '../models/laundry.model';
 
 @Injectable({
-  providedIn: 'root' //Angular creates a singleton instance of this service and makes it available throughout the application
+  providedIn: 'root'
 })
 export class LaundryService {
-  private laundries: Laundry[] = [ //Each object follows the Laundry interface, with properties like id, name, location, rating, imageUrl, and itemIds
-    { id: 1, name: 'Spark Cleaners', location: 'Negombo', rating: 5, imageUrl: 'assets/laundry.png', itemIds: [1, 2, 3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22] },
-    { id: 2, name: 'Fresh Wash', location: 'Bambalapitiya', rating: 4, imageUrl: 'assets/laundry.png', itemIds: [1, 2, 3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22]  },
-    { id: 3, name: 'Quick Dry', location: 'Colombo 7', rating: 4, imageUrl: 'assets/laundry.png', itemIds: [1, 2, 3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22] },
-    { id: 4, name: 'Laundry Express', location: 'Narahenpita', rating: 3, imageUrl: 'assets/laundry.png',itemIds: [1, 2, 3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22]  },
-    { id: 5, name: 'Clean & Fresh', location: 'Maharagama', rating: 2, imageUrl: 'assets/laundry.png',itemIds: [1, 2, 3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22] },
-    { id: 6, name: 'Quick Wash', location: 'Dehiwala', rating: 4, imageUrl: 'assets/laundry.png', itemIds: [1, 2, 3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22]  },
-    { id: 7, name: 'Laundry Experts', location: 'Nugegoda', rating: 5, imageUrl: 'assets/laundry.png', itemIds: [1, 2, 3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22]  },
-    { id: 8, name: 'Clean & Clean', location: 'Kollupitiya', rating: 3, imageUrl: 'assets/laundry.png', itemIds: [1, 2, 3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22]  }
-  ];
+  // Base URL for the laundry-related API endpoints
+  private apiUrl = 'http://localhost:5027/api/Laundry'; 
 
-  getLaundries(): Laundry[] {
-    return this.laundries;
+  constructor(private http: HttpClient) {}
+
+  // Method to fetch all laundries from the backend API
+  getLaundries(): Observable<Laundry[]> {
+    return this.http.get<LaundryWithAddressDTO[]>(`${this.apiUrl}/laundry-list-for-customer`)
+      .pipe(
+        map(dtos => {
+          console.log('Raw API response:', dtos);
+          return this.mapDtosToLaundries(dtos);
+        }),
+        // Handle errors from the HTTP request
+        catchError(error => {
+          console.error('Error fetching laundries:', error);
+          return throwError(() => new Error('Failed to load laundries. Please try again later.'));
+        })
+      );
+  }
+
+  // Method to fetch a specific laundry by its ID
+  getLaundryById(id: number): Observable<Laundry> {
+    return this.http.get<LaundryWithAddressDTO>(`${this.apiUrl}/${id}`)
+      .pipe(
+        map(dto => this.mapDtoToLaundry(dto)),
+        // Handle errors specific to this request
+        catchError(error => {
+          console.error(`Error fetching laundry with ID ${id}:`, error);
+          return throwError(() => new Error('Failed to load laundry details. Please try again later.'));
+        })
+      );
+  }
+
+  // Helper method to convert DTOs to domain models
+  private mapDtosToLaundries(dtos: LaundryWithAddressDTO[]): Laundry[] {
+    return dtos.map(dto => this.mapDtoToLaundry(dto));
+  }
+
+  // Helper method to convert a single DTO to domain model
+  private mapDtoToLaundry(dto: any): Laundry {
+    const averageRating = dto.averageRating ?? dto.AverageRating ?? 0;
+    const hasRatings = averageRating > 0;
+    const roundedRating = Math.round(averageRating);
+    
+    return {
+      id: dto.laundryId || "",
+      name: dto.laundryName || dto.LaundryName || 'Unnamed Laundry',
+      location: dto.city || dto.City || 'Location not available',
+      rating: roundedRating,
+      hasRatings: hasRatings,
+      imageUrl: 'assets/laundry.png',
+      itemIds: []
+    };
   }
 }
 
-// How these interact
-
-// Data Flow:
-// The LaundryService provides the list of laundries.
-// The LaundryListComponent fetches the list of laundries from the LaundryService.
-// The LaundryListComponent loops through the list and creates a LaundryCardComponent for each laundry item.
-// The LaundryCardComponent receives the data for each laundry item and displays it.
-
-// Interaction:
-// Service to List: The LaundryListComponent calls the getLaundries() method from the LaundryService to get the data.
-// List to Card: The LaundryListComponent passes the data for each laundry item to the LaundryCardComponent using @Input() properties.
-// Card Displays Data: The LaundryCardComponent takes the data and displays it in the UI.

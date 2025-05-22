@@ -1,9 +1,18 @@
-export interface Item {
-  id: number;          // Unique identifier for each item
-  name: string;        // Name of the item
-  price: number;       // Price of the item
-  description: string; // Description of the item
-  image: string;       // Image URL for the item
-  category?: string;   // Category of the item (Ladies, Gents, Kids, etc.)
-  //laundryIds: number[]; // Array of laundry IDs this item belongs to
+// Interface defining a item service with its price information
+export interface ServiceWithPrice {
+  serviceId: string;
+  serviceName: string | null;
+  price: number | null;
 }
+
+// Main interface for laundry items 
+export interface Item {
+  itemId: string;
+  itemName: string | null;
+  categoryName: string | null; 
+  description?: string;
+  image?: string;
+  services: ServiceWithPrice[];
+}
+
+export type ItemCategory = 'ladies' | 'gents' | 'kids' | 'other';

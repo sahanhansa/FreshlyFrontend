@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { OrderSummaryComponent } from '../order-summary/order-summary.component';
 
+// Define the structure of a single item in a pending order
 interface OrderItem {
   id: number;
   name: string;
@@ -13,6 +14,7 @@ interface OrderItem {
   image: string;
 }
 
+// Define the structure of a pending order
 interface PendingOrder {
   id: string;
   laundryName: string;
@@ -27,6 +29,7 @@ interface PendingOrder {
   styleUrl: './pending-order-list.component.css'
 })
 export class PendingOrderListComponent {
+  // Sample data array
   pendingOrders: PendingOrder[] = [
     {
       id: '123456',
@@ -62,15 +65,13 @@ export class PendingOrderListComponent {
 
   constructor(private router: Router) {}
 
-  // For testing empty state, you can uncomment this line:
-  // pendingOrders: PendingOrder[] = [];
-
+  // Method to handle "Order Now" button click
   createNewOrder() {
     this.router.navigate(['/laundries']);
   }
 
+  // Method to handle order deletion events
   onDeleteOrder(orderId: string) {
-    // Find and remove the order with the matching ID
     this.pendingOrders = this.pendingOrders.filter(order => order.id !== orderId);
   }
 }

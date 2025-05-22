@@ -3,11 +3,13 @@ import { CommonModule } from '@angular/common';
 import { OrderCardComponent } from '../order-card/order-card.component';
 import { OrderStatusStep } from '../order-status/order-status.component';
 
+// Define the interface for order items within completed orders
 interface OrderItem {
   name: string;
   quantity: number;
 }
 
+// Define the interface for a completed order
 interface Order {
   id: string;
   laundryName: string;

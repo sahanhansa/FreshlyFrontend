@@ -2,25 +2,31 @@ import { Routes } from '@angular/router';
 import { LoginComponent } from './components/customer/login/login.component';
 import { SignupComponent } from './components/customer/signup/signup.component';
 import { WhoAreYouComponent } from './components/customer/whoareyou/whoareyou.component';
+import { HomeComponent } from './pages/Laundry/home/home.component';
 import { NgModule } from '@angular/core';
 import { RouterModule} from '@angular/router';
-import { LaundryHomeComponent } from './components/customer/laundry-home/laundry-home.component';
+import { DriverHomePageComponent } from './pages/Driver/driver-home-page/driver-home-page.component';
+import { PickupsTasksMainpageComponent } from './pages/Driver/pickups-tasks-mainpage/pickups-tasks-mainpage.component';
+import { PickupsPendingOrderDetailsComponent } from './pages/Driver/pickups-pending-order-details/pickups-pending-order-details.component';
+import { DeliveryTasksMainpageComponent } from './pages/Driver/delivery-tasks-mainpage/delivery-tasks-mainpage.component';
+import { DeliveryPendingOrderDetailsComponent } from './pages/Driver/delivery-pending-order-details/delivery-pending-order-details.component';
+import { DriverContactusPageComponent } from './pages/Driver/driver-contactus-page/driver-contactus-page.component';
+import { AdminHomeComponent } from './components/admin-home/admin-home.component';
 import { CusHomeComponent } from './components/customer/cus-home/cus-home.component';
 import { LaundrySignupComponent } from './components/customer/laundry-signup/laundry-signup.component';
 import { HowItWorksComponent } from './components/customer/how-it-works/how-it-works.component';
-
-
-
-// Import admin components
-import { DashboardComponent } from './components/admin/dashboard/dashboard.component';
-import { CustomersComponent } from './components/admin/customers/customers.component';
-import { DriversComponent } from './components/admin/drivers/drivers.component';
-import { OrdersComponent } from './components/admin/orders/orders.component';
-import { VehiclesComponent } from './components/admin/vehicles/vehicles.component';
-import { LaundriesComponent } from './components/admin/laundries/laundries.component';
-import { ComplaintsComponent } from './components/admin/complaints/complaints.component';
-import { ReportsComponent } from './components/admin/reports/reports.component';
-import { AdminDashboardComponent } from './components/admin/admin-dashboard/admin-dashboard.component';
+import { NewOrdersComponent } from './pages/Laundry/new-orders/new-orders.component';
+import { ConfirmOrdersComponent } from './pages/Laundry/confirm-orders/confirm-orders.component';
+import { InvoiceSuccessedComponent } from './pages/Laundry/invoice-successed/invoice-successed.component';
+import { LaundryFeedbacksComponent } from './pages/Laundry/laundry-feedbacks/laundry-feedbacks.component';
+import { LaundryItemsComponent } from './pages/Laundry/laundry-items/laundry-items.component';
+import { LaundryOrdersComponent } from './pages/Laundry/laundry-orders/laundry-orders.component';
+import { LaundryProfileComponent } from './pages/Laundry/laundry-profile/laundry-profile.component';
+import { LaundrySummaryComponent } from './pages/Laundry/laundry-summary/laundry-summary.component';
+import { LaundryPageComponent } from './pages/order/laundry-list-page/laundry-list-page.component';
+import { BasketComponent } from './pages/order/basket/basket.component';
+import { ItemPageComponent } from './pages/order/item-list-page/item-list-page.component';
+import { CustomerLayoutComponent } from './components/customer/customer-layout/customer-layout.component';
 
 // Define the application's routes
 export const routes: Routes = [
@@ -38,39 +44,80 @@ export const routes: Routes = [
     {path:'signup', component: SignupComponent},
 
      // Route for customer home page
-    { path: 'cus-home', component: CusHomeComponent },
+    //{ path: 'cus-home', component: CusHomeComponent },
 
     // Route for laundry partner home page
-    { path: 'laundry-home', component: LaundryHomeComponent },     // Route for laundry-specific signup
-    {path: 'laundry-signup', component:LaundrySignupComponent},    // Route for how-it-works
-    {path: 'how-it-works', component:HowItWorksComponent},
+  { path: 'laundry-home', component: HomeComponent},
 
-    // Route for customer order
-    {path: 'order', loadComponent: () => import('./components/customer/order/order.component').then(c => c.OrderComponent)},
-          // Admin routes
-    { path: 'admin', redirectTo: '/admin/dashboard', pathMatch: 'full' },
-    { path: 'admin/dashboard', component: AdminDashboardComponent },    
-    { path: 'admin/customers', component: CustomersComponent },
-    { path: 'admin/drivers', component: DriversComponent },
-    { path: 'admin/orders', component: OrdersComponent },
-    { path: 'admin/vehicles', component: VehiclesComponent },
-    { path: 'admin/laundries', component: LaundriesComponent },
-    { path: 'admin/complaints', component: ComplaintsComponent },
-    { path: 'admin/reports', component: ReportsComponent },
-    
-    // Legacy admin routes (redirects to avoid breaking existing links)
-    { path: 'customers', redirectTo: '/admin/customers', pathMatch: 'full' },
-    { path: 'drivers', redirectTo: '/admin/drivers', pathMatch: 'full' },
-    { path: 'orders', redirectTo: '/admin/orders', pathMatch: 'full' },
-    { path: 'vehicles', redirectTo: '/admin/vehicles', pathMatch: 'full' },
-    { path: 'laundries', redirectTo: '/admin/laundries', pathMatch: 'full' },
-    { path: 'complaints', redirectTo: '/admin/complaints', pathMatch: 'full' },
-    { path: 'reports', redirectTo: '/admin/reports', pathMatch: 'full' }
+   // Route for admin home page
+  { path: 'admin-home', component: AdminHomeComponent },
+  
+  // Route for laundry-specific signup
+  {path: 'laundry-signup', component:LaundrySignupComponent},
+
+ // Route for how-it-works
+   //{path: 'how-it-works', component:HowItWorksComponent},
+
+  // Route for new orders page
+  {path: 'new-orders', component:NewOrdersComponent},
+
+ // Route for confirm orders page
+  {path: 'confirm-orders', component:ConfirmOrdersComponent},
+
+  // Route for invoice success page
+   {path: 'invoice-successed', component:InvoiceSuccessedComponent},
+
+    // Route for laundry-orders page
+   {path: 'laundry-orders', component:LaundryOrdersComponent},
+
+    // Route for laundry-feedbacks page
+   {path: 'laundry-feedbacks', component:LaundryFeedbacksComponent},
+
+    // Route for laundry-items page
+   {path: 'laundry-items', component:LaundryItemsComponent},
+
+    // Route for laundry-profile page
+    {path: 'laundry-profile', component:LaundryProfileComponent},
+
+    // Route for laundry-summary page
+    {path: 'laundry-summary', component:LaundrySummaryComponent},
+
+    //order routes
+  //   { path: '', redirectTo: 'order', pathMatch: 'full' },
+  // { path: 'order', component: LaundryPageComponent },
+  // { path: 'basket', component: BasketComponent },
+  // {path: 'laundry/:id', component: ItemPageComponent},
+
+  //driver routes
+  {path: 'driver-home-page', component:DriverHomePageComponent },
+  {path: 'pickups-tasks-mainpage', component: PickupsTasksMainpageComponent },
+  {path: 'delivery-tasks-mainpage', component: DeliveryTasksMainpageComponent},
+  {path: 'driver-contactus-page', component: DriverContactusPageComponent},
+  {path: 'order-details-pending/:id', component: PickupsPendingOrderDetailsComponent}, 
+  {path: 'delivery-order-details/:id', component: DeliveryPendingOrderDetailsComponent},
+
+  // Customer interface with layout (navbar + footer)
+  {
+    path: 'cus-home',
+    component: CustomerLayoutComponent,
+    children: [
+      { path: '', redirectTo: 'home', pathMatch: 'full' },
+      { path: 'home', component: CusHomeComponent }, 
+      {path: 'how-it-works', component:HowItWorksComponent},
+      { path: 'order', component: LaundryPageComponent },      // Laundry list page
+      { path: 'basket', component: BasketComponent },
+      {path: 'laundry/:id', component: ItemPageComponent},
+      // Replace with actual profile component if needed
+      // Add more customer pages as needed
+    ]
+  },
+
 ];
 // Define the routing module
-  @NgModule({
+ @NgModule({
     imports: [RouterModule.forRoot(routes)],
     exports: [RouterModule]
   })
   export class AppRoutingModule {}
+
 

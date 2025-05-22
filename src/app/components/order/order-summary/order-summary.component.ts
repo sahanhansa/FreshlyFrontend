@@ -23,7 +23,6 @@ export class OrderSummaryComponent implements OnInit {
   @Input() laundryName: string = '';
   @Input() items: OrderItem[] = [];
   @Input() showLaundryInfo: boolean = true;
-  @Input() laundry: any = null; // Added to accept laundry object
 
   @Output() deleteOrderEvent = new EventEmitter<string>(); // Output event
 
@@ -31,36 +30,42 @@ export class OrderSummaryComponent implements OnInit {
   showDeleteConfirmation: boolean = false;
 
   ngOnInit() {
-    // Use the provided items or fallback to default
     this.orderItems = this.items;
   }
 
+  //calculates total order price from all items
   get total(): number {
     return this.orderItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
   }
 
+  // Handler for the Edit button click
   editOrder() {
     console.log(`Edit order: ${this.orderId}`);
   }
 
+  // Handler for Delete button click
   deleteOrder() {
     this.showDeleteConfirmation = true;
   }
 
+  // Handler for confirming order deletion
   confirmDelete() {
     console.log(`Order ${this.orderId} deleted`);
     this.showDeleteConfirmation = false;
     this.deleteOrderEvent.emit(this.orderId); // Emit the order ID
   }
 
+  // Handler for canceling order deletion
   cancelDelete() {
     this.showDeleteConfirmation = false;
   }
 
+  // Handler for the Order Now button
   placeOrder() {
     console.log(`Place order: ${this.orderId}`);
   }
 
+   // Method to remove a single item from the order
   deleteItem(itemId: number) {
     const index = this.orderItems.findIndex(item => item.id === itemId);
     if (index !== -1) {

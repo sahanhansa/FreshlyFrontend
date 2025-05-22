@@ -1,31 +1,39 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
+import { StarRatingComponent } from '../../order/star-rating/star-rating.component';
+import {Router} from "@angular/router"; // Import Router for navigation
 @Component({
   selector: 'app-laundry-card',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, StarRatingComponent, StarRatingComponent],
   templateUrl: './laundry-card.component.html',
   styleUrls: ['./laundry-card.component.css']
 })
 export class LaundryCardComponent {
-  @Input() public name!: string;
-  @Input() public location!: string;
-  @Input() public rating!: number;
+  // Input properties for the laundry
+  @Input() public id!: string;
+  @Input() public name: string = 'Unnamed Laundry'; 
+  @Input() public location: string = 'Location not available';
+  @Input() public rating: number = 0;
+  @Input() public hasRatings: boolean = false; 
   @Input() public imageUrl!: string;
   @Input() public isFavorite: boolean = false;
-  @Output() public favoriteToggled = new EventEmitter<void>();
-  @Output() public selectLaundry = new EventEmitter<void>(); // Emit event for selecting laundry
 
+  // Output event emitters
+  @Output() public favoriteToggled = new EventEmitter<void>();
+  @Output() public selectLaundry = new EventEmitter<string>(); 
+
+  // Constructor to inject Router for navigation
+  constructor(private router: Router) {} 
+
+  // Method called when the favorite icon is clicked
   toggleFavorite() {
     this.favoriteToggled.emit();
   }
 
+  // Method called when the "Select Laundry" button is clicked
   onSelectLaundry() {
-    this.selectLaundry.emit(); // Emit the event to the parent component
-  }
-
-  getStars(rating: number): number[] {
-    return Array(Math.floor(rating)).fill(0);
+    this.router.navigate([`/cus-home/laundry/${this.id}`]);
+    
   }
 }

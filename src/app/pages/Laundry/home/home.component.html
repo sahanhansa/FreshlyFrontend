@@ -1,29 +1,37 @@
-<app-header></app-header>
-<div class="mt-8 ml-10">
-    <h1 class="text-[50px] font-bold leading-tight font-inter">
-      Welcome <span class="text-[#0A84FF]">{{ laundryName }}!</span>
-    </h1>
-</div>
-<img src="assets/Home/home.png" alt="Home Image" class="absolute top-30 right-0 w-[400px] h-[430px] object-cover">
+<div class="min-h-screen flex flex-col">
 
-<div class="flex space-x-4 mt-25 ml-20">
-    <button (click)="goToRegularOrder()" class="rounded-xl shadow-md border border-gray-200 px-5 py-5 text-l items-center hover:bg-gray-200 transition duration-300">
-      <span class="text-xl text-center">Regular Orders</span>
-      <div class="w-[200px] h-[200px] flex items-center justify-center">
-        <img src="assets/Home/regular.png" alt="Regular Orders Icon">
-      </div>
-    </button>
+  <!-- Header -->
+  <app-header></app-header>
 
-  
-  
-    <button  (click)="goToExpressOrder()"class="rounded-xl shadow-md border border-gray-200 px-5 py-5 text-l  items-center  hover:bg-gray-200 transition duration-300">
-        <span class="text-xl text-center">Express Deliveries</span>
-      <div class="w-[200px] h-[200px] flex items-center justify-center">
-        <img src="assets/Home/express.png" alt="Icon 2">
-      </div>
-    </button>
+  <!-- Main Content -->
+  <div class="pt-24 flex-grow pb-16"> <!-- added pb-16 here -->
+
+    <div class="ml-10">
+      <h1 class="text-[50px] font-bold leading-tight font-inter">
+        Welcome <span class="text-[#0A84FF]">{{ laundryName }}!</span>
+      </h1>
+    </div>
+
+    <!-- Home Image slightly moved up -->
+    <img src="assets/Home/home.png" alt="Home" class="float-right w-[450px] h-[480px] object-cover z-0 -mt-28" />
+
+    <!-- Buttons Container -->
+    <div class="flex space-x-6 mt-12 ml-20 z-10 relative">
+      <!-- New Orders Button -->
+      <button
+        (click)="goToNewOrder()"
+        class="rounded-xl shadow-md border border-gray-200 px-5 py-5 text-l items-center hover:bg-gray-200 transition duration-300"
+      >
+        <span class="text-xl text-center block">New Orders</span>
+        <div class="w-[200px] h-[200px] flex items-center justify-center">
+          <img src="assets/Home/neworders.png" alt="Regular Orders Icon" />
+        </div>
+      </button>
+    </div>
+
   </div>
+
+  <!-- Footer -->
   <app-footer></app-footer>
-  
-  
-  
+
+</div>

@@ -1,10 +1,23 @@
-//blueprint of how laundry object should look like
+// Interface defines the structure of a Laundry object for the frontend
 export interface Laundry {
-  id: number;       // Unique identifier for each laundry
-  name: string;     // Laundry name
-  location: string; // Location of the laundry
-  rating: number;   // Rating (e.g., out of 5)
-  imageUrl: string; // Image URL for the laundry
-  isFavorite?: boolean; // Optional: Whether the laundry is marked as favorite
-  itemIds: number[]; // Array of item IDs associated with this laundry
+  id: number;       
+  name: string;     
+  location: string; 
+  rating: number;   
+  hasRatings: boolean; 
+  imageUrl: string; 
+  isFavorite?: boolean; 
+  itemIds: number[]; 
+}
+
+// DTO matching what the backend controller returns
+export interface LaundryWithAddressDTO {
+  laundryId: string;      
+  laundryName: string;    
+  city: string;           
+  averageRating?: number; 
+  LaundryId?: string;
+  LaundryName?: string;
+  City?: string;
+  AverageRating?: number;
 }

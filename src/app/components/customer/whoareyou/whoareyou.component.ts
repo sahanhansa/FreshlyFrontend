@@ -19,11 +19,13 @@ export class WhoAreYouComponent {
         this.router.navigate(['/login']);
         break;
       case 'laundry':
-        this.router.navigate(['/login']);
+        this.router.navigate(['/laundry-home']);
         break;
       case 'admin':
         this.router.navigate(['/login']);
         break;
+        case 'driver':
+          this.router.navigate(['/driver-home-page']);
     }
   }
 

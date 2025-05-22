@@ -1,16 +1,18 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 @Component({
-  imports: [CommonModule],
   selector: 'app-navbar-order',
   standalone: true,
+  imports: [CommonModule, RouterLink],
   templateUrl: './navbar-order.component.html',
-  styleUrls: ['./navbar-order.component.css'],
+  styleUrl: './navbar-order.component.css'
 })
 export class NavbarOrderComponent {
   isMenuOpen = false;
 
+  // Method to toggle mobile menu visibility
   toggleMenu() {
     this.isMenuOpen = !this.isMenuOpen;
   }

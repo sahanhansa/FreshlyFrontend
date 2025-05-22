@@ -23,7 +23,7 @@ export class NavbarComponent implements OnInit {
       this.tabs = []; // if not logged in
       return;
     }
-
+role ='customer'; // for testing purposes, remove this line in production
     switch (role) {
       case 'customer':
         this.tabs = [

@@ -1,0 +1,17 @@
+<div class="container mx-auto px-4 py-6">  
+  <!-- Items grid (only shown when there are items to display) -->
+  @if (items.length > 0) {
+    <div class="container mx-auto">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <!-- Angular 17's new "for" loop syntax (@for) that:
+             - Iterates through each item in the items array
+             - Uses item.itemId as the tracking property for efficient DOM updates
+             - Creates an app-item-card component for each item
+             - Passes the current item object to the [item] input property of the card -->
+        @for (item of items; track item.itemId) {
+          <app-item-card [item]="item"></app-item-card>
+        }
+      </div>
+    </div>
+  }
+</div>

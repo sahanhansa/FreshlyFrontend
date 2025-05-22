@@ -1,11 +1,11 @@
 import { Component  , Input} from '@angular/core';
-import { HeaderComponent } from '../../../components/shared/header/header.component';
 import { FooterComponent } from '../../../components/shared/footer/footer.component';
 import { Router } from '@angular/router';
+import { HeaderComponent } from '../../../components/laundry/header/header.component';
 
 @Component({
   selector: 'app-home',
-  imports: [HeaderComponent,FooterComponent],
+  imports: [ FooterComponent, HeaderComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
@@ -14,11 +14,7 @@ export class HomeComponent {
 
   constructor(private router: Router) {}
 
-  goToRegularOrder() {
-    this.router.navigate(['/regular-order']);
-  }
-
-  goToExpressOrder() {
-    this.router.navigate(['/express-order']);
+  goToNewOrder() {
+    this.router.navigate(['/new-orders']);
   }
 }

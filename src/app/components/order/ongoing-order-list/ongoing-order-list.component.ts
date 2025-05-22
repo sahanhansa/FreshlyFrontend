@@ -90,8 +90,6 @@ export class OngoingOrderListComponent {
     if (orderIndex !== -1) {
       // Remove from ongoing orders
       this.ongoingOrders.splice(orderIndex, 1);
-      
-      // Show feedback (in a real app, you'd likely call a service to cancel the order)
       alert(`Order #${orderId} has been cancelled`);
     }
     
