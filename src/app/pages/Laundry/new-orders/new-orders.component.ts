@@ -5,13 +5,12 @@ import { OrderService } from '../../../services/order.service'; // Import OrderS
 import { Order } from '../../../models/order.model'; // Import Order model to type the orders array
 import { SearchBarComponent } from '../../../components/shared/search-bar/search-bar.component';
 import { PaginationComponent } from '../../../components/shared/pagination/pagination.component'; 
-import { FooterComponent } from '../../../components/shared/footer/footer.component'; 
 import { RouterModule } from '@angular/router'; 
 
 @Component({
   selector: 'app-new-orders', 
   standalone: true, 
-  imports: [CommonModule, RouterModule, HttpClientModule, PaginationComponent, SearchBarComponent, FooterComponent], 
+  imports: [CommonModule, RouterModule, HttpClientModule, PaginationComponent, SearchBarComponent], 
   templateUrl: './new-orders.component.html', 
   styleUrls: ['./new-orders.component.scss'] 
 })

@@ -4,6 +4,14 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Item } from '../../../models/item.model';
 import { FabricTypeService } from '../../../services/fabric-type.service';
 
+// Interface to support legacy properties
+interface ExtendedItem extends Item {
+  name?: string;
+  price?: number;
+  category?: string;
+  id?: string | number;
+}
+
 @Component({
   selector: 'app-item-card',
   standalone: true,
@@ -13,7 +21,7 @@ import { FabricTypeService } from '../../../services/fabric-type.service';
 })
 export class ItemCardComponent implements OnInit {
   // Input property to receive item data from parent component
-  @Input() item!: Item; 
+  @Input() item!: ExtendedItem; 
 
   // Form controls for each selectable field
   selectedGarment = new FormControl('Cotton');

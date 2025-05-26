@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { PaginationComponent } from '../../../components/shared/pagination/pagination.component';
 import { HeaderComponent } from '../../../components/shared/header/header.component';
 import { SearchBarComponent } from '../../../components/shared/search-bar/search-bar.component';
@@ -7,7 +8,8 @@ import { FooterComponent } from '../../../components/shared/footer/footer.compon
 
 @Component({
   selector: 'app-orders',
-  imports: [PaginationComponent,HeaderComponent,SearchBarComponent,TableComponent,FooterComponent],
+  standalone: true,
+  imports: [CommonModule, PaginationComponent, HeaderComponent, SearchBarComponent, TableComponent, FooterComponent],
   templateUrl: './orders.component.html',
   styleUrl: './orders.component.css'
 })

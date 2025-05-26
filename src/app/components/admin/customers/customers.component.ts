@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { SharedImports } from '../../../shared/shared-imports';
 import { Customer } from '../../../models/customer.model';
@@ -13,19 +13,22 @@ import { CustomerService } from '../../../services/customer.service';
   styleUrls: ['./customers.component.css']
 })
 export class CustomersComponent implements OnInit {
-  customers: Customer[] = [];
-  filteredCustomers: Customer[] = [];
-  showTable: boolean = true;
-  loading: boolean = false;
-  error: string | null = null;
-  searchText: string = '';
-  entriesPerPage: number = 10;
-  selectedCustomer: Customer | null = null;
-  showDeleteConfirmation: boolean = false;
-  deleteInProgress: boolean = false;
-  deleteSuccess: boolean = false;
-  deleteError: string | null = null;
-  currentPage: number = 1;
+  // Data collections
+  customers = signal<Customer[]>([]);
+  filteredCustomers = signal<Customer[]>([]);
+  
+  // UI state
+  showTable = signal<boolean>(true);
+  loading = signal<boolean>(false);
+  error = signal<string | null>(null);
+  searchText = signal<string>('');
+  entriesPerPage = signal<number>(10);
+  selectedCustomer = signal<Customer | null>(null);
+  showDeleteConfirmation = signal<boolean>(false);
+  deleteInProgress = signal<boolean>(false);
+  deleteSuccess = signal<boolean>(false);
+  deleteError = signal<string | null>(null);
+  currentPage = signal<number>(1);
 
   constructor(
     private customerService: CustomerService,
@@ -42,28 +45,33 @@ export class CustomersComponent implements OnInit {
   getCurrentRoute(): string {
     return this.router.url;
   }
-
   /**
    * Fetch all customers from the backend
    */
   fetchCustomers(): void {
-    this.loading = true;
-    this.error = null;
+    this.loading.set(true);
+    this.error.set(null);
 
     this.customerService.getCustomers().subscribe({
       next: (data) => {
-        this.customers = data;
-        this.filteredCustomers = [...this.customers];
-        this.loading = false;
+        // Ensure all customers have their contacts array initialized
+        const processedData = data.map(customer => ({
+          ...customer,
+          contacts: customer.contacts || []
+        }));
+        
+        this.customers.set(processedData);
+        this.filteredCustomers.set([...processedData]);
+        this.loading.set(false);
 
-        if (this.filteredCustomers.length > 0 && !this.selectedCustomer) {
-          this.selectedCustomer = this.filteredCustomers[0];
+        if (this.filteredCustomers().length > 0 && !this.selectedCustomer()) {
+          this.selectedCustomer.set(this.filteredCustomers()[0]);
         }
       },
       error: (err) => {
         console.error('Error fetching customers:', err);
-        this.error = err.message;
-        this.loading = false;
+        this.error.set(err.message);
+        this.loading.set(false);
       }
     });
   }
@@ -71,15 +79,15 @@ export class CustomersComponent implements OnInit {
   /**
    * Filter customers based on search text
    */
-  filterCustomers(): void {
-    if (!this.searchText) {
-      this.filteredCustomers = [...this.customers];
+  filterCustomers(searchText: string): void {
+    this.searchText.set(searchText);
+    if (!searchText) {
+      this.filteredCustomers.set([...this.customers()]);
       return;
     }
 
-    const searchTermLower = this.searchText.toLowerCase();
-
-    this.filteredCustomers = this.customers.filter(customer => {
+    const searchTermLower = searchText.toLowerCase();
+    const filtered = this.customers().filter(customer => {
       const firstName = (customer.firstName || '').toLowerCase();
       const lastName = (customer.lastName || '').toLowerCase();
       const email = (customer.email || '').toLowerCase();
@@ -90,115 +98,103 @@ export class CustomersComponent implements OnInit {
              lastName.includes(searchTermLower) ||
              email.includes(searchTermLower) ||
              username.includes(searchTermLower) ||
-             address.includes(searchTermLower) ||
-             customer.contacts.some(contact => 
-               contact.toLowerCase().includes(searchTermLower)
-             );
+             address.includes(searchTermLower);
     });
 
-    if (this.filteredCustomers.length > 0) {
-      if (!this.selectedCustomer || !this.filteredCustomers.includes(this.selectedCustomer)) {
-        this.selectedCustomer = this.filteredCustomers[0];
-      }
-    } else {
-      this.selectedCustomer = null;
-    }
+    this.filteredCustomers.set(filtered);
   }
 
   /**
    * Select a customer for details view
    */
   selectCustomer(customer: Customer): void {
-    this.selectedCustomer = customer;
+    this.selectedCustomer.set(customer);
   }
 
   /**
    * Show delete confirmation dialog
    */
   promptDeleteConfirmation(): void {
-    this.showDeleteConfirmation = true;
+    this.showDeleteConfirmation.set(true);
   }
 
   /**
    * Cancel delete operation
    */
   cancelDelete(): void {
-    this.showDeleteConfirmation = false;
+    this.showDeleteConfirmation.set(false);
   }
 
   /**
    * Confirm and execute delete operation
    */
   confirmDelete(): void {
-    this.showDeleteConfirmation = false;
     this.removeCustomer();
+    this.showDeleteConfirmation.set(false);
   }
 
   /**
    * Remove the selected customer from the database
-   */  removeCustomer(): void {
-    if (!this.selectedCustomer || !this.selectedCustomer.customerId) {
-      console.error('No customer selected or customer ID is missing');
-      this.deleteError = 'Unable to remove customer: No customer selected';
-      return;
-    }
+   */
+  removeCustomer(): void {
+    if (!this.selectedCustomer()) return;
 
-    this.deleteInProgress = true;
-    this.deleteError = null;
-    this.deleteSuccess = false;
+    this.deleteInProgress.set(true);
+    this.deleteError.set(null);
 
-    console.log(`Attempting to delete customer with ID: ${this.selectedCustomer.customerId}`);
-
-    this.customerService.deleteCustomer(this.selectedCustomer.customerId).subscribe({
+    this.customerService.deleteCustomer(this.selectedCustomer()!.customerId).subscribe({
       next: () => {
-        console.log('Customer deleted successfully');
-        this.customers = this.customers.filter(c => c.customerId !== this.selectedCustomer?.customerId);
-        this.filteredCustomers = this.filteredCustomers.filter(c => c.customerId !== this.selectedCustomer?.customerId);
-        this.deleteSuccess = true;
-        this.selectedCustomer = this.filteredCustomers.length > 0 ? this.filteredCustomers[0] : null;
-        this.deleteInProgress = false;
+        const newCustomers = this.customers().filter(c => c.customerId !== this.selectedCustomer()?.customerId);
+        this.customers.set(newCustomers);
+        this.filteredCustomers.set(this.filteredCustomers().filter(c => c.customerId !== this.selectedCustomer()?.customerId));
+        this.deleteSuccess.set(true);
+        this.selectedCustomer.set(this.filteredCustomers().length > 0 ? this.filteredCustomers()[0] : null);
+        this.deleteInProgress.set(false);
 
         setTimeout(() => {
-          this.deleteSuccess = false;
+          this.deleteSuccess.set(false);
         }, 3000);
       },
       error: (err) => {
         console.error('Error deleting customer:', err);
-        this.deleteError = err.message;
-        this.deleteInProgress = false;
+        this.deleteError.set(err.message);
+        this.deleteInProgress.set(false);
       }
     });
   }
-
   /**
    * Get paginated customers
    */
   get paginatedCustomers(): Customer[] {
-    const startIndex = (this.currentPage - 1) * this.entriesPerPage;
-    return this.filteredCustomers.slice(startIndex, startIndex + this.entriesPerPage);
+    if (!this.filteredCustomers() || this.filteredCustomers().length === 0) {
+      return [];
+    }
+    const startIndex = (this.currentPage() - 1) * this.entriesPerPage();
+    return this.filteredCustomers().slice(startIndex, startIndex + this.entriesPerPage());
   }
 
   /**
    * Handle page change
    */
   onPageChange(page: number): void {
-    this.currentPage = page;
+    this.currentPage.set(page);
   }
 
   /**
    * Handle entries per page change
    */
   onEntriesChange(entries: number): void {
-    this.entriesPerPage = entries;
-    this.currentPage = 1;
+    this.entriesPerPage.set(entries);
+    this.currentPage.set(1);
   }
+
   /**
    * Get total number of pages
    */
   get totalPages(): number {
-    return Math.ceil(this.filteredCustomers.length / this.entriesPerPage);
+    return Math.ceil(this.filteredCustomers().length / this.entriesPerPage());
   }
-  
+
   /**
    * Get array of page numbers for pagination
    */
@@ -209,12 +205,12 @@ export class CustomersComponent implements OnInit {
     }
     
     // Show 5 pages around current page
-    if (this.currentPage <= 3) {
+    if (this.currentPage() <= 3) {
       return [1, 2, 3, 4, 5];
-    } else if (this.currentPage >= pageCount - 2) {
+    } else if (this.currentPage() >= pageCount - 2) {
       return [pageCount - 4, pageCount - 3, pageCount - 2, pageCount - 1, pageCount];
     } else {
-      return [this.currentPage - 2, this.currentPage - 1, this.currentPage, this.currentPage + 1, this.currentPage + 2];
+      return [this.currentPage() - 2, this.currentPage() - 1, this.currentPage(), this.currentPage() + 1, this.currentPage() + 2];
     }
   }
 }

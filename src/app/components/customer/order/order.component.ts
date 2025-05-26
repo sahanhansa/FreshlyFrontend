@@ -6,6 +6,23 @@ import { LaundryListComponent } from '../../order/laundry-list/laundry-list.comp
 import { OrderSummaryComponent } from '../../order/order-summary/order-summary.component';
 import { RouterModule } from '@angular/router';
 
+interface LaundryService {
+  id: string;
+  name: string;
+  address: string;
+  contact?: string;
+}
+
+interface OrderItem {
+  id: number;
+  name: string;
+  material: string;
+  washMethod: string;
+  price: number;
+  quantity: number;
+  image: string;
+}
+
 @Component({
   selector: 'app-order',
   standalone: true,
@@ -23,8 +40,8 @@ import { RouterModule } from '@angular/router';
 export class OrderComponent implements OnInit {
   currentStep: number = 1;
   selectedCategory: string = 'Ladies';
-  selectedItems: any[] = [];
-  selectedLaundry: any = null;
+  selectedItems: OrderItem[] = [];
+  selectedLaundry: LaundryService | null = null;
 
   constructor() { }
 

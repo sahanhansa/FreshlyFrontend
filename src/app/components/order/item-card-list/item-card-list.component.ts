@@ -1,7 +1,12 @@
 import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, OnInit } from '@angular/core';
-import { Item } from '../../../models/item.model';
+import { Item, ItemCategory } from '../../../models/item.model';
 import { ItemCardComponent } from "../item-card/item-card.component";
 import { CommonModule } from '@angular/common'; // Import CommonModule for ngFor and ngIf
+
+interface ExtendedItem extends Item {
+  price?: number;
+  category?: string;
+}
 
 @Component({
   selector: 'app-item-card-list',
@@ -26,37 +31,49 @@ export class ItemCardListComponent implements OnChanges, OnInit {
   }
   
   // Mock data for testing
-  mockItems: Item[] = [
+  mockItems: ExtendedItem[] = [
     { 
-      id: 1, 
-      name: 'Ladies Blouse', 
-      price: 5.99, 
+      itemId: '1', 
+      itemName: 'Ladies Blouse', 
+      services: [{ serviceId: '1', serviceName: 'Wash', price: 5.99 }],
       description: 'Ladies blouse washing', 
       image: 'assets/blouse.png',
+      categoryName: 'Ladies',
+      // Legacy properties for backwards compatibility
+      price: 5.99,
       category: 'Ladies'
     },
     { 
-      id: 2, 
-      name: 'Mens Shirt', 
-      price: 6.99, 
+      itemId: '2', 
+      itemName: 'Mens Shirt', 
+      services: [{ serviceId: '1', serviceName: 'Wash', price: 6.99 }],
       description: 'Mens shirt cleaning', 
       image: 'assets/shirt.png',
+      categoryName: 'Gents',
+      // Legacy properties for backwards compatibility
+      price: 6.99,
       category: 'Gents'
     },
     { 
-      id: 3, 
-      name: 'Kids Frock', 
-      price: 4.99, 
+      itemId: '3', 
+      itemName: 'Kids Frock', 
+      services: [{ serviceId: '1', serviceName: 'Wash', price: 4.99 }],
       description: 'Kids frock washing', 
       image: 'assets/baby-frock.png',
+      categoryName: 'Kids',
+      // Legacy properties for backwards compatibility
+      price: 4.99,
       category: 'Kids'
     },
     { 
-      id: 4, 
-      name: 'Bedsheets', 
-      price: 8.99, 
+      itemId: '4', 
+      itemName: 'Bedsheets', 
+      services: [{ serviceId: '1', serviceName: 'Wash', price: 8.99 }],
       description: 'Bedsheets cleaning', 
       image: 'assets/bedsheets.png',
+      categoryName: 'Home',
+      // Legacy properties for backwards compatibility
+      price: 8.99,
       category: 'Home'
     }
   ];
@@ -67,22 +84,24 @@ export class ItemCardListComponent implements OnChanges, OnInit {
       this.filterItemsByCategory();
     }
   }
-    filterItemsByCategory(): void {
-    // Since the Item model doesn't have a category field directly
-    // We'll use item's name or description to match the category
-    // This is a temporary solution until the model is updated
-    
+  
+  filterItemsByCategory(): void {
     if (!this.category) {
       // If no category is selected, emit all items
       this.itemsSelected.emit(this.items);
       return;
     }
     
-    // Filter items that might belong to this category based on name
-    const filteredItems = this.items.filter(item => 
-      item.name.toLowerCase().includes(this.category.toLowerCase()) || 
-      item.description.toLowerCase().includes(this.category.toLowerCase())
-    );
+    // Filter items that might belong to this category based on name or category
+    const filteredItems = this.items.filter(item => {
+      const itemName = item.itemName?.toLowerCase() || '';
+      const categoryName = item.categoryName?.toLowerCase() || '';
+      const description = item.description?.toLowerCase() || '';
+      
+      return itemName.includes(this.category.toLowerCase()) || 
+             categoryName.includes(this.category.toLowerCase()) ||
+             description.includes(this.category.toLowerCase());
+    });
     
     this.itemsSelected.emit(filteredItems);
   }

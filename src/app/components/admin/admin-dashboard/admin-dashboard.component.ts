@@ -7,27 +7,25 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { AdminStats, AdminPanelMember, Laundry, Driver, PendingAction } from '../../../models/admin.interface';
 import {
   Chart,
-  ChartConfiguration,
-  ChartOptions,
-  ChartType,
-  LineController,
-  LineElement,
-  PointElement,
-  LinearScale,
   CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
   Legend,
-  Tooltip
+  ChartConfiguration
 } from 'chart.js';
 
 // Register Chart.js components
 Chart.register(
-  LineController,
-  LineElement,
-  PointElement,
-  LinearScale,
   CategoryScale,
-  Legend,
-  Tooltip
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
 );
 //Component decorator with metadata
 @Component({
@@ -38,10 +36,11 @@ Chart.register(
   styleUrl: './admin-dashboard.component.css'
 })
 export class AdminDashboardComponent implements OnInit, AfterViewInit {
-  @ViewChild('revenueChart') revenueChart!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('revenueChart') private revenueChart!: ElementRef<HTMLCanvasElement>;
   
   // Admin's display name
   adminName: string = 'John Doe';
+  
   // Dashboard statistics 
   stats: AdminStats = {
     totalPickups: 75,
@@ -50,6 +49,7 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit {
     totalRevenue: 128
   };
 
+  // Admin panel members data
   adminPanel: AdminPanelMember[] = [
     { id: 1, name: 'Lahiru Gayantha', role: 'Chief Executive Officer', image: 'assets/images/admin1.jpg' },
     { id: 2, name: 'Chamal Silva', role: 'Chief Technical Officer', image: 'assets/images/admin2.jpg' },
@@ -58,6 +58,7 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit {
     { id: 5, name: 'Vidura Wijesekara', role: 'Chief Marketing Officer', image: 'assets/images/admin5.jpg' }
   ];
 
+  // Laundry locations data
   laundries: Laundry[] = [
     { id: 1, name: 'Laundry 1', location: 'Nugegoda', rating: 4.8, logo: 'assets/images/laundry.png' },
     { id: 2, name: 'Laundry 2', location: 'Maharagama', rating: 4.7, logo: 'assets/images/laundry.png' },
@@ -71,6 +72,7 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit {
     { id: 10, name: 'Laundry 10', location: 'Panadura', rating: 4.9, logo: 'assets/images/laundry.png' }
   ];
 
+  // Drivers data
   drivers: Driver[] = [
     { id: 1, name: 'Driver 1', location: 'Nugegoda', rating: 4.8, photo: 'assets/images/driver.png' },
     { id: 2, name: 'Driver 2', location: 'Maharagama', rating: 4.7, photo: 'assets/images/driver.png' },
@@ -84,72 +86,103 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit {
     { id: 10, name: 'Driver 10', location: 'Panadura', rating: 4.9, photo: 'assets/images/driver.png' }
   ];
 
+  // Pending actions data
   pendingActions: PendingAction[] = [
     { type: 'pickup', count: 5 },
     { type: 'delivery', count: 8 }
   ];
 
+  // Revenue data for chart
   revenueData = {
     laundryA: [10000, 15000, 18000, 25000, 32000, 38753, 28000, 22000, 18000, 20000, 23000, 22000],
     laundryB: [22000, 28000, 15000, 35000, 25000, 20000, 30000, 35000, 20000, 12667, 35000, 38000]
   };
 
-  months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
+  months: string[] = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
 
   constructor() {
     console.log('AdminDashboardComponent: Constructor called');
   }
-// Angular lifecycle hook: runs after component initialization
-  ngOnInit() {
+
+  // Angular lifecycle hook: runs after component initialization
+  ngOnInit(): void {
     console.log('AdminDashboardComponent: ngOnInit');
     this.initializeData();
   }
 
-  // Angular lifecycle hook
-  ngAfterViewInit() {
-    const ctx = this.revenueChart.nativeElement.getContext('2d');
-    if (ctx) {
-      new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: this.months,
-          datasets: [{
-            label: 'Monthly Revenue',
+  // Angular lifecycle hook  ngAfterViewInit() {
+    ngAfterViewInit(): void {
+    this.initializeChart();
+  }
+
+  private initializeChart(): void {
+    const canvas = this.revenueChart.nativeElement;
+    const ctx = canvas.getContext('2d');
+    
+    if (!ctx) {
+      console.error('Could not get 2D context from canvas element');
+      return;
+    }
+
+    const chartConfig: ChartConfiguration = {
+      type: 'line',
+      data: {
+        labels: this.months,
+        datasets: [
+          {
+            label: 'Laundry A',
             data: this.revenueData.laundryA,
-            fill: false,
             borderColor: 'rgb(75, 192, 192)',
-            tension: 0.1
-          }]
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            tension: 0.1,
+            fill: true
+          },
+          {
+            label: 'Laundry B',
+            data: this.revenueData.laundryB,
+            borderColor: 'rgb(255, 99, 132)',
+            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+            tension: 0.1,
+            fill: true
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          title: {
+            display: true,
+            text: 'Monthly Revenue'
+          },
+          legend: {
+            display: true,
+            position: 'top'
+          }
         },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: {
-            y: {
-              beginAtZero: true
-            }
-          },
-          plugins: {
-            legend: {
+        scales: {
+          y: {
+            beginAtZero: true,
+            title: {
               display: true,
-              position: 'top'
+              text: 'Revenue (Rs)'
             }
           },
-          layout: {
-            padding: {
-              top: 10,
-              right: 20,
-              bottom: 10,
-              left: 20
+          x: {
+            title: {
+              display: true,
+              text: 'Month'
             }
           }
         }
-      });
-    }
+      }
+    };
+
+    new Chart(ctx, chartConfig);
   }
-  
-   // Helper method to initialize or log data
-  private initializeData() {
+
+  // Helper method to initialize or log data
+  private initializeData(): void {
     console.log('AdminDashboardComponent: Initializing data');
     console.log('Stats:', this.stats);
     console.log('Admin name:', this.adminName);

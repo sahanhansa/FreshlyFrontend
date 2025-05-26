@@ -1,7 +1,9 @@
 <nav class="flex justify-between items-center p-4 shadow-md bg-white fixed top-0 left-0 right-0 z-50">
   <ul class="flex items-center gap-10 list-none m-0 p-0 w-full">
     <li class="logo-container">
-      <img [src]="logoUrl" alt="Freshly Logo" class="h-10 w-auto">
+      <a routerLink="/whoareyou" class="cursor-pointer">
+        <img [src]="logoUrl" alt="Freshly Logo" class="h-10 w-auto">
+      </a>
     </li>
     <li *ngFor="let tab of tabs">
       <a [routerLink]="tab.path" 

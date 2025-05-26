@@ -33,8 +33,7 @@ export class AppComponent implements OnInit {
     ).subscribe((event: any) => {
       this.checkRouteType(event.url);
     });
-  }
-    // Check the type of page based on URL and set appropriate flags
+  }    // Check the type of page based on URL and set appropriate flags
   private checkRouteType(url: string) {
     this.isAuthPage = url.includes('/login') || url.includes('/signup') || url.includes('/whoareyou');
     
@@ -45,8 +44,8 @@ export class AppComponent implements OnInit {
     this.isCustomerPage = url.includes('/cus-home') || url.includes('/order') || url.includes('/how-it-works') || 
                          url.includes('/contact') || url.includes('/profile');
     
-    // Laundry pages
-    this.isLaundryPage = url.includes('/laundry-home') || url.includes('/laundry-orders') || url.includes('/laundry-profile');
+    // Laundry pages - update to detect new URL pattern /laundry/
+    this.isLaundryPage = url.includes('/laundry/');
     
     // Store the role for navbar to use
     if (this.isAdminPage) {

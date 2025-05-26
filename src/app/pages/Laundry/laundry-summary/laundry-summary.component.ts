@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { HeaderComponent } from '../../../components/laundry/header/header.component';
-import { FooterComponent } from '../../../components/shared/footer/footer.component';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-laundry-summary',
-  imports: [HeaderComponent,FooterComponent],
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './laundry-summary.component.html',
   styleUrl: './laundry-summary.component.css'
 })

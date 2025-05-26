@@ -4,7 +4,8 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faFacebook, faInstagram, faLinkedin } from '@fortawesome/free-brands-svg-icons';
 @Component({
   selector: 'app-footer',
-  imports: [CommonModule,FontAwesomeModule],
+  standalone: true,
+  imports: [CommonModule, FontAwesomeModule],
   templateUrl: './footer.component.html',
   styleUrl: './footer.component.css'
 })

@@ -103,10 +103,10 @@
   <div *ngIf="currentStep === 3" class="mt-16">
     <div class="bg-white rounded-lg shadow-lg p-6">
       <h2 class="text-2xl font-semibold mb-6">Step 3: Review Your Order</h2>
-      
-      <app-order-summary
+        <app-order-summary
         [items]="selectedItems"
-        [laundry]="selectedLaundry">
+        [laundryName]="selectedLaundry?.name || ''"
+        [showLaundryInfo]="true">
       </app-order-summary>
 
       <div class="flex justify-between mt-6">

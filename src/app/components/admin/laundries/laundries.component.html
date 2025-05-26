@@ -1,156 +1,246 @@
-<div class="p-8 bg-gray-100 min-h-screen font-inter">
+<div class="p-8 bg-gray-100 min-h-screen">
+  <!-- Loading Indicator -->
+  <div *ngIf="loading() || deleteInProgress()" class="flex justify-center mb-4">
+    <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+  </div>
+
   <!-- Header Controls -->
   <div class="flex justify-between items-center mb-8 bg-white p-4 rounded-lg shadow-sm">
     <div class="flex items-center gap-2">
       <span>Show</span>
-      <select [(ngModel)]="itemsPerPage" 
+      <select [ngModel]="entriesPerPage()" 
+              (ngModelChange)="onEntriesChange($event)"
               class="px-3 py-1 mx-2 border border-gray-200 rounded outline-none focus:border-blue-500">
-        <option value="9">9</option>
-        <option value="25">25</option>
-        <option value="50">50</option>
+        <option [value]="10">10</option>
+        <option [value]="25">25</option>
+        <option [value]="50">50</option>
       </select>
       <span>entries</span>
     </div>
     <div>
-      <input type="text" [(ngModel)]="searchQuery" placeholder="Search..." (input)="onSearch(searchQuery)"
-             class="px-4 py-2 border border-gray-200 rounded outline-none w-60 focus:border-blue-500">
+      <input 
+        type="text" 
+        [ngModel]="searchText()" 
+        (ngModelChange)="filterLaundries($event)" 
+        placeholder="Search..." 
+        class="px-4 py-2 border border-gray-200 rounded outline-none w-60 focus:border-blue-500"
+      >
     </div>
   </div>
+  
+  <h1 class="text-4xl text-gray-800 mb-8 font-inter drop-shadow-lg">Laundry Management</h1>
 
-  <h1 class="text-4xl text-gray-800 mb-8 font-inter drop-shadow-lg">Laundry Details</h1>
-
-  <div *ngIf="paginatedLaundries.length > 0">
-    <div class="bg-blue-500 rounded-[20px] p-8 flex gap-8 mb-8 shadow-lg">
-      <div class="flex-1 text-white">
-        <div class="flex items-center mb-8">
-          <img [src]="paginatedLaundries[0].image" [alt]="paginatedLaundries[0].name" 
-               class="w-24 h-24 rounded-full object-cover mr-4">
-          <div>
-            <h3 class="text-2xl font-medium m-0">{{ paginatedLaundries[0].name }}</h3>
-            <p class="mt-2 opacity-90">#{{ paginatedLaundries[0].id }}</p>
+  <!-- Laundry Profile Card - Placed at the top -->
+  <div *ngIf="selectedLaundry()" class="mb-6">
+    <div class="flex flex-col md:flex-row bg-blue-500 rounded-[20px] overflow-hidden text-white shadow-lg">
+      <div class="flex-1 p-8">
+        <div class="flex flex-col md:flex-row items-center md:items-start mb-8">
+          <!-- Laundry Avatar Circle with Initials -->
+          <div class="w-24 h-24 rounded-full bg-white flex items-center justify-center text-3xl text-blue-600 font-bold mb-4 md:mb-0 md:mr-4">
+            {{ (selectedLaundry()?.laundryName?.charAt(0) || '') }}
+          </div>
+          <div class="text-center md:text-left">
+            <h3 class="text-2xl font-medium m-0">
+              {{ selectedLaundry()?.laundryName || 'Unknown Laundry' }}
+            </h3>
+            <p class="mt-2 opacity-90">#{{ selectedLaundry()?.laundryId?.substring(0, 8) || '' }}</p>
           </div>
         </div>
         <div class="space-y-4">
           <div class="flex items-center">
             <i class="fas fa-envelope w-5 mr-4"></i>
             <span class="w-32">Email</span>
-            <span>: {{ paginatedLaundries[0].email }}</span>
+            <span>: {{ selectedLaundry()?.email || 'Not provided' }}</span>
           </div>
           <div class="flex items-center">
-            <i class="fas fa-phone w-5 mr-4"></i>
-            <span class="w-32">Contact No</span>
-            <span>: {{ paginatedLaundries[0].contactNo }}</span>
+            <i class="fas fa-user w-5 mr-4"></i>
+            <span class="w-32">Username</span>
+            <span>: {{ selectedLaundry()?.username || 'Not provided' }}</span>
           </div>
           <div class="flex items-center">
-            <i class="fas fa-home w-5 mr-4"></i>
-            <span class="w-32">Address</span>
-            <span>: {{ paginatedLaundries[0].address }}</span>
+            <i class="fas fa-id-card w-5 mr-4"></i>
+            <span class="w-32">Owner</span>
+            <span>: {{ selectedLaundry()?.ownerName || 'Not provided' }}</span>
           </div>
           <div class="flex items-center">
             <i class="fas fa-map-marker-alt w-5 mr-4"></i>
-            <span class="w-32">Location</span>
-            <span>: {{ paginatedLaundries[0].location }}</span>
+            <span class="w-32">Address</span>
+            <span>: {{ selectedLaundry()?.fullAddress || 'Not provided' }}</span>
           </div>
           <div class="flex items-center">
-            <i class="fas fa-university w-5 mr-4"></i>
-            <span class="w-32">Bank Name</span>
-            <span>: {{ paginatedLaundries[0].bankDetails.name }}</span>
+            <i class="fas fa-star w-5 mr-4"></i>
+            <span class="w-32">Rating</span>
+            <span>: {{ selectedLaundry()?.averageRating || '0' }} / 5</span>
           </div>
-          <div class="flex items-center ml-8">
-            <span class="w-32">-Branch</span>
-            <span>: {{ paginatedLaundries[0].bankDetails.branch }}</span>
+          <div class="flex items-center">
+            <i class="fas fa-shopping-cart w-5 mr-4"></i>
+            <span class="w-32">Total Orders</span>
+            <span>: {{ selectedLaundry()?.totalOrders || '0' }}</span>
           </div>
-          <div class="flex items-center ml-8">
-            <span class="w-32">-Account No</span>
-            <span>: {{ paginatedLaundries[0].bankDetails.accountNo }}</span>
+          <div class="flex items-center">
+            <i class="fas fa-comment w-5 mr-4"></i>
+            <span class="w-32">Feedbacks</span>
+            <span>: {{ selectedLaundry()?.feedbackCount || '0' }}</span>
           </div>
         </div>
       </div>
-      <div class="w-52 p-8 flex flex-col gap-4 bg-white rounded-r-[20px]">
-        <button class="px-4 py-3 rounded-lg bg-blue-50 text-blue-500 font-medium hover:bg-blue-100 transition-all duration-300 flex justify-between items-center group">
-          <span>New Orders</span>
-          <i class="fas fa-chevron-right group-hover:translate-x-1 transition-transform"></i>
+      <div class="w-full md:w-52 p-8 flex flex-col gap-4 bg-white md:rounded-r-[20px]">
+        <button class="px-4 py-3 rounded-lg bg-blue-50 text-blue-500 font-medium hover:bg-blue-100 transition-colors">
+          <i class="fas fa-clipboard-list mr-2"></i>
+          View Orders
         </button>
-        <button class="px-4 py-3 rounded-lg bg-blue-50 text-blue-500 font-medium hover:bg-blue-100 transition-all duration-300 flex justify-between items-center group">
-          <span>Completed Orders</span>
-          <i class="fas fa-chevron-right group-hover:translate-x-1 transition-transform"></i>
+        <button class="px-4 py-3 rounded-lg bg-blue-50 text-blue-500 font-medium hover:bg-blue-100 transition-colors">
+          <i class="fas fa-edit mr-2"></i>
+          Edit Details
         </button>
-        <button class="px-4 py-3 rounded-lg bg-white text-orange-500 font-medium hover:bg-orange-50 transition-all duration-300 flex justify-between items-center group">
-          <span>Processing Orders</span>
-          <i class="fas fa-chevron-right group-hover:translate-x-1 transition-transform"></i>
+        <button class="px-4 py-3 rounded-lg bg-blue-50 text-blue-500 font-medium hover:bg-blue-100 transition-colors">
+          <i class="fas fa-comment-alt mr-2"></i>
+          Feedbacks
         </button>
-        <button class="px-4 py-3 rounded-lg bg-white text-red-500 font-medium hover:bg-red-50 transition-all duration-300 flex justify-between items-center group">
-          <span>Complaints</span>
-          <i class="fas fa-chevron-right group-hover:translate-x-1 transition-transform"></i>
+        <button 
+          (click)="promptDeleteConfirmation()" 
+          class="px-4 py-3 rounded-lg bg-red-500 text-white font-medium hover:bg-red-600 transition-colors mt-auto">
+          <i class="fas fa-trash-alt mr-2"></i>
+          Remove Laundry
         </button>
-        <button class="px-4 py-3 rounded-lg bg-red-500 text-white font-medium hover:bg-red-600 transition-colors mt-auto" 
-                (click)="removeUser()">Remove User</button>
-      </div>
-    </div>
-
-    <h2 class="text-2xl font-semibold text-gray-800 mb-6">Recent Orders</h2>
-    <div class="space-y-6">
-      <div class="mb-8 border border-gray-100 rounded-lg overflow-hidden" *ngFor="let order of paginatedLaundries[0].recentOrders">
-        <div class="flex justify-between items-center p-4 bg-gray-50 border-b border-gray-100">
-          <div class="flex gap-8">
-            <span>Order ID: {{ order.orderId }}</span>
-            <span>Date: {{ order.date }}</span>
-            <span class="text-orange-500">Status: {{ order.status }}</span>
-            <span>Driver ID: {{ order.driverId }}</span>
-            <span>Laundry ID: {{ order.laundryId }}</span>
-          </div>
-          <button class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors text-sm"
-                  (click)="toggleOrderDetails(order)">
-            <i class="fas" [class.fa-eye]="!order.isExpanded" [class.fa-eye-slash]="order.isExpanded"></i>
-            {{ order.isExpanded ? 'View Less' : 'View More' }}
-          </button>
-        </div>
-
-        <div class="overflow-hidden transition-all duration-300"
-             [class]="order.isExpanded ? 'max-h-[500px] p-4' : 'max-h-0'">
-          <div class="overflow-x-auto">
-            <table class="w-full">
-              <thead>
-                <tr class="bg-gray-50">
-                  <th class="p-4 text-left font-medium text-gray-700 border-b border-gray-100">Item</th>
-                  <th class="p-4 text-left font-medium text-gray-700 border-b border-gray-100">Process</th>
-                  <th class="p-4 text-left font-medium text-gray-700 border-b border-gray-100">Clothe type</th>
-                  <th class="p-4 text-left font-medium text-gray-700 border-b border-gray-100">Count</th>
-                  <th class="p-4 text-left font-medium text-gray-700 border-b border-gray-100">Price per Item(Rs.)</th>
-                  <th class="p-4 text-left font-medium text-gray-700 border-b border-gray-100">Total Price(Rs.)</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let item of order.items" class="even:bg-blue-50">
-                  <td class="p-4 text-gray-700">{{ item.item }}</td>
-                  <td class="p-4 text-gray-700">{{ item.process }}</td>
-                  <td class="p-4 text-gray-700">{{ item.clotheType }}</td>
-                  <td class="p-4 text-gray-700">{{ item.count }}</td>
-                  <td class="p-4 text-gray-700">{{ item.pricePerItem }}</td>
-                  <td class="p-4 text-gray-700">{{ item.totalPrice }}</td>
-                </tr>
-                <tr class="bg-gray-50 font-medium">
-                  <td colspan="5" class="p-4 text-right text-gray-700">Subtotal (Rs.)</td>
-                  <td class="p-4 text-gray-700">{{ calculateSubtotal(order.items) }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
       </div>
     </div>
   </div>
 
-  <div class="flex justify-center items-center gap-2 mt-8">
-    <button class="px-4 py-2 border border-gray-200 rounded text-gray-700 hover:border-blue-500 hover:text-blue-500 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:border-gray-200 disabled:hover:text-gray-700 transition-colors"
-            [disabled]="currentPage === 1" 
-            (click)="currentPage = currentPage - 1">Previous</button>
-    <button *ngFor="let page of [1, 2, 3]"
-            class="min-w-[32px] h-8 flex items-center justify-center border border-gray-200 rounded transition-colors"
-            [class]="currentPage === page ? 'bg-blue-500 text-white border-blue-500' : 'text-gray-700 hover:border-blue-500 hover:text-blue-500'"
-            (click)="currentPage = page">{{ page }}</button>
-    <button class="px-4 py-2 border border-gray-200 rounded text-gray-700 hover:border-blue-500 hover:text-blue-500 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:border-gray-200 disabled:hover:text-gray-700 transition-colors"
-            [disabled]="currentPage === 3" 
-            (click)="currentPage = currentPage + 1">Next</button>
+  <!-- Laundry Table -->
+  <div *ngIf="showTable() && !loading()" class="bg-white rounded-lg shadow-md overflow-hidden">
+    <div class="flex flex-col md:flex-row items-center p-4 border-b border-gray-100">
+      <h2 class="text-xl font-semibold text-gray-800">Laundry List</h2>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead>
+          <tr class="bg-gray-50">
+            <th class="p-4 text-left font-medium text-gray-700 whitespace-nowrap border-b border-gray-100">Laundry ID</th>
+            <th class="p-4 text-left font-medium text-gray-700 whitespace-nowrap border-b border-gray-100">Name</th>
+            <th class="p-4 text-left font-medium text-gray-700 whitespace-nowrap border-b border-gray-100">Email</th>
+            <th class="p-4 text-left font-medium text-gray-700 whitespace-nowrap border-b border-gray-100">Username</th>
+            <th class="p-4 text-left font-medium text-gray-700 whitespace-nowrap border-b border-gray-100">Owner</th>
+            <th class="p-4 text-left font-medium text-gray-700 whitespace-nowrap border-b border-gray-100">Rating</th>
+            <th class="p-4 text-left font-medium text-gray-700 whitespace-nowrap border-b border-gray-100">Details</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- No data message -->
+          <tr *ngIf="paginatedLaundries.length === 0">
+            <td colspan="7" class="p-4 text-gray-500 text-center">
+              No laundries found. {{ searchText() ? 'Try a different search term.' : '' }}
+            </td>
+          </tr>
+          
+          <!-- Laundry rows -->
+          <tr
+            *ngFor="let laundry of paginatedLaundries; let i = index"
+            (click)="selectLaundry(laundry)"
+            [class]="'whitespace-nowrap hover:bg-gray-100 transition-colors duration-150'"
+            [ngClass]="{'bg-[#D0F6FF]': i % 2 === 1, 'bg-blue-100': laundry === selectedLaundry()}"
+          >
+            <td class="p-4 text-gray-700 border-b border-gray-100">{{ laundry?.laundryId?.substring(0, 8) || '-' }}</td>
+            <td class="p-4 text-gray-700 border-b border-gray-100">{{ laundry?.laundryName || '-' }}</td>
+            <td class="p-4 text-gray-700 border-b border-gray-100">{{ laundry?.email || '-' }}</td>
+            <td class="p-4 text-gray-700 border-b border-gray-100">{{ laundry?.username || '-' }}</td>
+            <td class="p-4 text-gray-700 border-b border-gray-100">{{ laundry?.ownerName || '-' }}</td>
+            <td class="p-4 border-b border-gray-100">
+              <div class="flex items-center">
+                <span class="mr-2">{{ laundry?.averageRating || '0' }}</span>                <div class="flex text-yellow-400">
+                  <i *ngFor="let star of [1,2,3,4,5]" 
+                     [class]="star <= (laundry?.averageRating || 0) ? 'fas fa-star' : 'far fa-star'"></i>
+                </div>
+              </div>
+            </td>
+            <td class="p-4 border-b border-gray-100">
+              <button
+                (click)="selectLaundry(laundry); $event.stopPropagation()"
+                class="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600 transition-colors"
+              >
+                <i class="fas fa-eye mr-1"></i> View
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  
+  <!-- Pagination -->
+  <div class="flex items-center justify-between mt-6">
+    <button class="px-4 py-2 border rounded-md text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            [disabled]="currentPage() === 1" 
+            (click)="onPageChange(currentPage() - 1)">
+      Previous
+    </button>
+    <div class="flex gap-2">
+      <button 
+        *ngFor="let page of pages" 
+        class="w-10 h-10 flex items-center justify-center border rounded-md"
+        [class.bg-blue-500]="currentPage() === page"
+        [class.text-white]="currentPage() === page"
+        [class.text-gray-700]="currentPage() !== page"
+        [class.hover:bg-gray-50]="currentPage() !== page"
+        (click)="onPageChange(page)"
+      >
+        {{ page }}
+      </button>
+    </div>
+    <button class="px-4 py-2 border rounded-md text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            [disabled]="currentPage() === totalPages" 
+            (click)="onPageChange(currentPage() + 1)">
+      Next
+    </button>
+  </div>
+  
+  <!-- Error Message - Moved below the table -->
+  <div *ngIf="error()" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mt-6">
+    {{ error() }}
+  </div>
+
+  <!-- Success Message - Moved below the table -->
+  <div *ngIf="deleteSuccess()" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mt-6">
+    Laundry deleted successfully!
+  </div>
+
+  <!-- Delete Error Message - Moved below the table -->
+  <div *ngIf="deleteError()" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mt-6">
+    {{ deleteError() }}
+  </div>
+
+  <!-- Delete Confirmation Dialog -->
+  <div *ngIf="showDeleteConfirmation()" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white p-6 rounded-lg shadow-xl max-w-md w-full mx-4 animate-fadeIn">
+      <div class="flex items-center mb-4 pb-3 border-b border-gray-200">
+        <div class="bg-red-100 p-2 rounded-full">
+          <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+          </svg>
+        </div>
+        <h2 class="ml-3 text-xl font-bold text-gray-800">Confirm Deletion</h2>
+      </div>
+      
+      <div class="mb-6">
+        <p class="text-gray-700">Are you sure you want to delete laundry <span class="font-semibold">{{ selectedLaundry()?.laundryName }}</span>?</p>
+        <p class="mt-2 text-sm text-gray-600">This action cannot be undone. This will permanently delete the laundry account and all associated data.</p>
+      </div>
+      
+      <div class="flex justify-end space-x-3">
+        <button
+          (click)="cancelDelete()"
+          class="px-4 py-2 bg-gray-200 text-gray-800 font-medium rounded-md hover:bg-gray-300 transition focus:outline-none focus:ring-2 focus:ring-gray-300"
+        >
+          Cancel
+        </button>
+        <button
+          (click)="confirmDelete()"
+          class="px-4 py-2 bg-red-600 text-white font-medium rounded-md hover:bg-red-700 transition focus:outline-none focus:ring-2 focus:ring-red-500"
+        >
+          Delete Laundry
+        </button>
+      </div>
+    </div>
   </div>
 </div>

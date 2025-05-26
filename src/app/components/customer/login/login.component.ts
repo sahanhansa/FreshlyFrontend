@@ -145,17 +145,15 @@ export class LoginComponent implements OnInit {  // Object to store login input 
             }
           });
           break;
-        case 'laundry':          this.auth.laundryLogin(formData).subscribe({
-            next: (response: any) => {
+        case 'laundry':          this.auth.laundryLogin(formData).subscribe({            next: (response: any) => {
               localStorage.setItem('Role', 'laundry');
               localStorage.setItem('currentPage', 'laundry');
-              this.router.navigate(['/laundry-home']);
+              this.router.navigate(['/laundry/home']);
             },
             error: (err: any) => {
               alert(err.Data?.Error || "Login failed. Please check your credentials.");
             }
-          });
-          break;        case 'admin':          this.auth.adminLogin(formData).subscribe({
+          });          break;        case 'admin':          this.auth.adminLogin(formData).subscribe({
             next: (response: any) => {
               localStorage.setItem('Role', 'admin');
               localStorage.setItem('currentPage', 'admin');
@@ -230,13 +228,12 @@ export class LoginComponent implements OnInit {  // Object to store login input 
     // Navigate directly to the customer home page
     this.router.navigate(['/cus-home']);
   }
-  
-  // Test method to bypass login credentials and directly navigate to laundry home page
+    // Test method to bypass login credentials and directly navigate to laundry home page
   testLaundryLogin() {
     console.log('Test laundry login - bypassing credentials check');
     localStorage.setItem('Role', 'laundry');
     localStorage.setItem('currentPage', 'laundry');
     // Navigate directly to the laundry home page
-    this.router.navigate(['/laundry-home']);
+    this.router.navigate(['/laundry/home']);
   }
 }

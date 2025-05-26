@@ -9,12 +9,25 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class OrderService {
-  private apiUrl = `${environment.apiUrl}/api/Orders/neworders`; // ✅ Fixed: Use backticks
+  private apiUrl = `${environment.apiUrl}/api/Orders`; 
+  private newOrdersUrl = `${this.apiUrl}/neworders`;
 
   constructor(private http: HttpClient) {}
 
   getNewOrders(): Observable<Order[]> {
-    return this.http.get<Order[]>(this.apiUrl).pipe(
+    return this.http.get<Order[]>(this.newOrdersUrl).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  getOrderDetails(): Observable<Order[]> {
+    return this.http.get<Order[]>(`${this.apiUrl}/details`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  getOrder(id: string): Observable<Order> {
+    return this.http.get<Order>(`${this.apiUrl}/${id}`).pipe(
       catchError(this.handleError)
     );
   }
