@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { LaundryListPageComponent } from './laundry-list-page.component';
+import { LaundryPageComponent } from './laundry-list-page.component';
 
-describe('LaundryListPageComponent', () => {
-  let component: LaundryListPageComponent;
-  let fixture: ComponentFixture<LaundryListPageComponent>;
+describe('LaundryPageComponent', () => {
+  let component: LaundryPageComponent;
+  let fixture: ComponentFixture<LaundryPageComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [LaundryListPageComponent]
+      imports: [LaundryPageComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(LaundryListPageComponent);
+    fixture = TestBed.createComponent(LaundryPageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

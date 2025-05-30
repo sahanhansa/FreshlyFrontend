@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FeedbackService } from '../../../services/feedback.service';
-import { Feedback } from '../../../models/feedback';
+import { Feedback } from '@app/models/feedback.model';
 
 @Component({
   selector: 'app-view-feedbacks',

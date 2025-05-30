@@ -3,11 +3,68 @@
   
   <!-- Laundry List - Main content with proper padding to ensure it's not too close to edges on mobile -->
   <div class="flex-grow w-full max-w-7xl mx-auto">
-    <app-laundry-list></app-laundry-list>
+    <!-- Header Section -->
+    <div class="p-4 md:p-6">
+      <!-- Title Section -->
+      <div class="text-center md:text-left mb-6 mt-6 md:mb-4">
+        <h2 class="text-xl font-semibold">All Laundries</h2>
+        <p class="mt-1">Select a Laundry to proceed with your order</p>
+      </div>
+
+      <!-- Filter Controls -->
+      <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-6">
+
+        <!-- Search bar component -->
+        <div class="w-full sm:flex-1">
+          <app-search-bar 
+            [initialValue]="searchQuery"
+            (searchChanged)="onSearchChanged($event)">
+          </app-search-bar>
+        </div>
+
+        <!-- Location Filter Dropdown -->
+        <div class="w-full sm:w-auto">
+          <select
+            [(ngModel)]="selectedLocation"
+            (change)="filterLaundries()"
+            class="border border-gray-300 rounded-lg px-4 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-300 bg-white appearance-none w-full"
+            style="background-image: url('data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 fill=%27none%27 viewBox=%270 0 24 24%27 stroke=%27%23000000%27 stroke-width=%272%27%3E%3Cpath stroke-linecap=%27round%27 stroke-linejoin=%27round%27 d=%27M19 9l-7 7-7-7%27 /%3E%3C/svg%3E'); background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 1rem;"
+          >
+            <option value="">All Locations</option>
+            <option *ngFor="let location of uniqueLocations" [value]="location">
+              {{ location }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Rating Filter Dropdown -->
+        <div class="w-full sm:w-auto">
+          <select
+            [(ngModel)]="selectedRating"
+            (change)="filterLaundries()"
+            class="border border-gray-300 rounded-lg px-4 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-300 bg-white appearance-none w-full"
+            style="background-image: url('data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 fill=%27none%27 viewBox=%270 0 24 24%27 stroke=%27%23000000%27 stroke-width=%272%27%3E%3Cpath stroke-linecap=%27round%27 stroke-linejoin=%27round%27 d=%27M19 9l-7 7-7-7%27 /%3E%3C/svg%3E'); background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 1rem;"
+          >
+            <option value="">Any Rating</option>
+            <option *ngFor="let rating of uniqueRatings" [value]="rating">
+              {{ rating }} ★
+            </option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pass Data to Laundry List Component -->
+    <app-laundry-list
+      [laundries]="filteredLaundries"
+      [loading]="loading"
+      [error]="error"
+      (selectLaundry)="onSelectLaundry($event)"
+      (favoriteToggled)="toggleFavorite($event)"
+      (retryLoading)="loadLaundries()">
+  </app-laundry-list>
   </div>
   
-  <!-- Footer - Ensure it stays at bottom -->
-  <footer class="mt-auto w-full">
-    <app-footer></app-footer>
-  </footer>
+  <!-- Footer Component -->
+  <app-footer></app-footer>
 </div>

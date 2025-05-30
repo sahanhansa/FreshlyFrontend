@@ -1,0 +1,153 @@
+<!-- Main container for the complaints page -->
+<div class="p-6 bg-gray-100 min-h-[calc(100vh-64px)] font-inter">
+  <!-- Header Controls -->
+  <div class="flex justify-between items-center mb-8 bg-white p-4 rounded-lg shadow-sm">
+    <!-- Entries per page selector -->
+    <div class="flex items-center gap-2">
+      <span>Show</span>
+      <select [ngModel]="itemsPerPage()" 
+              (ngModelChange)="onItemsPerPageChange($event)"
+              class="px-3 py-1 mx-2 border border-gray-200 rounded outline-none focus:border-blue-500">
+        <option [value]="9">9</option>
+        <option [value]="25">25</option>
+        <option [value]="50">50</option>
+      </select>
+      <span>entries</span>
+    </div>
+    <!-- Search input for filtering complaints -->
+    <div>
+      <input type="text" [ngModel]="searchQuery()" (ngModelChange)="onSearch($event)" 
+             placeholder="Search..."
+             class="px-4 py-2 border border-gray-200 rounded outline-none w-60 focus:border-blue-500">
+    </div>
+  </div>
+
+  <h1 class="text-4xl text-gray-800 mb-8 font-inter drop-shadow-lg">Customer Feedback & Complaints</h1>
+  <!-- Loading State -->
+  <div *ngIf="loading()" class="flex justify-center my-10">
+    <div class="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500"></div>
+  </div>
+
+  <!-- Complaints Table Section -->
+  <div *ngIf="!loading() && !error() && paginatedComplaints().length > 0">
+    <!-- Table Structure -->
+    <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+      <table class="min-w-full table-auto">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900">ID</th>
+            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900">Customer</th>
+            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900">Laundry</th>
+            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900">Description</th>
+            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200">
+          <tr *ngFor="let complaint of paginatedComplaints()" class="hover:bg-gray-50">
+            <td class="px-6 py-4 text-sm text-gray-900">{{ complaint.feedbackId }}</td>
+            <td class="px-6 py-4 text-sm text-gray-900">{{ complaint.customerName }}</td>
+            <td class="px-6 py-4 text-sm text-gray-900">{{ complaint.laundryName }}</td>
+            <td class="px-6 py-4 text-sm text-gray-500">{{ complaint.description }}</td>
+            <td class="px-6 py-4 text-sm text-right space-x-3">
+              <button (click)="viewFeedbackDetails(complaint)"
+                      class="text-blue-600 hover:text-blue-900">
+                View
+              </button>
+              <button (click)="deleteFeedback(complaint.feedbackId)"
+                      class="text-red-600 hover:text-red-900">
+                Delete
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <!-- Pagination Controls -->
+    <div class="flex items-center justify-between mt-6">
+      <div class="text-sm text-gray-700">
+        Showing {{ currentStartIndex() }} to {{ currentEndIndex() }}
+        of {{ filteredFeedbacks().length }} entries
+      </div>
+      <div class="flex space-x-2">
+        <button *ngFor="let page of pageNumbers()"
+                (click)="onPageChange(page)"
+                [class.bg-blue-500]="page === currentPage()"
+                [class.text-white]="page === currentPage()"
+                class="px-3 py-1 border rounded hover:bg-blue-50">
+          {{ page }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Error Message - Moved below the table -->
+  <div *ngIf="error()" class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mt-6">
+    {{ error() }}
+    <button (click)="loadFeedbacks()" class="ml-4 text-blue-500 hover:text-blue-700">Retry</button>
+  </div>
+
+  <!-- No Results Message -->
+  <div *ngIf="!loading() && !error() && paginatedComplaints().length === 0" 
+       class="text-center py-10 text-gray-500">
+    No complaints found.
+  </div>
+
+  <!-- Feedback Details Modal -->
+  <div *ngIf="selectedFeedback()" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-6 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-start mb-4">
+        <h3 class="text-xl font-semibold text-gray-900">Feedback Details</h3>
+        <button (click)="closeModal()" class="text-gray-500 hover:text-gray-700">
+          <span class="sr-only">Close</span>
+          <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Customer Info -->
+      <div class="mb-6">
+        <h4 class="text-sm font-semibold text-gray-500 mb-2">Customer Information</h4>
+        <div class="bg-gray-50 p-4 rounded">
+          <p class="font-medium mb-2">{{ getSelectedFeedbackProp('customerName', 'Unknown Customer') }}</p>
+          <p class="font-medium text-xs break-all">{{ getSelectedFeedbackProp('customerId', 'N/A') }}</p>
+        </div>
+      </div>
+
+      <!-- Laundry Info -->
+      <div class="mb-6">
+        <h4 class="text-sm font-semibold text-gray-500 mb-2">Laundry Information</h4>
+        <div class="bg-gray-50 p-4 rounded">
+          <p class="font-medium mb-2">{{ getSelectedFeedbackProp('laundryName', 'Unknown Laundry') }}</p>
+          <p class="font-medium text-xs break-all">{{ getSelectedFeedbackProp('laundryId', 'N/A') }}</p>
+        </div>
+      </div>
+
+      <!-- Feedback Content -->
+      <div class="mb-6">
+        <h4 class="text-sm font-semibold text-gray-500 mb-2">Feedback Description</h4>
+        <div class="bg-gray-50 p-4 rounded">
+          <p class="text-gray-800">{{ getSelectedFeedbackProp('description', 'No description provided.') }}</p>
+        </div>
+      </div>
+
+      <!-- Additional Details -->
+      <div class="mt-4">
+        <p class="text-xs text-gray-700 break-all">ID: {{ getSelectedFeedbackProp('feedbackId', '') }}</p>
+      </div>
+
+      <!-- Actions -->
+      <div class="mt-6 flex justify-end space-x-4">
+        <button (click)="closeModal()"
+                class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200">
+          Close
+        </button>
+        <button (click)="deleteFeedbackAndClose(getSelectedFeedbackProp('feedbackId', ''))"
+                class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700">
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

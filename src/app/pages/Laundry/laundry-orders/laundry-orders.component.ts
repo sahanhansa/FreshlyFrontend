@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { OrderService } from '../../../services/order.service'; // Import OrderService for fetching orders
 import { Order } from '../../../models/order.model'; // Import Order model to type the orders array
-import { SearchBarComponent } from '../../../components/shared/search-bar/search-bar.component';
+import { SearchBarComponent } from '@app/components/laundry/search-bar/search-bar.component';
 import { PaginationComponent } from '../../../components/shared/pagination/pagination.component'; 
 import { RouterModule } from '@angular/router';; 
 import { HeaderComponent } from '../../../components/laundry/header/header.component';

@@ -1,18 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
-import { WhoareyouComponent } from './whoareyou.component';
+import { WhoAreYouComponent } from './whoareyou.component';
 
-describe('WhoareyouComponent', () => {
-  let component: WhoareyouComponent;
-  let fixture: ComponentFixture<WhoareyouComponent>;
+describe('WhoAreYouComponent', () => {
+  let component: WhoAreYouComponent;
+  let fixture: ComponentFixture<WhoAreYouComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [WhoareyouComponent]
+      imports: [WhoAreYouComponent, RouterTestingModule]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(WhoareyouComponent);
+    fixture = TestBed.createComponent(WhoAreYouComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

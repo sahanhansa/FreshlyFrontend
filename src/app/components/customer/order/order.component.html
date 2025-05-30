@@ -1,0 +1,127 @@
+<div class="container mx-auto px-4 py-8">
+  <h1 class="text-3xl font-bold text-primary mb-8">Create Your Laundry Order</h1>
+
+  <!-- Step progress indicator -->
+  <div class="flex justify-center mb-10">
+    <div class="flex items-center">
+      <div class="flex items-center relative">
+        <div class="rounded-full transition duration-500 ease-in-out h-12 w-12 py-3 border-2 
+                    flex items-center justify-center font-bold text-lg
+                    {{ currentStep >= 1 ? 'bg-primary text-white border-primary' : 'border-gray-300' }}">
+          1
+        </div>
+        <div class="text-center text-sm absolute -bottom-6 w-32 left-1/2 transform -translate-x-1/2 
+                    {{ currentStep >= 1 ? 'text-primary font-bold' : 'text-gray-500' }}">
+          Select Items
+        </div>
+      </div>
+      <div class="flex-auto border-t-2 transition duration-500 ease-in-out 
+                  {{ currentStep >= 2 ? 'border-primary' : 'border-gray-300' }}"></div>
+      <div class="flex items-center relative">
+        <div class="rounded-full transition duration-500 ease-in-out h-12 w-12 py-3 border-2 
+                    flex items-center justify-center font-bold text-lg
+                    {{ currentStep >= 2 ? 'bg-primary text-white border-primary' : 'border-gray-300' }}">
+          2
+        </div>
+        <div class="text-center text-sm absolute -bottom-6 w-32 left-1/2 transform -translate-x-1/2 
+                    {{ currentStep >= 2 ? 'text-primary font-bold' : 'text-gray-500' }}">
+          Choose Laundry
+        </div>
+      </div>
+      <div class="flex-auto border-t-2 transition duration-500 ease-in-out 
+                  {{ currentStep >= 3 ? 'border-primary' : 'border-gray-300' }}"></div>
+      <div class="flex items-center relative">
+        <div class="rounded-full transition duration-500 ease-in-out h-12 w-12 py-3 border-2 
+                    flex items-center justify-center font-bold text-lg
+                    {{ currentStep >= 3 ? 'bg-primary text-white border-primary' : 'border-gray-300' }}">
+          3
+        </div>
+        <div class="text-center text-sm absolute -bottom-6 w-32 left-1/2 transform -translate-x-1/2 
+                    {{ currentStep >= 3 ? 'text-primary font-bold' : 'text-gray-500' }}">
+          Review & Pay
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 1: Select Items -->
+  <div *ngIf="currentStep === 1" class="mt-16">
+    <div class="bg-white rounded-lg shadow-lg p-6">
+      <h2 class="text-2xl font-semibold mb-6">Step 1: Select Your Items</h2>
+      
+      <div class="mb-8">
+        <app-item-category 
+          (categorySelected)="onCategorySelected($event)">
+        </app-item-category>
+      </div>
+
+      <div class="mb-8">
+        <app-item-card-list 
+          [category]="selectedCategory"
+          (itemsSelected)="onItemsSelected($event)">
+        </app-item-card-list>
+      </div>
+
+      <div class="flex justify-end mt-6">
+        <button 
+          [disabled]="selectedItems.length === 0"
+          (click)="goToNextStep()"
+          class="px-6 py-2 bg-primary text-white rounded-md hover:bg-primary-dark disabled:bg-gray-400 disabled:cursor-not-allowed">
+          Next: Choose Laundry
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 2: Choose Laundry -->
+  <div *ngIf="currentStep === 2" class="mt-16">
+    <div class="bg-white rounded-lg shadow-lg p-6">
+      <h2 class="text-2xl font-semibold mb-6">Step 2: Choose a Laundry Service</h2>
+      
+      <app-laundry-list
+        (laundrySelected)="onLaundrySelected($event)">
+      </app-laundry-list>
+
+      <div class="flex justify-between mt-6">
+        <button 
+          (click)="goToPreviousStep()"
+          class="px-6 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400">
+          Back to Items
+        </button>
+        
+        <button 
+          [disabled]="!selectedLaundry"
+          (click)="goToNextStep()"
+          class="px-6 py-2 bg-primary text-white rounded-md hover:bg-primary-dark disabled:bg-gray-400 disabled:cursor-not-allowed">
+          Next: Review & Pay
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 3: Review and Payment -->
+  <div *ngIf="currentStep === 3" class="mt-16">
+    <div class="bg-white rounded-lg shadow-lg p-6">
+      <h2 class="text-2xl font-semibold mb-6">Step 3: Review Your Order</h2>
+        <app-order-summary
+        [items]="selectedItems"
+        [laundryName]="selectedLaundry?.name || ''"
+        [showLaundryInfo]="true">
+      </app-order-summary>
+
+      <div class="flex justify-between mt-6">
+        <button 
+          (click)="goToPreviousStep()"
+          class="px-6 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400">
+          Back to Laundry Selection
+        </button>
+        
+        <button 
+          (click)="placeOrder()"
+          class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
+          Place Order
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

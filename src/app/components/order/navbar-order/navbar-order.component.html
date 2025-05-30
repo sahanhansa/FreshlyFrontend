@@ -1,0 +1,78 @@
+<nav class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between p-4 bg-white shadow-md">
+  <div class="w-full max-w-7xl mx-auto flex items-center justify-between">
+    <!-- Logo -->
+    <div class="flex items-center">
+      <img src="assets/logo.png" alt="logo" class="h-12">
+    </div>
+
+    <!-- Hamburger Menu for Mobile -->
+    <button
+      class="block md:hidden text-blue-500 rounded hover:bg-blue-50 focus:outline-none transition"
+      (click)="toggleMenu()"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-7 w-7"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M4 6h16M4 12h16M4 18h16"
+        />
+      </svg>
+    </button>
+
+    <!-- Navigation Links -->
+    <ul
+      class="hidden md:flex items-center gap-10 list-none m-0 p-0"
+      [class.flex]="isMenuOpen"
+    >
+      <li>
+        <a
+          routerLink="/cus-home/home"
+          class="text-black hover:text-blue-500 hover:border-blue-500 transition cursor-pointer text-lg"
+          >Home</a
+        >
+      </li>
+      <li>
+        <a
+          routerLink="/cus-home/how-it-works"
+          class="text-black hover:text-blue-500 hover:border-blue-500 transition cursor-pointer text-lg"
+          >How it works</a
+        >
+      </li>
+      <li>
+        <a
+          routerLink="/cus-home/order"
+          class="text-black hover:text-blue-500 hover:border-blue-500 transition cursor-pointer text-lg"
+          >Order</a
+        >
+      </li>
+      <li>
+        <a
+          routerLink="/cus-home/basket"
+          class="text-black hover:text-blue-500 hover:border-blue-500 transition cursor-pointer text-lg"
+          >Basket</a
+        >
+      </li>
+      <li>
+        <a
+          routerLink="/cus-home/contact-us"
+          class="text-black hover:text-blue-500 hover:border-blue-500 transition cursor-pointer text-lg"
+          >Contact Us</a
+        >
+      </li>
+      <li>
+        <a
+          routerLink="/cus-home/profile"
+          class="text-black hover:text-blue-500 hover:border-blue-500 transition cursor-pointer text-lg"
+          >Profile</a
+        >
+      </li>
+    </ul>
+  </div>
+</nav>
