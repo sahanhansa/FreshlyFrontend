@@ -2,12 +2,12 @@
   class="bg-white p-6 rounded-lg border border-gray-200 shadow-lg flex flex-col items-center text-center max-w-sm w-full transform transition-transform duration-300 hover:scale-105 hover:shadow-xl"
 >
   <!-- Increased Image Size -->
-  <img [src]="item.image" alt="{{ item.name }}" class="w-32 h-32 mb-4 object-contain">
+  <img [src]="item.image" alt="{{ item?.name }}" class="w-32 h-32 mb-4 object-contain">
 
   <!-- Name and Price Side by Side -->
   <div class="flex justify-between items-center w-full mb-2">
-    <h3 class="text-xl font-semibold text-gray-900">{{ item.name }}</h3>
-    <p class="text-lg text-yellow-500 font-bold">Rs.{{ item.price }}</p>
+    <h3 class="text-xl font-semibold text-gray-900">{{ item?.name }}</h3>
+    <p class="text-lg text-yellow-500 font-bold">Rs.{{ item?.price }}</p>
   </div>
 
   <!-- Description -->

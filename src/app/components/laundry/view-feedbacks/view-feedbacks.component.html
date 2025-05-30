@@ -1,0 +1,32 @@
+<div class="max-w-4xl mx-auto px-4 py-8 space-y-6" *ngIf="feedbacks.length">
+  <div
+    *ngFor="let feedback of feedbacks"
+    class="border rounded-xl p-4 bg-white shadow-sm"
+  >
+  
+    <h3 class="font-semibold text-lg text-black">
+      {{ feedback.customerFName }} {{ feedback.customerLName }}
+    </h3>
+
+    <p class="text-black mt-1 mb-3">{{ feedback.description }}</p>
+
+  
+    <div class="flex items-center justify-between">
+      <div class="text-yellow-400">
+        <ng-container *ngFor="let star of [1,2,3,4,5]; let i = index">
+          <span
+            [class.text-yellow-400]="i < feedback.rating"
+            [class.text-gray-300]="i >= feedback.rating"
+          >★</span>
+        </ng-container>
+      </div>
+
+      <button
+        class="text-white text-sm px-4 py-1.5 rounded-md hover:opacity-90"
+        style="background-color: #0A84FF;"
+      >
+        Reply
+      </button>
+    </div>
+  </div>
+</div>
