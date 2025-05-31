@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { FooterComponent } from '../../../components/shared/footer/footer.component';
 
 interface OrderItem {
   id: string;
@@ -18,7 +19,7 @@ interface OrderSection {
 @Component({
   selector: 'app-confirm-orders',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink,FooterComponent],
   templateUrl: './confirm-orders.component.html',
 })
 export class ConfirmOrdersComponent {

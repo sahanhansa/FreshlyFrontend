@@ -1,6 +1,5 @@
-<div class="min-h-screen bg-gray-100 relative">    <!-- Only show navbar when NOT on auth pages AND NOT on laundry pages -->
-    <app-navbar *ngIf="!isAuthPage && !isLaundryPage" [isAdminPage]="isAdminPage" [isCustomerPage]="isCustomerPage" [isLaundryPage]="isLaundryPage"></app-navbar>
-    <main [ngClass]="{'pt-16': !isAuthPage && !isLaundryPage}" class="min-h-[calc(100vh-64px)] w-full p-8 opacity-100 visible">
+
         <router-outlet></router-outlet>
-    </main>
-</div>
+ 
+
+

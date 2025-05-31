@@ -15,4 +15,5 @@ export interface Item {
   services: ServiceWithPrice[];
 }
 
+
 export type ItemCategory = 'ladies' | 'gents' | 'kids' | 'other';
