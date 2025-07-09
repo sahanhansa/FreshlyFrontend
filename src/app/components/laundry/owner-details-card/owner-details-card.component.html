@@ -1,0 +1,11 @@
+<div class="border rounded-lg shadow-md min-h-[450px] flex flex-col">
+  <div class="bg-blue-500 text-white rounded-t-lg px-3 py-3 flex flex-col items-center">
+    <img src="assets/profile.png" class="w-20 h-20 mb-2 rounded-full" alt="Owner">
+    <h2 class="text-lg font-bold">{{ owner?.name }}</h2>
+  </div>
+  <div class="p-4 text-sm space-y-2 flex-grow">
+    <p><strong>Personal Address:</strong> {{ owner?.address }}</p>
+    <p><strong>Contact No:</strong> {{ owner?.contact }}</p>
+    <p><strong>Email:</strong> {{ owner?.email }}</p>
+  </div>
+</div>

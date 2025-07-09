@@ -1,0 +1,15 @@
+<div class="border rounded-lg shadow-md min-h-[450px] max-w-l flex flex-col">
+  <div class="bg-blue-500 text-white rounded-t-lg px-3 py-3 flex flex-col items-center">
+    <img src="assets/laundry-logo.png" class="w-20 h-20 mb-2" alt="Laundry Logo">
+    <h2 class="text-lg font-bold">{{ laundry?.name }}</h2>
+    <p class="text-sm">{{ laundry?.tagline }}</p>
+  </div>
+  <div class="p-4 text-sm space-y-2 flex-grow">
+    <p><strong>Reg No:</strong> {{ laundry?.regNo }}</p>
+    <p><strong>Address:</strong> {{ laundry?.address }}</p>
+    <p><strong>Contact No:</strong> {{ laundry?.contact }}</p>
+    <p><strong>Email:</strong> {{ laundry?.email }}</p>
+    <p><strong>Business Hours:</strong><br>{{ laundry?.hours }}</p>
+    <p><strong>Core Services:</strong><br>{{ laundry?.services }}</p>
+  </div>
+</div>

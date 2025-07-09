@@ -29,6 +29,8 @@ import { LaundryPageComponent } from './pages/order/laundry-list-page/laundry-li
 import { BasketComponent } from './pages/order/basket/basket.component';
 import { ItemPageComponent } from './pages/order/item-list-page/item-list-page.component';
 import { CustomerLayoutComponent } from './components/customer/customer-layout/customer-layout.component';
+import { LaundryAddItemComponent } from './pages/Laundry/laundry-add-item/laundry-add-item.component';
+import { LaundryEditItemComponent } from './pages/Laundry/laundry-edit-item/laundry-edit-item.component';
 
 // Define the application's routes
 export const routes: Routes = [
@@ -132,6 +134,12 @@ export const routes: Routes = [
     // Route for laundry-summary page
     {path: 'laundry-summary', component:LaundrySummaryComponent},
 
+
+     {path: 'laundry-add-item', component:LaundryAddItemComponent},
+
+     {path: 'laundry-edit-item', component:LaundryEditItemComponent },
+
+    
     ]
 
 

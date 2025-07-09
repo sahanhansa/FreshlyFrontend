@@ -13,7 +13,7 @@ import { RouterModule } from '@angular/router';
   standalone: true, 
   imports: [CommonModule, RouterModule, HttpClientModule, PaginationComponent, SearchBarComponent, FooterComponent], 
   templateUrl: './new-orders.component.html', 
-  styleUrls: ['./new-orders.component.scss'] 
+  styleUrls: ['./new-orders.component.css'] 
 })
 export class NewOrdersComponent implements OnInit { // The component class that implements OnInit lifecycle hook
   orders: Order[] = []; // Declare an array to store the orders fetched from the backend
