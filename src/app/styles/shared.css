@@ -1,0 +1,145 @@
+/* Shared component styles with Tailwind-equivalent values */
+
+/* 
+ * This file provides CSS styles that match Tailwind's design system.
+ * To migrate fully to Tailwind, use these utility classes directly in your HTML.
+ */
+
+.component-container {
+  padding: 2rem; /* p-8 */
+  background-color: #f1f5f9; /* bg-gray-100 */
+  min-height: calc(100vh - 4rem);
+}
+
+.component-container .page-header {
+  margin-bottom: 2rem; /* mb-8 */
+}
+  
+.component-container .page-header h1 {
+  font-size: 1.875rem; /* text-3xl */
+  font-weight: 600; /* font-semibold */
+  color: #1e293b; /* text-gray-800 */
+}
+
+.component-container .content-card {
+  background-color: white; /* bg-white */
+  border-radius: 0.5rem; /* rounded-lg */
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-sm */
+  padding: 2rem; /* p-8 */
+  margin-bottom: 2rem; /* mb-8 */
+}
+
+.component-container .controls {
+  display: flex; /* flex */
+  justify-content: space-between; /* justify-between */
+  align-items: center; /* items-center */
+  margin-bottom: 2rem; /* mb-8 */
+  background-color: white; /* bg-white */
+  padding: 1rem; /* p-4 */
+  border-radius: 0.5rem; /* rounded-lg */
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-sm */
+}
+
+.component-container .controls .search-input {
+  padding: 0.5rem; /* p-2 */
+  border: 1px solid #d1d5db; /* border border-gray-300 */
+  border-radius: 0.25rem; /* rounded */
+  width: 200px; /* w-[200px] */
+}
+
+.component-container .controls .action-button {
+  padding: 0.5rem 1rem; /* py-2 px-4 */
+  background-color: #3b82f6; /* bg-blue-500 */
+  color: white; /* text-white */
+  border: none; /* border-none */
+  border-radius: 0.25rem; /* rounded */
+  cursor: pointer; /* cursor-pointer */
+  transition: all 0.2s ease; /* transition-all duration-200 */
+}
+
+.component-container .controls .action-button:hover {
+  background-color: #2563eb; /* bg-blue-600 */
+}
+
+.component-container .data-table {
+  width: 100%; /* w-full */
+  border-collapse: collapse; /* border-collapse */
+  background-color: white; /* bg-white */
+  border-radius: 0.5rem; /* rounded-lg */
+  overflow: hidden; /* overflow-hidden */
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-sm */
+}
+
+.component-container .data-table th,
+.component-container .data-table td {
+  padding: 1rem; /* p-4 */
+  text-align: left; /* text-left */
+  border-bottom: 1px solid #e5e7eb; /* border-b border-gray-200 */
+}
+
+.component-container .data-table th {
+  background-color: #f9fafb; /* bg-gray-50 */
+  font-weight: 500; /* font-medium */
+  color: #1f2937; /* text-gray-800 */
+}
+
+.component-container .data-table tr:nth-child(even) {
+  background-color: #f9fafb; /* bg-gray-50 */
+}
+
+.component-container .data-table tr:hover {
+  background-color: #eff6ff; /* bg-blue-50 */
+}
+
+.component-container .status-badge {
+  padding: 0.25rem 0.75rem; /* py-1 px-3 */
+  border-radius: 9999px; /* rounded-full */
+  font-size: 0.875rem; /* text-sm */
+  font-weight: 500; /* font-medium */
+}
+
+.component-container .status-badge.status-active {
+  background-color: #dcfce7; /* bg-green-100 */
+  color: #166534; /* text-green-800 */
+}
+
+.component-container .status-badge.status-inactive {
+  background-color: #fee2e2; /* bg-red-100 */
+  color: #991b1b; /* text-red-800 */
+}
+
+.component-container .status-badge.status-pending {
+  background-color: #fef3c7; /* bg-amber-100 */
+  color: #92400e; /* text-amber-800 */
+}
+
+.component-container .pagination {
+  display: flex; /* flex */
+  justify-content: center; /* justify-center */
+  gap: 0.5rem; /* gap-2 */
+  margin-top: 2rem; /* mt-8 */
+}
+
+.component-container .pagination button {
+  padding: 0.5rem 1rem; /* py-2 px-4 */
+  border: 1px solid #d1d5db; /* border border-gray-300 */
+  background-color: white; /* bg-white */
+  cursor: pointer; /* cursor-pointer */
+  transition: all 0.3s ease; /* transition-all duration-300 */
+}
+
+.component-container .pagination button:hover:not(:disabled) {
+  background-color: #eff6ff; /* bg-blue-50 */
+  border-color: #3b82f6; /* border-blue-500 */
+}
+
+.component-container .pagination button.active {
+  background-color: #3b82f6; /* bg-blue-500 */
+  color: white; /* text-white */
+  border-color: #3b82f6; /* border-blue-500 */
+}
+
+.component-container .pagination button:disabled {
+  opacity: 0.5; /* opacity-50 */
+  cursor: not-allowed; /* cursor-not-allowed */
+}
