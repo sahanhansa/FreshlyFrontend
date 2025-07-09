@@ -3,12 +3,12 @@ import { CommonModule } from '@angular/common';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { NavbarComponent } from './components/admin/shared/navbar/navbar.component';
 import { filter } from 'rxjs/operators';
-
+import { ToastComponent} from './components/shared/toast/toast.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet],
+  imports: [CommonModule, RouterOutlet, ToastComponent],
   templateUrl: './app.component.html',
   host: {
     class: 'block min-h-screen'

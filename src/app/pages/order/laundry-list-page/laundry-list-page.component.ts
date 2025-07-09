@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SearchBarComponent } from '../../../components/shared/search-bar/search-bar.component';
 import { LaundryListComponent } from '../../../components/order/laundry-list/laundry-list.component';
-import { FooterComponent } from '../../../components/shared/footer/footer.component';
 import { Laundry } from '../../../models/laundry.model';
 import { LaundryService } from '../../../services/laundry.service';
 
@@ -14,7 +13,6 @@ import { LaundryService } from '../../../services/laundry.service';
     CommonModule, 
     FormsModule,
     LaundryListComponent, 
-    FooterComponent,
     SearchBarComponent
   ],
   templateUrl: './laundry-list-page.component.html',
