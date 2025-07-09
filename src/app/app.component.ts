@@ -8,7 +8,7 @@ import { filter } from 'rxjs/operators';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, NavbarComponent],
+  imports: [CommonModule, RouterOutlet],
   templateUrl: './app.component.html',
   host: {
     class: 'block min-h-screen'
