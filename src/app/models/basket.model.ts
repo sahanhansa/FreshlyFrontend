@@ -40,6 +40,7 @@ export interface TemporaryOrderItem {
   itemName: string;
   itemImageUrl?: string;
   // categoryName?: string;
+  serviceId: string; 
   serviceName: string;
   price: number;
   quantity: number;

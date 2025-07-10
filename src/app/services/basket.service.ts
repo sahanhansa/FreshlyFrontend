@@ -83,4 +83,13 @@ export class BasketService {
   placeOrder(orderId: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/${orderId}/place`, {});
   }
+
+  /**
+   * Deletes an item from a temporary order
+   */
+  deleteItemFromOrder(temporaryOrderId: string, itemId: string, serviceId: string) {
+    return this.http.delete(
+      `${this.apiUrl}/${temporaryOrderId}/item/${itemId}/service/${serviceId}`
+    );
+  }
 }

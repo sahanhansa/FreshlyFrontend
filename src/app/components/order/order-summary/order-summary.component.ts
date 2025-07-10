@@ -50,8 +50,9 @@ export class OrderSummaryComponent implements OnInit {
     // Use the orderSummary if provided, otherwise fall back to legacy inputs
     if (this.orderSummary) {
       this.orderItems = this.orderSummary.items.map(item => ({
-        id: item.itemId,
+        itemId: item.itemId,
         name: item.itemName,
+        serviceId: item.serviceId,
         //categoryName: item.categoryName || 'Standard',
         washMethod: item.serviceName,
         price: item.price,
@@ -134,11 +135,24 @@ export class OrderSummaryComponent implements OnInit {
     }
   }
 
-  deleteItem(itemId: any) {
-    const index = this.orderItems.findIndex(item => item.id === itemId);
-    if (index !== -1) {
-      this.orderItems.splice(index, 1);
-      console.log(`Item with ID ${itemId} removed from order ${this.orderId}`);
-    }
+  deleteItem(itemId: string, serviceId: string) {
+    const temporaryOrderId = this.orderSummary?.temporaryOrderId;
+    if (!temporaryOrderId) return;
+
+    this.basketService.deleteItemFromOrder(temporaryOrderId, itemId, serviceId).subscribe({
+      next: () => {
+        // Remove from UI
+        this.orderItems = this.orderItems.filter(i => !(i.itemId === itemId && i.serviceId === serviceId));
+        if (this.orderSummary) {
+          this.orderSummary.items = this.orderSummary.items.filter(i => !(i.itemId === itemId && i.serviceId === serviceId));
+          this.orderSummary.totalAmount = this.orderItems.reduce((sum, i) => sum + i.price * i.quantity, 0);
+        }
+        this.toastService.show('Success', 'Item removed from order', 'success');
+      },
+      error: (error) => {
+        this.toastService.show('Error', 'Failed to remove item', 'error');
+        console.error('Delete item error:', error);
+      }
+    });
   }
 }
