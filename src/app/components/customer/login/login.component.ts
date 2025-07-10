@@ -228,12 +228,5 @@ export class LoginComponent implements OnInit {  // Object to store login input 
     // Navigate directly to the customer home page
     this.router.navigate(['/cus-home']);
   }
-    // Test method to bypass login credentials and directly navigate to laundry home page
-  testLaundryLogin() {
-    console.log('Test laundry login - bypassing credentials check');
-    localStorage.setItem('Role', 'laundry');
-    localStorage.setItem('currentPage', 'laundry');
-    // Navigate directly to the laundry home page
-    this.router.navigate(['/laundry/home']);
-  }
+ 
 }

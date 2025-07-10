@@ -5,12 +5,13 @@ import { OrderService } from '../../../services/order.service'; // Import OrderS
 import { Order } from '../../../models/order.model'; // Import Order model to type the orders array
 import { SearchBarComponent } from '../../../components/shared/search-bar/search-bar.component';
 import { PaginationComponent } from '../../../components/shared/pagination/pagination.component'; 
+import { FooterComponent } from '../../../components/shared/footer/footer.component'; 
 import { RouterModule } from '@angular/router'; 
 
 @Component({
   selector: 'app-new-orders', 
   standalone: true, 
-  imports: [CommonModule, RouterModule, HttpClientModule, PaginationComponent, SearchBarComponent], 
+  imports: [CommonModule, RouterModule, HttpClientModule, PaginationComponent, SearchBarComponent, FooterComponent], 
   templateUrl: './new-orders.component.html', 
   styleUrls: ['./new-orders.component.scss'] 
 })
@@ -22,7 +23,7 @@ export class NewOrdersComponent implements OnInit { // The component class that 
   constructor(private orderService: OrderService) {} // Inject the OrderService to interact with the backend API
 
   ngOnInit(): void {
-    this.loadNewOrders(); // Fetch the regular orders when the component is initialized
+    this.loadNewOrders(); // Fetch the new orders when the component is initialized
   }
 
   // Method to fetch regular orders from the backend

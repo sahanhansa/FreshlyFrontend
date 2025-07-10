@@ -17,11 +17,11 @@ import { CusHomeComponent } from './components/customer/cus-home/cus-home.compon
 import { LaundrySignupComponent } from './components/customer/laundry-signup/laundry-signup.component';
 import { HowItWorksComponent } from './components/customer/how-it-works/how-it-works.component';
 import { NewOrdersComponent } from './pages/Laundry/new-orders/new-orders.component';
+import { processingOrdersComponent } from './pages/Laundry/processing-orders/processing-orders.component';
 import { ConfirmOrdersComponent } from './pages/Laundry/confirm-orders/confirm-orders.component';
 import { InvoiceSuccessedComponent } from './pages/Laundry/invoice-successed/invoice-successed.component';
 import { LaundryFeedbacksComponent } from './pages/Laundry/laundry-feedbacks/laundry-feedbacks.component';
 import { LaundryItemsComponent } from './pages/Laundry/laundry-items/laundry-items.component';
-import { LaundryLayoutComponent } from './components/laundry/laundry-layout/laundry-layout.component';
 import { LaundryOrdersComponent } from './pages/Laundry/laundry-orders/laundry-orders.component';
 import { LaundryProfileComponent } from './pages/Laundry/laundry-profile/laundry-profile.component';
 import { LaundrySummaryComponent } from './pages/Laundry/laundry-summary/laundry-summary.component';
@@ -29,8 +29,6 @@ import { LaundryPageComponent } from './pages/order/laundry-list-page/laundry-li
 import { BasketComponent } from './pages/order/basket/basket.component';
 import { ItemPageComponent } from './pages/order/item-list-page/item-list-page.component';
 import { CustomerLayoutComponent } from './components/customer/customer-layout/customer-layout.component';
-import { RegularOrdersComponent } from './pages/Laundry/regular-orders/regular-orders.component';
-import { ExpressOrderComponent } from './pages/Laundry/express-order/express-order.component';
 
 // Define the application's routes
 export const routes: Routes = [
@@ -45,29 +43,20 @@ export const routes: Routes = [
     {path:'login', component: LoginComponent},    // Route for general user signup
     {path:'signup', component: SignupComponent},    // Route for customer home page
     //{ path: 'cus-home', component: CusHomeComponent },    // Route for laundry partner home page
-    { path: 'laundry-home', redirectTo: '/laundry/home', pathMatch: 'full' },
+  
 
    // Route for admin home page - redirect to admin dashboard
   { path: 'admin-home', redirectTo: '/admin/dashboard', pathMatch: 'full' },
-    // Route for laundry-specific signup
-  {path: 'laundry-signup', component:LaundrySignupComponent},
-  // Redirects for laundry pages to the new layout
-  { path: 'new-orders', redirectTo: '/laundry/new-orders', pathMatch: 'full' },
-  { path: 'confirm-orders', redirectTo: '/laundry/confirm-orders', pathMatch: 'full' },
-  { path: 'invoice-successed', redirectTo: '/laundry/invoice-successed', pathMatch: 'full' },
-  { path: 'laundry-orders', redirectTo: '/laundry/orders', pathMatch: 'full' },
-  { path: 'laundry-feedbacks', redirectTo: '/laundry/feedbacks', pathMatch: 'full' },
-  { path: 'laundry-items', redirectTo: '/laundry/items', pathMatch: 'full' },
-  { path: 'laundry-profile', redirectTo: '/laundry/profile', pathMatch: 'full' },
-  { path: 'laundry-summary', redirectTo: '/laundry/summary', pathMatch: 'full' },
-  { path: 'regular-orders', redirectTo: '/laundry/regular-orders', pathMatch: 'full' },
-  { path: 'express-orders', redirectTo: '/laundry/express-orders', pathMatch: 'full' },
+
+ 
+ 
 
     //order routes
   //   { path: '', redirectTo: 'order', pathMatch: 'full' },
   // { path: 'order', component: LaundryPageComponent },
   // { path: 'basket', component: BasketComponent },
   // {path: 'laundry/:id', component: ItemPageComponent},
+
   //driver routes
   {path: 'driver-home-page', component:DriverHomePageComponent },
   {path: 'pickups-tasks-mainpage', component: PickupsTasksMainpageComponent },
@@ -106,27 +95,46 @@ export const routes: Routes = [
       // Add more customer pages as needed
     ]
   },
-  // Laundry interface with layout (navbar + footer)
-  {
-    path: 'laundry',
-    component: LaundryLayoutComponent,
-    children: [
-      { path: '', redirectTo: 'home', pathMatch: 'full' },
-      { path: 'home', component: HomeComponent },
-      { path: 'orders', component: LaundryOrdersComponent },
-      { path: 'items', component: LaundryItemsComponent },
-      { path: 'feedbacks', component: LaundryFeedbacksComponent },
-      { path: 'profile', component: LaundryProfileComponent },
-      { path: 'summary', component: LaundrySummaryComponent },
-      { path: 'new-orders', component: NewOrdersComponent },
-      { path: 'confirm-orders', component: ConfirmOrdersComponent },
-      { path: 'invoice-successed', component: InvoiceSuccessedComponent },
-      { path: 'regular-orders', component: RegularOrdersComponent },
-      { path: 'express-orders', component: ExpressOrderComponent }
-    ]
-  },
+  
+  
+ // Route for laundry home
+   {path: 'laundry-home', component:HomeComponent},
+   
+  { path: 'laundry-home', redirectTo: '/laundry/home', pathMatch: 'full' },
 
-];
+   // Route for laundry-specific signup
+  {path: 'laundry-signup', component:LaundrySignupComponent},
+  
+     // Route for new orders page
+  {path: 'new-orders', component:NewOrdersComponent},
+
+    // Route for processingorders page
+  {path: 'processing-orders', component:processingOrdersComponent},
+
+ // Route for confirm orders page
+  {path: 'confirm-orders', component:ConfirmOrdersComponent},
+
+  // Route for invoice success page
+   {path: 'invoice-successed', component:InvoiceSuccessedComponent},
+
+    // Route for laundry-orders page
+   {path: 'laundry-orders', component:LaundryOrdersComponent},
+
+    // Route for laundry-feedbacks page
+   {path: 'laundry-feedbacks', component:LaundryFeedbacksComponent},
+
+    // Route for laundry-items page
+   {path: 'laundry-items', component:LaundryItemsComponent},
+
+    // Route for laundry-profile page
+    {path: 'laundry-profile', component:LaundryProfileComponent},
+
+    // Route for laundry-summary page
+    {path: 'laundry-summary', component:LaundrySummaryComponent},
+
+    ]
+
+
 // Define the routing module
  @NgModule({
     imports: [RouterModule.forRoot(routes)],

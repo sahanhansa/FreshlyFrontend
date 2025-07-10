@@ -43,3 +43,12 @@ export interface Order {
   laundry?: Laundry;
   items?: OrderItem[];
 }
+
+export interface Order {
+    orderId: string;
+    placedDate: string | null;
+    customerFName: string;
+  customerLName: string;
+  statusName: string;
+  amount: number;
+}

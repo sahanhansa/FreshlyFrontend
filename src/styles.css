@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Import shared styles */
+@import 'app/styles/shared.css';
+
 /* Basic reset and visibility styles */
 * {
     margin: 0;

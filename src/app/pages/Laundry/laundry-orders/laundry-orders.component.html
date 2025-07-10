@@ -1,6 +1,63 @@
 
-<div>
-  <h1 class="text-2xl font-bold mb-4">Laundry Orders</h1>
-  <!-- Add your content here -->
-  <p>Orders will be displayed here</p>
+<div class="min-h-screen flex flex-col">
+    <app-header></app-header>
+  <app-search-bar></app-search-bar>
+  <div class="overflow-x-auto">
+    <table class="min-w-full table-auto border-separate border-spacing-y-4">
+      <thead>
+        <tr class="text-left text-gray-700">
+          <th class="px-6 py-2">Tracking ID</th>
+          <th class="px-6 py-2">Customer</th>
+          <th class="px-6 py-2">Date</th>
+          <th class="px-6 py-2">Status</th>
+          <th class="px-6 py-2">Amount</th>
+          <th class="px-6 py-2">Order Summary</th>
+        </tr>
+      </thead>
+     <tbody>
+  <tr *ngFor="let order of orders" class="bg-blue-100 rounded-lg">
+    <td class="px-6 py-4 font-semibold text-black">#{{ order.orderId.slice(0, 32) }}</td>
+    <td class="px-6 py-4 text-black">{{ order.customerFName }} {{ order.customerLName }}</td>
+    <td class="px-6 py-4 text-black">{{ order.placedDate | date: 'dd/MM/yyyy' }}</td>
+    <td class="px-6 py-4">
+      <span class="px-3 py-1 rounded-full text-m font-semibold"
+            [ngClass]="{
+              'bg-green-100 text-green-800': order.statusName === 'Completed',
+              'bg-yellow-100 text-yellow-800': order.statusName === 'Processing in Laundry',
+              'bg-blue-200 text-blue-800': order.statusName === 'Finished Processing'
+            }">
+        {{ order.statusName }}
+      </span>
+    </td>
+
+    <td class="px-6 py-4 text-black">Rs. {{ order.amount }}</td>
+
+   <td class="px-18 py-4 flex items-center gap-2">
+      <button class ="cursor-pointer" >
+ <svg xmlns="http://www.w3.org/2000/svg"
+       class="h-6 w-6 text-blue-600"
+       viewBox="0 0 24 24"
+       fill="currentColor">
+    <path d="M6 2a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8.828a2 2 0 00-.586-1.414l-4.828-4.828A2 2 0 0013.172 2H6zm7 1.414L18.586 9H14a1 1 0 01-1-1V3.414zM9 13h.75v4H9v-4zm2.25 0h.75a1.5 1.5 0 010 3h-.75v-3zm3 0h.5a.5.5 0 01.5.5v3a.5.5 0 01-1 0v-3a.5.5 0 01.5-.5z"/>
+  </svg>
+    </button>
+</td>
+
+
+     <td class="px-6 py-4">
+  <button class ="cursor-pointer" >
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="red">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3m-4 0h14" />
+    </svg>
+  </button>
+</td>
+
+  </tr>
+</tbody>
+
+    </table>
+  </div>
 </div>
+<app-pagination ></app-pagination>
+  <app-footer></app-footer>
+

@@ -1,23 +1,24 @@
-import { Component, Input } from '@angular/core';
+import { Component  , Input} from '@angular/core';
+import { FooterComponent } from '../../../components/shared/footer/footer.component';
 import { Router } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { HeaderComponent } from '../../../components/laundry/header/header.component';
 
 @Component({
   selector: 'app-home',
-  standalone: true,
-  imports: [CommonModule],
+  imports: [ FooterComponent, HeaderComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
 export class HomeComponent {
-  @Input() laundryName: string = 'Sparkle';
+  @Input() laundryName: string = 'Laundry Name';
+
   constructor(private router: Router) {}
 
   goToNewOrder() {
-    this.router.navigate(['/laundry/new-orders']);
+    this.router.navigate(['/new-orders']);
   }
-  
-  goToProcessingOrders() {
-    this.router.navigate(['/laundry/confirm-orders']);
+
+   goToProcessingOrder() {
+    this.router.navigate(['/processing-orders']);
   }
 }
