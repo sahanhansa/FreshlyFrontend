@@ -72,7 +72,7 @@ export class BasketService {
    * @returns An observable with the result
    */
   deleteOrder(orderId: string): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${orderId}`);
+    return this.http.delete(`${this.apiUrl}/${orderId}/delete`);
   }
 
   /**

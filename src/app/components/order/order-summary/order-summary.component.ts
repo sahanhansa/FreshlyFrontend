@@ -83,29 +83,23 @@ export class OrderSummaryComponent implements OnInit {
 
   confirmDelete() {
     const id = this.orderSummary?.temporaryOrderId || this.orderId;
-    
-    if (this.orderSummary) {
-      this.isProcessing = true;
-      this.basketService.deleteOrder(id).subscribe({
-        next: () => {
-          this.toastService.show('Success', 'Order deleted successfully', 'success');
-          this.showDeleteConfirmation = false;
-          this.deleteOrderEvent.emit(id);
-          this.isProcessing = false;
-        },
-        error: (error) => {
-          this.toastService.show('Error', 'Failed to delete order', 'error');
-          console.error('Delete order error:', error);
-          this.showDeleteConfirmation = false;
-          this.isProcessing = false;
-        }
-      });
-    } else {
-      // Legacy behavior
-      console.log(`Order ${this.orderId} deleted`);
-      this.showDeleteConfirmation = false;
-      this.deleteOrderEvent.emit(this.orderId);
-    }
+    if (!id) return;
+
+    this.isProcessing = true;
+    this.basketService.deleteOrder(id).subscribe({
+      next: () => {
+        this.toastService.show('Success', 'Order deleted successfully', 'success');
+        this.showDeleteConfirmation = false;
+        this.deleteOrderEvent.emit(id); // Notify parent to remove from UI
+        this.isProcessing = false;
+      },
+      error: (error) => {
+        this.toastService.show('Error', 'Failed to delete order', 'error');
+        console.error('Delete order error:', error);
+        this.showDeleteConfirmation = false;
+        this.isProcessing = false;
+      }
+    });
   }
 
   cancelDelete() {
