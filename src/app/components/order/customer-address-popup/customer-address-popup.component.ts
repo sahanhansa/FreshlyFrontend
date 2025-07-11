@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { CustomerAddress } from '../../../models/order-models/customerAddress.model';
+import { CustomerAddress } from 'src/app/models/order-models/customerAddress.model';
 import { CustomerService } from '../../../services/order-services/customer.service';
 import { CommonModule } from '@angular/common';
 
@@ -8,23 +8,18 @@ import { CommonModule } from '@angular/common';
   selector: 'app-customer-address-popup',
   standalone: true,
   imports: [CommonModule,FormsModule],
-  templateUrl: './customer-address-popup.component.html'
+  templateUrl: './customer-address-popup.component.html',
+  styleUrl: './customer-address-popup.component.css',
 })
 export class CustomerAddressPopupComponent implements OnInit {
   @Input() customerId!: string;
-  @Output() next = new EventEmitter<CustomerAddress>();
+  @Input() address: CustomerAddress = {} as CustomerAddress;
+  @Input() loading = false;
+  @Input() error: string | null = null;
+
+  @Output() confirmOrder = new EventEmitter<CustomerAddress>();
   @Output() cancel = new EventEmitter<void>();
   @Output() back = new EventEmitter<void>();
-
-  address: CustomerAddress = {
-    addressId: '',
-    houseNo: '',
-    street: '',
-    city: '',
-    postalCode: ''
-  };
-  loading = true;
-  error = '';
 
   constructor(private customerService: CustomerService) {}
 
@@ -43,7 +38,7 @@ export class CustomerAddressPopupComponent implements OnInit {
     }
   }
 
-  onNext() {
-    this.next.emit(this.address);
+  onConfirmOrder() {
+    this.confirmOrder.emit(this.address);
   }
 }

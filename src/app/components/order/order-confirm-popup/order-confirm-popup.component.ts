@@ -1,11 +1,11 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CustomerAddress } from 'src/app/models/order-models/customerAddress.model';
-import { DatePipe, CommonModule } from '@angular/common';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-order-confirm-popup',
   standalone: true,
-  imports: [CommonModule, DatePipe],
+  imports: [CommonModule],
   templateUrl: './order-confirm-popup.component.html',
   styleUrl: './order-confirm-popup.component.css'
 })

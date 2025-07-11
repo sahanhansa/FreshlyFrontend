@@ -108,16 +108,16 @@
 <app-customer-address-popup
   *ngIf="showAddressPopup"
   [customerId]="customerId"
-  (next)="onAddressNext($event)"
+  (confirmOrder)="onAddressNext($event)"
   (cancel)="showAddressPopup = false"
   (back)="onAddressBack()">
 </app-customer-address-popup>
 
 <app-order-confirm-popup
   *ngIf="showOrderConfirmPopup"
-  [pickupDateTime]="pickupDateTime"
-  [address]="address"
   (confirm)="onOrderConfirm()"
   (cancel)="onOrderCancel()"
   (back)="onOrderBack()">
 </app-order-confirm-popup>
+
+

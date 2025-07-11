@@ -10,6 +10,7 @@ import { CustomerAddressPopupComponent } from '../customer-address-popup/custome
 import { OrderConfirmPopupComponent } from '../order-confirm-popup/order-confirm-popup.component'; // <-- Add this
 
 
+
 interface OrderItem {
   id: number;
   name: string;
@@ -27,7 +28,7 @@ interface OrderItem {
     CommonModule,
     PickupSchedulerComponent,
     CustomerAddressPopupComponent,
-    OrderConfirmPopupComponent // <-- Add this
+    OrderConfirmPopupComponent
   ],
   templateUrl: './order-summary.component.html',
   styleUrl: './order-summary.component.css'
@@ -52,6 +53,7 @@ export class OrderSummaryComponent implements OnInit {
   showPickupScheduler: boolean = false; // Add showPickupScheduler property
   showAddressPopup: boolean = false;
   showOrderConfirmPopup: boolean = false; // <-- Add this
+  showOrderConfirmedPopup: boolean = false;
   customerId = 'e91883cd-2e64-11f0-a04a-30d0423f455f'; // get this from auth/session
 
   pickupDateTime!: Date;
@@ -141,14 +143,12 @@ export class OrderSummaryComponent implements OnInit {
 
   onOrderConfirm() {
     this.showOrderConfirmPopup = false;
-    // Place the order here (call backend, show success, etc.)
-    this.toastService.show('Success', 'Order placed successfully!', 'success');
-    // Optionally refresh or navigate
+    this.showOrderConfirmedPopup = true;
   }
 
-  onOrderCancel() {
-    this.showOrderConfirmPopup = false;
-    // Optionally go back to address or do nothing
+  onOrderConfirmedClose() {
+    this.showOrderConfirmedPopup = false;
+    // Optionally, navigate or refresh
   }
 
   onAddressBack() {
@@ -159,6 +159,10 @@ export class OrderSummaryComponent implements OnInit {
   onOrderBack() {
     this.showOrderConfirmPopup = false;
     this.showAddressPopup = true; // <-- Show the address popup again
+  }
+
+  onOrderCancel() {
+    this.showOrderConfirmPopup = false;
   }
 
   deleteItem(itemId: string, serviceId: string) {
