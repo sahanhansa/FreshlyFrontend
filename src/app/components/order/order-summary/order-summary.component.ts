@@ -7,6 +7,7 @@ import { TemporaryOrderSummary, TemporaryOrderItem } from '../../../models/baske
 import { PickupSchedulerComponent } from '../pickup-scheduler/pickup-scheduler.component'; // adjust path if needed
 import { CustomerAddress } from '../../../models/order-models/customerAddress.model';
 import { CustomerAddressPopupComponent } from '../customer-address-popup/customer-address-popup.component';
+import { OrderConfirmPopupComponent } from '../order-confirm-popup/order-confirm-popup.component'; // <-- Add this
 
 
 interface OrderItem {
@@ -22,7 +23,12 @@ interface OrderItem {
 @Component({
   selector: 'app-order-summary',
   standalone: true,
-  imports: [CommonModule,  PickupSchedulerComponent, CustomerAddressPopupComponent], // add PickupSchedulerComponent here if standalone
+  imports: [
+    CommonModule,
+    PickupSchedulerComponent,
+    CustomerAddressPopupComponent,
+    OrderConfirmPopupComponent // <-- Add this
+  ],
   templateUrl: './order-summary.component.html',
   styleUrl: './order-summary.component.css'
 })
@@ -45,7 +51,11 @@ export class OrderSummaryComponent implements OnInit {
   isProcessing: boolean = false;
   showPickupScheduler: boolean = false; // Add showPickupScheduler property
   showAddressPopup: boolean = false;
+  showOrderConfirmPopup: boolean = false; // <-- Add this
   customerId = 'e91883cd-2e64-11f0-a04a-30d0423f455f'; // get this from auth/session
+
+  pickupDateTime!: Date;
+  address!: CustomerAddress;
 
   constructor(
     private basketService: BasketService,
@@ -117,19 +127,38 @@ export class OrderSummaryComponent implements OnInit {
     this.showPickupScheduler = true; // Show the scheduler popup
   }
 
-  onPickupConfirm(pickupDateTime: Date) {
+  onPickupConfirm(dt: Date) {
+    this.pickupDateTime = dt;
     this.showPickupScheduler = false;
     this.showAddressPopup = true;
   }
 
-  onAddressNext(address: CustomerAddress) {
+  onAddressNext(addr: CustomerAddress) {
+    this.address = addr;
     this.showAddressPopup = false;
-    // Continue to next step or update address in backend if needed
+    this.showOrderConfirmPopup = true;
+  }
+
+  onOrderConfirm() {
+    this.showOrderConfirmPopup = false;
+    // Place the order here (call backend, show success, etc.)
+    this.toastService.show('Success', 'Order placed successfully!', 'success');
+    // Optionally refresh or navigate
+  }
+
+  onOrderCancel() {
+    this.showOrderConfirmPopup = false;
+    // Optionally go back to address or do nothing
   }
 
   onAddressBack() {
     this.showAddressPopup = false;
     this.showPickupScheduler = true;
+  }
+
+  onOrderBack() {
+    this.showOrderConfirmPopup = false;
+    this.showAddressPopup = true; // <-- Show the address popup again
   }
 
   deleteItem(itemId: string, serviceId: string) {
