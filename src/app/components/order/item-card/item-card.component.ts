@@ -3,6 +3,10 @@ import { CommonModule } from '@angular/common';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Item } from '../../../models/item.model';
 import { FabricTypeService } from '../../../services/fabric-type.service';
+import { BasketService } from '../../../services/basket.service';
+import { ActivatedRoute } from '@angular/router';
+import { ToastService } from '../../../services/toast.service';
+import { UserService } from '../../../services/user.service';
 
 // Interface to support legacy properties
 interface ExtendedItem extends Item {
@@ -34,12 +38,28 @@ export class ItemCardComponent implements OnInit {
   // Store the calculated price based on service and quantity
   currentPrice: number = 0;
   
-  // Inject FabricTypeService to get available fabric types
+  laundryId: string = '';
+  isAddingToBasket: boolean = false;
+  addToBasketSuccess: boolean = false;
+  addToBasketError: string = '';
+  
   constructor(
-    private fabricTypeService: FabricTypeService
+    private fabricTypeService: FabricTypeService,
+    private basketService: BasketService,
+    private route: ActivatedRoute,
+    private toastService: ToastService,
+    private userService: UserService
   ) {}
   
   ngOnInit(): void {
+    // Get the laundry ID from the route
+    this.route.paramMap.subscribe(params => {
+      const id = params.get('id');
+      if (id) {
+        this.laundryId = id;
+      }
+    });
+    
     // Get fabric types from the service
     this.fabricTypes = this.fabricTypeService.getFabricTypes();
     
@@ -63,6 +83,9 @@ export class ItemCardComponent implements OnInit {
     this.quantity.valueChanges.subscribe(() => {
       this.updatePrice();
     });
+
+    // Check what properties are actually available
+    console.log('Item data:', this.item);
   }
   
   // Update the price based on selected service
@@ -76,15 +99,52 @@ export class ItemCardComponent implements OnInit {
     this.currentPrice = basePrice * qty;
   }
   
-  // Handles the "Add to Basket" button click
+  // Updated method to handle adding to basket without login requirement
   onAddToBasket(): void {
-    console.log('Item:', this.item.itemName);
-    console.log('Fabric Type:', this.selectedGarment.value);
-    console.log('Service:', this.getSelectedServiceName());
-    console.log('Wash Method:', this.selectedWashMethod.value);
-    console.log('Price:', this.currentPrice);
-    console.log('Quantity:', this.quantity.value);
-    // TODO:Call your basket service to add item
+    this.isAddingToBasket = true;
+    this.addToBasketSuccess = false;
+    this.addToBasketError = '';
+    
+    if (!this.laundryId) {
+      this.addToBasketError = 'No laundry selected';
+      this.isAddingToBasket = false;
+      this.toastService.show('Error', 'No laundry selected', 'error');
+      return;
+    }
+    
+    const itemId = this.item.itemId?.toString() || this.item.id?.toString() || '';
+    const selectedServiceId = this.selectedService.value || '';
+    const quantity = this.quantity.value || 1;
+    
+    if (!itemId || !selectedServiceId) {
+      this.addToBasketError = 'Please select a service';
+      this.isAddingToBasket = false;
+      this.toastService.show('Error', 'Please select a service', 'error');
+      return;
+    }
+
+    // Simplified call without passing customerId
+    this.basketService.addItemToBasket(
+      this.laundryId,
+      itemId,
+      selectedServiceId,
+      quantity
+    ).subscribe({
+      next: (response) => {
+        this.isAddingToBasket = false;
+        this.addToBasketSuccess = true;
+        this.toastService.show('Success', 'Item added to basket', 'success');
+        setTimeout(() => {
+          this.addToBasketSuccess = false;
+        }, 3000);
+      },
+      error: (error) => {
+        this.isAddingToBasket = false;
+        this.addToBasketError = 'Failed to add to basket';
+        console.error('Add to basket error:', error);
+        this.toastService.show('Error', 'Failed to add to basket', 'error');
+      }
+    });
   }
   
   // Helper method to get service name from service ID
