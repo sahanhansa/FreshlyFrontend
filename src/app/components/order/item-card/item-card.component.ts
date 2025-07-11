@@ -6,6 +6,7 @@ import { FabricTypeService } from '../../../services/fabric-type.service';
 import { BasketService } from '../../../services/basket.service';
 import { ActivatedRoute } from '@angular/router';
 import { ToastService } from '../../../services/toast.service';
+import { UserService } from '../../../services/user.service';
 
 // Interface to support legacy properties
 interface ExtendedItem extends Item {
@@ -46,7 +47,8 @@ export class ItemCardComponent implements OnInit {
     private fabricTypeService: FabricTypeService,
     private basketService: BasketService,
     private route: ActivatedRoute,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private userService: UserService
   ) {}
   
   ngOnInit(): void {
@@ -99,14 +101,9 @@ export class ItemCardComponent implements OnInit {
   
   // Updated method to handle adding to basket without login requirement
   onAddToBasket(): void {
-    // Reset status
     this.isAddingToBasket = true;
     this.addToBasketSuccess = false;
     this.addToBasketError = '';
-    
-    // Use a valid GUID format for anonymous users instead of a string with "anon-" prefix
-    // This matches what the backend expects
-    const customerId = "e9194d78-2e64-11f0-a04a-30d0423f455f"; // Anonymous user GUID
     
     if (!this.laundryId) {
       this.addToBasketError = 'No laundry selected';
@@ -125,18 +122,9 @@ export class ItemCardComponent implements OnInit {
       this.toastService.show('Error', 'Please select a service', 'error');
       return;
     }
-    
-    console.log('Adding to basket:', {
-      customerId,
-      laundryId: this.laundryId,
-      itemId,
-      serviceId: selectedServiceId,
-      quantity
-    });
-    
-    // Call the basket service
+
+    // Simplified call without passing customerId
     this.basketService.addItemToBasket(
-      customerId,
       this.laundryId,
       itemId,
       selectedServiceId,
@@ -145,22 +133,16 @@ export class ItemCardComponent implements OnInit {
       next: (response) => {
         this.isAddingToBasket = false;
         this.addToBasketSuccess = true;
-        this.toastService.show(
-          'Success', 
-          `${this.item.itemName || this.item.name} added to basket`, 
-          'success'
-        );
+        this.toastService.show('Success', 'Item added to basket', 'success');
+        setTimeout(() => {
+          this.addToBasketSuccess = false;
+        }, 3000);
       },
       error: (error) => {
         this.isAddingToBasket = false;
-        this.addToBasketError = 'Failed to add item to basket';
-        this.toastService.show('Error', 'Failed to add item to basket', 'error');
-        console.error('Error details:', error);
-        
-        // Display more specific error if available
-        if (error.error && typeof error.error === 'string') {
-          this.addToBasketError = error.error;
-        }
+        this.addToBasketError = 'Failed to add to basket';
+        console.error('Add to basket error:', error);
+        this.toastService.show('Error', 'Failed to add to basket', 'error');
       }
     });
   }
