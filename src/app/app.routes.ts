@@ -31,6 +31,8 @@ import { ItemPageComponent } from './pages/order/item-list-page/item-list-page.c
 import { CustomerLayoutComponent } from './components/customer/customer-layout/customer-layout.component';
 import { LaundryAddItemComponent } from './pages/Laundry/laundry-add-item/laundry-add-item.component';
 import { LaundryEditItemComponent } from './pages/Laundry/laundry-edit-item/laundry-edit-item.component';
+import {LaundryOrderSummaryComponent } from './pages/Laundry/laundry-order-summary/laundry-order-summary.component';
+
 
 // Define the application's routes
 export const routes: Routes = [
@@ -138,6 +140,10 @@ export const routes: Routes = [
      {path: 'laundry-add-item', component:LaundryAddItemComponent},
 
      {path: 'laundry-edit-item', component:LaundryEditItemComponent },
+
+    {path: 'order-summary', component:LaundryOrderSummaryComponent },
+
+    
 
     
     ]
