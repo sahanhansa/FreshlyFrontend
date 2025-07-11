@@ -93,6 +93,7 @@ export const routes: Routes = [
       {path: 'laundry/:id', component: ItemPageComponent},
       // Replace with actual profile component if needed
       // Add more customer pages as needed
+      { path: 'laundries', component: LaundryPageComponent },
     ]
   },
   
