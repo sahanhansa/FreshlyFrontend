@@ -1,6 +1,6 @@
 <div class="fixed inset-0 z-50 flex items-center justify-center p-6">
   <!-- Backdrop -->
-  <div class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-[3px] z-40"></div>
+  <div class="fixed inset-0 backdrop-blur-[3px] z-40"></div>
 
   <!-- Modal Content -->
   <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full mx-auto p-10 z-50 relative animate-scale-in border border-blue-100">
@@ -45,6 +45,7 @@
         [min]="minDateTime"
         [max]="maxDateTime"
         [(ngModel)]="selectedDateTime"
+        step="1800"
       />
       <p class="text-xs text-gray-400 mt-2">
         Only future dates and times within 2 weeks are allowed.

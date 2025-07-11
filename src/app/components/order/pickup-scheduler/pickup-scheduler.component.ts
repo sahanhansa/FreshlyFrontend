@@ -4,7 +4,9 @@ import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-pickup-scheduler',
   standalone: true,
-  imports: [FormsModule],
+  imports: [
+    FormsModule
+  ],
   templateUrl: './pickup-scheduler.component.html'
 })
 export class PickupSchedulerComponent implements OnInit {

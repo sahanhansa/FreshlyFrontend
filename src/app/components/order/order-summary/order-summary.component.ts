@@ -5,7 +5,9 @@ import { BasketService } from '../../../services/basket.service';
 import { ToastService } from '../../../services/toast.service';
 import { TemporaryOrderSummary, TemporaryOrderItem } from '../../../models/basket.model';
 import { PickupSchedulerComponent } from '../pickup-scheduler/pickup-scheduler.component'; // adjust path if needed
+import { CustomerAddress } from '../../../models/order-models/customerAddress.model';
 import { CustomerAddressPopupComponent } from '../customer-address-popup/customer-address-popup.component';
+
 
 interface OrderItem {
   id: number;
@@ -20,7 +22,7 @@ interface OrderItem {
 @Component({
   selector: 'app-order-summary',
   standalone: true,
-  imports: [CommonModule, CustomerAddressPopupComponent, PickupSchedulerComponent], // add PickupSchedulerComponent here if standalone
+  imports: [CommonModule,  PickupSchedulerComponent, CustomerAddressPopupComponent], // add PickupSchedulerComponent here if standalone
   templateUrl: './order-summary.component.html',
   styleUrl: './order-summary.component.css'
 })
@@ -43,7 +45,7 @@ export class OrderSummaryComponent implements OnInit {
   isProcessing: boolean = false;
   showPickupScheduler: boolean = false; // Add showPickupScheduler property
   showAddressPopup: boolean = false;
-  customerAddress = ''; // Load this from your API/user profile
+  customerId = 'e91883cd-2e64-11f0-a04a-30d0423f455f'; // get this from auth/session
 
   constructor(
     private basketService: BasketService,
@@ -118,13 +120,16 @@ export class OrderSummaryComponent implements OnInit {
   onPickupConfirm(pickupDateTime: Date) {
     this.showPickupScheduler = false;
     this.showAddressPopup = true;
-    // Save pickupDateTime as needed
   }
 
-  onAddressConfirm(newAddress: string) {
+  onAddressNext(address: CustomerAddress) {
     this.showAddressPopup = false;
-    // Call backend to update address and place order
-    // this.customerService.updateAddress(newAddress).subscribe(...)
+    // Continue to next step or update address in backend if needed
+  }
+
+  onAddressBack() {
+    this.showAddressPopup = false;
+    this.showPickupScheduler = true;
   }
 
   deleteItem(itemId: string, serviceId: string) {

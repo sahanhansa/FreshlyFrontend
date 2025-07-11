@@ -1,0 +1,65 @@
+<div class="fixed inset-0 z-50 flex items-center justify-center p-6">
+  <div class="fixed inset-0 backdrop-blur-[3px] z-40"></div>
+  <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-[600px] mx-auto p-8 z-50 relative border border-blue-100">
+    <div class="flex items-center gap-2 flex-1 justify-center mb-4">
+      <svg class="h-7 w-7 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 01-8 0M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+      </svg>
+      <h3 class="text-2xl font-bold text-blue-700">Confirm Your Address</h3>
+      <button class="ml-auto text-gray-400 hover:text-blue-600 p-2 rounded-full hover:bg-blue-50 transition-colors duration-200"
+              (click)="cancel.emit()">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+    <div class="mb-4">
+      <div class="flex items-center gap-2 text-blue-600 text-base mb-1 ">
+        <!-- <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h1l2 7h10l2-7h1"/>
+        </svg> -->
+        <span class="font-semibold">We deliver happiness to your doorstep!</span>
+      </div>
+      <p class="text-gray-600 text-base ">
+        Make sure your address is up to date so our team can find you easily and deliver your laundry on time.
+      </p>
+    </div>
+    <div *ngIf="loading" class="text-center text-gray-500 py-6 text-lg">Loading address...</div>
+    <div *ngIf="error" class="text-center text-red-500 py-6 text-lg">{{ error }}</div>
+    <form *ngIf="!loading && !error" (ngSubmit)="onNext()" class="space-y-4">
+      <div class="bg-blue-50 rounded-lg p-4 mb-2 text-blue-700 text-base flex items-center gap-2">
+        <span>
+          Please double-check your details. Accurate addresses help us serve you better!
+        </span>
+      </div>
+      <div class="grid grid-cols-2 gap-6">
+        <div>
+          <label class="block text-base font-medium text-gray-700 mb-1">House No</label>
+          <input class="w-full rounded border border-blue-300 px-3 py-2 text-base focus:ring-2 focus:ring-blue-400" [(ngModel)]="address.houseNo" name="houseNo" required />
+        </div>
+        <div>
+          <label class="block text-base font-medium text-gray-700 mb-1">Street</label>
+          <input class="w-full rounded border border-blue-300 px-3 py-2 text-base focus:ring-2 focus:ring-blue-400" [(ngModel)]="address.street" name="street" required />
+        </div>
+        <div>
+          <label class="block text-base font-medium text-gray-700 mb-1">City</label>
+          <input class="w-full rounded border border-blue-300 px-3 py-2 text-base focus:ring-2 focus:ring-blue-400" [(ngModel)]="address.city" name="city" required />
+        </div>
+        <div>
+          <label class="block text-base font-medium text-gray-700 mb-1">Postal Code</label>
+          <input class="w-full rounded border border-blue-300 px-3 py-2 text-base focus:ring-2 focus:ring-blue-400" [(ngModel)]="address.postalCode" name="postalCode" required />
+        </div>
+      </div>
+      <div class="mt-2 text-xs text-gray-400 text-center">
+        Your address is kept private and is only used for pickup and delivery purposes.
+      </div>
+      <div class="flex justify-between items-center gap-4 mt-6">
+        <button type="button" (click)="back.emit()" class="px-6 py-2 rounded-md bg-green-500 text-white hover:bg-green-600 font-semibold transition text-base">← Back</button>
+        <div class="flex gap-4">
+          <button type="button" (click)="cancel.emit()" class="px-6 py-2 rounded-md bg-gray-200 text-gray-800 hover:bg-gray-300 font-semibold transition text-base">Cancel</button>
+          <button type="submit" class="px-6 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 font-semibold transition shadow text-base">Next</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

@@ -105,10 +105,10 @@
   (cancel)="showPickupScheduler = false">
 </app-pickup-scheduler>
 
-<!-- Customer Address Popup (add this below the pickup scheduler) -->
 <app-customer-address-popup
   *ngIf="showAddressPopup"
-  [address]="customerAddress"
-  (confirm)="onAddressConfirm($event)"
-  (cancel)="showAddressPopup = false">
+  [customerId]="customerId"
+  (next)="onAddressNext($event)"
+  (cancel)="showAddressPopup = false"
+  (back)="onAddressBack()">
 </app-customer-address-popup>
