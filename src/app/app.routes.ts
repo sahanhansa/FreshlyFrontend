@@ -35,6 +35,8 @@ import { CustomerLayoutComponent } from './components/customer/customer-layout/c
 import { LaundryAddItemComponent } from './pages/Laundry/laundry-add-item/laundry-add-item.component';
 import { LaundryEditItemComponent } from './pages/Laundry/laundry-edit-item/laundry-edit-item.component';
 import {LaundryOrderSummaryComponent } from './pages/Laundry/laundry-order-summary/laundry-order-summary.component';
+import { LogoutPageComponent } from './pages/Driver/logout-page/logout-page.component';
+
 
 
 
