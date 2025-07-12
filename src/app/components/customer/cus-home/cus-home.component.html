@@ -1,29 +1,190 @@
-<!-- Full screen white background container -->
-<div class="min-h-screen bg-white">
- <!-- Hero Section -->
-    <div class="flex flex-col md:flex-row items-center justify-between px-8  bg-white">
+<!-- Header -->
+<app-navbar></app-navbar>
 
-      <!-- Left Content -->
-      <div class="max-w-xl">
-        <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-2 ">
-          Welcome 
-        </h1>
+<!-- Hero / Welcome Section -->
+<section class="flex flex-col md:flex-row justify-between items-center px-8 py-12 bg-blue-50">
+  <div class="max-w-xl">
+    <h1 class="text-4xl font-bold text-gray-800 mb-2">Welcome, <span class="text-blue-500">Customer Name!</span></h1>
+    <p class="text-gray-600 mb-4">Book laundry services easily and explore offers just for you.</p>
+    <button 
+                (click)="onSubmit()" 
+                type="submit"
+                class="btn w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 rounded mt-4"
+              >
+                HOW IT WORKS
+              </button>
+  </div>
+  <img src="assets/HOME.jpeg" alt="Laundry" class="w-full md:w-1/2 mt-6 md:mt-0" />
+</section>
 
-         <!-- Introduction paragraph -->
-        <p class="text-gray-600 mb-6 leading-relaxed">
-          Lorem Ipsum Dolor Sit Amet, Consectetur Adipiscing Elit. Vivamus Sit Amet Mi Nec Massa Triducint Blandit Et Eu Sem. Meaecenas Laoreet Ultrices Diam Dignissim.
-        </p>
-        
-        <!-- Navigation link to "How It Works" page -->
-      <a href="/how-it-works" type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">
-  How It Works</a>
+<!-- Recommended Section -->
+<section class="px-8 py-10">
+  <h2 class="text-xl font-bold mb-4">lAUNDRIES</h2>
+ <!-- Laundry Category Selection Section -->
+<section class="px-8 py-12 bg-gray-100 min-h-screen">
+  <h2 class="text-2xl font-bold text-center text-gray-800 mb-10">Choose Your Laundry </h2>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+    <!-- Card 1 -->
+    <div  class="bg-blue-200 p-6 rounded-xl shadow-lg text-center cursor-pointer hover:scale-105 transition">
+      <img src="assets/L1.jpeg" alt="Customer" class="w-60 h-60 mx-auto mb-3 rounded-full object-cover" />
+      <h2 class="text-lg font-semibold text-blue-600">CLEAR US</h2>
       
-       </div>
-  
-      <!-- Right Image -->
-      <div class="flex">
-        <img src="assets/cus-home-new.png" alt="Customer Laundry Illustration" class="ml-auto w-200 h-auto" />
-      </div>
+    </div>
+
+    <!-- Card 2 -->
+    <div  class="bg-blue-200  p-6 rounded-xl shadow-lg text-center cursor-pointer hover:scale-105 transition">
+      <img src="assets/L2.jpeg" alt="Staff" class="w-60 h-60 mx-auto mb-3 rounded-full object-cover" />
+      <h2 class="text-lg font-semibold text-green-600">FRESH WE</h2>
+     
+    </div>
+
+    <!-- Card 3 -->
+    <div  class="bg-blue-200  p-6 rounded-xl shadow-lg text-center cursor-pointer hover:scale-105 transition">
+      <img src="assets/L3.jpeg" alt="Admin" class="w-60 h-60 mx-auto mb-3 rounded-full object-cover" />
+      <h2 class="text-lg font-semibold text-purple-600">LAUNDROMART</h2>
+
+    </div>
+
+    <!-- Card 4 -->
+    <div  class="bg-blue-200  p-6 rounded-xl shadow-lg text-center cursor-pointer hover:scale-105 transition">
+      <img src="assets/L4.jpeg" alt="Dry Clean" class="w-60 h-60 mx-auto mb-3 rounded-full object-cover" />
+      <h2 class="text-lg font-semibold text-red-600">CLEARCLOTHO</h2>
+     
+    </div>
+
+    <!-- Card 5 -->
+    <div  class="bg-blue-200  p-6 rounded-xl shadow-lg text-center cursor-pointer hover:scale-105 transition">
+      <img src="assets/L5.jpeg" alt="Ironing" class="w-60 h-60 mx-auto mb-3 rounded-full object-cover" />
+      <h2 class="text-lg font-semibold text-yellow-600">LAUNDRY</h2>
+      
+    </div>
+
+    <!-- Card 6 -->
+    <div  class="bg-blue-200  p-6 rounded-xl shadow-lg text-center cursor-pointer hover:scale-105 transition">
+      <img src="assets/L6.jpeg" alt="Subscription" class="w-60 h-60 mx-auto mb-3 rounded-full object-cover" />
+      <h2 class="text-lg font-semibold text-indigo-600">Subscription</h2>
+     
     </div>
   </div>
-  
+</section>
+
+</section>
+
+<!-- Flash Sale -->
+<section class="px-8 py-10 bg-white">
+  <div class="flex justify-between items-center mb-4">
+    <h2 class="text-xl font-bold">FLASH SALE</h2>
+    <div class="text-sm text-gray-600">⏰ Limited Time</div>
+  </div>
+ 
+</section>
+
+<!-- sales Types -->
+<section class="px-8 py-10">
+   <h2 class="text-2xl font-bold text-center text-gray-800 mb-10">SALE.. ! SALE..! </h2>
+  <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+    <!-- Card 1 -->
+    <div  class="bg-blue-100  p-6 rounded-xl shadow-lg text-center cursor-pointer hover:scale-105 transition">
+      <img src="assets/4 Item.jpeg" alt="Customer" class="w-40 h-40 mx-auto mb-3 rounded-full object-cover" />
+      <h2 class="text-lg font-semibold text-blue-600">10% Discount for 4 Items</h2>
+      
+    </div>
+
+    <!-- Card 2 -->
+    <div  class="bg-blue-100 p-6 rounded-xl shadow-lg text-center cursor-pointer hover:scale-105 transition">
+      <img src="assets/shirt.jpeg" alt="Staff" class="w-40 h-40 mx-auto mb-3 rounded-full object-cover" />
+      <h2 class="text-lg font-semibold text-green-600">5% Discount For Shirts</h2>
+     
+    </div>
+
+    <!-- Card 3 -->
+    <div  class="bg-blue-100 p-6 rounded-xl shadow-lg text-center cursor-pointer hover:scale-105 transition">
+      <img src="assets/L3.jpeg" alt="Admin" class="w-40 h-40 mx-auto mb-3 rounded-full object-cover" />
+      <h2 class="text-lg font-semibold text-purple-600">LAUNDROMART</h2>
+       <h3 class="text-lg font-semibold text-red-600">Company Discount</h3>
+
+    </div>
+
+    <!-- Card 4 -->
+    <div  class="bg-blue-100 p-6 rounded-xl shadow-lg text-center cursor-pointer hover:scale-105 transition">
+      <img src="assets/L4.jpeg" alt="Dry Clean" class="w-40 h-40 mx-auto mb-3 rounded-full object-cover" />
+      <h2 class="text-lg font-semibold text-yellow-400">CLEARCLOTHO</h2>
+        <h3 class="text-lg font-semibold text-red-600">Company Discount</h3>
+     
+    </div>
+
+    <!-- Card 5 -->
+    <div  class="bg-blue-100 p-6 rounded-xl shadow-lg text-center cursor-pointer hover:scale-105 transition">
+      <img src="assets/Iorning.jpeg" alt="Ironing" class="w-40 h-40 mx-auto mb-3 rounded-full object-cover" />
+      <h2 class="text-lg font-semibold text-green-600">5% Discount For Iorning</h2>
+      
+    </div>
+
+    <!-- Card 6 -->
+    <div  class="bg-blue-100 p-6 rounded-xl shadow-lg text-center cursor-pointer hover:scale-105 transition">
+      <img src="assets/Dry clean.jpeg" alt="Subscription" class="w-40 h-40 mx-auto mb-3 rounded-full object-cover" />
+      <h2 class="text-lg font-semibold text-indigo-600">5% Discount For Dry Cleaning</h2>
+     
+    </div>
+  </div>
+  <!-- Most popular item -->
+<section class="px-8 py-12 bg-gray-100 min-h-screen">
+  <h2 class="text-2xl font-bold text-center text-gray-800 mb-10">MOST POPULAR ITEMS </h2>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+    <!-- Card 1 -->
+    <div  class="bg-blue-200 p-6 rounded-xl shadow-lg text-center cursor-pointer hover:scale-105 transition">
+      <img src="assets/shirt.jpeg" alt="Customer" class="w-40 h-40 mx-auto mb-3 rounded-full object-cover" />
+      <h2 class="text-lg font-semibold text-blue-600">Shirt</h2>
+      
+    </div>
+
+    <!-- Card 2 -->
+    <div  class="bg-blue-200 p-6 rounded-xl shadow-lg text-center cursor-pointer hover:scale-105 transition">
+      <img src="assets/blouse.png" alt="Staff" class="w-40 h-40 mx-auto mb-3 rounded-full object-cover" />
+      <h2 class="text-lg font-semibold text-green-600">Blouse</h2>
+     
+    </div>
+
+    <!-- Card 3 -->
+    <div  class="bg-blue-200 p-6 rounded-xl shadow-lg text-center cursor-pointer hover:scale-105 transition">
+      <img src="assets/saree.png" alt="Admin" class="w-40 h-40 mx-auto mb-3 rounded-full object-cover" />
+      <h2 class="text-lg font-semibold text-purple-600">Saree</h2>
+
+    </div>
+
+    <!-- Card 4 -->
+    <div  class="bg-blue-200 p-6 rounded-xl shadow-lg text-center cursor-pointer hover:scale-105 transition">
+      <img src="assets/frock.png" alt="Dry Clean" class="w-40 h-40 mx-auto mb-3 rounded-full object-cover" />
+      <h2 class="text-lg font-semibold text-red-600">Frock</h2>
+     
+    </div>
+
+    <!-- Card 5 -->
+    <div  class="bg-blue-200 p-6 rounded-xl shadow-lg text-center cursor-pointer hover:scale-105 transition">
+      <img src="assets/bedsheets.png" alt="Ironing" class="w-40 h-40 mx-auto mb-3 rounded-full object-cover" />
+      <h2 class="text-lg font-semibold text-yellow-600">Bed Sheets</h2>
+      
+    </div>
+
+    <!-- Card 6 -->
+    <div  class="bg-blue-200 p-6 rounded-xl shadow-lg text-center cursor-pointer hover:scale-105 transition">
+      <img src="assets/curtains.png" alt="Subscription" class="w-40 h-40 mx-auto mb-3 rounded-full object-cover" />
+      <h2 class="text-lg font-semibold text-indigo-600">Curtaines</h2>
+     
+    </div>
+  </div>
+</section>
+</section>
+
+<!-- Help Section -->
+<!-- <section class="bg-blue-100 py-10 text-center px-6">
+  <h2 class="text-2xl font-bold text-gray-800 mb-2">Hard time deciding how to get started?</h2>
+  <p class="text-gray-600 mb-4">Let us help you with your first order!</p>
+  <button class="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600">Get Started</button>
+</section> -->
+
+<!-- Footer -->
+<app-footer></app-footer>
+

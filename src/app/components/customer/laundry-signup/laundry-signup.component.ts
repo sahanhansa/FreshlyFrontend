@@ -101,4 +101,5 @@ export class LaundrySignupComponent implements OnInit {
       this.signupForm.markAllAsTouched();// Trigger validation messages
     }
   }
+   
 }

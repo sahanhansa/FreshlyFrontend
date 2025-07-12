@@ -1,19 +1,19 @@
 <!-- Full screen centered container with light background -->
- <div class="min-h-screen flex items-center justify-center bg-gray-100">
+ <div class="min-h-screen flex items-center justify-center bg-gradient-to-r from-gray-200 via-blue-100 to-gray-300">
   <div class="container mx-auto px-4">
     <div class="flex justify-center">
       <div class="w-full max-w-md">
 
          <!-- Login card container -->
-        <div class="bg-white border rounded-lg shadow-lg">
+        <div class="bg-gradient-to-r from-blue-100 via-blue-300 to-blue-100 border rounded-lg shadow-lg">
 
           <!-- Card header -->
-          <div class="text-center border-b p-4">
-            <h3 class="pt-3 font-bold text-2xl">Login</h3>
+          <div class="text-center p-4">
+            <h2 class="pt-3 font-bold text-2xl">LOGIN</h2>
           </div>
 
          <!-- Card body -->
-          <div class="p-6">
+          <div class="p-8">
 
              <!-- Login form bound to Angular FormGroup -->
                <form [formGroup]="loginForm">
@@ -35,7 +35,7 @@
                   
                   [ngClass]="{
                     'border-red-500': loginForm.controls['username'].dirty && loginForm.controls['username'].hasError('required'),
-                    'border-gray-300': !(loginForm.controls['username'].dirty && loginForm.controls['username'].hasError('required'))
+                    'border-blue-800': !(loginForm.controls['username'].dirty && loginForm.controls['username'].hasError('required'))
                   }"
                   class="w-full pl-10 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 flex-1 bg-transparent outline-none text-gray-400 focus:text-gray-700"
                 />
@@ -63,7 +63,7 @@
                   placeholder="Password"
                   [ngClass]="{
                     'border-red-500': loginForm.controls['password'].dirty && loginForm.controls['password'].hasError('required'),
-                    'border-gray-300': !(loginForm.controls['password'].dirty && loginForm.controls['password'].hasError('required'))
+                    'border-blue-800': !(loginForm.controls['password'].dirty && loginForm.controls['password'].hasError('required'))
                   }"
                   class="w-full pl-10 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 flex-1 bg-transparent outline-none text-gray-400 focus:text-gray-700"
                 />
@@ -93,9 +93,9 @@
                 Don't have an account?
 
                <!-- Use button instead of <a> for Angular click handler -->
-                <!-- <button type="button" (click)="goToSignup()" class="text-blue-500 font-bold hover:underline bg-transparent border-none p-0 cursor-pointer">
+                 <button type="button" (click)="goToSignup()" type="submit" class="text-blue-500 font-bold hover:underline bg-transparent border-none p-0 cursor-pointer">
                   Signup
-                </button> -->
+                </button> 
               </div>
             </form>
           </div>
