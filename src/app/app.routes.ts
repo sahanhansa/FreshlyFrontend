@@ -11,7 +11,10 @@ import { PickupsPendingOrderDetailsComponent } from './pages/Driver/pickups-pend
 import { DeliveryTasksMainpageComponent } from './pages/Driver/delivery-tasks-mainpage/delivery-tasks-mainpage.component';
 import { DeliveryPendingOrderDetailsComponent } from './pages/Driver/delivery-pending-order-details/delivery-pending-order-details.component';
 import { DriverContactusPageComponent } from './pages/Driver/driver-contactus-page/driver-contactus-page.component';
+import { DriverProfilePageComponent } from './pages/Driver/driver-profile-page/driver-profile-page.component';
+import { CompleteTasksPageComponent } from './pages/Driver/complete-tasks-page/complete-tasks-page.component';
 import { AdminDashboardComponent } from './components/admin/admin-dashboard/admin-dashboard.component';
+import { EditDetailsFormComponent } from './pages/Driver/edit-details-form/edit-details-form.component';
 import { AdminLayoutComponent } from './components/admin/admin-layout/admin-layout.component';
 import { CusHomeComponent } from './components/customer/cus-home/cus-home.component';
 import { LaundrySignupComponent } from './components/customer/laundry-signup/laundry-signup.component';
@@ -32,6 +35,7 @@ import { CustomerLayoutComponent } from './components/customer/customer-layout/c
 import { LaundryAddItemComponent } from './pages/Laundry/laundry-add-item/laundry-add-item.component';
 import { LaundryEditItemComponent } from './pages/Laundry/laundry-edit-item/laundry-edit-item.component';
 import {LaundryOrderSummaryComponent } from './pages/Laundry/laundry-order-summary/laundry-order-summary.component';
+
 
 
 // Define the application's routes
@@ -67,7 +71,15 @@ export const routes: Routes = [
   {path: 'delivery-tasks-mainpage', component: DeliveryTasksMainpageComponent},
   {path: 'driver-contactus-page', component: DriverContactusPageComponent},
   {path: 'order-details-pending/:id', component: PickupsPendingOrderDetailsComponent}, 
-  {path: 'delivery-order-details/:id', component: DeliveryPendingOrderDetailsComponent},  // Admin routes with nested paths
+  {path: 'delivery-order-details/:id', component: DeliveryPendingOrderDetailsComponent}, 
+  {path: 'driver-profile-page', component: DriverProfilePageComponent},
+  {path: 'complete-tasks-page',component: CompleteTasksPageComponent} ,
+  {path: 'edit-details-form', component: EditDetailsFormComponent},
+  {path: 'logout-page', component: LogoutPageComponent},
+  
+  
+  
+  // Admin routes with nested paths
   {
     path: 'admin',
     component: AdminLayoutComponent,
@@ -90,6 +102,7 @@ export const routes: Routes = [
     component: CustomerLayoutComponent,
     children: [
       { path: '', redirectTo: 'home', pathMatch: 'full' },
+      
       { path: 'home', component: CusHomeComponent }, 
       {path: 'how-it-works', component:HowItWorksComponent},
       { path: 'order', component: LaundryPageComponent },      // Laundry list page
@@ -97,6 +110,7 @@ export const routes: Routes = [
       {path: 'laundry/:id', component: ItemPageComponent},
       // Replace with actual profile component if needed
       // Add more customer pages as needed
+      { path: 'laundries', component: LaundryPageComponent },
     ]
   },
   

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { DeliveryService } from '../../../services/delivery.service'; 
-import { DeliveryOrder } from '../../../services/delivery.service'; 
+import { DeliveryService } from '../../../services/driver/delivery.service'; 
+import { DeliveryOrder } from '../../../services/driver/delivery.service'; 
 
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
