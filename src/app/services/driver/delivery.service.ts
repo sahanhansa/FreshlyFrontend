@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, catchError, map, of } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 // Interface representing a single item in an order
 export interface OrderItems {
@@ -27,7 +28,7 @@ export interface DeliveryOrder {
 })
 export class DeliveryService {
   // Base URL for the backend API
-  private baseUrl = 'https://localhost:7276/api/Order';
+  private baseUrl = `${environment.apiUrl}/api/Orders`;
 
   constructor(private http: HttpClient) {}
 
