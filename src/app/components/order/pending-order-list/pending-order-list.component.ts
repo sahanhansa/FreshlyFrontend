@@ -49,7 +49,7 @@ export class PendingOrderListComponent implements OnInit {
 
   // Method to handle "Order Now" button click
   createNewOrder() {
-    this.router.navigate(['/laundries']);
+    this.router.navigate(['/cus-home/laundries']);
   }
 
   // Method to handle order deletion events

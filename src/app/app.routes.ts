@@ -86,6 +86,7 @@ export const routes: Routes = [
     component: CustomerLayoutComponent,
     children: [
       { path: '', redirectTo: 'home', pathMatch: 'full' },
+      
       { path: 'home', component: CusHomeComponent }, 
       {path: 'how-it-works', component:HowItWorksComponent},
       { path: 'order', component: LaundryPageComponent },      // Laundry list page
@@ -93,6 +94,7 @@ export const routes: Routes = [
       {path: 'laundry/:id', component: ItemPageComponent},
       // Replace with actual profile component if needed
       // Add more customer pages as needed
+      { path: 'laundries', component: LaundryPageComponent },
     ]
   },
   
