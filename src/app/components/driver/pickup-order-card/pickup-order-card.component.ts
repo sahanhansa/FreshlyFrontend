@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { PickupsService, PickupOrder } from '../../../services/pickups.service';
+import { PickupsService, PickupOrder } from '../../../services/driver/pickups.service';
 
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
@@ -36,10 +36,10 @@ export class PickupOrderCardComponent implements OnInit {
   /**  Fetch all pickup orders */
   getAllPickups(): void {
     this.pickupsService.getAllPickups().subscribe({
-      next: (data) => {
+      next: (data:any) => {
         this.pickups = data;
       },
-      error: (error) => {
+      error: (error:any) => {
         console.error('Error fetching pickups:', error);
       }
     });

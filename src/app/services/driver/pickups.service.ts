@@ -1,14 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, catchError, map, of } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
-// Interface to define the structure of a single ordered item
 export interface OrderItem {
   itemName: string;
   quantity: number;
 }
 
-// Interface to define the structure of a pickup order
 export interface PickupOrder {
   id: string;
   status: string;
@@ -22,49 +21,54 @@ export interface PickupOrder {
 }
 
 @Injectable({
-  providedIn: 'root' // Makes this service available app-wide
+  providedIn: 'root'
 })
 export class PickupsService {
-  // Base URL of the backend API
-  private baseUrl = 'https://localhost:7276/api/Order';
+  private baseUrl = `${environment.apiUrl}/api/Orders`;
 
   constructor(private http: HttpClient) {}
 
-  // Fetch all pickup orders from the API
+  // ✅ Get ALL pickups
   getAllPickups(): Observable<PickupOrder[]> {
     const url = `${this.baseUrl}/GetAllPickups`;
 
     return this.http.get<any>(url).pipe(
       map(data => {
-        // Ensure data is treated as an array
         const arrayData = Array.isArray(data) ? data : [data];
-
-        // Convert each item to a PickupOrder object
+        console.log('Pickups received:', arrayData);
         return arrayData.map(order => this.mapToPickupOrder(order));
       }),
       catchError(error => {
-        // Handle and log errors gracefully
-        console.error('Error fetching all pickups:', error.message || error);
-        return of([]); // Return empty array on error
+        // ✅ This logs FULL error details:
+        console.error('Error fetching all pickups:');
+        console.error('Status:', error.status);
+        console.error('Status Text:', error.statusText);
+        console.error('Response Body:', error.error);
+        console.error('Full Error:', error);
+
+        return of([]); // fallback
       })
     );
   }
 
-  // Fetch a single pickup order by orderId
+  // ✅ Get ONE pickup by ID
   getPickupById(orderId: string): Observable<PickupOrder | null> {
     const url = `${this.baseUrl}/GetAllPickups/${orderId}`;
 
     return this.http.get<any>(url).pipe(
-      map(order => this.mapToPickupOrder(order)), // Convert response to PickupOrder
+      map(order => this.mapToPickupOrder(order)),
       catchError(error => {
-        // Log and handle errors
-        console.error('Error fetching pickup by ID:', error.message || error);
-        return of(null); // Return null on error
+        console.error('Error fetching pickup by ID:');
+        console.error('Status:', error.status);
+        console.error('Status Text:', error.statusText);
+        console.error('Response Body:', error.error);
+        console.error('Full Error:', error);
+
+        return of(null); // fallback
       })
     );
   }
 
-  // Utility method to map raw API data to a PickupOrder object
   private mapToPickupOrder(order: any): PickupOrder {
     return {
       id: order.orderId,
@@ -72,12 +76,9 @@ export class PickupsService {
       customerName: order.customerName,
       customerId: order.customerId,
       address: order.address,
-      // Join multiple contact numbers into a single string if needed
       contact: Array.isArray(order.contact) ? order.contact.join(', ') : order.contact,
       laundryName: order.laundryName,
-      // Ensure orderItems is an array
       orderItems: Array.isArray(order.orderItems) ? order.orderItems : [],
-      // Link for navigation in the frontend UI
       detailsLink: `/order-details-pending/${order.orderId}`
     };
   }

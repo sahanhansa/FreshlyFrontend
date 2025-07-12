@@ -3,13 +3,13 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { Laundry, LaundryWithAddressDTO } from '../models/laundry.model';
-
+import { environment } from '../../environments/environment';
 @Injectable({
   providedIn: 'root'
 })
 export class LaundryService {
   // Base URL for the laundry-related API endpoints
-  private apiUrl = 'http://localhost:5027/api/Laundry'; 
+  private apiUrl = `${environment.apiUrl}/api/Laundry`;
 
   constructor(private http: HttpClient) {}
 

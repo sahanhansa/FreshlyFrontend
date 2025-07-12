@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
-import { NavbarComponent } from './components/admin/shared/navbar/navbar.component';
+
 import { filter } from 'rxjs/operators';
 import { ToastComponent} from './components/shared/toast/toast.component';
+
+
 
 @Component({
   selector: 'app-root',

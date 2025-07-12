@@ -11,7 +11,10 @@ import { PickupsPendingOrderDetailsComponent } from './pages/Driver/pickups-pend
 import { DeliveryTasksMainpageComponent } from './pages/Driver/delivery-tasks-mainpage/delivery-tasks-mainpage.component';
 import { DeliveryPendingOrderDetailsComponent } from './pages/Driver/delivery-pending-order-details/delivery-pending-order-details.component';
 import { DriverContactusPageComponent } from './pages/Driver/driver-contactus-page/driver-contactus-page.component';
+import { DriverProfilePageComponent } from './pages/Driver/driver-profile-page/driver-profile-page.component';
+import { CompleteTasksPageComponent } from './pages/Driver/complete-tasks-page/complete-tasks-page.component';
 import { AdminDashboardComponent } from './components/admin/admin-dashboard/admin-dashboard.component';
+import { EditDetailsFormComponent } from './pages/Driver/edit-details-form/edit-details-form.component';
 import { AdminLayoutComponent } from './components/admin/admin-layout/admin-layout.component';
 import { CusHomeComponent } from './components/customer/cus-home/cus-home.component';
 import { LaundrySignupComponent } from './components/customer/laundry-signup/laundry-signup.component';
@@ -29,6 +32,7 @@ import { LaundryPageComponent } from './pages/order/laundry-list-page/laundry-li
 import { BasketComponent } from './pages/order/basket/basket.component';
 import { ItemPageComponent } from './pages/order/item-list-page/item-list-page.component';
 import { CustomerLayoutComponent } from './components/customer/customer-layout/customer-layout.component';
+import { LogoutPageComponent } from './pages/Driver/logout-page/logout-page.component';
 
 // Define the application's routes
 export const routes: Routes = [
@@ -63,7 +67,15 @@ export const routes: Routes = [
   {path: 'delivery-tasks-mainpage', component: DeliveryTasksMainpageComponent},
   {path: 'driver-contactus-page', component: DriverContactusPageComponent},
   {path: 'order-details-pending/:id', component: PickupsPendingOrderDetailsComponent}, 
-  {path: 'delivery-order-details/:id', component: DeliveryPendingOrderDetailsComponent},  // Admin routes with nested paths
+  {path: 'delivery-order-details/:id', component: DeliveryPendingOrderDetailsComponent}, 
+  {path: 'driver-profile-page', component: DriverProfilePageComponent},
+  {path: 'complete-tasks-page',component: CompleteTasksPageComponent} ,
+  {path: 'edit-details-form', component: EditDetailsFormComponent},
+  {path: 'logout-page', component: LogoutPageComponent},
+  
+  
+  
+  // Admin routes with nested paths
   {
     path: 'admin',
     component: AdminLayoutComponent,
