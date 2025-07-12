@@ -97,3 +97,27 @@
     </div>
   </div>
 </div>
+
+<!-- Pickup Scheduler Popup -->
+<app-pickup-scheduler
+  *ngIf="showPickupScheduler"
+  (confirm)="onPickupConfirm($event)"
+  (cancel)="showPickupScheduler = false">
+</app-pickup-scheduler>
+
+<app-customer-address-popup
+  *ngIf="showAddressPopup"
+  [customerId]="customerId"
+  (confirmOrder)="onAddressNext($event)"
+  (cancel)="showAddressPopup = false"
+  (back)="onAddressBack()">
+</app-customer-address-popup>
+
+<app-order-confirm-popup
+  *ngIf="showOrderConfirmPopup"
+  (confirm)="onOrderConfirm()"
+  (cancel)="onOrderCancel()"
+  (back)="onOrderBack()">
+</app-order-confirm-popup>
+
+

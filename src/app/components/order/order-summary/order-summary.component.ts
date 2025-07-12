@@ -4,6 +4,12 @@ import { Router } from '@angular/router'; // Add Router import
 import { BasketService } from '../../../services/basket.service';
 import { ToastService } from '../../../services/toast.service';
 import { TemporaryOrderSummary, TemporaryOrderItem } from '../../../models/basket.model';
+import { PickupSchedulerComponent } from '../pickup-scheduler/pickup-scheduler.component'; // adjust path if needed
+import { CustomerAddress } from '../../../models/order-models/customerAddress.model';
+import { CustomerAddressPopupComponent } from '../customer-address-popup/customer-address-popup.component';
+import { OrderConfirmPopupComponent } from '../order-confirm-popup/order-confirm-popup.component'; // <-- Add this
+
+
 
 interface OrderItem {
   id: number;
@@ -18,7 +24,12 @@ interface OrderItem {
 @Component({
   selector: 'app-order-summary',
   standalone: true,
-  imports: [CommonModule],
+  imports: [
+    CommonModule,
+    PickupSchedulerComponent,
+    CustomerAddressPopupComponent,
+    OrderConfirmPopupComponent
+  ],
   templateUrl: './order-summary.component.html',
   styleUrl: './order-summary.component.css'
 })
@@ -39,6 +50,14 @@ export class OrderSummaryComponent implements OnInit {
   orderItems: any[] = [];
   showDeleteConfirmation: boolean = false;
   isProcessing: boolean = false;
+  showPickupScheduler: boolean = false; // Add showPickupScheduler property
+  showAddressPopup: boolean = false;
+  showOrderConfirmPopup: boolean = false; // <-- Add this
+  showOrderConfirmedPopup: boolean = false;
+  customerId = 'e91883cd-2e64-11f0-a04a-30d0423f455f'; // get this from auth/session
+
+  pickupDateTime!: Date;
+  address!: CustomerAddress;
 
   constructor(
     private basketService: BasketService,
@@ -107,26 +126,43 @@ export class OrderSummaryComponent implements OnInit {
   }
 
   placeOrder() {
-    const id = this.orderSummary?.temporaryOrderId || this.orderId;
-    
-    if (this.orderSummary) {
-      this.isProcessing = true;
-      this.basketService.placeOrder(id).subscribe({
-        next: () => {
-          this.toastService.show('Success', 'Order placed successfully', 'success');
-          this.refreshOrdersEvent.emit();
-          this.isProcessing = false;
-        },
-        error: (error) => {
-          this.toastService.show('Error', 'Failed to place order', 'error');
-          console.error('Place order error:', error);
-          this.isProcessing = false;
-        }
-      });
-    } else {
-      // Legacy behavior
-      console.log(`Place order: ${this.orderId}`);
-    }
+    this.showPickupScheduler = true; // Show the scheduler popup
+  }
+
+  onPickupConfirm(dt: Date) {
+    this.pickupDateTime = dt;
+    this.showPickupScheduler = false;
+    this.showAddressPopup = true;
+  }
+
+  onAddressNext(addr: CustomerAddress) {
+    this.address = addr;
+    this.showAddressPopup = false;
+    this.showOrderConfirmPopup = true;
+  }
+
+  onOrderConfirm() {
+    this.showOrderConfirmPopup = false;
+    this.showOrderConfirmedPopup = true;
+  }
+
+  onOrderConfirmedClose() {
+    this.showOrderConfirmedPopup = false;
+    // Optionally, navigate or refresh
+  }
+
+  onAddressBack() {
+    this.showAddressPopup = false;
+    this.showPickupScheduler = true;
+  }
+
+  onOrderBack() {
+    this.showOrderConfirmPopup = false;
+    this.showAddressPopup = true; // <-- Show the address popup again
+  }
+
+  onOrderCancel() {
+    this.showOrderConfirmPopup = false;
   }
 
   deleteItem(itemId: string, serviceId: string) {
