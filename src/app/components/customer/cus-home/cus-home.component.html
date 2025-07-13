@@ -1,29 +1,61 @@
-<!-- Full screen white background container -->
-<div class="min-h-screen bg-white">
- <!-- Hero Section -->
-    <div class="flex flex-col md:flex-row items-center justify-between px-8  bg-white">
+<div class="relative min-h-screen overflow-hidden bg-gradient-to-br bg-[#F5F5F5]">
+  <!-- Background decorative shape -->
+  <div class="absolute top-0 right-0 bg-blue-500 rounded-bl-full w-96 h-96 opacity-80"></div>
 
-      <!-- Left Content -->
-      <div class="max-w-xl">
-        <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-2 ">
-          Welcome 
-        </h1>
+  <div class="container px-6 py-12 mx-auto">
+    <div class="flex flex-col lg:flex-row items-center justify-between min-h-[80vh]">
 
-         <!-- Introduction paragraph -->
-        <p class="text-gray-600 mb-6 leading-relaxed">
-          Lorem Ipsum Dolor Sit Amet, Consectetur Adipiscing Elit. Vivamus Sit Amet Mi Nec Massa Triducint Blandit Et Eu Sem. Meaecenas Laoreet Ultrices Diam Dignissim.
-        </p>
-        
-        <!-- Navigation link to "How It Works" page -->
-      <a href="/how-it-works" type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">
-  How It Works</a>
-      
-       </div>
-  
-      <!-- Right Image -->
-      <div class="flex">
-        <img src="assets/cus-home-new.png" alt="Customer Laundry Illustration" class="ml-auto w-200 h-auto" />
+      <!-- Left Content Section -->
+      <div class="z-10 space-y-8 lg:w-1/2">
+        <div class="space-y-6">
+          <h1 class="text-5xl font-bold leading-tight text-gray-800 lg:text-6xl">
+            Welcome
+            <br />
+            <span class="text-gray-800">{{ customerName }}!</span>
+          </h1>
+
+          <p class="max-w-lg text-lg leading-relaxed text-gray-600">
+            Lorem Ipsum Dolor Sit Amet, Consectetur Adipiscing Elit. Vivamus Sit Amet Mi Nec Massa Tincidunt Blandit Et
+            Eu Sem. Maecenas Laoreet Ultrices Dignissim
+          </p>
+        </div>
+
+        <!-- CTA Button -->
+        <div class="flex">
+          <button
+            class="inline-flex items-center px-8 py-4 text-lg font-semibold text-white transition-all duration-300 bg-blue-500 rounded-lg shadow-lg group hover:bg-blue-600 hover:shadow-xl">
+            See How It Works
+            <span class="inline-block ml-2 transition-transform duration-300 transform group-hover:translate-x-1">
+              →
+            </span>
+          </button>
+
+        </div>
+      </div>
+
+      <!-- Right Image Section -->
+      <div class="relative z-10 flex justify-center mt-12 lg:w-1/2 lg:mt-0">
+        <div class="relative">
+          <!-- Your image placeholder - replace src with your actual image -->
+          <img src="assets/Home/cus-home.png" alt="Laundry Service Illustration"
+            class="object-contain w-full h-auto max-w-lg" />
+
+          <!-- Alternative: If you want to use the image as background -->
+          <!-- 
+              <div class="bg-center bg-no-repeat bg-cover w-96 h-96 rounded-3xl" 
+                   style="background-image: url('your-image-path.png')">
+              </div>
+              -->
+        </div>
       </div>
     </div>
   </div>
-  
+
+
+  <app-laundries></app-laundries>
+  <app-clothing-list></app-clothing-list>
+  <app-contact-prompt></app-contact-prompt>
+
+
+
+</div>

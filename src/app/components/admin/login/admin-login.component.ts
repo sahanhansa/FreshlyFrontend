@@ -1,21 +1,20 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CommonModule, NgClass, NgIf } from '@angular/common';
-import { ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
 
 @Component({
-  selector: 'app-login',
+  selector: 'app-admin-login',
   standalone: true,
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css'],
+  templateUrl: './admin-login.component.html',
+  styleUrls: ['./admin-login.component.css'],
   imports: [CommonModule, ReactiveFormsModule, NgClass, NgIf]
 })
-export class LoginComponent implements OnInit {
+export class AdminLoginComponent implements OnInit {
   loginForm: FormGroup;
   inputType: string = 'password';
-  selectedRole: string = 'customer'; // Default role
+  selectedRole: string = 'admin'; // Default role for admin
   showPassword: boolean = false;
 
   constructor(
@@ -37,14 +36,14 @@ export class LoginComponent implements OnInit {
     if (this.loginForm.valid) {
       const { username, password } = this.loginForm.value;
       const loginData = { username, password };
-      this.authService.customerLogin(loginData).subscribe({
+      this.authService.adminLogin(loginData).subscribe({
         next: (res: any) => {
           // Save token, username, userId to localStorage
           localStorage.setItem('token', res.token);
-          localStorage.setItem('username', res.username);
-          localStorage.setItem('userId', res.userId);
-          // Redirect to customer home
-          this.router.navigate(['/cus-home']);
+          localStorage.setItem('adminUsername', res.username);
+          localStorage.setItem('adminId', res.userId);
+          // Redirect to admin dashboard
+          this.router.navigate(['/admin-home']);
         },
         error: (err) => {
           // Handle error (show message, etc.)
@@ -57,43 +56,5 @@ export class LoginComponent implements OnInit {
         this.loginForm.get(key)?.markAsTouched();
       });
     }
-  }
-
-  togglePasswordVisibility(): void {
-    this.showPassword = !this.showPassword;
-    this.inputType = this.showPassword ? 'text' : 'password';
-  }
-
-  testCustomerLogin(): void {
-    this.loginForm.patchValue({
-      username: 'customer@test.com',
-      password: 'customer123'
-    });
-    this.onSubmit();
-  }
-
-  testAdminLogin(): void {
-    this.loginForm.patchValue({
-      username: 'admin@test.com',
-      password: 'admin123'
-    });
-    this.onSubmit();
-  }
-
-  testLaundryLogin(): void {
-    this.loginForm.patchValue({
-      username: 'laundry@test.com',
-      password: 'laundry123'
-    });
-    this.onSubmit();
-  }
-
-  goToSignup(): void {
-    this.router.navigate(['/signup']);
-  }
-
-  forgotPassword(): void {
-    // Navigate to forgot password or show modal
-    console.log('Forgot password clicked');
   }
 }

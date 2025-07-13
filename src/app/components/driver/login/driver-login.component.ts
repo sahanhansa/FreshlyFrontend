@@ -1,18 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AuthService } from '../../../services/auth.service';
 import { CommonModule, NgClass, NgIf } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
-import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css'],
+  templateUrl: './driver-login.component.html',
+  styleUrls: ['./driver-login.component.css'],
   imports: [CommonModule, ReactiveFormsModule, NgClass, NgIf]
 })
-export class LoginComponent implements OnInit {
+export class DriverLoginComponent implements OnInit {
   loginForm: FormGroup;
   inputType: string = 'password';
   selectedRole: string = 'customer'; // Default role
@@ -36,21 +36,24 @@ export class LoginComponent implements OnInit {
   onSubmit(): void {
     if (this.loginForm.valid) {
       const { username, password } = this.loginForm.value;
+      console.log('Login attempt:', { username, password });
       const loginData = { username, password };
-      this.authService.customerLogin(loginData).subscribe({
+      this.authService.driverLogin(loginData).subscribe({
         next: (res: any) => {
           // Save token, username, userId to localStorage
           localStorage.setItem('token', res.token);
           localStorage.setItem('username', res.username);
           localStorage.setItem('userId', res.userId);
           // Redirect to customer home
-          this.router.navigate(['/cus-home']);
+          this.router.navigate(['/driver-home-page']);
         },
         error: (err) => {
           // Handle error (show message, etc.)
           alert('Login failed. Please check your credentials.');
         }
       });
+      // Add your authentication logic here
+      // Example: this.authService.login(username, password)
     } else {
       // Mark all fields as touched to show validation errors
       Object.keys(this.loginForm.controls).forEach(key => {
