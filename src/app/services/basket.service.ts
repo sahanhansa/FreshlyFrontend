@@ -9,7 +9,7 @@ import { AddToBasketDTO, BasketItemDTO, TemporaryOrderSummary } from '../models/
 })
 export class BasketService {
   private apiUrl = `${environment.apiUrl}/api/TemporaryOrder`;
-  private readonly temporaryCustomerId = 'e9194d78-2e64-11f0-a04a-30d0423f455f';
+  private readonly temporaryCustomerId = 'a4dca9b3-5f58-11f0-8064-0022481a06a0';
 
   constructor(private http: HttpClient) { }
 
