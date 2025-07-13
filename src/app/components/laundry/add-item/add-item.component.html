@@ -1,71 +1,64 @@
 <div class="min-h-screen flex items-center justify-center p-6">
   <div class="w-full max-w-3xl bg-blue-100 rounded-xl p-6 shadow-lg">
-    
-    <!-- Image and Title -->
     <div class="flex flex-col items-center mb-6">
+      <!-- Image Upload -->
       <div class="w-36 h-36 rounded-full bg-white flex items-center justify-center shadow-md mb-2 relative">
-        <img *ngIf="imageUrl" [src]="imageUrl" alt="Item Image" class="w-28 h-28 rounded-full object-cover" />
-        <div *ngIf="!imageUrl" class="text-gray-400 text-sm">No image</div>
-
-        <input type="file" #fileInput accept="image/*" (change)="onImageSelected($event)" class="hidden" />
-
-        <button type="button"
-          class="absolute bottom-1 right-1 bg-black bg-opacity-60 text-white text-xs px-2 py-1 rounded-full"
-          (click)="fileInput.click()">
-          Add Image
+        <img *ngIf="imageUrl && !isImageUploading" [src]="imageUrl" alt="Item Image" class="w-28 h-28 rounded-full object-cover" />
+        <div *ngIf="!imageUrl && !isImageUploading" class="text-gray-400 text-sm">No image</div>
+        <div *ngIf="isImageUploading" class="text-blue-500 text-sm">Uploading...</div>
+        <input type="file" #fileInput accept="image/*" (change)="onImageSelected($event)" class="hidden" [disabled]="isImageUploading" />
+        <button type="button" class="absolute bottom-1 right-1 bg-black bg-opacity-60 text-white text-xs px-2 py-1 rounded-full" (click)="fileInput.click()" [disabled]="isImageUploading">
+          {{ isImageUploading ? 'Uploading...' : 'Add Image' }}
         </button>
       </div>
-     
-    <!-- Form -->
-    <form class="bg-white p-6 rounded-xl w-full space-y-4 mt-5">
-      <!-- Item Name -->
-      <div>
-        <label class="block text-gray-600">Item Name</label>
-        <input type="text" [(ngModel)]="item.name" name="name"
-               class="w-full mt-1 p-2 border rounded-md" />
-      </div>
 
-      <!-- Description -->
-      <div>
-        <label class="block text-gray-600">Description</label>
-        <textarea [(ngModel)]="item.description" name="description"
-                  class="w-full mt-1 p-2 border rounded-md"></textarea>
-      </div>
-
-      <!-- Services -->
-      <div>
-  <label class="block text-gray-600 mb-1">Services</label>
-  <div class="space-y-3">
-    <div *ngFor="let service of item.services; let i = index">
-      <div class="flex gap-2 items-center">
-        <input type="text" [(ngModel)]="service.name" [name]="'service' + i + 'name'"
-               placeholder="Service Name" class="flex-1 p-2 border rounded-md" />
-
-        <div class="flex flex-col">
-          <label class="text-xs text-gray-500 pl-1">Unit Price</label>
-          <input type="number" [(ngModel)]="service.price" [name]="'service' + i + 'price'"
-                 placeholder="Price" class="w-32 p-2 border rounded-md" />
+      <!-- Form -->
+      <form (submit)="onSubmit()" class="bg-white p-6 rounded-xl w-full space-y-4 mt-5">
+        <div>
+          <label class="block text-gray-600">Item Name</label>
+          <input type="text" [(ngModel)]="itemName" name="itemName" required class="w-full mt-1 p-2 border rounded-md" />
         </div>
 
-        <button type="button" (click)="removeService(i)"
-                class="text-red-500 font-bold px-2 text-lg">✕</button>
-      </div>
+        <div>
+          <label class="block text-gray-600">Description</label>
+          <textarea [(ngModel)]="description" name="description" class="w-full mt-1 p-2 border rounded-md"></textarea>
+        </div>
+
+        <div>
+          <label class="block text-gray-600">Category</label>
+          <select [(ngModel)]="selectedCategory" name="selectedCategory" (change)="onCategoryChange()" required class="w-full mt-1 p-2 border rounded-md bg-white cursor-pointer">
+            <option *ngFor="let category of categories" [value]="category">
+              {{ category }}
+            </option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-gray-600 mb-1">Services</label>
+          <div class="space-y-3">
+            <div *ngFor="let service of services; let i = index" class="flex gap-2 items-center">
+              <select [(ngModel)]="service.serviceName" [name]="'service' + i + 'name'" (change)="onServiceChange(i)" required class="flex-1 p-2 border rounded-md bg-white cursor-pointer">
+                <option *ngFor="let s of availableServices" [value]="s">{{ s }}</option>
+              </select>
+
+              <div class="flex flex-col">
+                <label class="text-xs text-gray-500 pl-1">Unit Price</label>
+                <input type="number" [(ngModel)]="service.price" [name]="'service' + i + 'price'" placeholder="Price" required class="w-32 p-2 border rounded-md" />
+              </div>
+
+              <button type="button" (click)="removeService(i)" class="text-red-500 font-bold px-2 text-lg" *ngIf="services.length > 1">✕</button>
+            </div>
+
+            <button type="button" (click)="addService()" [disabled]="services.length >= 3" class="text-blue-600 underline text-sm">
+              + Add Service
+            </button>
+          </div>
+        </div>
+
+        <div class="flex justify-end pt-4">
+          <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-full">Add Item</button>
+        </div>
+      </form>
     </div>
-
-    <button type="button" (click)="addService()"
-            [disabled]="item.services.length >= 3"
-            class="text-blue-600 underline text-sm">
-      + Add Service
-    </button>
-  </div>
-</div>
-
-      <!-- Submit Button -->
-      <div class="flex justify-end pt-4">
-        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-full">
-          Add Item
-        </button>
-      </div>
-    </form>
   </div>
 </div>
