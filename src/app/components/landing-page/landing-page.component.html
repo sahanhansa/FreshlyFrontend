@@ -1,0 +1,194 @@
+<div class="landing-container">
+    <!-- Header -->
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-brand">
+                <div class="logo">
+                    <img src="assets/images/freshly-logo.png" alt="Freshly Logo" class="logo-img"
+                        style="height:60px;width:auto;object-fit:contain;" />
+
+                </div>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#about">About Us</a></li>
+                <li><a href="#laundries">Laundries</a></li>
+                <li><a href="#contact">Contact us</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1 class="hero-title">
+                    We take the hassle<br>
+                    out of laundry!
+                </h1>
+                <p class="hero-description">
+                    Easy professional washing, drying, and folding services delivered to your home.
+                    Perfect for busy professionals, families, and anyone who values their time.
+                    Get your laundry done without the stress - we handle everything so you can focus on what matters
+                    most.
+                </p>
+                <div class="hero-buttons">
+                    <button class="btn btn-primary" (click)="goTo('whoareyou')">Login</button>
+                    <button class="btn btn-secondary">Sign Up</button>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="washing-machine">
+                    <div class="machine-body">
+                        <div class="machine-top">
+                            <div class="control-panel">
+                                <div class="display"></div>
+                                <div class="buttons">
+                                    <div class="button"></div>
+                                    <div class="button"></div>
+                                    <div class="button"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="machine-door">
+                            <div class="door-window">
+                                <div class="clothes rotating">
+                                    <div class="shirt"></div>
+                                    <div class="pants"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="laundry-basket">
+                        <div class="basket-body">
+                            <div class="folded-clothes">
+                                <div class="cloth cloth-1"></div>
+                                <div class="cloth cloth-2"></div>
+                                <div class="cloth cloth-3"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="soap-bubbles">
+                        <div class="soap-bubble" *ngFor="let bubble of bubbles; let i = index"
+                            [style.animation-delay]="i * 0.5 + 's'"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Process Section -->
+    <section class="px-4 !py-20 bg-gradient-to-br from-blue-400 via-blue-500 to-blue-600">
+        <div class="mx-auto max-w-7xl">
+            <!-- Header -->
+            <div class="mb-16 text-center">
+                <p class="mb-4 text-sm font-medium tracking-wider text-blue-100 uppercase">SERVICES</p>
+                <h2 class="!mb-8 text-5xl font-bold text-white md:text-6xl">Get it done in 4 steps</h2>
+            </div>
+
+            <!-- Process Grid -->
+             <div class="flex justify-center w-full">
+                
+                    <div class="grid grid-cols-1 gap-8 mt-8 md:grid-cols-2 lg:grid-cols-4 w-[80vw] m-0 mx-auto">
+                        <div *ngFor="let step of processSteps; let i = index"
+                            class="p-8 text-center transition-all duration-300 bg-white step-card rounded-3xl hover:scale-105 hover:-translate-y-2">
+                            <div class="mb-6">
+                                <span class="inline-block mb-4 text-sm font-bold tracking-wider text-blue-500">
+                                    {{ step.stepLabel }}
+                                </span>
+                                <h3 class="mb-4 text-2xl font-bold text-gray-800">{{ step.title }}</h3>
+                                <div class="flex justify-center w-full">
+                                    
+                                    <div
+                                        class="flex !items-center !justify-center w-24 h-24 mx-auto mb-4 overflow-hidden bg-gray-100 rounded-2xl">
+                                        <img [src]="step.imagePath" [alt]="step.title + ' illustration'"
+                                            class="object-cover w-full h-full" loading="lazy" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+             </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about">
+        <div class="container">
+            <h5 class="text-center text-[#0099FF]">ABOUT US</h5>
+            <h2 class="section-title">Get to know about us</h2>
+            <div class="stats-grid">
+                <div class="stat-card" *ngFor="let stat of stats">
+                    <div class="stat-number">{{ stat.number }}</div>
+                    <div class="stat-label">{{ stat.label }}</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Laundries Section -->
+    <section class="laundries">
+        <div class="container">
+             <h5 class="text-center text-[#0099FF]">LAUNDRIES</h5>
+            <h2 class="section-title">From all around the country</h2>
+            <div class="laundry-grid">
+                <div class="laundry-card" *ngFor="let laundry of laundries; let i = index"
+                    [ngClass]="{'featured': i === 1}">
+                    <div class="laundry-header">
+                        <h3 class="laundry-name">{{ laundry.name }}</h3>
+                        <div class="laundry-location">{{ laundry.location }}</div>
+                    </div>
+                    <div class="laundry-features">
+                        <div class="feature" *ngFor="let feature of laundry.features">
+                            <span class="feature-icon">✓</span>
+                            <span class="feature-text">{{ feature }}</span>
+                        </div>
+                    </div>
+                    <button class="btn" [ngClass]="i === 1 ? 'btn-primary' : 'btn-outline'">
+                        {{ i === 1 ? 'Choose' : 'Details' }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="container">
+            <div class="cta-content">
+                <div class="cta-image">
+                    <div class="person-thinking">
+                        <div class="person-avatar"></div>
+                        <div class="thought-bubble">
+                            <div class="question-mark">?</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="cta-text">
+                    <h2 class="cta-title">Hard time deciding<br>how to get started?</h2>
+                    <button class="btn btn-white">Contact us</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Business Section -->
+    <section class="business">
+        <div class="container">
+            <h2 class="section-title">Want to add your Laundry<br>to Freshly?</h2>
+            <div class="business-benefits">
+                <div class="benefit" *ngFor="let benefit of businessBenefits">
+                    <div class="benefit-icon">
+                        <div class="icon" [ngClass]="benefit.iconClass"></div>
+                    </div>
+                    <div class="benefit-text">{{ benefit.text }}</div>
+                </div>
+            </div>
+            <button class="btn btn-primary">Register Now</button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <app-footer></app-footer>
+</div>
