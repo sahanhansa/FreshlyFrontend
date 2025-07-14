@@ -7,10 +7,12 @@
 <div><app-search-bar [initialValue]="searchQuery" (searchChanged)="onSearchChanged($event)">
     </app-search-bar></div>
 
-<div><app-pickup-order-card
-    [searchQuery]="searchQuery"
-    ></app-pickup-order-card></div>
+<div><app-pickup-order-card [searchQuery]="searchQuery" [currentPage]="currentPage"
+        [itemsPerPage]="itemsPerPage"
+        (totalItemChange)="onTotalItemChange($event)"
+        ></app-pickup-order-card></div>
 
-<div><app-pagination></app-pagination> </div>
+<div><app-pagination [currentPage]="currentPage" [totalItems]="totalItems" [itemsPerPage]="itemsPerPage"
+        (pageChange)="onPageChanged($event)"></app-pagination> </div>
 
 <div><app-footer></app-footer> </div>

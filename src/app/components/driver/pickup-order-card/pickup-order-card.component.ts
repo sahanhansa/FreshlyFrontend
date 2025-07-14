@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Inject, Input, OnChanges, SimpleChanges, output, EventEmitter, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { PickupsService, PickupOrder } from '../../../services/driver/pickups.service';
 
@@ -15,6 +15,9 @@ import { RouterLink } from '@angular/router';
 export class PickupOrderCardComponent implements OnInit, OnChanges {
 
   @Input() searchQuery: string = ''; // default to empty
+  @Input() currentPage: number = 1;
+  @Input() itemsPerPage: number = 5;
+  @Output() totalItemChange = new EventEmitter<number>();
 
   pickups: PickupOrder[] = [];
   filteredPickUps: PickupOrder[] = [];
@@ -22,14 +25,14 @@ export class PickupOrderCardComponent implements OnInit, OnChanges {
   constructor(
     @Inject(PickupsService) private pickupsService: PickupsService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.getAllPickups();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['searchQuery']) {
+    if (changes['searchQuery'] || changes['currentPage']) {
       this.filterOrderCard();
     }
   }
@@ -41,6 +44,17 @@ export class PickupOrderCardComponent implements OnInit, OnChanges {
       if (a.status === 'Pickup Complete' && b.status === 'Pickup Pending') return 1;
       return 0;
     });
+  }
+
+   get pagedPickups(): PickupOrder[] {
+    const sorted = this.filteredPickUps.slice().sort((a, b) => {
+      if (a.status === 'Pickup Pending' && b.status === 'Pickup Complete') return -1;
+      if (a.status === 'Pickup Complete' && b.status === 'Pickup Pending') return 1;
+      return 0;
+    });
+
+    const start = (this.currentPage - 1) * this.itemsPerPage;
+    return sorted.slice(start, start + this.itemsPerPage);
   }
 
   /** Fetch all pickup orders */
@@ -63,5 +77,10 @@ export class PickupOrderCardComponent implements OnInit, OnChanges {
     this.filteredPickUps = this.pickups.filter(pickup => {
       return pickup.customerName.toLowerCase().includes(query);
     });
+    
+  this.totalItemChange.emit(this.filteredPickUps.length);
   }
+
+  
+
 }
