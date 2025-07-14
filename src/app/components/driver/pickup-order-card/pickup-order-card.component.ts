@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { Router } from '@angular/router';
 import { PickupsService, PickupOrder } from '../../../services/driver/pickups.service';
 
@@ -10,10 +10,14 @@ import { RouterLink } from '@angular/router';
   standalone: true,
   templateUrl: './pickup-order-card.component.html',
   styleUrls: ['./pickup-order-card.component.css'],
-  imports: [CommonModule, RouterLink]
+  imports: [CommonModule, RouterLink],
 })
-export class PickupOrderCardComponent implements OnInit {
+export class PickupOrderCardComponent implements OnInit, OnChanges {
+
+  @Input() searchQuery: string = ''; // default to empty
+
   pickups: PickupOrder[] = [];
+  filteredPickUps: PickupOrder[] = [];
 
   constructor(
     @Inject(PickupsService) private pickupsService: PickupsService,
@@ -24,26 +28,40 @@ export class PickupOrderCardComponent implements OnInit {
     this.getAllPickups();
   }
 
-  /** Returns pickups sorted with 'Pickup Pending' first */
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['searchQuery']) {
+      this.filterOrderCard();
+    }
+  }
+
+  /** Returns filtered pickups sorted with 'Pickup Pending' first */
   get sortedPickups(): PickupOrder[] {
-    return this.pickups.slice().sort((a, b) => {
+    return this.filteredPickUps.slice().sort((a, b) => {
       if (a.status === 'Pickup Pending' && b.status === 'Pickup Complete') return -1;
       if (a.status === 'Pickup Complete' && b.status === 'Pickup Pending') return 1;
       return 0;
     });
   }
 
-  /**  Fetch all pickup orders */
+  /** Fetch all pickup orders */
   getAllPickups(): void {
     this.pickupsService.getAllPickups().subscribe({
-      next: (data:any) => {
+      next: (data: PickupOrder[]) => {
         this.pickups = data;
+        this.filterOrderCard(); // Filter right after fetching
       },
-      error: (error:any) => {
+      error: (error: any) => {
         console.error('Error fetching pickups:', error);
       }
     });
   }
 
-  
+  /** Apply search filter */
+  filterOrderCard(): void {
+    const query = this.searchQuery?.toLowerCase() || '';
+
+    this.filteredPickUps = this.pickups.filter(pickup => {
+      return pickup.customerName.toLowerCase().includes(query);
+    });
+  }
 }

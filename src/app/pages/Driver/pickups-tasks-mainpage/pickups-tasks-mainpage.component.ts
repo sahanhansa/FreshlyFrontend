@@ -22,6 +22,11 @@ import { FooterComponent } from "../../../components/shared/footer/footer.compon
   styleUrls: ['./pickups-tasks-mainpage.component.css']
 })
 export class PickupsTasksMainpageComponent {
+  searchQuery: string = ''; 
 
+// Handler for search component events
+  onSearchChanged(query: string): void {
+    this.searchQuery = query;
+  }
   
 }

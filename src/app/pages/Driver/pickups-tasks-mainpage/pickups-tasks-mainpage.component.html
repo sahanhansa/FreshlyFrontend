@@ -1,14 +1,16 @@
-
-<app-driver-navbar></app-driver-navbar> 
+<app-driver-navbar></app-driver-navbar>
 <br>
 <br><br><br>
 <div> <app-pickup-tasks-header></app-pickup-tasks-header>
 </div>
 
-<div><app-search-bar></app-search-bar></div>
+<div><app-search-bar [initialValue]="searchQuery" (searchChanged)="onSearchChanged($event)">
+    </app-search-bar></div>
 
-<div><app-pickup-order-card></app-pickup-order-card></div>
+<div><app-pickup-order-card
+    [searchQuery]="searchQuery"
+    ></app-pickup-order-card></div>
 
 <div><app-pagination></app-pagination> </div>
 
-<div><app-footer></app-footer>  </div>
+<div><app-footer></app-footer> </div>
