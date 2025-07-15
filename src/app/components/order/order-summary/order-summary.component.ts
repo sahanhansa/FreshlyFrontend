@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { BasketService } from '../../../services/basket.service';
 import { ToastService } from '../../../services/toast.service';
-import { TemporaryOrderSummary } from '../../../models/basket.model';
+import { TemporaryOrderSummary, ConfirmOrderDTO } from '../../../models/basket.model';
 import { PickupSchedulerComponent } from '../pickup-scheduler/pickup-scheduler.component';
 import { CustomerAddress } from '../../../models/order-models/customerAddress.model';
 import { CustomerAddressPopupComponent } from '../customer-address-popup/customer-address-popup.component';
@@ -124,8 +124,36 @@ export class OrderSummaryComponent implements OnInit {
   }
 
   onOrderConfirm() {
-    this.showOrderConfirmPopup = false;
-    this.showOrderConfirmedPopup = true;
+    if (!this.orderSummary) return;
+
+    const dto: ConfirmOrderDTO = {
+      temporaryOrderId: this.orderSummary.temporaryOrderId,
+      pickupAt: this.pickupDateTime.toISOString(),
+      address: {
+        addressId: this.address.addressId,
+        houseNo: this.address.houseNo,
+        street: this.address.street,
+        city: this.address.city,
+        postalCode: this.address.postalCode
+      }
+    };
+
+    this.basketService.confirmOrder(dto).subscribe({
+      next: (success) => {
+        if (success) {
+          this.showOrderConfirmPopup = false;
+          this.showOrderConfirmedPopup = true;
+          this.toastService.show('Success', 'Order placed successfully!', 'success');
+          this.refreshOrdersEvent.emit();
+        } else {
+          this.toastService.show('Error', 'Failed to place order.', 'error');
+        }
+      },
+      error: (err) => {
+        this.toastService.show('Error', 'Failed to place order.', 'error');
+        console.error('Order confirm error:', err);
+      }
+    });
   }
 
   onOrderConfirmedClose() {
