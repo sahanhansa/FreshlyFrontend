@@ -10,8 +10,8 @@
           
           <!-- Card header -->
           <div class="p-8 pb-6 text-center">
-            <h1 class="mb-2 text-3xl font-bold text-gray-800">LOGIN</h1>
-            <p class="text-sm text-gray-500">How to I get started lorem ipsum dolor sit?</p>
+            <h1 class="mb-2 text-3xl font-bold text-gray-800">ADMIN LOGIN</h1>
+            <p class="text-sm text-gray-500">Sign in to access your admin dashboard.</p>
           </div>
 
           <!-- Card body -->
@@ -33,7 +33,7 @@
                   <input 
                     formControlName="username" 
                     type="text" 
-                    placeholder="Username"
+                    placeholder="Admin Username"
                     [ngClass]="{
                       'border-red-300 bg-red-50': loginForm.get('username')?.touched && loginForm.get('username')?.hasError('required'),
                       'border-gray-200 bg-gray-50': !(loginForm.get('username')?.touched && loginForm.get('username')?.hasError('required')),
@@ -76,7 +76,6 @@
                   <!-- Password visibility toggle -->
                   <button 
                     type="button"
-                    (click)="togglePasswordVisibility()"
                     class="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400 hover:text-gray-600 focus:outline-none"
                   >
                     <svg *ngIf="!showPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -100,7 +99,6 @@
               <div class="flex justify-end mb-6">
                 <button 
                   type="button"
-                  (click)="forgotPassword()"
                   class="text-sm font-medium text-blue-600 transition-colors duration-200 hover:text-blue-800 hover:underline focus:outline-none"
                 >
                   Forgot Password?
@@ -121,7 +119,6 @@
                 Don't have an account?
                 <button 
                   type="button" 
-                  (click)="goToSignup()" 
                   class="ml-1 font-bold text-blue-600 transition-colors duration-200 hover:text-blue-800 hover:underline focus:outline-none"
                 >
                   Register Now
@@ -141,7 +138,7 @@
           <div class="relative w-full max-w-lg mx-auto">
             <div class="relative p-8 overflow-hidden rounded-3xl">
               <img 
-                src="assets/images/cus-login.png" 
+                src="assets/images/admin-login.png" 
                 alt="Customer Login Illustration" 
                 class="object-contain w-full h-auto max-w-md mx-auto illustration-container"
                 style="filter: drop-shadow(0 10px 30px rgba(0,0,0,0.1));"

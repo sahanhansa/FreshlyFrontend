@@ -1,0 +1,39 @@
+<div class="relative min-h-screen overflow-hidden bg-gradient-to-br bg-[#F5F5F5]"></div>
+  <!-- Decorative background shape -->
+  <div class="absolute top-0 left-0 bg-blue-400 rounded-br-full w-96 h-96 opacity-70"></div>
+
+  <div class="container px-6 py-12 mx-auto">
+    <div class="flex flex-col lg:flex-row items-center justify-between min-h-[80vh]">
+      <!-- Left Content Section -->
+      <div class="z-10 space-y-8 lg:w-1/2">
+        <div class="space-y-6">
+          <h1 class="text-5xl font-bold leading-tight text-gray-800 lg:text-6xl">
+            Welcome<br />
+            <span class="text-blue-700">{{ laundryName || 'Laundry Home' }}</span>
+          </h1>
+          <p class="max-w-lg text-lg leading-relaxed text-gray-600">
+            Manage your orders, view analytics, and keep your customers happy. Access all your laundry's features from this dashboard.
+          </p>
+        </div>
+        <div class="flex space-x-4">
+          <button class="px-8 py-4 text-lg font-semibold text-white transition-all duration-300 bg-blue-500 rounded-lg shadow-lg hover:bg-blue-600">
+            View Orders
+          </button>
+          <button class="px-8 py-4 text-lg font-semibold text-blue-600 transition-all duration-300 bg-white border border-blue-500 rounded-lg shadow-lg hover:bg-blue-50">
+            Analytics
+          </button>
+        </div>
+      </div>
+      <!-- Right Image Section -->
+      <div class="relative z-10 flex justify-center mt-12 lg:w-1/2 lg:mt-0">
+        <div class="relative">
+          <img src="assets/laundry.png" alt="Laundry Dashboard Illustration" class="object-contain w-full h-auto max-w-lg" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Example: Add more dashboard widgets/components here -->
+  <!-- <app-orders-list></app-orders-list> -->
+  <!-- <app-laundry-analytics></app-laundry-analytics> -->
+

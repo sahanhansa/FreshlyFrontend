@@ -19,12 +19,12 @@ export class AuthService {
     console.log("data in service-> Customer",data)// Debug log
 
     
-    return this.http.post(`${this.baseUrl}/Auth/customer/login`, data);
+    return this.http.post(`${this.baseUrl}/api/Auth/customer/login`, data);
    
   }
    adminLogin(data:any) {
     console.log("data in service -> Admin",data)// Debug log
-    return this.http.post(`${this.baseUrl}/Auth/admin/login`, data, {
+    return this.http.post(`${this.baseUrl}/api/Auth/admin/login`, data, {
     headers: { 'Content-Type': 'application/json' }
   });
    
@@ -35,16 +35,16 @@ export class AuthService {
   })// Debug log
 
     
-    return this.http.post(`${this.baseUrl}/Auth/laundry/login`, data);
+    return this.http.post(`${this.baseUrl}/api/Auth/laundry/login`, data);
    
   }
-  //  driverLogin(data:any) {
-  //   console.log("data in service",data)// Debug log
+   driverLogin(data:any) {
+    console.log("data in service",data)// Debug log
 
     
-  //   return this.http.post(`${this.baseUrl}/Auth/driver/login`, data);
+    return this.http.post(`${this.baseUrl}/api/Auth/driver/login`, data);
    
-  // }
+  }
   signup_async(data: any) {
     console.log("data in service (signup)", data);// Debug log
      return this.http.post(`${this.baseUrl}/Customer`, data, {

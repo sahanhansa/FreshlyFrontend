@@ -1,5 +1,7 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './components/customer/login/login.component';
+import { LunLoginComponent } from './components/laundry/login/lun-login.component';
+import { DriverLoginComponent } from './components/driver/login/driver-login.component';
 import { SignupComponent } from './components/customer/signup/signup.component';
 import { WhoAreYouComponent } from './components/customer/whoareyou/whoareyou.component';
 import { HomeComponent } from './pages/Laundry/home/home.component';
@@ -19,6 +21,7 @@ import { AdminLayoutComponent } from './components/admin/admin-layout/admin-layo
 import { CusHomeComponent } from './components/customer/cus-home/cus-home.component';
 import { LaundrySignupComponent } from './components/customer/laundry-signup/laundry-signup.component';
 import { HowItWorksComponent } from './components/customer/how-it-works/how-it-works.component';
+import { LandingPageComponent } from './components/landing-page/landing-page.component';
 import { NewOrdersComponent } from './pages/Laundry/new-orders/new-orders.component';
 import { processingOrdersComponent } from './pages/Laundry/processing-orders/processing-orders.component';
 import { ConfirmOrdersComponent } from './pages/Laundry/confirm-orders/confirm-orders.component';
@@ -33,24 +36,29 @@ import { BasketComponent } from './pages/order/basket/basket.component';
 import { ItemPageComponent } from './pages/order/item-list-page/item-list-page.component';
 import { CustomerLayoutComponent } from './components/customer/customer-layout/customer-layout.component';
 import { LogoutPageComponent } from './pages/Driver/logout-page/logout-page.component';
+import {LaundryHomeComponent} from './components/laundry/laundry-home/laundry-home.component';
+import {AdminLoginComponent} from './components/admin/login/admin-login.component';
 
 // Define the application's routes
 export const routes: Routes = [
 
-   // Redirect empty path to 'whoareyou' page
-    { path: '', redirectTo: '/whoareyou', pathMatch: 'full' },
+   // Landing page at root
+    { path: '', component: LandingPageComponent, pathMatch: 'full' },
 
     // Route to identify the user type
     { path: 'whoareyou', component: WhoAreYouComponent }, 
 
     // Route for user login
-    {path:'login', component: LoginComponent},    // Route for general user signup
+    {path:'cus-login', component: LoginComponent},    // Route for general user signup
+    {path:'lun-login', component: LunLoginComponent},    // Route for general user signup
+    {path:'driver-login', component: DriverLoginComponent},    // Route for general user signup
+    {path:'admin-login', component: AdminLoginComponent},    // Route for general user signup
     {path:'signup', component: SignupComponent},    // Route for customer home page
     //{ path: 'cus-home', component: CusHomeComponent },    // Route for laundry partner home page
   
 
    // Route for admin home page - redirect to admin dashboard
-  { path: 'admin-home', redirectTo: '/admin/dashboard', pathMatch: 'full' },
+  { path: 'admin-home', component: AdminDashboardComponent},
 
  
  
@@ -112,7 +120,7 @@ export const routes: Routes = [
   
   
  // Route for laundry home
-   {path: 'laundry-home', component:HomeComponent},
+   {path: 'laundry-home', component: LaundryHomeComponent},
    
   { path: 'laundry-home', redirectTo: '/laundry/home', pathMatch: 'full' },
 
