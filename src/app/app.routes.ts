@@ -39,7 +39,7 @@ import { LaundryAddItemComponent } from './pages/Laundry/laundry-add-item/laundr
 import { LaundryEditItemComponent } from './pages/Laundry/laundry-edit-item/laundry-edit-item.component';
 import {LaundryOrderSummaryComponent } from './pages/Laundry/laundry-order-summary/laundry-order-summary.component';
 import { LogoutPageComponent } from './pages/Driver/logout-page/logout-page.component';
-import {LaundryHomeComponent} from './components/laundry/laundry-home/laundry-home.component';
+// import {LaundryHomeComponent} from './components/laundry/laundry-home/laundry-home.component';
 import {AdminLoginComponent} from './components/admin/login/admin-login.component';
 
 
@@ -126,7 +126,7 @@ export const routes: Routes = [
   
   
  // Route for laundry home
-   {path: 'laundry-home', component: LaundryHomeComponent},
+   {path: 'laundry-home', component: HomeComponent},
    
   { path: 'laundry-home', redirectTo: '/laundry/home', pathMatch: 'full' },
 
