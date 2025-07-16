@@ -35,9 +35,15 @@ import { LaundryPageComponent } from './pages/order/laundry-list-page/laundry-li
 import { BasketComponent } from './pages/order/basket/basket.component';
 import { ItemPageComponent } from './pages/order/item-list-page/item-list-page.component';
 import { CustomerLayoutComponent } from './components/customer/customer-layout/customer-layout.component';
+import { LaundryAddItemComponent } from './pages/Laundry/laundry-add-item/laundry-add-item.component';
+import { LaundryEditItemComponent } from './pages/Laundry/laundry-edit-item/laundry-edit-item.component';
+import {LaundryOrderSummaryComponent } from './pages/Laundry/laundry-order-summary/laundry-order-summary.component';
 import { LogoutPageComponent } from './pages/Driver/logout-page/logout-page.component';
-import {LaundryHomeComponent} from './components/laundry/laundry-home/laundry-home.component';
+// import {LaundryHomeComponent} from './components/laundry/laundry-home/laundry-home.component';
 import {AdminLoginComponent} from './components/admin/login/admin-login.component';
+
+
+
 
 // Define the application's routes
 export const routes: Routes = [
@@ -120,7 +126,7 @@ export const routes: Routes = [
   
   
  // Route for laundry home
-   {path: 'laundry-home', component: LaundryHomeComponent},
+   {path: 'laundry-home', component: HomeComponent},
    
   { path: 'laundry-home', redirectTo: '/laundry/home', pathMatch: 'full' },
 
@@ -154,6 +160,16 @@ export const routes: Routes = [
     // Route for laundry-summary page
     {path: 'laundry-summary', component:LaundrySummaryComponent},
 
+
+     {path: 'laundry-add-item', component:LaundryAddItemComponent},
+
+     {path: 'laundry-edit-item', component:LaundryEditItemComponent },
+
+    {path: 'order-summary', component:LaundryOrderSummaryComponent },
+
+    
+
+    
     ]
 
 

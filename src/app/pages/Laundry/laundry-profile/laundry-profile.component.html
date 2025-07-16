@@ -1,12 +1,27 @@
-
 <div class="min-h-screen flex flex-col">
-  
+<app-navbar></app-navbar>
 
-  <main class="flex-grow">
-    <app-header></app-header>
+  <main class="flex-grow p-6 space-y-6 bg-white text-black">
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <app-stats-card *ngFor="let stat of stats" [stat]="stat"></app-stats-card>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <app-laundry-details-card [laundry]="laundry"></app-laundry-details-card>
+      <app-owner-details-card [owner]="owner"></app-owner-details-card>
+    </div>
+
+    <div class="ml-2 mr-2 mt-5"><app-access-notice></app-access-notice></div>
+    
+
   </main>
 
+  <div class="flex justify-end mt-2 mb-5 mr-10">
+    <button class="bg-red-600 text-white text-sm px-4 py-1.5 rounded-full hover:bg-blue-700 transition" (click)="logout()">
+      Log Out
+    </button>
+  </div>
 
   <app-footer></app-footer>
-
 </div>
