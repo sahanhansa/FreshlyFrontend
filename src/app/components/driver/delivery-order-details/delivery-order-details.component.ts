@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { DeliveryService, DeliveryOrder } from '../../../services/delivery.service';
+import { DeliveryService, DeliveryOrder } from '../../../services/driver/delivery.service';
 import { DriverNavbarComponent } from "../driver-navbar/driver-navbar.component";
 import { OrderDetailsHeaderComponent } from "../order-details-header/order-details-header.component";
 import { FooterComponent } from '../../shared/footer/footer.component';

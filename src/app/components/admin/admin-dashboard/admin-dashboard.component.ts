@@ -2,6 +2,7 @@
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { Router } from '@angular/router';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 // Import interfaces for type safety
 import { AdminStats, AdminPanelMember, Laundry, Driver, PendingAction } from '../../../models/admin.interface';
@@ -39,7 +40,12 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit {
   @ViewChild('revenueChart') private revenueChart!: ElementRef<HTMLCanvasElement>;
   
   // Admin's display name
-  adminName: string = 'John Doe';
+  adminName: string = '';
+   constructor(private router: Router) {
+    // Read the customer name from localStorage (set during login)
+    const storedName = localStorage.getItem('adminUsername');
+    this.adminName = storedName ? storedName : 'Customer';
+  }
   
   // Dashboard statistics 
   stats: AdminStats = {
@@ -100,9 +106,7 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit {
 
   months: string[] = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
 
-  constructor() {
-    console.log('AdminDashboardComponent: Constructor called');
-  }
+
 
   // Angular lifecycle hook: runs after component initialization
   ngOnInit(): void {

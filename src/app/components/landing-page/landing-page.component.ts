@@ -1,0 +1,74 @@
+import { Component } from '@angular/core';
+import { NgClass, NgFor, NgIf } from '@angular/common';
+import { FooterComponent } from '../shared/footer/footer.component';
+import { Router } from '@angular/router';
+
+@Component({
+    selector: 'app-landing-page',
+    templateUrl: './landing-page.component.html',
+    styleUrls: ['./landing-page.component.css'],
+    standalone: true,
+    imports: [NgClass, NgFor, NgIf, FooterComponent]
+})
+export class LandingPageComponent {
+    // For animated bubbles in hero image
+    bubbles = Array(4);
+    constructor(private router: Router) { }
+    goTo(link: string) {
+        localStorage.setItem("Link", link);
+        switch (link) {
+            case 'whoareyou':
+                this.router.navigate(['/whoareyou']);
+                break;
+        }
+    }
+
+    // Steps for the process section
+    processSteps = [
+        {
+            stepNumber: 1,
+            title: 'Pickup',
+            imagePath: 'assets/images/landing/Address.png',
+            stepLabel: 'STEP 1'
+        },
+        {
+            stepNumber: 2,
+            title: 'Wash & Dry',
+            imagePath: 'assets/images/landing/2.png',
+            stepLabel: 'STEP 2'
+        },
+        {
+            stepNumber: 3,
+            title: 'Fold',
+            imagePath: 'assets/images/landing/3.png',
+            stepLabel: 'STEP 3'
+        },
+        {
+            stepNumber: 4,
+            title: 'Delivery',
+            imagePath: 'assets/images/landing/4.png',
+            stepLabel: 'STEP 4'
+        }
+    ];
+
+    // Stats for about section
+    stats = [
+        { number: '10K+', label: 'Happy Customers' },
+        { number: '50+', label: 'Partner Laundries' },
+        { number: '100K+', label: 'Orders Completed' }
+    ];
+
+    // Laundries for laundries section
+    laundries = [
+        { name: 'Sparkle Cleaners', location: 'New York, NY', features: ['Eco-friendly', 'Express Service', 'Affordable'] },
+        { name: 'Quick Wash', location: 'Los Angeles, CA', features: ['24/7 Service', 'Premium Care', 'Pickup & Delivery'] },
+        { name: 'Fresh Start Laundry', location: 'Chicago, IL', features: ['Family Owned', 'Modern Machines', 'Great Reviews'] }
+    ];
+
+    // Business benefits
+    businessBenefits = [
+        { iconClass: 'pickup', text: 'Grow your customer base' },
+        { iconClass: 'wash', text: 'Easy order management' },
+        { iconClass: 'delivery', text: 'Increase your revenue' }
+    ];
+}

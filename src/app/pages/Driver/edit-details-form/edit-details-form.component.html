@@ -1,0 +1,39 @@
+<div class="min-h-screen flex flex-col items-center justify-center bg-white">
+  <div class="w-full max-w-md p-8 bg-white rounded-lg shadow">
+    <h2 class="text-2xl md:text-3xl font-bold text-center text-[#1c1c4c] mb-2">
+      Change Account Details
+    </h2>
+    <p class="text-center text-gray-500 mb-8">
+      Please fill the form below to change an account details.
+    </p>
+
+    <form [formGroup]="accountForm" (ngSubmit)="onSubmit()" class="space-y-4">
+      <input type="text" placeholder="Name" formControlName="name" class="w-full p-3 rounded-md bg-blue-100 outline-none"/>
+
+      <div class="flex flex-col md:flex-row md:space-x-4">
+        <input type="text" placeholder="House No." formControlName="houseNo" class="w-full p-3 rounded-md bg-blue-100 outline-none mb-4 md:mb-0"/>
+        <input type="text" placeholder="Street" formControlName="street" class="w-full p-3 rounded-md bg-blue-100 outline-none"/>
+      </div>
+
+      <div class="flex flex-col md:flex-row md:space-x-4">
+        <input type="text" placeholder="City" formControlName="city" class="w-full p-3 rounded-md bg-blue-100 outline-none mb-4 md:mb-0"/>
+        <input type="text" placeholder="Postal Code" formControlName="postalCode" class="w-full p-3 rounded-md bg-blue-100 outline-none"/>
+      </div>
+
+      <input type="email" placeholder="Email" formControlName="email" class="w-full p-3 rounded-md bg-blue-100 outline-none"/>
+
+      <input type="text" placeholder="Contact Number" formControlName="contactNumber" class="w-full p-3 rounded-md bg-blue-100 outline-none"/>
+
+      <input type="text" placeholder="Driver License Number" formControlName="driverLicenseNumber" class="w-full p-3 rounded-md bg-blue-100 outline-none"/>
+
+      <input type="password" placeholder="Password" formControlName="password" class="w-full p-3 rounded-md bg-blue-100 outline-none"/>
+
+      <input type="password" placeholder="Re-enter password" formControlName="confirmPassword" class="w-full p-3 rounded-md bg-blue-100 outline-none"/>
+
+      <button type="submit" class="w-full bg-[#008cff] hover:bg-blue-700 text-white py-3 rounded-full font-semibold">
+        Save
+      </button>
+    </form>
+  </div>
+</div>
+

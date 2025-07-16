@@ -16,13 +16,16 @@
     "importHelpers": true,    "target": "ES2022",
     "module": "ES2022",
     "baseUrl": "./",
+    "types": ["node"],
     "paths": {
       "@app/*": ["src/app/*"],
       "@environments/*": ["src/environments/*"]
     },
     "typeRoots": ["node_modules/@types"],
-    "lib": ["ES2022", "dom"]
+    "lib": ["ES2022", "dom"],
+    
   },
+
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,

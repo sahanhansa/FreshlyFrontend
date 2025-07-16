@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { PickupsService, PickupOrder } from '../../../services/pickups.service';
+import { PickupsService, PickupOrder } from '../../../services/driver/pickups.service';
 
 
 @Component({

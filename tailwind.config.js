@@ -7,7 +7,8 @@ module.exports = {
     extend: {
       fontFamily: {
         sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Open Sans', 'Helvetica Neue', 'sans-serif'],
-      },      animation: {
+      },     
+       animation: {
         'fadeIn': 'fadeIn 0.3s ease-out',
         // Note: 'spin' animation is already included in Tailwind's defaults
         // but we're defining it here explicitly for clarity
