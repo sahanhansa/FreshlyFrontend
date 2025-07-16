@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, catchError, throwError } from 'rxjs';
+import { Observable, catchError, throwError, of } from 'rxjs';
 import { LaundryAdminDTO } from '../models/laundry-admin.model';
 import { environment } from '../../environments/environment';
 
@@ -18,9 +18,20 @@ export class LaundryAdminService {
    * Get all laundries for admin view
    */
   getLaundries(): Observable<LaundryAdminDTO[]> {
-    // Use the correct endpoint for getting laundries for admin
-    return this.http.get<LaundryAdminDTO[]>(`${this.apiUrl}/laundry-list-for-admin`).pipe(
-      catchError(this.handleError('Failed to fetch laundries'))
+    // Use the correct endpoint for getting all laundries
+    return this.http.get<LaundryAdminDTO[]>(`${this.apiUrl}`).pipe(
+      catchError(error => {
+        console.error('Error fetching laundries:', error);
+        
+        // For development purposes only - return mock data if the API fails
+        // Comment this out or remove in production
+        if (error.status === 404 || error.status === 0) {
+          console.warn('API endpoint not found, using mock data');
+          return of(this.getMockLaundries());
+        }
+        
+        return this.handleError('Failed to fetch laundries')(error);
+      })
     );
   }
 
@@ -63,23 +74,55 @@ export class LaundryAdminService {
   /**
    * Error handler
    */
-  private handleError(operation: string) {
+  private handleError(message: string) {
     return (error: any): Observable<never> => {
-      console.error(`${operation}:`, error);
-
-      let errorMessage = `${operation}. Please try again later.`;
-
-      if (error.status === 0) {
-        errorMessage = 'Cannot reach the server. Please check if the API is running at http://localhost:5027/api/Laundry.';
-      } else if (error.status === 400) {
-        errorMessage = error.error?.message || 'Bad request. Please check your input.';
-      } else if (error.status === 404) {
-        errorMessage = 'API endpoint not found. Make sure the backend service is configured correctly.';
-      } else if (error.error?.message) {
-        errorMessage = error.error.message;
-      }
-
-      return throwError(() => new Error(errorMessage));
+      console.error(message, error);
+      return throwError(() => new Error(`${message}: ${error.message}`));
     };
+  }
+  
+  /**
+   * Mock data for development/testing purposes
+   * This should be removed in production
+   */
+  private getMockLaundries(): LaundryAdminDTO[] {
+    return [
+      {
+        laundryId: '1001',
+        laundryName: 'CleanPress Laundry',
+        username: 'cleanpress',
+        email: 'contact@cleanpress.com',
+        ownerId: '101',
+        ownerName: 'John Doe',
+        fullAddress: '123 Main Street, Colombo 3, Sri Lanka',
+        averageRating: 4.5,
+        totalOrders: 250,
+        feedbackCount: 150
+      },
+      {
+        laundryId: '1002',
+        laundryName: 'SparkleFresh Services',
+        username: 'sparklefresh',
+        email: 'info@sparklefresh.com',
+        ownerId: '102',
+        ownerName: 'Jane Smith',
+        fullAddress: '45 Park Avenue, Kandy, Sri Lanka',
+        averageRating: 4.2,
+        totalOrders: 180,
+        feedbackCount: 95
+      },
+      {
+        laundryId: '1003',
+        laundryName: 'Quick & Clean Laundry',
+        username: 'quickclean',
+        email: 'service@quickclean.com',
+        ownerId: '103',
+        ownerName: 'Robert Johnson',
+        fullAddress: '78 Beach Road, Galle, Sri Lanka',
+        averageRating: 4.7,
+        totalOrders: 320,
+        feedbackCount: 210
+      }
+    ];
   }
 }

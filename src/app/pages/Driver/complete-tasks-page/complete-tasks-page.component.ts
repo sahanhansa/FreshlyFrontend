@@ -9,7 +9,7 @@ import { FooterComponent } from '../../../components/shared/footer/footer.compon
   selector: 'app-complete-tasks-page',
   imports: [DriverNavbarComponent, CompleteTaskHeaderComponent, SearchBarComponent, CompleteOrderListComponent, PaginationComponent, FooterComponent],
   templateUrl: './complete-tasks-page.component.html',
-  styleUrl: './complete-tasks-page.component.scss'
+  styleUrl: './complete-tasks-page.component.css'
 })
 export class CompleteTasksPageComponent {
 

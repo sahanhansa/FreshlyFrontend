@@ -15,7 +15,7 @@ interface Order {
   selector: 'app-complete-order-list',
   imports: [CommonModule],
   templateUrl: './complete-order-list.component.html',
-  styleUrl: './complete-order-list.component.scss'
+  styleUrl: './complete-order-list.component.css'
 })
 export class CompleteOrderListComponent {
    orders: Order[] = [

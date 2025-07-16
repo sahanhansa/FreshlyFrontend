@@ -19,17 +19,39 @@
 
   <h1 class="text-4xl text-gray-800 mb-8 font-inter drop-shadow-lg">Driver Details</h1>
 
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="flex justify-center items-center py-16">
+    <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-500"></div>
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-8">
+    <p>{{ error }}</p>
+    <button 
+      (click)="loadDrivers()" 
+      class="mt-2 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors">
+      Try Again
+    </button>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!isLoading && !error && drivers.length === 0" class="bg-white p-8 rounded-lg text-center">
+    <i class="fas fa-user-slash text-4xl text-gray-400 mb-4"></i>
+    <h3 class="text-xl font-medium text-gray-700 mb-2">No Drivers Found</h3>
+    <p class="text-gray-500">There are no drivers matching your criteria or no drivers are registered in the system.</p>
+  </div>
+
   <!-- Driver Details Card -->
-  <div class="mb-8" *ngIf="selectedDriver">
+  <div class="mb-8" *ngIf="!isLoading && selectedDriver">
     <div class="flex bg-blue-500 rounded-[20px] overflow-hidden text-white shadow-lg">
       <div class="flex-1 p-8">
         <div class="flex items-center mb-8">
-          <img [src]="selectedDriver.profileImage" [alt]="selectedDriver.name" 
+          <img [src]="selectedDriver.profileImageUrl || 'assets/images/driver.png'" [alt]="getFullName(selectedDriver)" 
                class="w-24 h-24 rounded-full object-cover mr-4"
-               (error)="selectedDriver.profileImage = 'assets/images/driver.png'">
+               (error)="$any($event.target).src = 'assets/images/driver.png'">
           <div>
-            <h3 class="text-2xl font-medium m-0">{{ selectedDriver.name }}</h3>
-            <p class="mt-2 opacity-90">#{{ selectedDriver.id }}</p>
+            <h3 class="text-2xl font-medium m-0">{{ getFullName(selectedDriver) }}</h3>
+            <p class="mt-2 opacity-90">#{{ selectedDriver.driverId }}</p>
           </div>
         </div>
         <div class="space-y-4">
@@ -41,35 +63,45 @@
           <div class="flex items-center">
             <i class="fas fa-phone w-5 mr-4"></i>
             <span class="w-32">Contact No</span>
-            <span>: {{ selectedDriver.contactNo }}</span>
+            <span>: {{ selectedDriver.phoneNumber }}</span>
+          </div>
+          <div class="flex items-center">
+            <i class="fas fa-id-card w-5 mr-4"></i>
+            <span class="w-32">License No</span>
+            <span>: {{ selectedDriver.licenseNumber }}</span>
           </div>
           <div class="flex items-center">
             <i class="fas fa-truck w-5 mr-4"></i>
             <span class="w-32">Vehicle No</span>
-            <span>: {{ selectedDriver.vehicleNo }}</span>
+            <span>: {{ selectedDriver.vehicleNumber }}</span>
           </div>
           <div class="flex items-center">
             <i class="fas fa-map-marker-alt w-5 mr-4"></i>
-            <span class="w-32">Location</span>
-            <span>: {{ selectedDriver.location }}</span>
+            <span class="w-32">Address</span>
+            <span>: {{ getAddress(selectedDriver) }}</span>
           </div>
-          <div class="flex items-center">
-            <i class="fas fa-map w-5 mr-4"></i>
-            <span class="w-32">Region</span>
-            <span>: {{ selectedDriver.region }}</span>
-          </div>
-          <div class="flex items-center">
+          <div class="flex items-center" *ngIf="selectedDriver.bankDetails">
             <i class="fas fa-university w-5 mr-4"></i>
             <span class="w-32">Bank Name</span>
             <span>: {{ selectedDriver.bankDetails.bankName }}</span>
           </div>
-          <div class="flex items-center ml-8">
+          <div class="flex items-center ml-8" *ngIf="selectedDriver.bankDetails">
             <span class="w-32">-Branch</span>
             <span>: {{ selectedDriver.bankDetails.branch }}</span>
           </div>
-          <div class="flex items-center ml-8">
+          <div class="flex items-center ml-8" *ngIf="selectedDriver.bankDetails">
             <span class="w-32">-Account No</span>
             <span>: {{ selectedDriver.bankDetails.accountNo }}</span>
+          </div>
+          <div class="flex items-center">
+            <i class="fas fa-calendar w-5 mr-4"></i>
+            <span class="w-32">Date Joined</span>
+            <span>: {{ selectedDriver.dateJoined | date:'mediumDate' }}</span>
+          </div>
+          <div class="flex items-center">
+            <i class="fas fa-check-circle w-5 mr-4"></i>
+            <span class="w-32">Status</span>
+            <span>: {{ selectedDriver.isActive ? 'Active' : 'Inactive' }}</span>
           </div>
         </div>
       </div>
@@ -83,9 +115,26 @@
   </div>
 
   <!-- Recent Orders Section -->
-  <div class="bg-white rounded-lg p-8 shadow-sm" *ngIf="selectedDriver">
+  <div class="bg-white rounded-lg p-8 shadow-sm" *ngIf="!isLoading && selectedDriver">
     <h2 class="text-2xl font-semibold mb-6 text-gray-800">Recent Orders</h2>
-    <div class="mb-8 border border-gray-100 rounded-lg overflow-hidden" *ngFor="let order of selectedDriver.recentOrders">
+    
+    <!-- Loading Orders -->
+    <div *ngIf="selectedDriver && (!selectedDriver.recentOrders || selectedDriver.recentOrders.length === 0)" 
+         class="text-center py-8">
+      <div *ngIf="!selectedDriver.recentOrders" class="animate-pulse">
+        <div class="h-4 bg-gray-200 rounded w-3/4 mx-auto mb-4"></div>
+        <div class="h-4 bg-gray-200 rounded w-1/2 mx-auto mb-4"></div>
+        <div class="h-4 bg-gray-200 rounded w-2/3 mx-auto"></div>
+      </div>
+      <p *ngIf="selectedDriver.recentOrders && selectedDriver.recentOrders.length === 0" 
+         class="text-gray-500">
+        No recent orders found for this driver.
+      </p>
+    </div>
+    
+    <!-- Order List -->
+    <div class="mb-8 border border-gray-100 rounded-lg overflow-hidden" 
+         *ngFor="let order of selectedDriver.recentOrders">
       <div class="flex justify-between items-center p-4 bg-gray-50 border-b border-gray-100">
         <div class="flex gap-8">
           <span>Order ID: {{ order.orderId }}</span>
@@ -131,8 +180,30 @@
     </div>
   </div>
 
+  <!-- Driver List Tabs -->
+  <div class="mt-8 bg-white rounded-lg p-4 shadow-sm">
+    <h2 class="text-xl font-semibold mb-4">All Drivers</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div *ngFor="let driver of drivers" 
+           class="border border-gray-200 rounded-lg p-4 cursor-pointer hover:bg-blue-50 transition-colors"
+           [class.bg-blue-100]="selectedDriver?.driverId === driver.driverId"
+           (click)="selectDriver(driver)">
+        <div class="flex items-center">
+          <img [src]="driver.profileImageUrl || 'assets/images/driver.png'" [alt]="getFullName(driver)" 
+               class="w-12 h-12 rounded-full object-cover mr-3"
+               (error)="$any($event.target).src = 'assets/images/driver.png'">
+          <div>
+            <h4 class="font-medium">{{ getFullName(driver) }}</h4>
+            <p class="text-sm text-gray-500">ID: #{{ driver.driverId }}</p>
+            <p class="text-sm text-gray-500">{{ driver.address?.city || 'No location' }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Pagination -->
-  <div class="flex justify-center items-center gap-2 mt-8">
+  <div class="flex justify-center items-center gap-2 mt-8" *ngIf="!isLoading && drivers.length > 0">
     <button class="px-4 py-2 border border-gray-200 rounded text-gray-700 hover:border-blue-500 hover:text-blue-500 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:border-gray-200 disabled:hover:text-gray-700 transition-colors"
             (click)="onPageChange(currentPage - 1)" 
             [disabled]="currentPage === 1">Previous</button>
