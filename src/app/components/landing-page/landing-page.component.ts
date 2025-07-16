@@ -13,14 +13,37 @@ import { Router } from '@angular/router';
 export class LandingPageComponent {
     // For animated bubbles in hero image
     bubbles = Array(4);
+    
     constructor(private router: Router) { }
-    goTo(link: string) {
+    
+    // Enhanced goTo method to handle both login and signup
+    goTo(link: string, action?: 'login' | 'signup') {
         localStorage.setItem("Link", link);
+        
         switch (link) {
             case 'whoareyou':
-                this.router.navigate(['/whoareyou']);
+                if (action) {
+                    // Navigate with query parameter to specify action
+                    this.router.navigate(['/whoareyou'], { 
+                        queryParams: { action: action } 
+                    });
+                } else {
+                    // Default navigation (login)
+                    this.router.navigate(['/whoareyou']);
+                }
                 break;
+            default:
+                console.error('Invalid link:', link);
         }
+    }
+
+    // Separate methods for cleaner template usage
+    navigateToLogin() {
+        this.goTo('whoareyou', 'login');
+    }
+
+    navigateToSignup() {
+        this.goTo('whoareyou', 'signup');
     }
 
     // Steps for the process section

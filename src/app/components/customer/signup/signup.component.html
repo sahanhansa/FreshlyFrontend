@@ -1,309 +1,371 @@
-<!-- Full-height screen with centered content and light gray background -->
- <div class="min-h-screen flex items-center justify-center bg-gray-100">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup Component</title>
+    <style>
+        /* Animation keyframes */
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
 
-  <!-- Responsive container with horizontal padding -->
-  <div class="container mx-auto px-4">
+        @keyframes slideOutRight {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+        }
 
-     <!-- Flex to horizontally center the signup card -->
-    <div class="flex justify-center">
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
 
-      <!-- Limit form width for better UX on larger screens -->
-      <div class="w-full max-w-md">
+        /* Notification styles */
+        .notification-enter {
+            animation: slideInRight 0.5s ease-out;
+        }
 
-        <!-- Card-like white background with border and shadow -->
-        <div class="bg-white border rounded-lg shadow-lg">
+        .notification-exit {
+            animation: slideOutRight 0.5s ease-in;
+        }
 
-          <!-- Title -->
-          <div class="text-center border-b p-4">
-            <h3 class="pt-3 font-bold text-2xl">Sign Up</h3>
-          </div>
+        .form-container {
+            transition: all 0.3s ease;
+        }
 
-           <!-- Card content area -->
-          <div class="p-6">
-            <form [formGroup]="signupForm">
+        .form-container.blurred {
+            filter: blur(2px);
+            opacity: 0.7;
+        }
 
-         <!-- User first name-->
-         <div class="pt-3"></div>
-         <div class="relative mb-4">
-         <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-         <i class="fa fa-user"></i>
-      </span>
-      <input 
-        formControlName="firstname"
-        type="text"
-        placeholder="First Name"
-        class="w-full pl-10 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 bg-transparent outline-none text-gray-400 focus:text-gray-700"
-      />
+        /* Form animations */
+        .form-field {
+            transition: all 0.3s ease;
+        }
+
+        .form-field:focus-within {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.15);
+        }
+
+        .submit-btn {
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.3);
+        }
+
+        .submit-btn:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .error-message {
+            animation: bounce 0.5s ease-out;
+        }
+
+        /* Success/Error notification icons */
+        .notification-icon {
+            animation: bounce 1s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <!-- Notification Overlay -->
+    <div *ngIf="showNotification" 
+         class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50"
+         [class.notification-enter]="showNotification"
+         (click)="hideNotification()">
+        
+        <!-- Notification Card -->
+        <div class="relative w-full max-w-md p-6 bg-white shadow-2xl rounded-2xl"
+             [ngClass]="{
+                'border-l-4 border-green-500': notificationType === 'success',
+                'border-l-4 border-red-500': notificationType === 'error'
+             }"
+             (click)="$event.stopPropagation()">
+            
+            <!-- Close Button -->
+            <button (click)="hideNotification()" 
+                    class="absolute text-gray-400 transition-colors top-4 right-4 hover:text-gray-600">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+            
+            <!-- Notification Content -->
+            <div class="flex items-start space-x-4">
+                <!-- Icon -->
+                <div class="notification-icon">
+                    <div *ngIf="notificationType === 'success'" 
+                         class="flex items-center justify-center w-12 h-12 bg-green-100 rounded-full">
+                        <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                    </div>
+                    <div *ngIf="notificationType === 'error'" 
+                         class="flex items-center justify-center w-12 h-12 bg-red-100 rounded-full">
+                        <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </div>
+                </div>
+                
+                <!-- Text Content -->
+                <div class="flex-1">
+                    <h3 class="mb-1 text-lg font-semibold text-gray-900">
+                        {{ notificationTitle }}
+                    </h3>
+                    <p class="text-sm leading-relaxed text-gray-600">
+                        {{ notificationMessage }}
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Progress Bar for Auto-close -->
+            <div class="w-full h-1 mt-4 bg-gray-200 rounded-full">
+                <div class="h-1 transition-all duration-300 ease-linear rounded-full"
+                     [ngClass]="{
+                        'bg-green-500': notificationType === 'success',
+                        'bg-red-500': notificationType === 'error'
+                     }"
+                     [style.width]="'100%'"
+                     [style.animation]="notificationType === 'success' ? 'width-decrease 3s linear' : 'width-decrease 5s linear'">
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- First name validation message -->
-    <small *ngIf="signupForm.controls['firstname'].dirty && signupForm.controls['firstname'].hasError('required')" class="text-red-500">
-        *First name is required
-      </small>
-  
-    <!--  Last name -->
-    <div class="pt-3"></div>
-    <div class="relative mb-4">
-      <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-        <i class="fa fa-user"></i>
-      </span>
-      <input 
-        formControlName="lastname"
-        type="text"
-        placeholder="Last Name"
-        class="w-full pl-10 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 bg-transparent outline-none text-gray-400 focus:text-gray-700"
-      />
-    </div>
+    <!-- Main Form Container -->
+    <div class="flex items-center justify-center min-h-screen px-4 py-12 bg-gradient-to-br from-blue-50 to-indigo-100 sm:px-6 lg:px-8">
+        <div class="w-full max-w-md space-y-8">
+            <div class="p-8 bg-white border shadow-xl form-container rounded-2xl backdrop-blur-sm border-white/20"
+                 [class.blurred]="showNotification">
+                
+                <!-- Header -->
+                <div class="mb-8 text-center">
+                    <div class="flex items-center justify-center w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
+                        </svg>
+                    </div>
+                    <h2 class="mb-2 text-3xl font-bold text-gray-900">Create Account</h2>
+                    <p class="text-sm text-gray-600">Join us today and start your journey</p>
+                </div>
 
-     <!-- Last name validation -->
-    <small *ngIf="signupForm.controls['lastname'].dirty && signupForm.controls['lastname'].hasError('required')" class="text-red-500">
-      *Last name is required
-    </small>
-    
-  <!-- Collapsed address field shown initially, expands on click -->            
-    <div *ngIf="!isAddressClicked" class="pt-3">
-    <div class="relative mb-4" (click)="isAddressClicked = true">
-    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-      <i class="fa fa-map-marker"></i>
-    </span>
-    <input 
-      type="text"
-      placeholder="Address (Click to edit parts)"
-      class="w-full pl-10 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 bg-transparent outline-none text-gray-400 focus:text-gray-700"
-      readonly
-    />
-  </div>
-</div>
-
-<!-- Expanded multi-field address entry -->
-<div *ngIf="isAddressClicked">
-
-  <!-- House No -->
-  <div class="pt-3"></div>
-  <div class="relative mb-4">
-    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-      <i class="fa fa-home"></i>
-    </span>
-    <input 
-      formControlName="houseNo"
-      type="text"
-      maxlength="5"
-      placeholder="House No"
-      class="w-full pl-10 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 bg-transparent outline-none text-gray-400 focus:text-gray-700"
-    />
-  </div>
-  <small *ngIf="signupForm.controls['HouseNo'].dirty && signupForm.controls['HouseNo'].hasError('required')" class="text-red-500">
-      *House No number is required
-    </small>
-
-  <!-- Street -->
-  <div class="pt-3"></div>
-  <div class="relative mb-4">
-    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-      <i class="fa fa-road"></i>
-    </span>
-    <input 
-      formControlName="street"
-      type="text"
-      placeholder="Street"
-      class="w-full pl-10 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 bg-transparent outline-none text-gray-400 focus:text-gray-700"
-    />
-  </div>
-  <small *ngIf="signupForm.controls['street'].dirty && signupForm.controls['street'].hasError('required')" class="text-red-500">
-    *Street is required
-  </small>
-  
-
-  <!-- City -->
-  <div class="pt-3"></div>
-  <div class="relative mb-4">
-    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-      <i class="fa fa-building"></i>
-    </span>
-    <input 
-      formControlName="city"
-      type="text"
-      placeholder="City"
-      class="w-full pl-10 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 bg-transparent outline-none text-gray-400 focus:text-gray-700"
-    />
-  </div>
-
-  <!-- Postal Code -->
-  <div class="pt-3"></div>
-  <div class="relative mb-4">
-    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-      <i class="fa fa-envelope"></i>
-    </span>
-    <input 
-      formControlName="postalCode"
-      maxlength="5"
-      type="text"
-      placeholder="Postal Code"
-      inputmode="numeric"
-pattern="[0-9]*"
-(keypress)="allowOnlyDigits($event)"
-      class="w-full pl-10 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 bg-transparent outline-none text-gray-400 focus:text-gray-700"
-    />
-  </div>
-</div>
-
-              <!-- Contact No 1 -->
-              <div class="pt-3"></div>
-              <div class="relative mb-4">
-                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-                  <i class="fa fa-phone"></i>
-                </span>
-                <input 
-                  formControlName="contact1"
-                  maxlength="10"
-                  inputmode="numeric"
-                  pattern="[0-9]*"
-                  (keypress)="allowOnlyDigits($event)"
-                  type="text"
-                  placeholder="Contact No 1"
-                  [ngClass]="{
-                    'border-red-500': signupForm.controls['contact1'].dirty && signupForm.controls['contact1'].hasError('required'),
-                    'border-gray-300': !(signupForm.controls['contact1'].dirty && signupForm.controls['contact1'].hasError('required'))
-                  }"
-                  class="w-full pl-10 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 flex-1 bg-transparent outline-none text-gray-400 focus:text-gray-700"
-                />
-              </div>
-              <small *ngIf="signupForm.controls['contact1'].dirty && signupForm.controls['contact1'].hasError('required')" class="text-red-500">
-                *Contact number is required
-              </small>
-
-              <!-- Contact No 2 -->
-              <div class="pt-3"></div>
-              <div class="relative mb-4">
-                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-                  <i class="fa fa-phone"></i>
-                </span>
-                <input 
-                  formControlName="contact2"
-                  maxlength="10"
-                  inputmode="numeric"
-                  pattern="[0-9]*"
-                  (keypress)="allowOnlyDigits($event)"
-                  type="text"
-                  placeholder="Contact No 2"
-                  class="w-full pl-10 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 flex-1 bg-transparent outline-none text-gray-400 focus:text-gray-700"
-                />
-              </div>
-
-              <!-- Email -->
-              <div class="pt-3"></div>
-              <div class="relative mb-4">
-                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-                  <i class="fa fa-envelope"></i>
-                </span>
-                <input 
-                  formControlName="email"
-                  type="email"
-                  placeholder="Email"
-                  [ngClass]="{
-                    'border-red-500': signupForm.controls['email'].dirty && signupForm.controls['email'].hasError('required'),
-                    'border-gray-300': !(signupForm.controls['email'].dirty && signupForm.controls['email'].hasError('required'))
-                  }"
-                  class="w-full pl-10 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 flex-1 bg-transparent outline-none text-gray-400 focus:text-gray-700"
-                />
-              </div>
-              <small *ngIf="signupForm.controls['email'].dirty && signupForm.controls['email'].hasError('required')" class="text-red-500">
-                *Email is required
-              </small>
-         <!-- User name-->
-        <div class="pt-3"></div>
-        <div class="relative mb-4">
-              <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-                <i class="fa fa-user"></i>
-              </span>
-        <input 
-        formControlName="username"
-        type="text"
-        placeholder="User Name"
-        class="w-full pl-10 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 bg-transparent outline-none text-gray-400 focus:text-gray-700"
-    />
-  </div>
-       <small *ngIf="signupForm.controls['username'].dirty && signupForm.controls['username'].hasError('required')" class="text-red-500">
-        *User name is required
-       </small>
-             
-                  <!-- Password input with toggle visibility -->
-                  <div class="pt-3">
-                    <div class="relative mb-4">
-                      <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-                        <i class="fa fa-lock"></i>
-                      </span>
-                      <input 
-                        formControlName="password"
-                        [type]="type"
-                        placeholder="Password"
-                        [ngClass]="{
-                          'border-red-500': signupForm.controls['password'].dirty && signupForm.controls['password'].hasError('required'),
-                          'border-gray-300': !(signupForm.controls['password'].dirty && signupForm.controls['password'].hasError('required'))
-                        }"
-                        class="w-full pl-10 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 flex-1 bg-transparent outline-none text-gray-400 focus:text-gray-700"
-                      />
-
-                      <!-- Eye icon to toggle password visibility -->
-                      <span (click)="hideShowPass()" class="absolute right-3 top-3 cursor-pointer">
-                        <i class="fa" [ngClass]="eyeIcon"></i>
-                       </span>
-
-                       <!-- Password validation messages -->
-                      <div *ngIf="signupForm.controls['password'].touched && signupForm.controls['password'].invalid" class="text-red-500 text-sm">
-                        <div *ngIf="signupForm.controls['password'].errors?.['required']">Password is required</div>
-                        <div *ngIf="signupForm.controls['password'].errors?.['pattern']">
-                          Password is not strong. Must contain at least 8 characters, 1 uppercase, 1 lowercase, 1 number, and 1 special character.
+                <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="space-y-6">
+                    <!-- First Name and Last Name Fields -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="form-field">
+                            <input
+                                type="text"
+                                formControlName="firstName"
+                                placeholder="First Name"
+                                class="w-full px-4 py-3 placeholder-gray-400 transition-all duration-300 border border-gray-300 shadow-sm rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
+                            />
+                            <div *ngIf="signupForm.get('firstName')?.invalid && signupForm.get('firstName')?.touched" 
+                                 class="mt-1 text-sm font-medium text-red-500 error-message">
+                                First Name is required
+                            </div>
                         </div>
-                      </div>
-                    </div>
-                  </div>
-    
-                  <!-- Re-enter Password -->
-                  <div class="pt-3">
-                    <div class="relative mb-4">
-                      <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-                        <i class="fa fa-lock"></i>
-                      </span>
-                      <input 
-                        formControlName="repassword"
-                        [type]="type"
-                        placeholder="Re-enter Password"
-                        class="w-full pl-10 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 flex-1 bg-transparent outline-none text-gray-400 focus:text-gray-700"
-                      />
-                      <span (click)="hideShowPass()" class="absolute right-3 top-3 cursor-pointer">
-                        <i class="fa" [ngClass]="eyeIcon"></i>
-                      </span>
+                        <div class="form-field">
+                            <input
+                                type="text"
+                                formControlName="lastName"
+                                placeholder="Last Name"
+                                class="w-full px-4 py-3 placeholder-gray-400 transition-all duration-300 border border-gray-300 shadow-sm rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
+                            />
+                            <div *ngIf="signupForm.get('lastName')?.invalid && signupForm.get('lastName')?.touched" 
+                                 class="mt-1 text-sm font-medium text-red-500 error-message">
+                                Last Name is required
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- Password mismatch validation -->
-                    <div *ngIf="signupForm.errors?.['passwordMismatch'] && signupForm.get('repassword')?.touched" class="text-red-500">
-                      *Passwords do not match
+                    <!-- Email Field -->
+                    <div class="form-field">
+                        <input
+                            type="email"
+                            formControlName="email"
+                            placeholder="Email"
+                            class="w-full px-4 py-3 placeholder-gray-400 transition-all duration-300 border border-gray-300 shadow-sm rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
+                        />
+                        <div *ngIf="signupForm.get('email')?.invalid && signupForm.get('email')?.touched" 
+                             class="mt-1 text-sm font-medium text-red-500 error-message">
+                            <span *ngIf="signupForm.get('email')?.errors?.['required']">Email is required</span>
+                            <span *ngIf="signupForm.get('email')?.errors?.['email']">Invalid email format</span>
+                        </div>
                     </div>
-                  </div>
-  
-              <!-- Forgot Password -->
-              <div class="flex justify-end mt-4 text-sm">
-                <a id="forgot" class="font-bold text-blue-500 hover:underline cursor-pointer">Forgot Password?</a>
-              </div>
 
-              <!-- Submit Button -->
-              <button 
-                (click)="onSignup()" 
-                type="submit"
-                class="btn w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 rounded mt-4 "
-              >
-                Sign Up
-              </button>
+                    <!-- Contact Number Field -->
+                    <div class="form-field">
+                        <input
+                            type="tel"
+                            formControlName="contactNumber"
+                            placeholder="Contact Number"
+                            class="w-full px-4 py-3 placeholder-gray-400 transition-all duration-300 border border-gray-300 shadow-sm rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
+                        />
+                        <div *ngIf="signupForm.get('contactNumber')?.invalid && signupForm.get('contactNumber')?.touched" 
+                             class="mt-1 text-sm font-medium text-red-500 error-message">
+                            Contact Number is required
+                        </div>
+                    </div>
 
-              <!-- Already Have Account -->
-              <div class="text-center pt-4 text-gray-600 text-sm">
-                Already have an account?
-                <a href="/login" class="text-blue-500 font-bold hover:underline">Login</a>
-              </div>
+                    <!-- House Number and Street Fields -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="form-field">
+                            <input
+                                type="text"
+                                formControlName="houseNo"
+                                placeholder="House Number"
+                                class="w-full px-4 py-3 placeholder-gray-400 transition-all duration-300 border border-gray-300 shadow-sm rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
+                            />
+                            <div *ngIf="signupForm.get('houseNo')?.invalid && signupForm.get('houseNo')?.touched" 
+                                 class="mt-1 text-sm font-medium text-red-500 error-message">
+                                House Number is required
+                            </div>
+                        </div>
+                        <div class="form-field">
+                            <input
+                                type="text"
+                                formControlName="street"
+                                placeholder="Street"
+                                class="w-full px-4 py-3 placeholder-gray-400 transition-all duration-300 border border-gray-300 shadow-sm rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
+                            />
+                            <div *ngIf="signupForm.get('street')?.invalid && signupForm.get('street')?.touched" 
+                                 class="mt-1 text-sm font-medium text-red-500 error-message">
+                                Street is required
+                            </div>
+                        </div>
+                    </div>
 
-           
-          
+                    <!-- City and Postal Code Fields -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="form-field">
+                            <input
+                                type="text"
+                                formControlName="city"
+                                placeholder="City"
+                                class="w-full px-4 py-3 placeholder-gray-400 transition-all duration-300 border border-gray-300 shadow-sm rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
+                            />
+                            <div *ngIf="signupForm.get('city')?.invalid && signupForm.get('city')?.touched" 
+                                 class="mt-1 text-sm font-medium text-red-500 error-message">
+                                City is required
+                            </div>
+                        </div>
+                        <div class="form-field">
+                            <input
+                                type="text"
+                                formControlName="postalCode"
+                                placeholder="Postal Code"
+                                class="w-full px-4 py-3 placeholder-gray-400 transition-all duration-300 border border-gray-300 shadow-sm rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
+                            />
+                            <div *ngIf="signupForm.get('postalCode')?.invalid && signupForm.get('postalCode')?.touched" 
+                                 class="mt-1 text-sm font-medium text-red-500 error-message">
+                                Postal Code is required
+                            </div>
+                        </div>
+                    </div>
 
+                    <!-- Username Field -->
+                    <div class="form-field">
+                        <input
+                            type="text"
+                            formControlName="username"
+                            placeholder="Username"
+                            class="w-full px-4 py-3 placeholder-gray-400 transition-all duration-300 border border-gray-300 shadow-sm rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
+                        />
+                        <div *ngIf="signupForm.get('username')?.invalid && signupForm.get('username')?.touched" 
+                             class="mt-1 text-sm font-medium text-red-500 error-message">
+                            Username is required
+                        </div>
+                    </div>
 
-  
+                    <!-- Password Field -->
+                    <div class="form-field">
+                        <input
+                            type="password"
+                            formControlName="password"
+                            placeholder="Password"
+                            class="w-full px-4 py-3 placeholder-gray-400 transition-all duration-300 border border-gray-300 shadow-sm rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
+                        />
+                        <div *ngIf="signupForm.get('password')?.invalid && signupForm.get('password')?.touched" 
+                             class="mt-1 text-sm font-medium text-red-500 error-message">
+                            <span *ngIf="signupForm.get('password')?.errors?.['required']">Password is required</span>
+                            <span *ngIf="signupForm.get('password')?.errors?.['minlength']">Password must be at least 6 characters</span>
+                        </div>
+                    </div>
+
+                    <!-- Confirm Password Field -->
+                    <div class="form-field">
+                        <input
+                            type="password"
+                            formControlName="confirmPassword"
+                            placeholder="Confirm Password"
+                            class="w-full px-4 py-3 placeholder-gray-400 transition-all duration-300 border border-gray-300 shadow-sm rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
+                        />
+                        <div *ngIf="signupForm.get('confirmPassword')?.invalid && signupForm.get('confirmPassword')?.touched" 
+                             class="mt-1 text-sm font-medium text-red-500 error-message">
+                            Please confirm your password
+                        </div>
+                        <div *ngIf="signupForm.hasError('passwordMismatch') && signupForm.get('confirmPassword')?.touched" 
+                             class="mt-1 text-sm font-medium text-red-500 error-message">
+                            Passwords do not match
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="pt-4">
+                        <button
+                            type="submit"
+                            [disabled]="signupForm.invalid || isSubmitting"
+                            class="flex items-center justify-center w-full px-6 py-3 text-sm font-semibold text-white border border-transparent shadow-lg submit-btn bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                        >
+                            <span *ngIf="isSubmitting" class="inline-block w-5 h-5 mr-3 border-2 border-white rounded-full border-t-transparent animate-spin"></span>
+                            <span class="text-base">{{ isSubmitting ? 'Creating Account...' : 'Create Account' }}</span>
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Login Link -->
+                <div class="mt-6 text-center">
+                    <p class="text-sm text-gray-600">
+                        Already have an account? 
+                        <a href="/cus-login" class="font-medium text-blue-600 transition-colors hover:text-blue-500">
+                            Sign in here
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        @keyframes width-decrease {
+            from { width: 100%; }
+            to { width: 0%; }
+        }
+    </style>
+</body>
+</html>

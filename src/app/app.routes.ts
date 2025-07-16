@@ -50,6 +50,7 @@ export const routes: Routes = [
 
     // Route for user login
     {path:'cus-login', component: LoginComponent},    // Route for general user signup
+    {path:'cus-signup', component: SignupComponent},    // Route for general user signup
     {path:'lun-login', component: LunLoginComponent},    // Route for general user signup
     {path:'driver-login', component: DriverLoginComponent},    // Route for general user signup
     {path:'admin-login', component: AdminLoginComponent},    // Route for general user signup

@@ -34,8 +34,8 @@
                     most.
                 </p>
                 <div class="hero-buttons">
-                    <button class="btn btn-primary" (click)="goTo('whoareyou')">Login</button>
-                    <button class="btn btn-secondary">Sign Up</button>
+                    <button class="btn btn-primary" (click)="goTo('whoareyou', 'login')">Login</button>
+                    <button class="btn btn-secondary" (click)="goTo('whoareyou', 'signup')">Sign Up</button>
                 </div>
             </div>
             <div class="hero-image">
@@ -88,29 +88,29 @@
             </div>
 
             <!-- Process Grid -->
-             <div class="flex justify-center w-full">
-                
-                    <div class="grid grid-cols-1 gap-8 mt-8 md:grid-cols-2 lg:grid-cols-4 w-[80vw] m-0 mx-auto">
-                        <div *ngFor="let step of processSteps; let i = index"
-                            class="p-8 text-center transition-all duration-300 bg-white step-card rounded-3xl hover:scale-105 hover:-translate-y-2">
-                            <div class="mb-6">
-                                <span class="inline-block mb-4 text-sm font-bold tracking-wider text-blue-500">
-                                    {{ step.stepLabel }}
-                                </span>
-                                <h3 class="mb-4 text-2xl font-bold text-gray-800">{{ step.title }}</h3>
-                                <div class="flex justify-center w-full">
-                                    
-                                    <div
-                                        class="flex !items-center !justify-center w-24 h-24 mx-auto mb-4 overflow-hidden bg-gray-100 rounded-2xl">
-                                        <img [src]="step.imagePath" [alt]="step.title + ' illustration'"
-                                            class="object-cover w-full h-full" loading="lazy" />
-                                    </div>
+            <div class="flex justify-center w-full">
+
+                <div class="grid grid-cols-1 gap-8 mt-8 md:grid-cols-2 lg:grid-cols-4 w-[80vw] m-0 mx-auto">
+                    <div *ngFor="let step of processSteps; let i = index"
+                        class="p-8 text-center transition-all duration-300 bg-white step-card rounded-3xl hover:scale-105 hover:-translate-y-2">
+                        <div class="mb-6">
+                            <span class="inline-block mb-4 text-sm font-bold tracking-wider text-blue-500">
+                                {{ step.stepLabel }}
+                            </span>
+                            <h3 class="mb-4 text-2xl font-bold text-gray-800">{{ step.title }}</h3>
+                            <div class="flex justify-center w-full">
+
+                                <div
+                                    class="flex !items-center !justify-center w-24 h-24 mx-auto mb-4 overflow-hidden bg-gray-100 rounded-2xl">
+                                    <img [src]="step.imagePath" [alt]="step.title + ' illustration'"
+                                        class="object-cover w-full h-full" loading="lazy" />
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-             </div>
+            </div>
+        </div>
     </section>
 
     <!-- About Section -->
@@ -130,7 +130,7 @@
     <!-- Laundries Section -->
     <section class="laundries">
         <div class="container">
-             <h5 class="text-center text-[#0099FF]">LAUNDRIES</h5>
+            <h5 class="text-center text-[#0099FF]">LAUNDRIES</h5>
             <h2 class="section-title">From all around the country</h2>
             <div class="laundry-grid">
                 <div class="laundry-card" *ngFor="let laundry of laundries; let i = index"

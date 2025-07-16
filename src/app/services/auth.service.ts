@@ -45,11 +45,10 @@ export class AuthService {
     return this.http.post(`${this.baseUrl}/api/Auth/driver/login`, data);
    
   }
-  signup_async(data: any) {
-    console.log("data in service (signup)", data);// Debug log
-     return this.http.post(`${this.baseUrl}/Customer`, data, {
-    headers: { 'Content-Type': 'application/json' }
-  });
-    
+  customerRegister(data: any) {
+    console.log("data in service (customerRegister)", data); // Debug log
+    return this.http.post(`${this.baseUrl}/api/Auth/customer/register`, data, {
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 }
