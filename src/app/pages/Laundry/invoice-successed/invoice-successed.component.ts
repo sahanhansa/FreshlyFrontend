@@ -6,8 +6,8 @@ import { SuccessMessageComponent } from '../../../components/laundry/success-mes
 @Component({
   selector: 'app-invoice-successed',
   imports: [FooterComponent, SuccessMessageComponent ],
-  templateUrl: './invoice-successed.component.html',
-  styleUrl: './invoice-successed.component.css'
+  templateUrl: './invoice-successed.component.html'
+ 
 })
 export class InvoiceSuccessedComponent {
 
