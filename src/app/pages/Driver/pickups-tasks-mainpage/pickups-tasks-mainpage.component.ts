@@ -23,6 +23,7 @@ import { FooterComponent } from "../../../components/shared/footer/footer.compon
 })
 export class PickupsTasksMainpageComponent {
   searchQuery: string = '';
+  isOwnSearch: boolean = false;
   totalItems = 0; 
   currentPage = 1;
   itemsPerPage = 4;
@@ -39,4 +40,11 @@ export class PickupsTasksMainpageComponent {
     this.currentPage = page;
   }
 
+  onGlobalSearch(): void {
+    this.isOwnSearch = false;
+  }
+
+  onOwnSearch(): void {
+    this.isOwnSearch = true;
+  }
 }

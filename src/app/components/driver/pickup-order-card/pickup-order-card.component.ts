@@ -17,10 +17,17 @@ export class PickupOrderCardComponent implements OnInit, OnChanges {
   @Input() searchQuery: string = ''; // default to empty
   @Input() currentPage: number = 1;
   @Input() itemsPerPage: number = 5;
+  @Input() isOwnSearch: boolean = false;
   @Output() totalItemChange = new EventEmitter<number>();
+
+  userId: string | null = localStorage.getItem('userId');
+
 
   pickups: PickupOrder[] = [];
   filteredPickUps: PickupOrder[] = [];
+
+
+
 
   constructor(
     @Inject(PickupsService) private pickupsService: PickupsService,
@@ -32,9 +39,10 @@ export class PickupOrderCardComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['searchQuery'] || changes['currentPage']) {
+    if (changes['searchQuery'] || changes['currentPage'] || changes['isOwnSearch']) {
       this.filterOrderCard();
     }
+    console.log('change isOwnSearch:', this.isOwnSearch , this.userId);
   }
 
   /** Returns filtered pickups sorted with 'Pickup Pending' first */
@@ -71,16 +79,34 @@ export class PickupOrderCardComponent implements OnInit, OnChanges {
   }
 
   /** Apply search filter */
-  filterOrderCard(): void {
-    const query = this.searchQuery?.toLowerCase() || '';
+  // filterOrderCard(): void {
+  //   const query = this.searchQuery?.toLowerCase() || '';
 
-    this.filteredPickUps = this.pickups.filter(pickup => {
-      return pickup.customerName.toLowerCase().includes(query);
-    });
+  //   this.filteredPickUps = this.pickups.filter(pickup => {
+  //     return pickup.customerName.toLowerCase().includes(query);
+  //   });
     
-  this.totalItemChange.emit(this.filteredPickUps.length);
-  }
+  // this.totalItemChange.emit(this.filteredPickUps.length);
+  // }
 
-  
+  /** Apply search filter */
+filterOrderCard(): void {
+  const query = this.searchQuery?.toLowerCase() || '';
+
+  this.filteredPickUps = this.pickups.filter(pickup => {
+    const matchesQuery = pickup.customerName.toLowerCase().includes(query);
+
+    if (this.isOwnSearch) {
+      // Own Search: custpickdriver must be "D001"
+      return matchesQuery && pickup.pickupDriverId === this.userId;
+    } else {
+      // Global Search: custpickdriver is null AND status is "order Placed"
+      return matchesQuery && pickup.pickupDriverId === null && pickup.status === 'order placed';
+    }
+  });
+
+  this.totalItemChange.emit(this.filteredPickUps.length);
+}
+
 
 }

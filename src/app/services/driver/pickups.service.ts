@@ -18,13 +18,14 @@ export interface PickupOrder {
   laundryName: string;
   orderItems: OrderItem[];
   detailsLink: string;
+  pickupDriverId?: string;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class PickupsService {
-  private baseUrl = `${environment.apiUrl}/api/Orders`;
+  private baseUrl = `${environment.apiUrl}/api/Order`;
 
   constructor(private http: HttpClient) {}
 
@@ -76,6 +77,7 @@ export class PickupsService {
       customerName: order.customerName,
       customerId: order.customerId,
       address: order.address,
+      pickupDriverId:order.pickupDriverId,
       contact: Array.isArray(order.contact) ? order.contact.join(', ') : order.contact,
       laundryName: order.laundryName,
       orderItems: Array.isArray(order.orderItems) ? order.orderItems : [],
