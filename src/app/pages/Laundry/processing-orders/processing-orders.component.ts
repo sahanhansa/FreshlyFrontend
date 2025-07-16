@@ -12,8 +12,7 @@ import { RouterModule } from '@angular/router';
   selector: 'app-processing-orders', 
   standalone: true, 
   imports: [CommonModule, RouterModule, HttpClientModule, PaginationComponent, SearchBarComponent, FooterComponent], 
-  templateUrl: './processing-orders.component.html', 
-  styleUrls: ['./processing-orders.component.scss'] 
+  templateUrl: './processing-orders.component.html'
 })
 export class processingOrdersComponent implements OnInit { // The component class that implements OnInit lifecycle hook
   orders: Order[] = []; // Declare an array to store the orders fetched from the backend

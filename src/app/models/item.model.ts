@@ -15,5 +15,15 @@ export interface Item {
   services: ServiceWithPrice[];
 }
 
+export interface AddItemDTO {
+  name: string;
+  description?: string;
+  categoryId: string;
+  imageUrl?: string;
+  services: {
+    serviceId: string;
+    price?: number;
+  }[];
+}
 
 export type ItemCategory = 'ladies' | 'gents' | 'kids' | 'other';
