@@ -9,8 +9,7 @@ import { CommonModule } from '@angular/common';
   selector: 'app-add-item',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  templateUrl: './add-item.component.html',
-  styleUrls: ['./add-item.component.scss']
+  templateUrl: './add-item.component.html'
 })
 export class AddItemComponent implements OnInit {
   // Hardcoded categories as requested

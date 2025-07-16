@@ -9,8 +9,7 @@ import { NavbarComponent } from '../../../components/shared/navbar/navbar.compon
 @Component({
   selector: 'app-home',
   imports: [FooterComponent, NavbarComponent],
-  templateUrl: './home.component.html',
-  styleUrl: './home.component.css'
+  templateUrl: './home.component.html'
 })
 export class HomeComponent implements OnInit {
   @Input() laundryName: string = 'Laundry Name';

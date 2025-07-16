@@ -5,8 +5,7 @@ import { FooterComponent } from '@app/components/shared/footer/footer.component'
 @Component({
   selector: 'app-laundry-edit-item',
   imports: [EditItemComponent,FooterComponent ],
-  templateUrl: './laundry-edit-item.component.html',
-  styleUrl: './laundry-edit-item.component.scss'
+  templateUrl: './laundry-edit-item.component.html'
 })
 export class LaundryEditItemComponent {
 

@@ -8,8 +8,7 @@ import { FormsModule } from '@angular/forms';
   selector: 'app-view-feedbacks',
   standalone: true,
   imports: [CommonModule,FormsModule],
-  templateUrl: './view-feedbacks.component.html',
-  styleUrls: ['./view-feedbacks.component.css']
+  templateUrl: './view-feedbacks.component.html'
 })
 export class ViewFeedbacksComponent implements OnInit {
   feedbacks: (Feedback & { showReply?: boolean; replyText?: string })[] = [];

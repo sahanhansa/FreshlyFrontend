@@ -6,8 +6,8 @@ import { RouterModule } from '@angular/router';
   selector: 'app-laundry-item-card',
   standalone: true,
   imports: [CommonModule,RouterModule ],
-  templateUrl: './laundry-item-card.component.html',
-  styleUrls: ['./laundry-item-card.component.scss']
+  templateUrl: './laundry-item-card.component.html'
+
 })
 export class LaundryItemCardComponent {
   isDropdownOpen: boolean = false;

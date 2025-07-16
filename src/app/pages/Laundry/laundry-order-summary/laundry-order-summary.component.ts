@@ -17,8 +17,7 @@ interface Item {
   selector: 'app-laundry-order-summary',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  templateUrl: './laundry-order-summary.component.html',
-  styleUrls: ['./laundry-order-summary.component.scss']
+  templateUrl: './laundry-order-summary.component.html'
 })
 export class LaundryOrderSummaryComponent {
   services = ['Regular Wash', 'Dry Clean', 'Hand Wash', 'Press Only'];

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { HeaderComponent } from '../../../components/laundry/header/header.component';
+import { NavbarComponent } from '@app/components/shared/navbar/navbar.component';
 import { FooterComponent } from "../../../components/shared/footer/footer.component";
 import { CommonModule } from '@angular/common';
 import { StatsCardComponent } from '@app/components/laundry/stats-card/stats-card.component';
@@ -13,7 +13,7 @@ import { AccessNoticeComponent } from '@app/components/laundry/access-notice/acc
   standalone: true,
   imports: [
     CommonModule,
-    HeaderComponent,
+    NavbarComponent,
     FooterComponent,
     StatsCardComponent,
     LaundryDetailsCardComponent,
@@ -22,7 +22,7 @@ import { AccessNoticeComponent } from '@app/components/laundry/access-notice/acc
 
 ],
   templateUrl: './laundry-profile.component.html',
-  styleUrls: ['./laundry-profile.component.css']
+
 })
 export class LaundryProfileComponent {
   stats = [
