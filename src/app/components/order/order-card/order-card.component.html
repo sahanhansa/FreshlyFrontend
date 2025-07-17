@@ -1,21 +1,53 @@
 <div class="max-w-4xl mx-auto p-1 sm:p-2">
-  <div class="border border-gray-200 rounded-lg shadow-sm hover:shadow-lg transition-all duration-300 ease-in-out cursor-pointer bg-white transform hover:scale-[1.02] hover:border-gray-300" (click)="viewOrderDetails()">
-    <div class="px-5 py-3 flex">
+  <div class="border border-gray-200 rounded-lg shadow-sm hover:shadow-lg transition-all duration-300 ease-in-out cursor-pointer bg-white transform hover:scale-[1.01]" (click)="viewOrderDetails()">
+    <div class="px-5 py-4 flex">
 
       <!-- Status Icon -->
       <div class="mr-5 flex-shrink-0">
         <div [ngClass]="{
-          'bg-yellow-100': isOngoing(),
-          'bg-green-100': isCompleted()
-        }" class="w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110">
-        
-          <!-- Ongoing orders -->
-          <svg *ngIf="isOngoing()" xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          'bg-blue-100 text-blue-600': currentStep === 'Order placed',
+          'bg-indigo-100 text-indigo-600': currentStep === 'Order pickup scheduled',
+          'bg-purple-100 text-purple-600': currentStep === 'Picked up',
+          'bg-yellow-100 text-yellow-600': currentStep === 'Processing in laundry',
+          'bg-orange-100 text-orange-600': currentStep === 'Finished processing',
+          'bg-pink-100 text-pink-600': currentStep === 'Out for delivery',
+          'bg-green-100 text-green-600': currentStep === 'Completed'
+        }" class="w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300">
+          
+          <!-- Order placed -->
+          <svg *ngIf="currentStep === 'Order placed'" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
           </svg>
           
-          <!-- Completed orders -->
-          <svg *ngIf="isCompleted()" xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <!-- Pickup scheduled -->
+          <svg *ngIf="currentStep === 'Order pickup scheduled'" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          
+          <!-- Picked up -->
+          <svg *ngIf="currentStep === 'Picked up'" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
+          </svg>
+          
+          <!-- Processing -->
+          <svg *ngIf="currentStep === 'Processing in laundry'" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+          </svg>
+          
+          <!-- Finished processing -->
+          <svg *ngIf="currentStep === 'Finished processing'" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+          </svg>
+          
+          <!-- Out for delivery -->
+          <svg *ngIf="currentStep === 'Out for delivery'" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
+          </svg>
+          
+          <!-- Completed -->
+          <svg *ngIf="currentStep === 'Completed'" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
         </div>
@@ -27,13 +59,32 @@
           
           <!-- Left side: Order ID and Info -->
           <div>
-            <h3 class="text-base font-semibold text-gray-900 group-hover:text-gray-800">Order id: #{{ orderId }}</h3>
+            <h3 class="text-base font-semibold text-gray-900 group-hover:text-gray-800">{{ orderId }}</h3>
             <p class="text-sm text-gray-600 mt-1">{{ laundryName }}</p>
             
+            <!-- Order Status -->
+            <div class="mt-1 inline-flex items-center">
+              <span [ngClass]="{
+                'bg-blue-100 text-blue-800': currentStep === 'Order placed',
+                'bg-indigo-100 text-indigo-800': currentStep === 'Order pickup scheduled',
+                'bg-purple-100 text-purple-800': currentStep === 'Picked up',
+                'bg-yellow-100 text-yellow-800': currentStep === 'Processing in laundry',
+                'bg-orange-100 text-orange-800': currentStep === 'Finished processing',
+                'bg-pink-100 text-pink-800': currentStep === 'Out for delivery',
+                'bg-green-100 text-green-800': currentStep === 'Completed'
+              }" class="px-2 py-1 text-xs font-medium rounded-full">
+                {{ currentStep }}
+              </span>
+            </div>
+            
             <!-- Order Items -->
-            <div class="mt-1">
-              <div *ngFor="let item of items" class="text-sm text-gray-600">
-                {{ item.name }} x{{ item.quantity }}
+            <div class="mt-2 space-y-1">
+              <div *ngFor="let item of areItemsVisible ? items : visibleItems" class="text-sm text-gray-600 flex justify-between">
+                <span>{{ item.itemName }} ({{ item.serviceName }})</span>
+                <span>x{{ item.quantity }}</span>
+              </div>
+              <div *ngIf="hasMoreItems" class="text-xs text-gray-500 cursor-pointer hover:underline" (click)="toggleItemsVisibility($event)">
+                {{ areItemsVisible ? 'Show less' : '+ ' + additionalItemsCount + ' more item(s)' }}
               </div>
             </div>
           </div>
@@ -43,6 +94,16 @@
             <p class="text-sm text-gray-500">{{ date }}</p>
             <p class="text-lg font-bold text-gray-900 mt-4">Rs. {{ totalAmount }}</p>
           </div>
+        </div>
+
+        <!-- View Order Status button -->
+        <div class="mt-3 border-t border-gray-100 pt-3 flex justify-end">
+          <button class="text-blue-600 hover:text-blue-800 text-sm font-medium hover:underline flex items-center gap-1">
+            View Order Status
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
         </div>
       </div>
     </div>
