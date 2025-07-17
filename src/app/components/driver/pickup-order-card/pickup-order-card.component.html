@@ -1,20 +1,25 @@
-
 <div *ngIf="pagedPickups.length > 0; else noPickups" class="flex flex-wrap justify-center gap-6 mt-5 mb-5">
   <div *ngFor="let pickup of pagedPickups" class="w-[22%] min-w-[240px] max-w-[300px]">
-    <div class="bg-[#d4f6ff] p-4 rounded-[15px] shadow-md font-sans transition-transform duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg">
+    <div
+      class="bg-[#d4f6ff] p-4 rounded-[15px] shadow-md font-sans transition-transform duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg">
 
       <!-- Order ID and Status -->
       <div class="flex justify-between items-center mb-3">
         <p class="order-id font-semibold text-sm break-words">Order ID: #{{ pickup.id }}</p>
       </div>
 
-      <span class="status text-sm font-medium px-3 py-1 rounded-full"
-        [ngClass]="{
-          'pending': pickup.status === 'order placed',
-          'completed': pickup.status === 'Pickup Complete',
-        }">
-         {{ pickup.status === 'order placed' ? 'pending' :
-     pickup.status === 'Pickup Complete' ? 'completed' : '' }}
+      <span class="status text-sm font-medium px-3 py-1 rounded-full" [ngClass]="{
+            'pickup-pending': pickup.status?.trim() === 'order placed' && pickup.pickupDriverId === null,
+            'pickup-InProgress': pickup.status?.trim() === 'order placed' && pickup.pickupDriverId !== null,
+            'pickup-complete': pickup.status?.trim() === 'order picked up'
+          }">
+
+        {{
+        pickup.status === 'order placed' && pickup.pickupDriverId !== null
+        ? 'Pickup In Progress'
+        :pickup.status === 'order placed' ?
+        pickup.status :'Pickup Complete'
+        }}
       </span>
 
       <!-- Order Details -->
@@ -25,11 +30,11 @@
         <p><strong>Contact:</strong> {{ pickup.contact }}</p>
         <p><strong>Laundry Name:</strong> {{ pickup.laundryName }}</p>
       </div>
-     <!-- buttton - view order -->
+      <!-- buttton - view order -->
       <button class="view-button" [routerLink]="['/order-details-pending', pickup.id]">
         View Order Details
       </button>
-      
+
 
     </div>
   </div>

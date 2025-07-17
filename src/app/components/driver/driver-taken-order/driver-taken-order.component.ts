@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Input, Output, SimpleChange, SimpleChanges } from '@angular/core';
 import { MarksToDoneButtonComponent } from '../../../components/driver/marks-to-done-button/marks-to-done-button.component';
 
 @Component({
@@ -8,5 +8,12 @@ import { MarksToDoneButtonComponent } from '../../../components/driver/marks-to-
   styleUrls: ['./driver-taken-order.component.css']
 })
 export class DriverTakenOrderComponent {
+  @Input() orderId: string = '';
+  @Output() orderConfirmed = new EventEmitter<string>();
+
+  onOrderConfirmed(event: string) {
+    console.log('Order confirmed:', event);
+    this.orderConfirmed.emit(event);
+  }
 
 }

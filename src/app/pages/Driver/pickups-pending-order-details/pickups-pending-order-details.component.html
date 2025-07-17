@@ -1,14 +1,21 @@
+
 <div><app-driver-navbar></app-driver-navbar></div>
 <br><br><br><br>
 <div><app-pickup-details-header></app-pickup-details-header></div>
 <br>
 
-<div><app-order-details-pending></app-order-details-pending></div>
+<div><app-order-details-pending (noteChange)="onInputReceived($event)" [pickupOrder]="pickupOrder"></app-order-details-pending></div>
 <br>
 <br>
-<div><app-driver-taken-order></app-driver-taken-order></div>
-<br>
-<div><app-pickup-question></app-pickup-question></div>
+<!-- Always shown -->
+<div *ngIf="driverId == null">
+  <app-driver-taken-order [orderId]="orderId" (orderConfirmed)="onOrderConfirmed($event)"></app-driver-taken-order>
+</div>
+
+<div *ngIf="driverId != null && pickupOrder?.status === 'order placed'">
+  <app-pickup-question (orderedConfirmed)="onOrderConfirmed($event)" [note]="note" [orderId]="orderId" ></app-pickup-question>
+</div>
+
 <br>
 <br>
 <div><app-footer></app-footer>

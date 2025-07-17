@@ -97,16 +97,29 @@ filterOrderCard(): void {
     const matchesQuery = pickup.customerName.toLowerCase().includes(query);
 
     if (this.isOwnSearch) {
-      // Own Search: custpickdriver must be "D001"
+      // Own search: show only this driver’s orders
       return matchesQuery && pickup.pickupDriverId === this.userId;
     } else {
-      // Global Search: custpickdriver is null AND status is "order Placed"
+      // Global search: show only unassigned, placed orders
       return matchesQuery && pickup.pickupDriverId === null && pickup.status === 'order placed';
     }
   });
 
+  if (this.isOwnSearch) {
+    // ✅ Only sort when doing own search
+    this.filteredPickUps.sort((a, b) => {
+      const aAssigned = a.status === 'order placed' && a.pickupDriverId === this.userId;
+      const bAssigned = b.status === 'order placed' && b.pickupDriverId === this.userId;
+
+      if (aAssigned === bAssigned) return 0;
+      return aAssigned ? -1 : 1;
+    });
+  }
+
   this.totalItemChange.emit(this.filteredPickUps.length);
 }
+
+
 
 
 }
