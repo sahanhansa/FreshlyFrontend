@@ -11,6 +11,6 @@ export class CustomerService {
   constructor(private http: HttpClient) {}
 
   getCustomerAddress(customerId: string): Observable<CustomerAddress> {
-    return this.http.get<CustomerAddress>(`${this.apiUrl}/${customerId}/address`);
-  }
+  return this.http.get<CustomerAddress>(`${environment.apiUrl}/api/Order/Customer/${customerId}/address`);
+}
 }

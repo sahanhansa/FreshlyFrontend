@@ -11,7 +11,7 @@ import { ToastComponent} from './components/shared/toast/toast.component';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, ToastComponent, LandingPageComponent],
+  imports: [CommonModule, RouterOutlet, ToastComponent],
   templateUrl: './app.component.html',
   host: {
     class: 'block min-h-screen'
