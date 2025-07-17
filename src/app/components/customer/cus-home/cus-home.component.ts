@@ -4,6 +4,7 @@ import {LaundriesCardCustomerComponent} from './laundries-list.component'
 import {ClothingListComponent} from './clothing-list.component';
 import {ContactPromptComponent} from './contact-prompt.component';
 
+
 @Component({
   selector: 'app-cus-home',
   templateUrl: './cus-home.component.html',
@@ -12,9 +13,9 @@ import {ContactPromptComponent} from './contact-prompt.component';
     LaundriesCardCustomerComponent,
     ClothingListComponent,
     ContactPromptComponent
-
     // Import your laundries card component
-  ]
+ 
+]
 })
 export class CusHomeComponent {
   customerName: string = '';

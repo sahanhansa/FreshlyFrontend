@@ -1,25 +1,13 @@
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router'; // Add Router import
+import { Router } from '@angular/router';
 import { BasketService } from '../../../services/basket.service';
 import { ToastService } from '../../../services/toast.service';
-import { TemporaryOrderSummary, TemporaryOrderItem } from '../../../models/basket.model';
-import { PickupSchedulerComponent } from '../pickup-scheduler/pickup-scheduler.component'; // adjust path if needed
+import { TemporaryOrderSummary, ConfirmOrderDTO } from '../../../models/basket.model';
+import { PickupSchedulerComponent } from '../pickup-scheduler/pickup-scheduler.component';
 import { CustomerAddress } from '../../../models/order-models/customerAddress.model';
 import { CustomerAddressPopupComponent } from '../customer-address-popup/customer-address-popup.component';
-import { OrderConfirmPopupComponent } from '../order-confirm-popup/order-confirm-popup.component'; // <-- Add this
-
-
-
-interface OrderItem {
-  id: number;
-  name: string;
-  material: string;
-  washMethod: string;
-  price: number;
-  quantity: number;
-  image: string;
-}
+import { OrderConfirmPopupComponent } from '../order-confirm-popup/order-confirm-popup.component';
 
 @Component({
   selector: 'app-order-summary',
@@ -34,14 +22,7 @@ interface OrderItem {
   styleUrl: './order-summary.component.css'
 })
 export class OrderSummaryComponent implements OnInit {
-  // Legacy inputs for backward compatibility
-  @Input() orderId: string = '';
-  @Input() laundryName: string = '';
-  @Input() laundryId: string = ''; // Add laundryId input
-  @Input() items: OrderItem[] = [];
-  @Input() showLaundryInfo: boolean = true;
-  
-  // New input for backend data
+  // Only backend-driven input
   @Input() orderSummary: TemporaryOrderSummary | null = null;
 
   @Output() deleteOrderEvent = new EventEmitter<string>();
@@ -50,29 +31,31 @@ export class OrderSummaryComponent implements OnInit {
   orderItems: any[] = [];
   showDeleteConfirmation: boolean = false;
   isProcessing: boolean = false;
-  showPickupScheduler: boolean = false; // Add showPickupScheduler property
+  showPickupScheduler: boolean = false;
   showAddressPopup: boolean = false;
-  showOrderConfirmPopup: boolean = false; // <-- Add this
+  showOrderConfirmPopup: boolean = false;
   showOrderConfirmedPopup: boolean = false;
-  customerId = 'e91883cd-2e64-11f0-a04a-30d0423f455f'; // get this from auth/session
+  customerId = 'a4dca9b3-5f58-11f0-8064-0022481a06a0'; // get this from auth/session
 
   pickupDateTime!: Date;
   address!: CustomerAddress;
+  orderId: string = '';
+  laundryName: string = '';
+  laundryId: string = '';
 
   constructor(
     private basketService: BasketService,
     private toastService: ToastService,
-    private router: Router // Inject Router
+    private router: Router
   ) {}
 
   ngOnInit() {
-    // Use the orderSummary if provided, otherwise fall back to legacy inputs
+    // Use only the orderSummary input
     if (this.orderSummary) {
       this.orderItems = this.orderSummary.items.map(item => ({
         itemId: item.itemId,
         name: item.itemName,
         serviceId: item.serviceId,
-        //categoryName: item.categoryName || 'Standard',
         washMethod: item.serviceName,
         price: item.price,
         quantity: item.quantity,
@@ -80,12 +63,11 @@ export class OrderSummaryComponent implements OnInit {
       }));
       this.orderId = this.orderSummary.temporaryOrderId;
       this.laundryName = this.orderSummary.laundryName;
-      // Extract laundryId from orderSummary if available
       if (this.orderSummary.laundryId) {
         this.laundryId = this.orderSummary.laundryId;
       }
     } else {
-      this.orderItems = this.items;
+      this.orderItems = [];
     }
   }
 
@@ -93,7 +75,7 @@ export class OrderSummaryComponent implements OnInit {
     if (this.orderSummary) {
       return this.orderSummary.totalAmount;
     }
-    return this.orderItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    return 0;
   }
 
   deleteOrder() {
@@ -109,7 +91,7 @@ export class OrderSummaryComponent implements OnInit {
       next: () => {
         this.toastService.show('Success', 'Order deleted successfully', 'success');
         this.showDeleteConfirmation = false;
-        this.deleteOrderEvent.emit(id); // Notify parent to remove from UI
+        this.deleteOrderEvent.emit(id);
         this.isProcessing = false;
       },
       error: (error) => {
@@ -126,7 +108,7 @@ export class OrderSummaryComponent implements OnInit {
   }
 
   placeOrder() {
-    this.showPickupScheduler = true; // Show the scheduler popup
+    this.showPickupScheduler = true;
   }
 
   onPickupConfirm(dt: Date) {
@@ -142,8 +124,36 @@ export class OrderSummaryComponent implements OnInit {
   }
 
   onOrderConfirm() {
-    this.showOrderConfirmPopup = false;
-    this.showOrderConfirmedPopup = true;
+    if (!this.orderSummary) return;
+
+    const dto: ConfirmOrderDTO = {
+      temporaryOrderId: this.orderSummary.temporaryOrderId,
+      pickupAt: this.pickupDateTime.toISOString(),
+      address: {
+        addressId: this.address.addressId,
+        houseNo: this.address.houseNo,
+        street: this.address.street,
+        city: this.address.city,
+        postalCode: this.address.postalCode
+      }
+    };
+
+    this.basketService.confirmOrder(dto).subscribe({
+      next: (success) => {
+        if (success) {
+          this.showOrderConfirmPopup = false;
+          this.showOrderConfirmedPopup = true;
+          this.toastService.show('Success', 'Order placed successfully!', 'success');
+          this.refreshOrdersEvent.emit();
+        } else {
+          this.toastService.show('Error', 'Failed to place order.', 'error');
+        }
+      },
+      error: (err) => {
+        this.toastService.show('Error', 'Failed to place order.', 'error');
+        console.error('Order confirm error:', err);
+      }
+    });
   }
 
   onOrderConfirmedClose() {
@@ -158,7 +168,7 @@ export class OrderSummaryComponent implements OnInit {
 
   onOrderBack() {
     this.showOrderConfirmPopup = false;
-    this.showAddressPopup = true; // <-- Show the address popup again
+    this.showAddressPopup = true;
   }
 
   onOrderCancel() {
@@ -171,7 +181,6 @@ export class OrderSummaryComponent implements OnInit {
 
     this.basketService.deleteItemFromOrder(temporaryOrderId, itemId, serviceId).subscribe({
       next: () => {
-        // Remove from UI
         this.orderItems = this.orderItems.filter(i => !(i.itemId === itemId && i.serviceId === serviceId));
         if (this.orderSummary) {
           this.orderSummary.items = this.orderSummary.items.filter(i => !(i.itemId === itemId && i.serviceId === serviceId));
