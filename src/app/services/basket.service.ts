@@ -99,6 +99,6 @@ export class BasketService {
    * @returns Observable<boolean>
    */
   confirmOrder(dto: ConfirmOrderDTO) {
-    return this.http.post<boolean>(`${environment.apiUrl}/api/orders/confirm`, dto);
+    return this.http.post<boolean>(`${environment.apiUrl}/api/order/confirm`, dto);
   }
 }
