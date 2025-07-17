@@ -16,9 +16,9 @@
 
         {{
         pickup.status === 'order placed' && pickup.pickupDriverId !== null
-        ? 'Pickup In Progress'
+        ? 'In Progress'
         :pickup.status === 'order placed' ?
-        pickup.status :'Pickup Complete'
+        'Pending' :'Complete'
         }}
       </span>
 
