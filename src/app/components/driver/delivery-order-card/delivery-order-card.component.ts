@@ -17,7 +17,10 @@ export class DeliveryOrderCardComponent implements OnInit, OnChanges {
   @Input() searchQuery: string = '';
   @Input() currentPage: number = 1;
   @Input() itemsPerPage: number = 5;
+  @Input() isOwnSearch: boolean = false;
   @Output() totalItemChange = new EventEmitter<number>();
+
+  userId: string | null = localStorage.getItem('userId');
 
   deliveries: DeliveryOrder[] = [];
   filteredDeliveries: DeliveryOrder[] = [];
@@ -25,16 +28,17 @@ export class DeliveryOrderCardComponent implements OnInit, OnChanges {
   constructor(
     private deliveryService: DeliveryService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.getDeliveries();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['searchQuery'] || changes['currentPage']) {
+    if (changes['searchQuery'] || changes['currentPage'] ||changes['isOwnSearch']) {
       this.filterDeliveries();
     }
+    console.log('change isOwnSearch:', this.isOwnSearch, this.userId);
   }
 
   get sortedDeliveries(): DeliveryOrder[] {
@@ -66,14 +70,24 @@ export class DeliveryOrderCardComponent implements OnInit, OnChanges {
   filterDeliveries(): void {
     const query = this.searchQuery?.toLowerCase() || '';
 
-    this.filteredDeliveries = this.deliveries.filter(delivery =>
-      delivery.customerName.toLowerCase().includes(query)
-    );
+    this.filteredDeliveries = this.deliveries.filter(delivery => {
+      const matchesQuery = delivery.customerName.toLowerCase().includes(query);
 
+      if (this.isOwnSearch) {
+        // Own search: show only this driver’s orders
+        return matchesQuery && delivery.deliverDriver === this.userId;
+      } else {
+        // Global search: show only unassigned, placed orders
+        return matchesQuery && delivery.deliverDriver === null && delivery.status === 'finished processing';
+      }
+    });
     this.totalItemChange.emit(this.filteredDeliveries.length);
   }
 
   viewOrderDetails(orderId: string): void {
     this.router.navigate(['/deliveries-pending-order-details', orderId]);
   }
+
+
+  
 }

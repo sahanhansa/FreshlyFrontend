@@ -25,6 +25,7 @@ export class DeliveryTasksMainpageComponent {
   totalItems: number = 0;
   currentPage: number = 1;
   itemsPerPage: number = 2;
+  isOwnSearch: boolean = false;
 
   onSearchChanged(query: string): void {
     this.searchQuery = query;
@@ -36,5 +37,12 @@ export class DeliveryTasksMainpageComponent {
 
   onPageChanged(page: number): void {
     this.currentPage = page;
+  }
+  onGlobalSearch(): void {
+    this.isOwnSearch = false;
+  }
+
+  onOwnSearch(): void {
+    this.isOwnSearch = true;
   }
 }
