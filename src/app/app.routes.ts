@@ -38,6 +38,8 @@ import { CustomerLayoutComponent } from './components/customer/customer-layout/c
 import { LogoutPageComponent } from './pages/Driver/logout-page/logout-page.component';
 import {LaundryHomeComponent} from './components/laundry/laundry-home/laundry-home.component';
 import {AdminLoginComponent} from './components/admin/login/admin-login.component';
+import { MultiStepFormComponent } from './components/laundry/lau-sign/multi-step-form.component';
+
 
 // Define the application's routes
 export const routes: Routes = [
@@ -55,6 +57,7 @@ export const routes: Routes = [
     {path:'driver-login', component: DriverLoginComponent},    // Route for general user signup
     {path:'admin-login', component: AdminLoginComponent},    // Route for general user signup
     {path:'signup', component: SignupComponent},    // Route for customer home page
+    {path:'lun-signup', component: MultiStepFormComponent},    // Route for laundry signup multi-step form
     //{ path: 'cus-home', component: CusHomeComponent },    // Route for laundry partner home page
   
 

@@ -1,0 +1,384 @@
+<div class="flex items-center justify-center min-h-screen p-4 bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-800">
+  <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-2xl min-h-[600px] relative overflow-hidden">
+    
+    <!-- Background Pattern -->
+    <div class="absolute inset-0 opacity-5">
+      <div class="absolute w-24 h-24 bg-blue-500 rounded-full -top-4 -right-4"></div>
+      <div class="absolute w-32 h-32 bg-purple-500 rounded-full -bottom-4 -left-4"></div>
+    </div>
+    
+    <!-- Header -->
+    <div class="relative z-10 mb-8 text-center">
+      <h1 class="mb-2 text-3xl font-bold text-gray-800 animate-fade-in">
+        Laundry Revenue Tracker
+      </h1>
+      <div class="w-20 h-1 mx-auto rounded-full bg-gradient-to-r from-blue-500 to-purple-500"></div>
+    </div>
+
+    <!-- Step Indicator -->
+    <div class="relative z-10 flex items-center justify-center mb-10">
+      <div class="flex items-center space-x-4">
+        <!-- Step 1 -->
+        <div class="flex items-center">
+          <div class="relative">
+            <div 
+              class="flex items-center justify-center w-10 h-10 text-sm font-semibold transition-all duration-500 transform rounded-full"
+              [ngClass]="{
+                'bg-blue-500 text-white scale-110 shadow-lg': currentStep >= 1,
+                'bg-gray-200 text-gray-500': currentStep < 1
+              }">
+              <span *ngIf="currentStep > 1" class="animate-bounce">✓</span>
+              <span *ngIf="currentStep <= 1">1</span>
+            </div>
+            <div 
+              *ngIf="currentStep >= 1" 
+              class="absolute bg-blue-500 rounded-full -inset-2 opacity-20 animate-pulse">
+            </div>
+          </div>
+        </div>
+        
+        <!-- Line 1 -->
+        <div 
+          class="w-16 h-1 transition-all duration-700 transform rounded-full"
+          [ngClass]="{
+            'bg-blue-500 scale-x-100': currentStep > 1,
+            'bg-gray-200 scale-x-0': currentStep <= 1
+          }">
+        </div>
+        
+        <!-- Step 2 -->
+        <div class="flex items-center">
+          <div class="relative">
+            <div 
+              class="flex items-center justify-center w-10 h-10 text-sm font-semibold transition-all duration-500 transform rounded-full"
+              [ngClass]="{
+                'bg-blue-500 text-white scale-110 shadow-lg': currentStep >= 2,
+                'bg-gray-200 text-gray-500': currentStep < 2
+              }">
+              <span *ngIf="currentStep > 2" class="animate-bounce">✓</span>
+              <span *ngIf="currentStep <= 2">2</span>
+            </div>
+            <div 
+              *ngIf="currentStep >= 2" 
+              class="absolute bg-blue-500 rounded-full -inset-2 opacity-20 animate-pulse">
+            </div>
+          </div>
+        </div>
+        
+        <!-- Line 2 -->
+        <div 
+          class="w-16 h-1 transition-all duration-700 transform rounded-full"
+          [ngClass]="{
+            'bg-blue-500 scale-x-100': currentStep > 2,
+            'bg-gray-200 scale-x-0': currentStep <= 2
+          }">
+        </div>
+        
+        <!-- Step 3 -->
+        <div class="flex items-center">
+          <div class="relative">
+            <div 
+              class="flex items-center justify-center w-10 h-10 text-sm font-semibold transition-all duration-500 transform rounded-full"
+              [ngClass]="{
+                'bg-blue-500 text-white scale-110 shadow-lg': currentStep >= 3,
+                'bg-gray-200 text-gray-500': currentStep < 3
+              }">
+              <span *ngIf="currentStep > 3" class="animate-bounce">✓</span>
+              <span *ngIf="currentStep <= 3">3</span>
+            </div>
+            <div 
+              *ngIf="currentStep >= 3" 
+              class="absolute bg-blue-500 rounded-full -inset-2 opacity-20 animate-pulse">
+            </div>
+          </div>
+        </div>
+        
+        <!-- Line 3 -->
+        <div 
+          class="w-16 h-1 transition-all duration-700 transform rounded-full"
+          [ngClass]="{
+            'bg-blue-500 scale-x-100': currentStep > 3,
+            'bg-gray-200 scale-x-0': currentStep <= 3
+          }">
+        </div>
+        
+        <!-- Step 4 -->
+        <div class="flex items-center">
+          <div class="relative">
+            <div 
+              class="flex items-center justify-center w-10 h-10 text-sm font-semibold transition-all duration-500 transform rounded-full"
+              [ngClass]="{
+                'bg-green-500 text-white scale-110 shadow-lg': currentStep >= 4,
+                'bg-gray-200 text-gray-500': currentStep < 4
+              }">
+              <span *ngIf="currentStep >= 4" class="animate-bounce">✓</span>
+              <span *ngIf="currentStep < 4">4</span>
+            </div>
+            <div 
+              *ngIf="currentStep >= 4" 
+              class="absolute bg-green-500 rounded-full -inset-2 opacity-20 animate-pulse">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form Content -->
+    <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()" class="relative z-10">
+      
+      <!-- Step 1: Laundry Details -->
+      <div 
+        class="step-content animate-slide-in-right" 
+        *ngIf="currentStep === 1"
+        [@slideInOut]>
+        <div class="mb-8 text-center">
+          <h2 class="mb-2 text-2xl font-bold text-gray-800">Enter Laundry Details</h2>
+          <p class="text-sm text-gray-600">Please fill the form below to receive confirmation from the admin panel.</p>
+        </div>
+        
+        <div class="space-y-6">
+          <div class="animate-fade-in-up" style="animation-delay: 0.1s;">
+            <input 
+              type="text" 
+              class="w-full px-4 py-3 placeholder-gray-400 transition-all duration-300 border-2 border-gray-200 rounded-lg bg-gray-50 focus:border-blue-500 focus:bg-white"
+              placeholder="Laundry Name" 
+              formControlName="laundryName"
+              [ngClass]="{'border-red-500 bg-red-50': isFieldInvalid('laundryName')}">
+          </div>
+
+          <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div class="animate-fade-in-up" style="animation-delay: 0.2s;">
+              <input 
+                type="text" 
+                class="w-full px-4 py-3 placeholder-gray-400 transition-all duration-300 border-2 border-gray-200 rounded-lg bg-gray-50 focus:border-blue-500 focus:bg-white"
+                placeholder="No." 
+                formControlName="streetNumber"
+                [ngClass]="{'border-red-500 bg-red-50': isFieldInvalid('streetNumber')}">
+            </div>
+            <div class="animate-fade-in-up" style="animation-delay: 0.3s;">
+              <input 
+                type="text" 
+                class="w-full px-4 py-3 placeholder-gray-400 transition-all duration-300 border-2 border-gray-200 rounded-lg bg-gray-50 focus:border-blue-500 focus:bg-white"
+                placeholder="Street" 
+                formControlName="street"
+                [ngClass]="{'border-red-500 bg-red-50': isFieldInvalid('street')}">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div class="animate-fade-in-up" style="animation-delay: 0.4s;">
+              <input 
+                type="text" 
+                class="w-full px-4 py-3 placeholder-gray-400 transition-all duration-300 border-2 border-gray-200 rounded-lg bg-gray-50 focus:border-blue-500 focus:bg-white"
+                placeholder="City" 
+                formControlName="city"
+                [ngClass]="{'border-red-500 bg-red-50': isFieldInvalid('city')}">
+            </div>
+            <div class="animate-fade-in-up" style="animation-delay: 0.5s;">
+              <input 
+                type="text" 
+                class="w-full px-4 py-3 placeholder-gray-400 transition-all duration-300 border-2 border-gray-200 rounded-lg bg-gray-50 focus:border-blue-500 focus:bg-white"
+                placeholder="Postal Code" 
+                formControlName="postalCode"
+                [ngClass]="{'border-red-500 bg-red-50': isFieldInvalid('postalCode')}">
+            </div>
+          </div>
+
+          <div class="animate-fade-in-up" style="animation-delay: 0.6s;">
+            <input 
+              type="email" 
+              class="w-full px-4 py-3 placeholder-gray-400 transition-all duration-300 border-2 border-gray-200 rounded-lg bg-gray-50 focus:border-blue-500 focus:bg-white"
+              placeholder="Email" 
+              formControlName="email"
+              [ngClass]="{'border-red-500 bg-red-50': isFieldInvalid('email')}">
+          </div>
+
+          <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div class="animate-fade-in-up" style="animation-delay: 0.7s;">
+              <input 
+                type="tel" 
+                class="w-full px-4 py-3 placeholder-gray-400 transition-all duration-300 border-2 border-gray-200 rounded-lg bg-gray-50 focus:border-blue-500 focus:bg-white"
+                placeholder="Contact Number 1" 
+                formControlName="contactNumber1"
+                [ngClass]="{'border-red-500 bg-red-50': isFieldInvalid('contactNumber1')}">
+            </div>
+            <div class="animate-fade-in-up" style="animation-delay: 0.8s;">
+              <input 
+                type="tel" 
+                class="w-full px-4 py-3 placeholder-gray-400 transition-all duration-300 border-2 border-gray-200 rounded-lg bg-gray-50 focus:border-blue-500 focus:bg-white"
+                placeholder="Contact Number 2" 
+                formControlName="contactNumber2">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2: Owner Details -->
+      <div 
+        class="step-content animate-slide-in-right" 
+        *ngIf="currentStep === 2"
+        [@slideInOut]>
+        <div class="mb-8 text-center">
+          <h2 class="mb-2 text-2xl font-bold text-gray-800">Enter Owner Details</h2>
+          <p class="text-sm text-gray-600">Please fill the form below to receive confirmation from the admin panel.</p>
+        </div>
+        
+        <div class="space-y-6">
+          <div class="animate-fade-in-up" style="animation-delay: 0.1s;">
+            <input 
+              type="text" 
+              class="w-full px-4 py-3 placeholder-gray-400 transition-all duration-300 border-2 border-gray-200 rounded-lg bg-gray-50 focus:border-blue-500 focus:bg-white"
+              placeholder="Name" 
+              formControlName="ownerName"
+              [ngClass]="{'border-red-500 bg-red-50': isFieldInvalid('ownerName')}">
+          </div>
+
+          <div class="animate-fade-in-up" style="animation-delay: 0.2s;">
+            <input 
+              type="text" 
+              class="w-full px-4 py-3 placeholder-gray-400 transition-all duration-300 border-2 border-gray-200 rounded-lg bg-gray-50 focus:border-blue-500 focus:bg-white"
+              placeholder="Address" 
+              formControlName="ownerAddress"
+              [ngClass]="{'border-red-500 bg-red-50': isFieldInvalid('ownerAddress')}">
+          </div>
+
+          <div class="animate-fade-in-up" style="animation-delay: 0.3s;">
+            <input 
+              type="tel" 
+              class="w-full px-4 py-3 placeholder-gray-400 transition-all duration-300 border-2 border-gray-200 rounded-lg bg-gray-50 focus:border-blue-500 focus:bg-white"
+              placeholder="Contact Number" 
+              formControlName="ownerContact"
+              [ngClass]="{'border-red-500 bg-red-50': isFieldInvalid('ownerContact')}">
+          </div>
+
+          <div class="animate-fade-in-up" style="animation-delay: 0.4s;">
+            <input 
+              type="email" 
+              class="w-full px-4 py-3 placeholder-gray-400 transition-all duration-300 border-2 border-gray-200 rounded-lg bg-gray-50 focus:border-blue-500 focus:bg-white"
+              placeholder="Email" 
+              formControlName="ownerEmail"
+              [ngClass]="{'border-red-500 bg-red-50': isFieldInvalid('ownerEmail')}">
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3: Create Account -->
+      <div 
+        class="step-content animate-slide-in-right" 
+        *ngIf="currentStep === 3"
+        [@slideInOut]>
+        <div class="mb-8 text-center">
+          <h2 class="mb-2 text-2xl font-bold text-gray-800">Create Account</h2>
+          <p class="text-sm text-gray-600">Please fill the form below to receive confirmation from the admin panel.</p>
+        </div>
+        
+        <div class="space-y-6">
+          <div class="animate-fade-in-up" style="animation-delay: 0.1s;">
+            <input 
+              type="text" 
+              class="w-full px-4 py-3 placeholder-gray-400 transition-all duration-300 border-2 border-gray-200 rounded-lg bg-gray-50 focus:border-blue-500 focus:bg-white"
+              placeholder="Username" 
+              formControlName="username"
+              [ngClass]="{'border-red-500 bg-red-50': isFieldInvalid('username')}">
+          </div>
+
+          <div class="animate-fade-in-up" style="animation-delay: 0.2s;">
+            <input 
+              type="text" 
+              class="w-full px-4 py-3 placeholder-gray-400 transition-all duration-300 border-2 border-gray-200 rounded-lg bg-gray-50 focus:border-blue-500 focus:bg-white"
+              placeholder="Name to be displayed in the page" 
+              formControlName="displayName"
+              [ngClass]="{'border-red-500 bg-red-50': isFieldInvalid('displayName')}">
+          </div>
+
+          <div class="animate-fade-in-up" style="animation-delay: 0.3s;">
+            <input 
+              type="password" 
+              class="w-full px-4 py-3 placeholder-gray-400 transition-all duration-300 border-2 border-gray-200 rounded-lg bg-gray-50 focus:border-blue-500 focus:bg-white"
+              placeholder="Password" 
+              formControlName="password"
+              [ngClass]="{'border-red-500 bg-red-50': isFieldInvalid('password')}">
+          </div>
+
+          <div class="animate-fade-in-up" style="animation-delay: 0.4s;">
+            <input 
+              type="password" 
+              class="w-full px-4 py-3 placeholder-gray-400 transition-all duration-300 border-2 border-gray-200 rounded-lg bg-gray-50 focus:border-blue-500 focus:bg-white"
+              placeholder="Re-enter password" 
+              formControlName="confirmPassword"
+              [ngClass]="{'border-red-500 bg-red-50': isFieldInvalid('confirmPassword')}">
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 4: Submitted -->
+      <div 
+        class="step-content animate-slide-in-right" 
+        *ngIf="currentStep === 4"
+        [@slideInOut]>
+        <div class="mb-8 text-center">
+          <h2 class="mb-2 text-2xl font-bold text-gray-800">Submitted</h2>
+          <p class="text-sm text-gray-600">Please fill the form below to receive confirmation from the admin panel.</p>
+        </div>
+        
+        <div class="py-8 text-center">
+          <div class="mb-6 animate-bounce-in">
+            <div class="flex items-center justify-center w-20 h-20 mx-auto mb-4 bg-green-500 rounded-full shadow-lg">
+              <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+              </svg>
+            </div>
+          </div>
+          
+          <h3 class="mb-4 text-xl font-semibold text-gray-800 animate-fade-in-up" style="animation-delay: 0.2s;">
+            Submit your request
+          </h3>
+          
+          <p class="max-w-md mx-auto text-sm leading-relaxed text-gray-600 animate-fade-in-up" style="animation-delay: 0.4s;">
+            Please review all the information you previously typed in the past steps, and if all is okay, 
+            submit your message to receive account confirmation in 24 - 48 hours.
+          </p>
+        </div>
+      </div>
+
+      <!-- Navigation Buttons -->
+      <div class="relative z-10 flex items-center justify-between mt-10">
+        <button 
+          *ngIf="currentStep > 1 && currentStep < 4" 
+          type="button" 
+          class="px-6 py-3 text-gray-700 transition-all duration-300 transform bg-gray-100 rounded-lg hover:bg-gray-200 hover:scale-105 hover:shadow-md"
+          (click)="previousStep()">
+          ← Previous
+        </button>
+        
+        <div *ngIf="currentStep === 1"></div>
+        
+        <button 
+          *ngIf="currentStep < 3" 
+          type="button" 
+          class="px-6 py-3 text-white transition-all duration-300 transform rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 hover:scale-105 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+          (click)="nextStep()"
+          [disabled]="!isStepValid()">
+          Next step →
+        </button>
+        
+        <button 
+          *ngIf="currentStep === 3" 
+          type="button" 
+          class="px-6 py-3 text-white transition-all duration-300 transform rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 hover:scale-105 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+          (click)="submitForm()"
+          [disabled]="!isStepValid()">
+          Submit
+        </button>
+        
+        <button 
+          *ngIf="currentStep === 4" 
+          type="button" 
+          class="px-6 py-3 mx-auto text-white transition-all duration-300 transform rounded-lg bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 hover:scale-105 hover:shadow-lg"
+          (click)="done()">
+          Done ✓
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
