@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, Inject, Input, Output, SimpleChanges } from '@angular/core';
+import { PickupsService } from '@app/services/driver/pickups.service';
+import { EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-marks-to-done-button',
@@ -7,10 +9,34 @@ import { Component } from '@angular/core';
   styleUrl: './marks-to-done-button.component.css'
 })
 export class MarksToDoneButtonComponent {
-   // Add the confirmPickup method
-   confirmPickup() {
-    // Add your logic here to handle the button click
-    console.log('Pickup confirmed!');
-    // For example, you might want to call a service to update the order status
 
-}}
+  constructor(
+    @Inject(PickupsService) private pickupsService: PickupsService,
+
+  ) { }
+
+  @Input() orderId: string = '';
+  @Output() confirmed1 = new EventEmitter<string>();
+
+  confirmPickup() {
+    console.log('Pickup confirmed for order:', this.orderId);
+
+    if (!this.orderId) {
+      console.error('No orderId provided');
+      return;
+    }
+
+    this.pickupsService.MarksToTake(this.orderId).subscribe({
+      next: response => {
+          console.log('Order successfully marked as taken.');
+          this.confirmed1.emit(this.orderId);
+          // Optionally update UI or notify user here
+      },
+      error: err => {
+        console.error('Error during mark to take:', err);
+      }
+    });
+
+  }
+
+}

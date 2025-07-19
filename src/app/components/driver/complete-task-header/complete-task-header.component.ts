@@ -4,7 +4,7 @@ import { Component } from '@angular/core';
   selector: 'app-complete-task-header',
   imports: [],
   templateUrl: './complete-task-header.component.html',
-  styleUrl: './complete-task-header.component.scss'
+  styleUrls: ['./complete-task-header.component.css']
 })
 export class CompleteTaskHeaderComponent {
 

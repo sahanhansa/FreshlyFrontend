@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -9,22 +9,29 @@ import { CommonModule } from '@angular/common';
   styleUrl: './pagination.component.css'
 })
 export class PaginationComponent {
-  totalPages = 3; 
-  currentPage = 1;
+  @Input() currentPage = 1;
+  @Input() totalItems = 0;
+  @Input() itemsPerPage = 5;
+  @Output() pageChange = new EventEmitter<number>();
 
-  setPage(page: number) {
-    this.currentPage = page;
+  get totalPages(): number {
+    return Math.ceil(this.totalItems / this.itemsPerPage);
+  }
+
+
+   setPage(page: number) {
+    this.pageChange.emit(page);
   }
 
   prevPage() {
     if (this.currentPage > 1) {
-      this.currentPage--;
+      this.pageChange.emit(this.currentPage - 1);
     }
   }
 
   nextPage() {
     if (this.currentPage < this.totalPages) {
-      this.currentPage++;
+      this.pageChange.emit(this.currentPage + 1);
     }
   }
 }

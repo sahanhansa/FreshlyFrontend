@@ -1,0 +1,7 @@
+<div class="container">
+    <h2>Have you taken the order?</h2>
+    <button [disabled]="!orderId || isSubmitting" (click)="confirmPickup()">
+        {{ isSubmitting ? 'Processing...' : 'Marks to Done' }}
+    </button>
+
+</div>
