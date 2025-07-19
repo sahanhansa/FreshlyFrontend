@@ -34,15 +34,18 @@
   color: rgb(27, 12, 12);
 }
 
-.status.pending {
+.pickup-pending {
   background-color: #facc15; /* Yellow */
-  
 }
 
-.status.completed {
-  background-color: #00c750; /* Green */
- 
+.pickup-InProgress {
+  background-color: #3b82f6; /* Blue */
 }
+
+.pickup-complete {
+  background-color: #22c55e; /* Green */
+}
+
 
 
 

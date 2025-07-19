@@ -1,17 +1,15 @@
 <div class="order-card" *ngIf="deliveryOrder">
   <div class="order-header">
     <span class="order-title">Order ID: #{{ deliveryOrder.id }}</span>
-    
-    <span 
-    class="status-badge" 
-    [ngClass]="{
+
+    <span class="status-badge" [ngClass]="{
       'delivery-pending': deliveryOrder.status === 'Delivery Pending',
       'delivery-complete': deliveryOrder.status === 'Delivery Complete'
     }">
-    {{ deliveryOrder.status }}
-  </span>
+      {{ deliveryOrder.status }}
+    </span>
 
-    
+
   </div>
 
   <div class="order-details">
@@ -47,15 +45,23 @@
     </div>
   </div>
 
-  <div>
+  <div *ngIf="deliveryOrder.status === 'out for delivery'">
     <label for="note" class="label">Add Note:</label>
     <br>
-    <textarea id="note" class="note-input" placeholder="Enter your notes here..."></textarea>
+    <textarea (input)="onNoteChange($event)" id="note" class="note-input"
+      placeholder="Enter your notes here..."></textarea>
+  </div>
+  <div *ngIf="deliveryOrder.status === 'delivered'">
+    <div class="row">
+      <span class="label">Note:</span>
+      <span class="value"> {{ deliveryOrder.note }}</span>
+    </div>
+    <br>
   </div>
 
-  <div class="button-group">
+  <!-- <div class="button-group">
     <button>Save</button>
-  </div>
+  </div> -->
 </div>
 
 <br>

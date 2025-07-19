@@ -1,106 +1,66 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-
-interface Order {
-  trackingId: string;
-  customer: string;
-  date: string;
-  orderId: string;
-  paymentMethod: string;
-  action: 'Delivered' | 'Picked';
-}
+import { CompleteTasksService, CompleteTasksDetailsDto } from '../../../services/complete-tasks.service';
 
 @Component({
   selector: 'app-complete-order-list',
+  standalone: true,
   imports: [CommonModule],
   templateUrl: './complete-order-list.component.html',
-  styleUrl: './complete-order-list.component.css'
+  styleUrls: ['./complete-order-list.component.css']
 })
-export class CompleteOrderListComponent {
-   orders: Order[] = [
-    {
-      trackingId: '#4621',
-      customer: 'Matt Dickerson',
-      date: '2025-07-10',
-      orderId: '#4621',
-      paymentMethod: 'Cash on Delivery',
-      action: 'Delivered'
-    },
-    {
-      trackingId: '#0998',
-      customer: 'Wiktoria',
-      date: '2025-07-10',
-      orderId: '#0998',
-      paymentMethod: 'Bank Transfer',
-      action: 'Delivered'
-    },
-    {
-      trackingId: '#3762',
-      customer: 'Trixie Byrd',
-      date: '2025-07-10',
-      orderId: '#3762',
-      paymentMethod: 'Cash on Delivery',
-      action: 'Picked'
-    },
-    {
-      trackingId: '#6689',
-      customer: 'Brad Mason',
-      date: '2025-07-10',
-      orderId: '#6689',
-      paymentMethod: 'Cash on Delivery',
-      action: 'Delivered'
-    },
-    {
-      trackingId: '#5690',
-      customer: 'Sanderson',
-      date: '2025-07-10',
-      orderId: '#5690',
-      paymentMethod: 'Cash on Delivery',
-      action: 'Picked'
-    },
-    {
-      trackingId: '#4811',
-      customer: 'Jun Redfern',
-      date: '2025-07-10',
-      orderId: '#4811',
-      paymentMethod: 'Bank Transfer',
-      action: 'Delivered'
-    },
-    {
-      trackingId: '#7046',
-      customer: 'Miriam Kidd',
-      date: '2025-07-10',
-      orderId: '#7046',
-      paymentMethod: 'Cash on Delivery',
-      action: 'Picked'
-    },
-    {
-      trackingId: '#1265',
-      customer: 'Dominic',
-      date: '2025-07-10',
-      orderId: '#1265',
-      paymentMethod: 'Bank Transfer',
-      action: 'Delivered'
-    },
-    {
-      trackingId: '#6800',
-      customer: 'Shanice',
-      date: '2025-07-10',
-      orderId: '#6800',
-      paymentMethod: 'Cash on Delivery',
-      action: 'Picked'
-    }
-  ];
+export class CompleteOrderListComponent implements OnInit, OnChanges {
+  @Input() searchQuery: string = '';
+  @Input() currentPage: number = 1;
+  @Input() itemsPerPage: number = 5;
+  @Output() totalItemChange = new EventEmitter<number>();
 
-  paginatedOrders: Order[] = [];
+  allOrders: CompleteTasksDetailsDto[] = [];
+  filteredOrders: CompleteTasksDetailsDto[] = [];
 
-  constructor() {
-    // For now, show all orders (pagination can be added later)
-    this.paginatedOrders = this.orders;
+  constructor(private completeTasksService: CompleteTasksService) {}
+
+  ngOnInit(): void {
+    this.loadCompleteTasks();
   }
-  openSummary(order: Order) {
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['searchQuery'] || changes['currentPage']) {
+      this.filterOrders();
+    }
+  }
+
+  loadCompleteTasks(): void {
+    this.completeTasksService.getAllCompleteTasks().subscribe({
+      next: (data) => {
+        this.allOrders = data;
+        this.filterOrders();
+      },
+      error: (err) => {
+        console.error('❌ Failed to load complete tasks:', err);
+      }
+    });
+  }
+
+  filterOrders(): void {
+    const query = this.searchQuery?.toLowerCase() || '';
+
+    this.filteredOrders = this.allOrders.filter(order => {
+      const matchesCustomer = order.customerName.toLowerCase().includes(query);
+      const matchesOrderId = order.orderId.toLowerCase().includes(query);
+      const matchesStatus = order.status.toLowerCase().includes(query);
+      return matchesCustomer || matchesOrderId || matchesStatus;
+    });
+
+    this.totalItemChange.emit(this.filteredOrders.length);
+  }
+
+  get paginatedOrders(): CompleteTasksDetailsDto[] {
+    const start = (this.currentPage - 1) * this.itemsPerPage;
+    return this.filteredOrders.slice(start, start + this.itemsPerPage);
+  }
+
+  openSummary(order: CompleteTasksDetailsDto) {
     console.log('Order summary clicked:', order);
-    // 👉 Replace with your modal or navigation logic
   }
 }

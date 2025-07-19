@@ -15,13 +15,36 @@ import { FooterComponent } from "../../../components/shared/footer/footer.compon
 
 @Component({
   selector: 'app-pickups-tasks-mainpage',
-  imports: [DriverNavbarComponent, PickupTasksHeaderComponent,PickupOrderCardComponent, SearchBarComponent,  PaginationComponent, FooterComponent],
- 
- 
+  imports: [DriverNavbarComponent, PickupTasksHeaderComponent, PickupOrderCardComponent, SearchBarComponent, PaginationComponent, FooterComponent],
+
+
   templateUrl: './pickups-tasks-mainpage.component.html',
   styleUrls: ['./pickups-tasks-mainpage.component.css']
 })
 export class PickupsTasksMainpageComponent {
+  searchQuery: string = '';
+  isOwnSearch: boolean = false;
+  totalItems = 0; 
+  currentPage = 1;
+  itemsPerPage = 4;
 
+  // Handler for search component events
+  onSearchChanged(query: string): void {
+    this.searchQuery = query;
+  }
+  onTotalItemChange(page: number) {
+    this.totalItems = page;
+  }
   
+  onPageChanged(page: number) {
+    this.currentPage = page;
+  }
+
+  onGlobalSearch(): void {
+    this.isOwnSearch = false;
+  }
+
+  onOwnSearch(): void {
+    this.isOwnSearch = true;
+  }
 }
