@@ -37,4 +37,13 @@
       (rateOrder)="initiateRating(order.orderId)"
     ></app-completed-order-card>
   </div>
+  
+  <!-- Feedback Modal -->
+  <app-feedback 
+    *ngIf="showFeedbackModal" 
+    [orderId]="selectedOrderId"
+    [laundryId]="selectedLaundryId"
+    (close)="closeFeedbackModal()"
+    (submitted)="handleFeedbackSubmitted()"
+  ></app-feedback>
 </div>
