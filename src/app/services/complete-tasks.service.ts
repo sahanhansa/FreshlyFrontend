@@ -1,30 +1,27 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 export interface CompleteTasksDetailsDto {
   orderId: string;
+  customerId: string;
   customerName: string;
+  address: string;
+  laundryName: string;
   status: string;
-  // Add other fields as needed
+  contact: string[];
 }
 
-@Injectable({ providedIn: 'root' })
+@Injectable({
+  providedIn: 'root'
+})
 export class CompleteTasksService {
-  constructor() {}
+  private apiUrl = 'http://localhost:5027/api/Orders';
+
+  constructor(private http: HttpClient) {}
 
   getAllCompleteTasks(): Observable<CompleteTasksDetailsDto[]> {
-    // Replace with real HTTP call
-    return of([
-      {
-        orderId: 'ORD001',
-        customerName: 'John Doe',
-        status: 'Completed'
-      },
-      {
-        orderId: 'ORD002',
-        customerName: 'Jane Smith',
-        status: 'Completed'
-      }
-    ]);
+    return this.http.get<CompleteTasksDetailsDto[]>(`${this.apiUrl}/GetAllCompleteTasks`);
+   
   }
 }
