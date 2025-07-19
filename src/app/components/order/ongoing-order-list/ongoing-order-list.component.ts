@@ -97,11 +97,11 @@ export class OngoingOrderListComponent implements OnInit {
     switch (statusLower) {
       case 'order placed': return 'Order placed';
       case 'order pickup scheduled': return 'Order pickup scheduled';
-      case 'picked up': return 'Picked up';
+      case 'picked up': return 'Order picked up';
       case 'processing in laundry': return 'Processing in laundry';
       case 'finished processing': return 'Finished processing';
       case 'out for delivery': return 'Out for delivery';
-      case 'completed': return 'Completed';
+      case 'completed': return 'Delivered';
       default: return 'Order placed';
     }
   }

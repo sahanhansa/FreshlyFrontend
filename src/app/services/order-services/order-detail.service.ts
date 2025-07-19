@@ -12,18 +12,28 @@ export class OrderDetailService {
 
   constructor(private http: HttpClient) {}
 
-  // Get details for a specific order
+  // Get order details
   getOrderDetails(orderId: string): Observable<OrderDetailsDTO> {
     return this.http.get<OrderDetailsDTO>(`${this.apiUrl}/${orderId}`);
   }
 
-  // Get all ongoing orders for a customer
+  // Get ongoing orders
   getOngoingOrders(customerId: string): Observable<OrderDetailsDTO[]> {
     return this.http.get<OrderDetailsDTO[]>(`${this.apiUrl}/customer/${customerId}/ongoing`);
   }
 
   // Delete an order (only allowed for "Order placed" status)
-  deleteOrder(orderId: string): Observable<boolean> {
-    return this.http.delete<boolean>(`${this.apiUrl}/${orderId}`);
+  deleteOrder(orderId: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/cancel/${orderId}`);
+  }
+
+  // Get orders that are out for delivery (to pay)
+  getOutForDeliveryOrders(customerId: string): Observable<OrderDetailsDTO[]> {
+    return this.http.get<OrderDetailsDTO[]>(`${this.apiUrl}/customer/${customerId}/outfordelivery`);
+  }
+
+  // Get completed orders
+  getCompletedOrders(customerId: string): Observable<OrderDetailsDTO[]> {
+    return this.http.get<OrderDetailsDTO[]>(`${this.apiUrl}/customer/${customerId}/completed`);
   }
 }

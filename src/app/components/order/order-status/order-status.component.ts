@@ -5,11 +5,11 @@ import { CommonModule } from '@angular/common';
 export type OrderStatusStep = 
   'Order placed' | 
   'Order pickup scheduled' | 
-  'Picked up' | 
+  'Order picked up' | 
   'Processing in laundry' | 
   'Finished processing' | 
   'Out for delivery' | 
-  'Completed';
+  'Delivered';
 
 export interface OrderDetails {
   id: string;
@@ -41,11 +41,11 @@ export class OrderStatusComponent {
   orderStatusSteps: OrderStatusStep[] = [
     'Order placed',
     'Order pickup scheduled',
-    'Picked up',
+    'Order picked up',
     'Processing in laundry',
     'Finished processing',
     'Out for delivery',
-    'Completed'
+    'Delivered'
   ];
   
   closeModal(): void {
