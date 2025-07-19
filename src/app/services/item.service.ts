@@ -47,7 +47,12 @@ export class ItemService {
   // Add new item method
 
   addItem(item: AddItemDTO): Observable<any> {
-    return this.http.post(`${this.apiUrl}/add-item`, item, {
+    const laundryId = localStorage.getItem('laundryId');
+    if (!laundryId) {
+      return throwError(() => new Error('Laundry ID not found. Please login again.'));
+    }
+
+    return this.http.post(`${this.apiUrl}/add-item/${laundryId}`, item, {
       responseType: 'text' as 'json',
       observe: 'response'
     }).pipe(
@@ -61,6 +66,51 @@ export class ItemService {
       catchError(error => {
         console.error('ItemService - error:', error);
         let errorMessage = 'Failed to add item. Please try again.';
+        if (error.error?.message) errorMessage = error.error.message;
+        else if (error.message) errorMessage = error.message;
+        return throwError(() => new Error(errorMessage));
+      })
+    );
+  }
+
+  // Get single item by ID
+  getItemById(itemId: string): Observable<Item> {
+    const laundryId = localStorage.getItem('laundryId');
+    if (!laundryId) {
+      return throwError(() => new Error('Laundry ID not found. Please login again.'));
+    }
+
+    return this.http.get<any>(`${this.apiUrl}/GetItemById/${itemId}/${laundryId}`)
+      .pipe(
+        map(item => this.mapDtoToItem(item)),
+        catchError(error => {
+          console.error('Error fetching item:', error);
+          return throwError(() => new Error('Failed to load item. Please try again.'));
+        })
+      );
+  }
+
+  // Update item method
+  updateItem(itemId: string, item: AddItemDTO): Observable<any> {
+    const laundryId = localStorage.getItem('laundryId');
+    if (!laundryId) {
+      return throwError(() => new Error('Laundry ID not found. Please login again.'));
+    }
+
+    return this.http.put(`${this.apiUrl}/update-item/${itemId}/${laundryId}`, item, {
+      responseType: 'text' as 'json',
+      observe: 'response'
+    }).pipe(
+      map(response => {
+        try {
+          return response.body ? JSON.parse(response.body as string) : response.body;
+        } catch {
+          return response.body;
+        }
+      }),
+      catchError(error => {
+        console.error('ItemService - error:', error);
+        let errorMessage = 'Failed to update item. Please try again.';
         if (error.error?.message) errorMessage = error.error.message;
         else if (error.message) errorMessage = error.message;
         return throwError(() => new Error(errorMessage));

@@ -124,7 +124,6 @@ export class AddItemComponent implements OnInit {
       }
     }
 
-    // Notice: no laundryId here - backend gets it from token automatically
     const payload = {
       name: this.itemName,
       description: this.description,
