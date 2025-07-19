@@ -1,22 +1,26 @@
-
 <div class="order-card" *ngIf="pickupOrder">
   <div class="order-header">
     <h3 class="order-title">Order ID: <span>{{ pickupOrder.id }}</span></h3>
-    
-    <span 
-    class="status-badge" 
-    [ngClass]="{
-      'pickup-pending': pickupOrder.status === 'Pickup Pending',
-      'pickup-complete': pickupOrder.status === 'Pickup Complete'
-    }">
-    {{ pickupOrder.status }}
-  </span>
-  
+
+    <span class="status-badge" [ngClass]="{
+      'pickup-pending': pickupOrder.status?.trim() === 'order placed' && pickupOrder.pickupDriverId === null,
+      'pickup-InProgress': pickupOrder.status?.trim() === 'order placed' && pickupOrder.pickupDriverId !== null,
+      'pickup-complete': pickupOrder.status?.trim() === 'order picked up'
+       }">
+      {{
+      pickupOrder.status === 'order placed' && pickupOrder.pickupDriverId !== null
+      ? 'Pickup In Progress'
+      :pickupOrder.status === 'order placed' ?
+      'Pending' :'Pickup Complete'
+      }}
+    </span>
+
+
 
 
   </div>
 
-  
+
 
   <div class="order-details">
     <div class="row">
@@ -36,7 +40,7 @@
       <span class="value">
         <ul>
           <li *ngFor="let item of pickupOrder.orderItems">
-            {{ item.itemName }} -{{ item.quantity }} 
+            {{ item.itemName }} -{{ item.quantity }}
           </li>
         </ul>
       </span>
@@ -49,13 +53,23 @@
       <span class="label">Laundry Name:</span>
       <span class="value">{{ pickupOrder.laundryName }}</span>
     </div>
-    <div class="row">
-      <span class="label">Add a Note:</span>
+    <div *ngIf="pickupOrder.status === 'order placed' && pickupOrder.pickupDriverId!=null">
+      <div class="row">
+        <span class="label">Add a Note:</span>
+      </div>
+      <textarea (input)="onNoteChange($event)" class="note-input" placeholder="Enter your note here..."></textarea>
+
+      <!-- 
+      <div class="button">
+        <button class="save-btn">Save</button>
+      </div> -->
     </div>
-    <textarea class="note-input" placeholder="Enter your note here..."></textarea>
-    
-    <div class="button">
-      <button class="save-btn">Save</button>
+    <div *ngIf="pickupOrder.status !== 'order placed'">
+      <div class="row">
+        <span class="label">Note:</span>
+        <span class="value">{{ pickupOrder.note }}</span>
+      </div>
+
     </div>
   </div>
 </div>

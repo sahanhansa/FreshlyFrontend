@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { OrderService } from '../../../services/order.service';
 import { HttpClientModule } from '@angular/common/http';
-import { Order, OrderItem } from '../../../models/order.model';
+import { AdminOrderService, AdminOrderDTO } from '../../../services/admin/admin-order.service';
 
 // Internal representation for display
 interface DisplayOrderItem {
@@ -32,7 +32,8 @@ interface DisplayOrder {
   templateUrl: './orders.component.html',
   styleUrl: './orders.component.css'
 })
-export class OrdersComponent implements OnInit {  orders: DisplayOrder[] = [];
+export class OrdersComponent implements OnInit {
+  orders: DisplayOrder[] = [];
   selectedOrder: DisplayOrder | null = null;
   itemsPerPage = 9;
   currentPage = 1;
@@ -42,7 +43,7 @@ export class OrdersComponent implements OnInit {  orders: DisplayOrder[] = [];
   // Add Math reference to use in template
   Math = Math;
 
-  constructor(private orderService: OrderService) { }
+  constructor(private orderService: AdminOrderService) { }
 
   ngOnInit(): void {
     this.fetchOrders();
@@ -76,8 +77,8 @@ export class OrdersComponent implements OnInit {  orders: DisplayOrder[] = [];
     this.loading = true;
     this.error = null;
 
-    this.orderService.getOrderDetails().subscribe({
-      next: (apiOrders: Order[]) => {
+    this.orderService.getOrders().subscribe({
+      next: (apiOrders: AdminOrderDTO[]) => {
         this.orders = this.transformOrderData(apiOrders);
         this.loading = false;
       },
@@ -90,7 +91,7 @@ export class OrdersComponent implements OnInit {  orders: DisplayOrder[] = [];
     });
   }
 
-  private transformOrderData(apiOrders: Order[]): DisplayOrder[] {
+  private transformOrderData(apiOrders: AdminOrderDTO[]): DisplayOrder[] {
     if (!apiOrders || apiOrders.length === 0) return [];
 
     return apiOrders.map(order => {

@@ -1,0 +1,153 @@
+<!-- Full screen container with gradient background -->
+<div class="flex items-center justify-center min-h-screen ">
+  <div class="container px-4 mx-auto">
+    <div class="flex items-center justify-center mx-auto lg:justify-between max-w-7xl">
+      
+      <!-- Left side - Login Form -->
+      <div class="w-full max-w-md lg:max-w-lg">
+        <!-- Login card container -->
+        <div class="overflow-hidden rounded-2xl">
+          
+          <!-- Card header -->
+          <div class="p-8 pb-6 text-center">
+            <h1 class="mb-2 text-3xl font-bold text-gray-800">ADMIN LOGIN</h1>
+            <p class="text-sm text-gray-500">Sign in to access your admin dashboard.</p>
+          </div>
+
+          <!-- Card body -->
+          <div class="px-8 pb-8">
+            <!-- Login form bound to Angular FormGroup -->
+            <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+
+              <!-- Username Field -->
+              <div class="mb-6">
+                <div class="relative">
+                  <!-- Username icon -->
+                  <div class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                    </svg>
+                  </div>
+
+                  <!-- Username input with validation styles -->
+                  <input 
+                    formControlName="username" 
+                    type="text" 
+                    placeholder="Admin Username"
+                    [ngClass]="{
+                      'border-red-300 bg-red-50': loginForm.get('username')?.touched && loginForm.get('username')?.hasError('required'),
+                      'border-gray-200 bg-gray-50': !(loginForm.get('username')?.touched && loginForm.get('username')?.hasError('required')),
+                      'focus:border-blue-400 focus:bg-white': true
+                    }"
+                    class="w-full py-3 pl-12 pr-4 text-gray-700 placeholder-gray-400 transition-all duration-200 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  />
+                </div>
+                
+                <!-- Username validation message -->
+                <small *ngIf="loginForm.get('username')?.touched && loginForm.get('username')?.hasError('required')" 
+                       class="block mt-1 text-xs text-red-500">
+                  *Username is required
+                </small>
+              </div>
+
+              <!-- Password Input Field -->
+              <div class="mb-6">
+                <div class="relative">
+                  <!-- Password icon -->
+                  <div class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                    </svg>
+                  </div>
+
+                  <!-- Password input with toggleable type and validation -->
+                  <input 
+                    formControlName="password" 
+                    [type]="inputType"
+                    placeholder="Password"
+                    [ngClass]="{
+                      'border-red-300 bg-red-50': loginForm.get('password')?.touched && loginForm.get('password')?.hasError('required'),
+                      'border-gray-200 bg-gray-50': !(loginForm.get('password')?.touched && loginForm.get('password')?.hasError('required')),
+                      'focus:border-blue-400 focus:bg-white': true
+                    }"
+                    class="w-full py-3 pl-12 pr-12 text-gray-700 placeholder-gray-400 transition-all duration-200 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  />
+
+                  <!-- Password visibility toggle -->
+                  <button 
+                    type="button"
+                    (click)="togglePasswordVisibility()"
+                    class="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400 hover:text-gray-600 focus:outline-none"
+                  >
+                    <svg *ngIf="!showPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                    </svg>
+                    <svg *ngIf="showPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"></path>
+                    </svg>
+                  </button>
+                </div>
+                
+                <!-- Password validation message -->
+                <small *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.hasError('required')" 
+                       class="block mt-1 text-xs text-red-500">
+                  *Password is required
+                </small>
+              </div>
+
+              <!-- Forgot Password -->
+              <div class="flex justify-end mb-6">
+                <button 
+                  type="button"
+                  class="text-sm font-medium text-blue-600 transition-colors duration-200 hover:text-blue-800 hover:underline focus:outline-none"
+                >
+                  Forgot Password?
+                </button>
+              </div>
+
+              <!-- Login Button -->
+              <button 
+                type="submit"
+                [disabled]="loginForm.invalid"
+                class="w-full px-6 py-3 font-bold text-white transition-all duration-200 transform bg-blue-500 shadow-lg hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed rounded-xl hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
+              >
+                Login Now
+              </button>
+
+              <!-- Signup Navigation -->
+              <div class="mt-6 text-sm text-center text-gray-600">
+                Don't have an account?
+                <button 
+                  type="button" 
+                  class="ml-1 font-bold text-blue-600 transition-colors duration-200 hover:text-blue-800 hover:underline focus:outline-none"
+                >
+                  Register Now
+                </button>
+              </div>
+
+              <!-- Test Login Buttons (Development Only) -->
+              
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right side - Actual Login Illustration (Hidden on mobile) -->
+      <div class="hidden lg:block lg:w-1/2 lg:pl-12">
+        <div class="relative flex items-center justify-center">
+          <div class="relative w-full max-w-lg mx-auto">
+            <div class="relative p-8 overflow-hidden rounded-3xl">
+              <img 
+                src="assets/images/admin-login.png" 
+                alt="Customer Login Illustration" 
+                class="object-contain w-full h-auto max-w-md mx-auto illustration-container"
+                style="filter: drop-shadow(0 10px 30px rgba(0,0,0,0.1));"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

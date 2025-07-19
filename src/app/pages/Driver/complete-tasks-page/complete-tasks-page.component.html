@@ -1,0 +1,23 @@
+<app-driver-navbar></app-driver-navbar>
+<app-complete-task-header></app-complete-task-header>
+
+<app-search-bar
+  [initialValue]="searchQuery"
+  (searchChanged)="onSearchChanged($event)">
+</app-search-bar>
+
+<app-complete-order-list
+  [searchQuery]="searchQuery"
+  [currentPage]="currentPage"
+  [itemsPerPage]="itemsPerPage"
+  (totalItemChange)="onTotalItemChange($event)">
+</app-complete-order-list>
+
+<app-pagination
+  [currentPage]="currentPage"
+  [totalItems]="totalItems"
+  [itemsPerPage]="itemsPerPage"
+  (pageChange)="onPageChanged($event)">
+</app-pagination>
+
+<app-footer></app-footer>

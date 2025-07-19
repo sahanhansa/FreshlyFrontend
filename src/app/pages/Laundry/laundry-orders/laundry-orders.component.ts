@@ -7,14 +7,13 @@ import { Order } from '../../../models/order.model'; // Import Order model to ty
 import { SearchBarComponent } from '@app/components/laundry/search-bar/search-bar.component';
 import { PaginationComponent } from '../../../components/shared/pagination/pagination.component'; 
 import { RouterModule } from '@angular/router';; 
-import { HeaderComponent } from '../../../components/laundry/header/header.component';
+import { NavbarComponent } from '@app/components/shared/navbar/navbar.component';
 import { FooterComponent } from '../../../components/shared/footer/footer.component';
 
 @Component({
   selector: 'app-laundry-orders',
-  imports: [CommonModule, RouterModule, HttpClientModule, PaginationComponent, SearchBarComponent, FooterComponent,HeaderComponent],
-  templateUrl: './laundry-orders.component.html',
-  styleUrl: './laundry-orders.component.css'
+  imports: [CommonModule, RouterModule, HttpClientModule, PaginationComponent, SearchBarComponent, FooterComponent,NavbarComponent],
+  templateUrl: './laundry-orders.component.html'
 })
 
 export class LaundryOrdersComponent implements OnInit { // The component class that implements OnInit lifecycle hook

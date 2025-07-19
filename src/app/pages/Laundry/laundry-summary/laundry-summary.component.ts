@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
-import { HeaderComponent } from '../../../components/laundry/header/header.component';
+import { NavbarComponent } from '@app/components/shared/navbar/navbar.component';
 import { FooterComponent } from '../../../components/shared/footer/footer.component';
+
 
 @Component({
   selector: 'app-laundry-summary',
-  imports: [HeaderComponent,FooterComponent],
-  templateUrl: './laundry-summary.component.html',
-  styleUrl: './laundry-summary.component.css'
+  imports: [NavbarComponent ,FooterComponent],
+  templateUrl: './laundry-summary.component.html'
 })
 export class LaundrySummaryComponent {
 

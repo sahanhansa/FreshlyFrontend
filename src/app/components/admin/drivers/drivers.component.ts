@@ -20,7 +20,7 @@ export interface DisplayDriver {
 @Component({
   selector: 'app-drivers',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, HttpClientModule],
   templateUrl: './drivers.component.html',
   styleUrl: './drivers.component.css'
 })
@@ -84,6 +84,38 @@ export class DriversComponent implements OnInit {
 
   selectDriver(driver: DisplayDriver | null): void {
     this.selectedDriver = driver;
+    
+    // If the driver doesn't have recent orders data yet, fetch it
+    if (driver && (!driver.recentOrders || driver.recentOrders.length === 0)) {
+      this.loadDriverOrders(driver.driverId);
+    }
+  }
+
+  loadDriverOrders(driverId: string): void {
+    this.driverService.getDriverOrders(driverId)
+      .pipe(
+        catchError(error => {
+          console.error(`Error fetching orders for driver ${driverId}:`, error);
+          return of([]);
+        })
+      )
+      .subscribe(orders => {
+        if (this.selectedDriver && this.selectedDriver.driverId === driverId) {
+          this.selectedDriver = {
+            ...this.selectedDriver,
+            recentOrders: orders
+          };
+        }
+        
+        // Also update the driver in the drivers array
+        const driverIndex = this.drivers.findIndex(d => d.driverId === driverId);
+        if (driverIndex !== -1) {
+          this.drivers[driverIndex] = {
+            ...this.drivers[driverIndex],
+            recentOrders: orders
+          };
+        }
+      });
   }
 
   searchDrivers(): void {
@@ -114,6 +146,8 @@ export class DriversComponent implements OnInit {
 
   onPageChange(page: number): void {
     this.currentPage = page;
+    // Implement pagination logic - for now we're doing client-side pagination
+    // In a real implementation, this would call the API with pagination parameters
   }
 
   toggleOrderDetails(order: Order): void {

@@ -1,0 +1,45 @@
+
+
+<!-- Center Wrapper -->
+<div class="flex justify-center">
+  <!-- Orders Table -->
+  <div class="bg-white rounded-lg shadow overflow-hidden w-full max-w-6xl">
+    <table class="w-full">
+      <thead>
+        <tr class="bg-gray-50">
+          <!-- <th class="p-4 text-left font-medium text-gray-700 whitespace-nowrap border-b border-gray-100">Tracking ID</th> -->
+          <th class="p-4 text-left font-medium text-gray-700 whitespace-nowrap border-b border-gray-100 ">Customer</th>
+          <th class="p-4 text-left font-medium text-gray-700 whitespace-nowrap border-b border-gray-100">Order ID</th>
+          <th class="p-4 text-left font-medium text-gray-700 whitespace-nowrap border-b border-gray-100">Payment Method</th>
+          <th class="p-4 text-left font-medium text-gray-700 whitespace-nowrap border-b border-gray-100 ">Action</th>
+          <th class="p-4 text-center font-medium text-gray-700 whitespace-nowrap border-b border-gray-100">Order Summary</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let order of paginatedOrders; let i = index"
+            class="whitespace-nowrap hover:bg-gray-100 transition-colors duration-150"
+            [ngClass]="{'bg-[#D0F6FF]': i % 2 === 0}">
+          <!-- <td class="p-4 text-gray-700 border-b border-gray-100 ">{{ order.orderId }}</td> -->
+          <td class="p-4 text-gray-700 border-b border-gray-100 justify-center">{{ order.customerName }}</td>
+          <td class="p-4 text-gray-700 border-b border-gray-100 justify-center">{{ order.orderId }}</td>
+          <td class="p-4 text-gray-700 border-b border-gray-100 justify-center" >Cash on Delivery</td>
+          <td class="p-4 border-b border-gray-100 justify-center">
+            <span class="px-3 py-1.5 rounded-full text-sm font-medium"
+                  [class.bg-green-100]="order.status === 'Delivery Complete'"
+                  [class.text-green-800]="order.status === 'Delivery Complete'"
+                  [class.bg-orange-100]="order.status === 'Pickup Complete'"
+                  [class.text-orange-800]="order.status === 'Pickup Complete'">
+              {{ order.status }}
+            </span>
+          </td>
+          <td class="p-4 border-b border-gray-100 flex items-center justify-center">
+            <button (click)="openSummary(order)"
+              class="flex items-center justify-center w-8 h-8 text-blue-600 hover:text-blue-800 transition-colors">
+              <i class="fas fa-file-alt"></i>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

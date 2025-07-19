@@ -2,16 +2,23 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
-import { Laundry, LaundryWithAddressDTO } from '../models/laundry.model';
+import { Laundry, LaundryDetails, LaundryWithAddressDTO } from '../models/laundry.model'
+import { environment } from '../../environments/environment';
+import { tap } from 'rxjs/operators';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class LaundryService {
   // Base URL for the laundry-related API endpoints
-  private apiUrl = 'http://localhost:5027/api/Laundry'; 
+   private apiUrl = `${environment.apiUrl}/api/Laundry`; 
 
-  constructor(private http: HttpClient) {}
+   private readonly TEST_LAUNDRY_ID = 'efaa5020-331b-11f0-a791-c138d5830fc3';
+
+  constructor(private http: HttpClient) {
+    console.log('LaundryService initialized with API URL:', this.apiUrl);
+  }
 
   // Method to fetch all laundries from the backend API
   getLaundries(): Observable<Laundry[]> {
@@ -41,6 +48,23 @@ export class LaundryService {
         })
       );
   }
+
+  getLaundryDetails(id: string = this.TEST_LAUNDRY_ID): Observable<LaundryDetails[]> {
+    const url = `${this.apiUrl}/get-laundry-details/${id}`;
+    console.log('Fetching laundry details from:', url);
+    
+    return this.http.get<LaundryDetails[]>(url).pipe(
+      tap(response => {
+        console.log('Laundry details API response:', response);
+      }),
+      catchError(error => {
+        return throwError(() => new Error('Failed to load laundry details. Please try again later.'));
+      })
+    );
+  }
+
+
+
 
   // Helper method to convert DTOs to domain models
   private mapDtosToLaundries(dtos: LaundryWithAddressDTO[]): Laundry[] {

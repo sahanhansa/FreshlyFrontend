@@ -5,26 +5,45 @@
     <p class="text-gray-600 text-sm">Complete your orders by placing them when you're ready</p>
   </div>
   
+  <!-- Loading Indicator -->
+  <div *ngIf="loading" class="flex justify-center my-12">
+    <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500"></div>
+  </div>
+  
+  <!-- Error Message -->
+  <div *ngIf="!loading && error" class="p-4 bg-red-100 text-red-700 rounded-md mb-6">
+    {{ error }}
+    <button (click)="loadOrderSummaries()" class="ml-4 underline">Retry</button>
+  </div>
+  
   <!-- Orders Container -->
   <div class="space-y-4 animate-fadeIn">
-
     <!-- Show when no orders are available -->
-    <div *ngIf="pendingOrders.length === 0" class="rounded-lg p-8 text-center">
-      <p class="text-gray-500 mb-4">You don't have any pending orders</p>
-      <button (click)="createNewOrder()" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-6 rounded transition-colors duration-200">
-        Order Now
-      </button>
+    <div *ngIf="!loading && !error && orderSummaries.length === 0" class="rounded-lg p-8 bg-gray-50 text-center my-8">
+      <div class="flex flex-col items-center">
+        <img src="assets/empty-basket.svg" alt="No orders" class="w-24 h-24 mb-4 opacity-50" *ngIf="false">
+        <!-- If you don't have an empty basket image, use an icon instead -->
+        <svg *ngIf="true" xmlns="http://www.w3.org/2000/svg" class="w-24 h-24 mb-4 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+        </svg>
+        <h3 class="text-xl font-medium text-gray-700 mb-2">No Pending Orders</h3>
+        <p class="text-gray-500 mb-6">You don't have any orders waiting to be placed.</p>
+        <button (click)="createNewOrder()" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-6 rounded-md transition-colors duration-200 flex items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+          </svg>
+          Create New Order
+        </button>
+      </div>
     </div>
     
-    <!-- Pass data to order card component when orders are available -->
-    <div *ngIf="pendingOrders.length > 0">
-      <div *ngFor="let order of pendingOrders">
+    <!-- Show orders when available -->
+    <div *ngIf="orderSummaries.length > 0">
+      <div *ngFor="let order of orderSummaries">
         <app-order-summary
-          [orderId]="order.id"
-          [laundryName]="order.laundryName"
-          [items]="order.items"
-          [showLaundryInfo]="true"
-          (deleteOrderEvent)="onDeleteOrder($event)">
+          [orderSummary]="order"
+          (deleteOrderEvent)="onDeleteOrder($event)"
+          (refreshOrdersEvent)="refreshOrders()">
         </app-order-summary>
       </div>
     </div>

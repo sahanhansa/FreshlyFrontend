@@ -19,8 +19,30 @@
 
   <h1 class="text-4xl text-gray-800 mb-8 font-inter drop-shadow-lg">Driver Details</h1>
 
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="flex justify-center items-center py-16">
+    <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-500"></div>
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-8">
+    <p>{{ error }}</p>
+    <button 
+      (click)="loadDrivers()" 
+      class="mt-2 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors">
+      Try Again
+    </button>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!isLoading && !error && drivers.length === 0" class="bg-white p-8 rounded-lg text-center">
+    <i class="fas fa-user-slash text-4xl text-gray-400 mb-4"></i>
+    <h3 class="text-xl font-medium text-gray-700 mb-2">No Drivers Found</h3>
+    <p class="text-gray-500">There are no drivers matching your criteria or no drivers are registered in the system.</p>
+  </div>
+
   <!-- Driver Details Card -->
-  <div class="mb-8" *ngIf="selectedDriver">
+  <div class="mb-8" *ngIf="!isLoading && selectedDriver">
     <div class="flex bg-blue-500 rounded-[20px] overflow-hidden text-white shadow-lg">
       <div class="flex-1 p-8">
         <div class="flex items-center mb-8">
@@ -28,6 +50,8 @@
                class="w-24 h-24 rounded-full object-cover mr-4"
                (error)="selectedDriver.profileImageUrl = 'assets/images/driver.png'">
           <div>
+            <h3 class="text-2xl font-medium m-0">{{ getFullName(selectedDriver) }}</h3>
+            <p class="mt-2 opacity-90">#{{ selectedDriver.driverId }}</p>
             <h3 class="text-2xl font-medium m-0">{{ getFullName(selectedDriver) }}</h3>
             <p class="mt-2 opacity-90">#{{ selectedDriver.driverId }}</p>
           </div>
@@ -60,6 +84,16 @@
           <div class="flex items-center">
             <span class="w-32 font-semibold">Account Status</span>
             <span>: {{ selectedDriver.accountStatus }}</span>
+          </div>
+          <div class="flex items-center">
+            <i class="fas fa-calendar w-5 mr-4"></i>
+            <span class="w-32">Date Joined</span>
+            <span>: {{ selectedDriver.dateJoined | date:'mediumDate' }}</span>
+          </div>
+          <div class="flex items-center">
+            <i class="fas fa-check-circle w-5 mr-4"></i>
+            <span class="w-32">Status</span>
+            <span>: {{ selectedDriver.isActive ? 'Active' : 'Inactive' }}</span>
           </div>
         </div>
       </div>
@@ -98,7 +132,7 @@
   </div>
 
   <!-- Pagination -->
-  <div class="flex justify-center items-center gap-2 mt-8">
+  <div class="flex justify-center items-center gap-2 mt-8" *ngIf="!isLoading && drivers.length > 0">
     <button class="px-4 py-2 border border-gray-200 rounded text-gray-700 hover:border-blue-500 hover:text-blue-500 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:border-gray-200 disabled:hover:text-gray-700 transition-colors"
             (click)="onPageChange(currentPage - 1)" 
             [disabled]="currentPage === 1">Previous</button>

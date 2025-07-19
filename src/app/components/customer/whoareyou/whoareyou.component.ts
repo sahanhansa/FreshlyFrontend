@@ -16,16 +16,16 @@ export class WhoAreYouComponent {
     // Navigate to the login page (same route for all roles in this version)
     switch(role) {
       case 'customer':
-        this.router.navigate(['/login']);
+        this.router.navigate(['/cus-login']);
         break;
       case 'laundry':
-        this.router.navigate(['/laundry-home']);
+        this.router.navigate(['/lun-login']);
         break;
       case 'admin':
-        this.router.navigate(['/login']);
+        this.router.navigate(['/admin-login']);
         break;
         case 'driver':
-          this.router.navigate(['/driver-home-page']);
+          this.router.navigate(['/driver-login']);
     }
   }
 
