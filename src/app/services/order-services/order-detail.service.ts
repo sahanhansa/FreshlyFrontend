@@ -12,12 +12,12 @@ export class OrderDetailService {
 
   constructor(private http: HttpClient) {}
 
-  // Get details for a specific order
+  // Get order details
   getOrderDetails(orderId: string): Observable<OrderDetailsDTO> {
     return this.http.get<OrderDetailsDTO>(`${this.apiUrl}/${orderId}`);
   }
 
-  // Get all ongoing orders for a customer
+  // Get ongoing orders
   getOngoingOrders(customerId: string): Observable<OrderDetailsDTO[]> {
     return this.http.get<OrderDetailsDTO[]>(`${this.apiUrl}/customer/${customerId}/ongoing`);
   }
@@ -30,5 +30,10 @@ export class OrderDetailService {
   // Get orders that are out for delivery (to pay)
   getOutForDeliveryOrders(customerId: string): Observable<OrderDetailsDTO[]> {
     return this.http.get<OrderDetailsDTO[]>(`${this.apiUrl}/customer/${customerId}/outfordelivery`);
+  }
+
+  // Get completed orders
+  getCompletedOrders(customerId: string): Observable<OrderDetailsDTO[]> {
+    return this.http.get<OrderDetailsDTO[]>(`${this.apiUrl}/customer/${customerId}/completed`);
   }
 }
