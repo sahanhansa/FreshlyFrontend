@@ -23,7 +23,7 @@ export class OrderDetailService {
   }
 
   // Delete an order (only allowed for "Order placed" status)
-  deleteOrder(orderId: string): Observable<boolean> {
-    return this.http.delete<boolean>(`${this.apiUrl}/${orderId}`);
+  deleteOrder(orderId: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/cancel/${orderId}`);
   }
 }
