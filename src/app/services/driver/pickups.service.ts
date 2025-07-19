@@ -18,13 +18,15 @@ export interface PickupOrder {
   laundryName: string;
   orderItems: OrderItem[];
   detailsLink: string;
+  pickupDriverId?: string;
+  note?: string;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class PickupsService {
-  private baseUrl = `${environment.apiUrl}/api/Orders`;
+  private baseUrl = `${environment.apiUrl}/api/Order`;
 
   constructor(private http: HttpClient) {}
 
@@ -69,6 +71,41 @@ export class PickupsService {
     );
   }
 
+   // ✅ servicd call MarksToTake
+MarksToTake(orderId: string): Observable<any> {
+  const url = `${this.baseUrl}/MarksToTake`; // PATCH endpoint URL
+  const driverId = localStorage.getItem('userId') || '';
+
+  const body = {
+    orderId: orderId,
+    driverId: driverId
+  };
+
+  return this.http.patch<any>(url, body).pipe(
+    catchError(error => {
+      console.error('Error in MarksToTake:', error);
+      return of(null);
+    })
+  );
+}
+
+MarksToDelivered(orderId: string, note:any): Observable<any> {
+  const url = `${this.baseUrl}/MarksToDeliver`; // PATCH endpoint URL
+const driverId = localStorage.getItem('userId') || '';
+  const body = {
+    orderId: orderId,
+    driverId:driverId,
+    note: note
+  };
+console.log('MarksToDelivered body:', body); // Debugging log
+  return this.http.patch<any>(url, body).pipe(
+    catchError(error => {
+      console.error('Error in MarksToDelivered:', error);
+      return of(null);
+    })
+  );
+}
+
   private mapToPickupOrder(order: any): PickupOrder {
     return {
       id: order.orderId,
@@ -76,10 +113,12 @@ export class PickupsService {
       customerName: order.customerName,
       customerId: order.customerId,
       address: order.address,
+      pickupDriverId:order.pickupDriverId,
       contact: Array.isArray(order.contact) ? order.contact.join(', ') : order.contact,
       laundryName: order.laundryName,
       orderItems: Array.isArray(order.orderItems) ? order.orderItems : [],
-      detailsLink: `/order-details-pending/${order.orderId}`
+      detailsLink: `/order-details-pending/${order.orderId}`,
+      note: order.note || ''
     };
   }
 }

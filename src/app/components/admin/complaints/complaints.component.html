@@ -1,5 +1,5 @@
 <!-- Main container for the complaints page -->
-<div class="p-6 bg-gray-100 min-h-[calc(100vh-64px)] font-inter">
+<div class="p-6 bg-gray-100 min-h-[calc(100vh-64px)] font-inter pt-16">
   <!-- Header Controls -->
   <div class="flex justify-between items-center mb-8 bg-white p-4 rounded-lg shadow-sm">
     <!-- Entries per page selector -->
@@ -22,7 +22,18 @@
     </div>
   </div>
 
-  <h1 class="text-4xl text-gray-800 mb-8 font-inter drop-shadow-lg">Customer Feedback & Complaints</h1>
+  <h1 class="text-4xl text-gray-800 mb-8 font-inter drop-shadow-lg">Feedback & Complaints</h1>
+  <div class="flex gap-4 mb-6">
+    <button (click)="filterByCategory('customer')"
+      [ngClass]="selectedCategory() === 'customer' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'"
+      class="px-4 py-2 rounded font-semibold shadow">Customer</button>
+    <button (click)="filterByCategory('driver')"
+      [ngClass]="selectedCategory() === 'driver' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'"
+      class="px-4 py-2 rounded font-semibold shadow">Driver</button>
+    <button (click)="filterByCategory('laundry')"
+      [ngClass]="selectedCategory() === 'laundry' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'"
+      class="px-4 py-2 rounded font-semibold shadow">Laundry</button>
+  </div>
   <!-- Loading State -->
   <div *ngIf="loading()" class="flex justify-center my-10">
     <div class="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500"></div>

@@ -1,106 +1,54 @@
-import { Component } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-
-interface Order {
-  trackingId: string;
-  customer: string;
-  date: string;
+export interface CompleteTasksDetailsDto {
   orderId: string;
-  paymentMethod: string;
-  action: 'Delivered' | 'Picked';
+  customerId?: string;
+  customerName: string;
+  address?: string;
+  laundryName?: string;
+  status: string;
+  contact?: string[];
 }
 
 @Component({
   selector: 'app-complete-order-list',
+  standalone: true,
   imports: [CommonModule],
-  templateUrl: './complete-order-list.component.html',
-  styleUrl: './complete-order-list.component.scss'
+  template: `
+    <div *ngFor="let task of paginatedTasks">
+      <div class="order-card">
+        <div><strong>Order ID:</strong> {{task.orderId}}</div>
+        <div><strong>Customer Name:</strong> {{task.customerName}}</div>
+        <div><strong>Status:</strong> {{task.status}}</div>
+        <!-- Add more fields as needed -->
+      </div>
+    </div>
+  `,
+  styleUrls: ['./complete-order-list.component.css']
 })
-export class CompleteOrderListComponent {
-   orders: Order[] = [
-    {
-      trackingId: '#4621',
-      customer: 'Matt Dickerson',
-      date: '2025-07-10',
-      orderId: '#4621',
-      paymentMethod: 'Cash on Delivery',
-      action: 'Delivered'
-    },
-    {
-      trackingId: '#0998',
-      customer: 'Wiktoria',
-      date: '2025-07-10',
-      orderId: '#0998',
-      paymentMethod: 'Bank Transfer',
-      action: 'Delivered'
-    },
-    {
-      trackingId: '#3762',
-      customer: 'Trixie Byrd',
-      date: '2025-07-10',
-      orderId: '#3762',
-      paymentMethod: 'Cash on Delivery',
-      action: 'Picked'
-    },
-    {
-      trackingId: '#6689',
-      customer: 'Brad Mason',
-      date: '2025-07-10',
-      orderId: '#6689',
-      paymentMethod: 'Cash on Delivery',
-      action: 'Delivered'
-    },
-    {
-      trackingId: '#5690',
-      customer: 'Sanderson',
-      date: '2025-07-10',
-      orderId: '#5690',
-      paymentMethod: 'Cash on Delivery',
-      action: 'Picked'
-    },
-    {
-      trackingId: '#4811',
-      customer: 'Jun Redfern',
-      date: '2025-07-10',
-      orderId: '#4811',
-      paymentMethod: 'Bank Transfer',
-      action: 'Delivered'
-    },
-    {
-      trackingId: '#7046',
-      customer: 'Miriam Kidd',
-      date: '2025-07-10',
-      orderId: '#7046',
-      paymentMethod: 'Cash on Delivery',
-      action: 'Picked'
-    },
-    {
-      trackingId: '#1265',
-      customer: 'Dominic',
-      date: '2025-07-10',
-      orderId: '#1265',
-      paymentMethod: 'Bank Transfer',
-      action: 'Delivered'
-    },
-    {
-      trackingId: '#6800',
-      customer: 'Shanice',
-      date: '2025-07-10',
-      orderId: '#6800',
-      paymentMethod: 'Cash on Delivery',
-      action: 'Picked'
-    }
-  ];
+export class CompleteOrderListComponent implements OnChanges {
+  @Input() tasks: CompleteTasksDetailsDto[] = [];
+  @Input() searchQuery: string = '';
+  @Input() currentPage: number = 1;
+  @Input() itemsPerPage: number = 10;
+  @Output() totalItemChange = new EventEmitter<number>();
 
-  paginatedOrders: Order[] = [];
+  filteredTasks: CompleteTasksDetailsDto[] = [];
 
-  constructor() {
-    // For now, show all orders (pagination can be added later)
-    this.paginatedOrders = this.orders;
+  ngOnChanges(changes: SimpleChanges): void {
+    // Filter tasks by searchQuery
+    this.filteredTasks = this.tasks.filter(task =>
+      !this.searchQuery ||
+      task.customerName.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+      task.orderId.toLowerCase().includes(this.searchQuery.toLowerCase())
+    );
+    // Emit total item count
+    this.totalItemChange.emit(this.filteredTasks.length);
   }
-  openSummary(order: Order) {
-    console.log('Order summary clicked:', order);
-    // 👉 Replace with your modal or navigation logic
+
+  get paginatedTasks(): CompleteTasksDetailsDto[] {
+    const start = (this.currentPage - 1) * this.itemsPerPage;
+    return this.filteredTasks.slice(start, start + this.itemsPerPage);
   }
 }

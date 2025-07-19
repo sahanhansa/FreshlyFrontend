@@ -40,7 +40,7 @@
   <div class="space-y-3">
     <div *ngFor="let service of item.services; let i = index">
       <div class="flex gap-2 items-center">
-        <input type="text" [(ngModel)]="service.name" [name]="'service' + i + 'name'"
+       <input type="text" [(ngModel)]="service.serviceName" [name]="'service' + i + 'name'"
                placeholder="Service Name" class="flex-1 p-2 border rounded-md" />
 
         <div class="flex flex-col">

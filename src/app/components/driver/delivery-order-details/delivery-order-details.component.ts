@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { DeliveryService, DeliveryOrder } from '../../../services/driver/delivery.service';
@@ -15,24 +15,14 @@ import { FooterComponent } from '../../shared/footer/footer.component';
   templateUrl: './delivery-order-details.component.html',
   styleUrls: ['./delivery-order-details.component.css']
 })
-export class DeliveryOrderDetailsComponent implements OnInit {
-  deliveryOrder: DeliveryOrder | null = null;
+export class DeliveryOrderDetailsComponent  {
+  @Input() deliveryOrder: DeliveryOrder | null = null;
+  @Output() noteChange = new EventEmitter<string>();
 
-  constructor(private route: ActivatedRoute, private deliveryService: DeliveryService) {}
-
-  ngOnInit(): void {
-    const orderId = this.route.snapshot.paramMap.get('id');
-    if (orderId) {
-      this.deliveryService.getDeliveryById(orderId).subscribe({
-        next: (order) => {
-          this.deliveryOrder = order;
-        },
-        error: (err) => {
-          console.error('Error fetching order by ID:', err);
-        }
-      });
-    } else {
-      console.warn('No order ID provided in route.');
-    }
-  }
+onNoteChange(event: Event) {
+  const textarea = event.target as HTMLTextAreaElement;
+  const note = textarea.value;
+  this.noteChange.emit(note);
+  console.log('Note changed:', note);
+}
 }
