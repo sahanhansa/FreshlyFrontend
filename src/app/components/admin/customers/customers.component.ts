@@ -2,6 +2,7 @@ import { Component, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { SharedImports } from '../../../shared/shared-imports';
 import { Customer } from '../../../models/customer.model';
+import { CustomerAddress } from '../../../models/order-models/customerAddress.model';
 import { CustomerService } from '../../../services/customer.service';
 
 @Component({
@@ -13,6 +14,43 @@ import { CustomerService } from '../../../services/customer.service';
   styleUrls: ['./customers.component.css']
 })
 export class CustomersComponent implements OnInit {
+  showConfirmStatus = false;
+  confirmStatusAction: 'activate' | 'deactivate' = 'activate';
+
+  showConfirmStatusModal(action: 'activate' | 'deactivate') {
+    this.confirmStatusAction = action;
+    this.showConfirmStatus = true;
+  }
+
+  closeConfirmStatusModal() {
+    this.showConfirmStatus = false;
+  }
+
+  confirmStatusChange() {
+    if (!this.selectedCustomer()) return;
+    const newStatus = this.confirmStatusAction === 'activate' ? 'active' : 'inactive';
+    this.customerService.updateCustomerStatus(this.selectedCustomer()!.customerId, newStatus).subscribe({
+      next: () => {
+        // Update local state
+        const updated = { ...this.selectedCustomer()!, accountStatus: newStatus };
+        this.selectedCustomer.set(updated);
+        // Also update in customers and filteredCustomers arrays
+        this.customers.set(this.customers().map(c => c.customerId === updated.customerId ? updated : c));
+        this.filteredCustomers.set(this.filteredCustomers().map(c => c.customerId === updated.customerId ? updated : c));
+        this.showConfirmStatus = false;
+      },
+      error: (err) => {
+        alert('Failed to update status: ' + (err?.message || 'Unknown error'));
+        this.showConfirmStatus = false;
+      }
+    });
+  }
+  customerAddresses: { [addressId: string]: CustomerAddress } = {};
+  getAddressDetails(addressId: string | null | undefined): string {
+    if (!addressId || !this.customerAddresses[addressId]) return 'No address provided';
+    const addr = this.customerAddresses[addressId];
+    return `${addr.houseNo}, ${addr.street}, ${addr.city}, ${addr.postalCode}`;
+  }
   // Data collections
   customers = signal<Customer[]>([]);
   filteredCustomers = signal<Customer[]>([]);
@@ -54,12 +92,12 @@ export class CustomersComponent implements OnInit {
 
     this.customerService.getCustomers().subscribe({
       next: (data) => {
-        // Ensure all customers have their contacts array initialized
+        // Ensure all customers have their contacts array and accountStatus initialized
         const processedData = data.map(customer => ({
           ...customer,
-          contacts: customer.contacts || []
+          contacts: customer.contacts || [],
+          accountStatus: typeof customer.accountStatus === 'string' ? customer.accountStatus : 'Active'
         }));
-        
         this.customers.set(processedData);
         this.filteredCustomers.set([...processedData]);
         this.loading.set(false);

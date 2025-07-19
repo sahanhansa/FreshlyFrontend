@@ -7,4 +7,5 @@ export interface Customer {
   addressId: string | null;
   address: string | null;
   contacts: string[];
+  accountStatus?: string | null;
 }
