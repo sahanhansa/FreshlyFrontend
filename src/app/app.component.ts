@@ -1,6 +1,7 @@
 
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { LandingPageComponent } from './components/landing-page/landing-page.component';
 import { filter } from 'rxjs/operators';
@@ -8,10 +9,11 @@ import { ToastComponent} from './components/shared/toast/toast.component';
 
 
 
+
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, ToastComponent, LandingPageComponent],
+  imports: [CommonModule, RouterOutlet, FormsModule,ToastComponent, LandingPageComponent],
   templateUrl: './app.component.html',
   host: {
     class: 'block min-h-screen'

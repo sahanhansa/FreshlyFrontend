@@ -11,8 +11,6 @@ export class ItemService {
   // Backend API endpoint URL
   private apiUrl = 'http://localhost:5027/api/Item'; 
 
- private readonly TEST_LAUNDRY_ID = 'efaa5020-331b-11f0-a791-c138d5830fc3';
-
   constructor(private http: HttpClient) { }
 
   // Method to fetch items for a specific laundry by its ID
@@ -47,44 +45,27 @@ export class ItemService {
   }
 
   // Add new item method
-addItem(item: AddItemDTO): Observable<any> {
-  // Override laundryId in the item DTO with the test laundry ID
-  const payload = { ...item, laundryId: this.TEST_LAUNDRY_ID };
-  
-  console.log('ItemService - Sending payload:', payload);
-  console.log('ItemService - API URL:', `${this.apiUrl}/add-item`);
 
-  return this.http.post(`${this.apiUrl}/add-item`, payload, {
-    responseType: 'text' as 'json',
-    observe: 'response'
-  })
-    .pipe(
+  addItem(item: AddItemDTO): Observable<any> {
+    return this.http.post(`${this.apiUrl}/add-item`, item, {
+      responseType: 'text' as 'json',
+      observe: 'response'
+    }).pipe(
       map(response => {
-        console.log('ItemService - Response status:', response.status);
-        console.log('ItemService - Response body:', response.body);
-        
-        // Try to parse as JSON if possible, otherwise return as text
         try {
           return response.body ? JSON.parse(response.body as string) : response.body;
-        } catch (e) {
-          return response.body; // Return as text if JSON parsing fails
+        } catch {
+          return response.body;
         }
       }),
       catchError(error => {
-        console.error('ItemService - Full error details:', error);
-        console.error('ItemService - Error status:', error.status);
-        console.error('ItemService - Error message:', error.message);
-        console.error('ItemService - Error body:', error.error);
-        
+        console.error('ItemService - error:', error);
         let errorMessage = 'Failed to add item. Please try again.';
-        if (error.error?.message) {
-          errorMessage = error.error.message;
-        } else if (error.message) {
-          errorMessage = error.message;
-        }
-        
+        if (error.error?.message) errorMessage = error.error.message;
+        else if (error.message) errorMessage = error.message;
         return throwError(() => new Error(errorMessage));
       })
     );
-}
+  }
+
 }

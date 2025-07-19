@@ -28,26 +28,21 @@ export class DataService {
 
   constructor(private http: HttpClient) {}
 
-  // Getter method to access base URL
   getBaseUrl(): string {
     return this.baseUrl;
   }
 
-  // Updated to use correct backend endpoint
-  getCategoryIdByName(categoryName: string): Observable<{categoryId: string}> {
-    return this.http.get<{categoryId: string}>(`${this.baseUrl}/ItemCategory/GetCategoryIdByName/${categoryName}`);
+  getCategoryIdByName(categoryName: string): Observable<{ categoryId: string }> {
+    return this.http.get<{ categoryId: string }>(`${this.baseUrl}/ItemCategory/GetCategoryIdByName/${encodeURIComponent(categoryName)}`);
   }
 
-  // Updated to use correct backend endpoint
-  getServiceIdByName(serviceName: string): Observable<{serviceId: string}> {
-    return this.http.get<{serviceId: string}>(`${this.baseUrl}/Service/GetServiceIdByName/${serviceName}`);
+  getServiceIdByName(serviceName: string): Observable<{ serviceId: string }> {
+    return this.http.get<{ serviceId: string }>(`${this.baseUrl}/Service/GetServiceIdByName/${encodeURIComponent(serviceName)}`);
   }
 
-  // Image upload method
   uploadImage(file: File): Observable<ImageUploadResponse> {
     const formData = new FormData();
     formData.append('file', file);
-    
     return this.http.post<ImageUploadResponse>(`${this.baseUrl}/Image/upload`, formData);
   }
 }

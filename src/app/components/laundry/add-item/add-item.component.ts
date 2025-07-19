@@ -12,10 +12,8 @@ import { CommonModule } from '@angular/common';
   templateUrl: './add-item.component.html'
 })
 export class AddItemComponent implements OnInit {
-  // Hardcoded categories as requested
   categories: string[] = ['ladies', 'gents', 'kids', 'other'];
-  // Hardcoded services as requested
-  availableServices: string[] = ['Wash and Dry', 'Dry Clean', 'Press Only'];
+  availableServices: string[] = ['Regular Wash', 'Dry Clean', 'Press Only'];
 
   imageUrl: string = '';
   itemName: string = '';
@@ -31,17 +29,14 @@ export class AddItemComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    // Set default category
     if (this.categories.length > 0) {
       this.selectedCategory = this.categories[0];
       this.onCategoryChange();
     }
     
-    // Add initial service
     this.addService();
   }
 
-  // Method to fetch category ID by name
   onCategoryChange() {
     if (this.selectedCategory) {
       this.dataService.getCategoryIdByName(this.selectedCategory)
@@ -57,7 +52,6 @@ export class AddItemComponent implements OnInit {
     }
   }
 
-  // Method to fetch service ID by name
   onServiceChange(index: number) {
     const service = this.services[index];
     if (service.serviceName) {
@@ -81,7 +75,6 @@ export class AddItemComponent implements OnInit {
         serviceName: this.availableServices.length > 0 ? this.availableServices[0] : '',
         price: null,
       });
-      // Fetch service ID for the newly added service
       if (this.services.length > 0) {
         this.onServiceChange(this.services.length - 1);
       }
@@ -97,7 +90,6 @@ export class AddItemComponent implements OnInit {
     if (file) {
       this.isImageUploading = true;
       
-      // Upload image to backend
       this.dataService.uploadImage(file).subscribe({
         next: (response) => {
           this.imageUrl = response.imageUrl;
@@ -125,7 +117,6 @@ export class AddItemComponent implements OnInit {
       return;
     }
 
-    // Validate that all services have IDs (should be fetched automatically)
     for (const service of this.services) {
       if (!service.serviceId) {
         alert('Please wait for service IDs to be loaded or try again.');
@@ -133,6 +124,7 @@ export class AddItemComponent implements OnInit {
       }
     }
 
+    // Notice: no laundryId here - backend gets it from token automatically
     const payload = {
       name: this.itemName,
       description: this.description,
@@ -144,7 +136,7 @@ export class AddItemComponent implements OnInit {
       }))
     };
 
-    console.log('Sending payload:', payload); // Debug log
+    console.log('Sending payload:', payload);
     this.itemService.addItem(payload).subscribe({
       next: () => alert('Item added successfully!'),
       error: err => {
