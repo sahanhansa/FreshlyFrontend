@@ -8,10 +8,41 @@ import { FooterComponent } from "../../../components/shared/footer/footer.compon
 
 @Component({
   selector: 'app-delivery-tasks-mainpage',
-  imports: [DriverNavbarComponent, SearchBarComponent, DeliveryTaskHeaderComponent, DeliveryOrderCardComponent, PaginationComponent, FooterComponent],
+  standalone: true,
+  imports: [
+    DriverNavbarComponent,
+    SearchBarComponent,
+    DeliveryTaskHeaderComponent,
+    DeliveryOrderCardComponent,
+    PaginationComponent,
+    FooterComponent
+  ],
   templateUrl: './delivery-tasks-mainpage.component.html',
   styleUrl: './delivery-tasks-mainpage.component.css'
 })
 export class DeliveryTasksMainpageComponent {
+  searchQuery: string = '';
+  totalItems: number = 0;
+  currentPage: number = 1;
+  itemsPerPage: number = 2;
+  isOwnSearch: boolean = false;
 
+  onSearchChanged(query: string): void {
+    this.searchQuery = query;
+  }
+
+  onTotalItemChange(count: number): void {
+    this.totalItems = count;
+  }
+
+  onPageChanged(page: number): void {
+    this.currentPage = page;
+  }
+  onGlobalSearch(): void {
+    this.isOwnSearch = false;
+  }
+
+  onOwnSearch(): void {
+    this.isOwnSearch = true;
+  }
 }

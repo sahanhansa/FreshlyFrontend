@@ -1,5 +1,7 @@
 <div class="container">
     <h2>Did you pick up the laundry order from the company?</h2>
-    <app-marks-to-done-button></app-marks-to-done-button>
+     <button [disabled]="!orderId || isSubmitting" (click)="confirmPickup()">
+        {{ isSubmitting ? 'Processing...' : 'Marks to Done' }}
+    </button>
     
   </div>

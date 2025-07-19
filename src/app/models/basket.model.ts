@@ -46,3 +46,17 @@ export interface TemporaryOrderItem {
   quantity: number;
   subTotal: number;
 }
+
+export interface ConfirmOrderDTO {
+  temporaryOrderId: string;
+  pickupAt: string; // ISO string
+  address?: AddressDTO;
+}
+
+export interface AddressDTO {
+  addressId: string;
+  houseNo?: string;
+  street?: string;
+  city?: string;
+  postalCode?: string;
+}

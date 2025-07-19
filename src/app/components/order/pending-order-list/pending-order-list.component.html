@@ -42,7 +42,6 @@
       <div *ngFor="let order of orderSummaries">
         <app-order-summary
           [orderSummary]="order"
-          [showLaundryInfo]="true"
           (deleteOrderEvent)="onDeleteOrder($event)"
           (refreshOrdersEvent)="refreshOrders()">
         </app-order-summary>

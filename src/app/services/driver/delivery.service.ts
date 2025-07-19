@@ -21,6 +21,8 @@ export interface DeliveryOrder {
   detailsLink: string;
   orderItems: string[];       // Array of item names (can be extended to use OrderItems[])
   paymentMethod: string;
+  deliverDriver?: string;
+  note?:string;
 }
 
 @Injectable({
@@ -28,9 +30,9 @@ export interface DeliveryOrder {
 })
 export class DeliveryService {
   // Base URL for the backend API
-  private baseUrl = `${environment.apiUrl}/api/Orders`;
+  private baseUrl = `${environment.apiUrl}/api/Order`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   // Fetch all delivery orders from the backend API
   getAllDeliveries(): Observable<DeliveryOrder[]> {
@@ -40,7 +42,7 @@ export class DeliveryService {
       map(data => {
         // Ensure response is treated as an array
         const arrayData = Array.isArray(data) ? data : [data];
-
+        console.log('Deliveries received:', arrayData);
         // Convert each raw object to DeliveryOrder type
         return arrayData.map(order => this.mapToDeliveryOrder(order));
       }),
@@ -82,7 +84,60 @@ export class DeliveryService {
       orderItems: Array.isArray(order.orderItems) ? order.orderItems : [],
       paymentMethod: order.paymentMethod,
       // Link to the frontend delivery order details page
-      detailsLink: `/deliveries-pending-order-details/${order.orderId}`
+      detailsLink: `/deliveries-pending-order-details/${order.orderId}`,
+      deliverDriver: order.deliverDriver,
+      note: order.note || '' 
     };
   }
+
+  MarksToTakeDeliver(orderId: string): Observable<any> {
+    const url = `${this.baseUrl}/MarksToLaundryTake`; // PATCH endpoint URL
+    const driverId = localStorage.getItem('userId') || '';
+
+    const body = {
+      orderId: orderId,
+      driverId: driverId
+    };
+    console.log('MarksToTake body:', body); // Debugging log
+
+    return this.http.patch<any>(url, body).pipe(
+      catchError(error => {
+        console.error('Error in MarksToTake:', error);
+        return of(null);
+      })
+    );
+  }
+   MarksToPickDeliver(orderId: string): Observable<any> {
+    const url = `${this.baseUrl}/MarksToLaundryPick`; 
+
+    const body = {
+      orderId: orderId,
+    };
+    console.log('MarksToTake body:', body); // Debugging log
+
+    return this.http.patch<any>(url, body).pipe(
+      catchError(error => {
+        console.error('Error in MarksToLaundryPick:', error);
+        return of(null);
+      })
+    );
+  }
+
+     MarksToCustomerDeliver(orderId: string,note:string): Observable<any> {
+    const url = `${this.baseUrl}/MarksToCustomerDeliver`; 
+
+    const body = {
+      orderId: orderId,
+      note:note
+    };
+    console.log('MarksToTake body:', body); // Debugging log
+
+    return this.http.patch<any>(url, body).pipe(
+      catchError(error => {
+        console.error('Error in MarksToCustomerDeliver:', error);
+        return of(null);
+      })
+    );
+  }
+
 }
