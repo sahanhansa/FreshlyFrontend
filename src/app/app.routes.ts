@@ -117,6 +117,7 @@ export const routes: Routes = [
       { path: 'basket', component: BasketComponent },
       {path: 'laundry/:id', component: ItemPageComponent},
       // Replace with actual profile component if needed
+      { path: 'profile', loadComponent: () => import('./components/customer/profile/profile.component').then(m => m.ProfileComponent) },
       // Add more customer pages as needed
       { path: 'laundries', component: LaundryPageComponent },
     ]
@@ -158,7 +159,12 @@ export const routes: Routes = [
     // Route for laundry-summary page
     {path: 'laundry-summary', component:LaundrySummaryComponent},
 
-    ]
+    // Payment routes
+    { path: 'payment', loadComponent: () => import('./components/payment/payment.component').then(m => m.PaymentComponent) },
+    { path: 'payment-success', loadComponent: () => import('./components/payment-success/payment-success.component').then(m => m.PaymentSuccessComponent) },
+    { path: 'payment-cancel', loadComponent: () => import('./components/payment-cancel/payment-cancel.component').then(m => m.PaymentCancelComponent) }
+
+]
 
 
 // Define the routing module
