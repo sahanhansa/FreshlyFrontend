@@ -1,6 +1,19 @@
-import { Component } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+
+// Interface matching the API response
+interface ItemResponse {
+  itemId: string;
+  itemName: string;
+  categoryName: string;
+  imageUrl: string;
+  services: {
+    serviceId: string;
+    serviceName: string;
+    price: number;
+  }[];
+}
 
 @Component({
   selector: 'app-laundry-item-card',
@@ -9,20 +22,18 @@ import { RouterModule } from '@angular/router';
   templateUrl: './laundry-item-card.component.html'
 
 })
-export class LaundryItemCardComponent {
+export class LaundryItemCardComponent implements OnInit {
+  @Input() item!: ItemResponse;
+  
   isDropdownOpen: boolean = false;
+  selectedServiceId: string = '';
 
-  // Hardcoded item data
-  imageUrl: string = 'assets/shirt.jpg';
-  name: string = 'Shirt';
-  materials: string[] = ['Cotton', 'Linen'];
-  selectedServiceId: string = 'wash';
-
-  availableServices = [
-    { id: 'wash', name: 'Regular Wash', price: 100 },
-    { id: 'dry', name: 'Dry Clean', price: 150 },
-    { id: 'press', name: 'Press Only', price: 70 }
-  ];
+  ngOnInit() {
+    // Set default selected service to the first available service
+    if (this.item.services && this.item.services.length > 0) {
+      this.selectedServiceId = this.item.services[0].serviceId;
+    }
+  }
 
   toggleDropdown(): void {
     this.isDropdownOpen = !this.isDropdownOpen;
@@ -34,13 +45,13 @@ export class LaundryItemCardComponent {
   }
 
   getCurrentPrice(): number {
-    const selectedService = this.availableServices.find(s => s.id === this.selectedServiceId);
+    const selectedService = this.item.services?.find(s => s.serviceId === this.selectedServiceId);
     return selectedService?.price || 0;
   }
 
   getSelectedServiceName(): string {
-    const selectedService = this.availableServices.find(s => s.id === this.selectedServiceId);
-    return selectedService?.name || 'Select Service';
+    const selectedService = this.item.services?.find(s => s.serviceId === this.selectedServiceId);
+    return selectedService?.serviceName || 'Select Service';
   }
 
 }

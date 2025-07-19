@@ -1,53 +1,51 @@
-<div class="max-w-4xl mx-auto p-4 bg-white shadow-md rounded-lg">
-
-  <h1 class="text-2xl font-bold mb-6">Order Summary</h1>
-
-  <div *ngFor="let service of services" class="mb-8">
-    <h2 class="text-xl font-semibold text-blue-800 mb-3 border-b border-gray-500 pb-1">{{ service }}</h2>
-
-    <div *ngIf="getItemsByService(service).length > 0; else noItems">
-      <div class="grid grid-cols-4 gap-4 font-semibold mb-2 text-gray-700">
-        <div>Item</div>
-        <div class="text-center">Quantity</div>
-        <div class="text-right">Price (Rs.)</div>
-        <div class="text-center">Status</div>
+<div class="p-4 space-y-4">
+  <div *ngFor="let item of laundryItems" [ngClass]="{
+      'bg-blue-100': item.added,
+      'bg-red-100': item.rejected,
+      'bg-white': !item.added && !item.rejected
+    }" class="p-4 rounded shadow-md">
+    <div class="flex justify-between items-center">
+      <div>
+        <h2 class="text-lg font-bold">{{ item.name }}</h2>
+        <p>Price per unit: {{ item.pricePerUnit }}</p>
+        <p>Quantity: {{ item.quantity }}</p>
       </div>
-
-      <div *ngFor="let item of getItemsByService(service)" class="grid grid-cols-4 gap-4 items-center py-2 hover:bg-gray-50 rounded">
-        <div class="flex items-center space-x-3">
-          <img [src]="item.imageUrl" alt="{{item.name}}" class="w-12 h-12 object-cover rounded" />
-          <span>{{ item.name }}</span>
-        </div>
-        <div class="text-center">{{ item.quantity }}</div>
-        <div class="text-right">{{ item.quantity * item.pricePerUnit }}</div>
-        <div class="text-center">
-          <select
-            [value]="item.status"
-            (change)="updateStatus(item, $event)"
-            [ngClass]="getStatusColor(item.status) + ' border border-gray-300 rounded px-2 py-1'"
-          >
-            <option *ngFor="let s of statuses" [value]="s">{{ s }}</option>
-          </select>
-        </div>
+      <div class="space-x-2">
+        <button (click)="openForm(item, 'increase')" class="text-blue-600 text-xl font-bold">+</button>
+        <button (click)="openForm(item, 'decrease')" class="text-red-600 text-xl font-bold">−</button>
       </div>
     </div>
 
-    <ng-template #noItems>
-      <p class="text-gray-500 italic">No items in this service.</p>
-    </ng-template>
+    <div *ngIf="item.added && item.addDetails" class="mt-2 text-sm text-blue-700">
+      <p><strong>Added Reason:</strong> {{ item.addDetails.reason }}</p>
+      <p><strong>Added By:</strong> {{ item.addDetails.name }}</p>
+      <p><strong>Mobile:</strong> {{ item.addDetails.mobile }}</p>
+      <p><strong>Date:</strong> {{ item.addDetails.date | date:'medium' }}</p>
+    </div>
 
-    <div *ngIf="getRejectedItemsByService(service).length > 0" class="mt-4 p-3 bg-red-50 border border-red-200 rounded">
-      <h3 class="text-red-600 font-semibold mb-2">Rejected Items</h3>
-      <ul class="list-disc list-inside space-y-1 text-red-700">
-        <li *ngFor="let item of getRejectedItemsByService(service)">
-          {{ item.name }} - Qty: {{ item.quantity }}
-        </li>
-      </ul>
+    <div *ngIf="item.rejected && item.rejectDetails" class="mt-2 text-sm text-red-700">
+      <p><strong>Rejected Reason:</strong> {{ item.rejectDetails.reason }}</p>
+      <p><strong>Rejected By:</strong> {{ item.rejectDetails.name }}</p>
+      <p><strong>Mobile:</strong> {{ item.rejectDetails.mobile }}</p>
+      <p><strong>Date:</strong> {{ item.rejectDetails.date | date:'medium' }}</p>
     </div>
   </div>
 
-  <div class="text-right border-t border-gray-300 pt-4">
-    <p class="text-lg font-bold">Total Bill: Rs.{{ getTotalPrice() }}</p>
-  </div>
+  <div *ngIf="showForm" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white p-6 rounded shadow-md w-full max-w-md">
+      <h3 class="text-lg font-semibold mb-4">Fill Details to {{ formAction === 'increase' ? 'Add' : 'Reject' }} Item</h3>
+      <form (ngSubmit)="submitForm()" class="space-y-3">
+        <input type="text" [(ngModel)]="formData.reason" name="reason" placeholder="Reason" class="w-full border p-2 rounded" required>
+        <input type="text" [(ngModel)]="formData.name" name="name" placeholder="Your Name" class="w-full border p-2 rounded" required>
+        <input type="text" [(ngModel)]="formData.mobile" name="mobile" placeholder="Mobile Number" class="w-full border p-2 rounded" required>
+        <input type="date" [(ngModel)]="formData.date" name="date" class="w-full border p-2 rounded" required>
+        <input type="time" [(ngModel)]="formData.time" name="time" class="w-full border p-2 rounded" required>
 
+        <div class="flex justify-end space-x-2 pt-2">
+          <button type="button" (click)="closeForm()" class="bg-gray-400 text-white px-3 py-1 rounded">Cancel</button>
+          <button type="submit" class="bg-blue-600 text-white px-3 py-1 rounded">Submit</button>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>

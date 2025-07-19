@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { Router } from '@angular/router';
 import { CommonModule, NgClass, NgIf } from '@angular/common';
 import { AuthService } from '../../../services/auth.service';
+import { AuthHelperService } from '../../../services/auth-helper.service';
 
 @Component({
   selector: 'app-admin-login',
@@ -20,7 +21,8 @@ export class AdminLoginComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private authHelper: AuthHelperService
   ) {
     this.loginForm = this.formBuilder.group({
       username: ['', [Validators.required]],
@@ -44,10 +46,8 @@ export class AdminLoginComponent implements OnInit {
       const loginData = { username, password };
       this.authService.adminLogin(loginData).subscribe({
         next: (res: any) => {
-          // Save token, username, userId to localStorage
-          localStorage.setItem('token', res.token);
-          localStorage.setItem('adminUsername', res.username);
-          localStorage.setItem('adminId', res.userId);
+          // Store admin login data and clear any other user data
+          this.authHelper.storeAdminLogin(res.token, res.username, res.userId);
           // Redirect to admin dashboard
           this.router.navigate(['/admin/dashboard']);
         },

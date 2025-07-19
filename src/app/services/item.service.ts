@@ -11,17 +11,15 @@ export class ItemService {
   // Backend API endpoint URL
   private apiUrl = 'http://localhost:5027/api/Item'; 
 
- private readonly TEST_LAUNDRY_ID = 'efaa5020-331b-11f0-a791-c138d5830fc3';
-
   constructor(private http: HttpClient) { }
 
   // Method to fetch items for a specific laundry by its ID
-  getItems(laundryId: string): Observable<Item[]> {
+  getItems(laundryId: string): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/GetItemsByLaundryId/${laundryId}`)
       .pipe(
         map(items => {
           console.log('Raw API response:', items);
-          return items.map(item => this.mapDtoToItem(item));
+          return items; // Return the raw API response as it matches our interface
         }),
         catchError(error => {
           console.error('Error fetching items:', error);
@@ -47,44 +45,77 @@ export class ItemService {
   }
 
   // Add new item method
-addItem(item: AddItemDTO): Observable<any> {
-  // Override laundryId in the item DTO with the test laundry ID
-  const payload = { ...item, laundryId: this.TEST_LAUNDRY_ID };
-  
-  console.log('ItemService - Sending payload:', payload);
-  console.log('ItemService - API URL:', `${this.apiUrl}/add-item`);
 
-  return this.http.post(`${this.apiUrl}/add-item`, payload, {
-    responseType: 'text' as 'json',
-    observe: 'response'
-  })
-    .pipe(
+  addItem(item: AddItemDTO): Observable<any> {
+    const laundryId = localStorage.getItem('laundryId');
+    if (!laundryId) {
+      return throwError(() => new Error('Laundry ID not found. Please login again.'));
+    }
+
+    return this.http.post(`${this.apiUrl}/add-item/${laundryId}`, item, {
+      responseType: 'text' as 'json',
+      observe: 'response'
+    }).pipe(
       map(response => {
-        console.log('ItemService - Response status:', response.status);
-        console.log('ItemService - Response body:', response.body);
-        
-        // Try to parse as JSON if possible, otherwise return as text
         try {
           return response.body ? JSON.parse(response.body as string) : response.body;
-        } catch (e) {
-          return response.body; // Return as text if JSON parsing fails
+        } catch {
+          return response.body;
         }
       }),
       catchError(error => {
-        console.error('ItemService - Full error details:', error);
-        console.error('ItemService - Error status:', error.status);
-        console.error('ItemService - Error message:', error.message);
-        console.error('ItemService - Error body:', error.error);
-        
+        console.error('ItemService - error:', error);
         let errorMessage = 'Failed to add item. Please try again.';
-        if (error.error?.message) {
-          errorMessage = error.error.message;
-        } else if (error.message) {
-          errorMessage = error.message;
-        }
-        
+        if (error.error?.message) errorMessage = error.error.message;
+        else if (error.message) errorMessage = error.message;
         return throwError(() => new Error(errorMessage));
       })
     );
-}
+  }
+
+  // Get single item by ID
+  getItemById(itemId: string): Observable<Item> {
+    const laundryId = localStorage.getItem('laundryId');
+    if (!laundryId) {
+      return throwError(() => new Error('Laundry ID not found. Please login again.'));
+    }
+
+    return this.http.get<any>(`${this.apiUrl}/GetItemById/${itemId}/${laundryId}`)
+      .pipe(
+        map(item => this.mapDtoToItem(item)),
+        catchError(error => {
+          console.error('Error fetching item:', error);
+          return throwError(() => new Error('Failed to load item. Please try again.'));
+        })
+      );
+  }
+
+  // Update item method
+  updateItem(itemId: string, item: AddItemDTO): Observable<any> {
+    const laundryId = localStorage.getItem('laundryId');
+    if (!laundryId) {
+      return throwError(() => new Error('Laundry ID not found. Please login again.'));
+    }
+
+    return this.http.put(`${this.apiUrl}/update-item/${itemId}/${laundryId}`, item, {
+      responseType: 'text' as 'json',
+      observe: 'response'
+    }).pipe(
+      map(response => {
+        try {
+          return response.body ? JSON.parse(response.body as string) : response.body;
+        } catch {
+          return response.body;
+        }
+      }),
+      catchError(error => {
+        console.error('ItemService - error:', error);
+        let errorMessage = 'Failed to update item. Please try again.';
+        if (error.error?.message) errorMessage = error.error.message;
+        else if (error.message) errorMessage = error.message;
+        return throwError(() => new Error(errorMessage));
+      })
+    );
+  }
+
 }

@@ -18,6 +18,8 @@ import {
   Legend,
   ChartConfiguration
 } from 'chart.js';
+import { NavbarComponent } from "@app/components/shared/navbar/navbar.component";
+
 
 // Register Chart.js components
 Chart.register(
@@ -33,7 +35,7 @@ Chart.register(
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule, HttpClientModule],
+  imports: [CommonModule, RouterModule, HttpClientModule, NavbarComponent],
   templateUrl: './admin-dashboard.component.html',
   styleUrl: './admin-dashboard.component.css'
 })
