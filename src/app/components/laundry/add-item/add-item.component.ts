@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { DataService } from '../../../services/data.services';
 import { ItemService } from '../../../services/item.service';
 import { ServiceWithPrice } from '@app/models/item.model';
@@ -12,6 +12,8 @@ import { CommonModule } from '@angular/common';
   templateUrl: './add-item.component.html'
 })
 export class AddItemComponent implements OnInit {
+  @Output() itemAdded = new EventEmitter<void>();
+  
   categories: string[] = ['ladies', 'gents', 'kids', 'other'];
   availableServices: string[] = ['Regular Wash', 'Dry Clean', 'Press Only','Hand Wash'];
 
@@ -137,11 +139,36 @@ export class AddItemComponent implements OnInit {
 
     console.log('Sending payload:', payload);
     this.itemService.addItem(payload).subscribe({
-      next: () => alert('Item added successfully!'),
+      next: () => {
+        alert('Item added successfully!');
+        this.resetForm();
+        this.itemAdded.emit(); // Emit event to refresh item grid
+      },
       error: err => {
         console.error('Full error:', err);
         alert('Error: ' + err.message);
       },
     });
+  }
+
+  resetForm() {
+    // Reset all form fields
+    this.imageUrl = '';
+    this.itemName = '';
+    this.description = '';
+    this.selectedCategory = this.categories[0];
+    this.categoryId = '';
+    this.services = [];
+    this.isImageUploading = false;
+    
+    // Reset category and add initial service
+    this.onCategoryChange();
+    this.addService();
+    
+    // Reset file input
+    const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = '';
+    }
   }
 }

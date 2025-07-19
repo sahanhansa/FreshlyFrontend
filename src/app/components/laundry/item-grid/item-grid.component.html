@@ -1,7 +1,25 @@
 <div class="min-h-screen flex flex-col items-center justify-center px-4">
+  <!-- Loading State -->
+  <div *ngIf="loading" class="flex items-center justify-center mt-10">
+    <div class="text-lg">Loading items...</div>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !loading" class="flex items-center justify-center mt-10">
+    <div class="text-red-600 text-lg">{{ error }}</div>
+  </div>
+
   <!-- Item Grid -->
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-10">
-    <app-laundry-item-card *ngFor="let _ of paginatedItems" />
+  <div *ngIf="!loading && !error" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-10">
+    <app-laundry-item-card 
+      *ngFor="let item of paginatedItems" 
+      [item]="item"
+    />
+  </div>
+
+  <!-- No Items Message -->
+  <div *ngIf="!loading && !error && allItems.length === 0" class="flex items-center justify-center mt-10">
+    <div class="text-lg text-gray-600">No items found. Add some items to get started!</div>
   </div>
 
   <!-- Pagination -->

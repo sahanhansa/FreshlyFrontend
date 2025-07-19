@@ -14,12 +14,12 @@ export class ItemService {
   constructor(private http: HttpClient) { }
 
   // Method to fetch items for a specific laundry by its ID
-  getItems(laundryId: string): Observable<Item[]> {
+  getItems(laundryId: string): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/GetItemsByLaundryId/${laundryId}`)
       .pipe(
         map(items => {
           console.log('Raw API response:', items);
-          return items.map(item => this.mapDtoToItem(item));
+          return items; // Return the raw API response as it matches our interface
         }),
         catchError(error => {
           console.error('Error fetching items:', error);

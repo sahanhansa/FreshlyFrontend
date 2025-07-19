@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { NavbarComponent } from '@app/components/shared/navbar/navbar.component';
 import { FooterComponent } from '../../../components/shared/footer/footer.component';
@@ -12,7 +12,15 @@ import { ItemCategoryComponent } from '@app/components/order/item-category/item-
   templateUrl: './laundry-items.component.html', // fixed typo here
   standalone: true  // add this if using standalone components (Angular 14+)
 })
-export class LaundryItemsComponent {
+export class LaundryItemsComponent implements OnInit {
+  @ViewChild(ItemGridComponent) itemGrid!: ItemGridComponent;
+
+  ngOnInit() {
+    // Refresh items when component initializes
+    setTimeout(() => {
+      this.refreshItems();
+    }, 100);
+  }
 
   onAddNewItem() {
     // TODO: Implement your logic here
@@ -20,4 +28,9 @@ export class LaundryItemsComponent {
     // e.g., navigate to add-item page or open a modal
   }
 
+  refreshItems() {
+    if (this.itemGrid) {
+      this.itemGrid.loadItems();
+    }
+  }
 }
