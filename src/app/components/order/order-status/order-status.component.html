@@ -76,7 +76,7 @@
       </p>
     </div>
 
-    <!-- Cancel Order Button - Only shown for order placed or pickup scheduled status -->
+    <!-- Cancel Order Button - Only shown for order placed status -->
     <div *ngIf="canCancelOrder()" class="text-center">
       <button class="bg-red-500 hover:bg-red-600 text-white py-1.5 px-6 rounded-md transition-colors duration-200 text-sm font-medium" 
               (click)="cancelOrder()">
