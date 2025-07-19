@@ -10,6 +10,8 @@ export interface DisplayDriver {
   driverId: string;
   firstName: string;
   lastName: string;
+  username?: string;
+  password?: string;
   email: string;
   licenseNumber: string;
   addressId: string;
@@ -35,6 +37,29 @@ export class DriversComponent implements OnInit {
   currentPage: number = 1;
   isLoading: boolean = false;
   error: string | null = null;
+
+  // Modal state for adding driver
+  showAddDriverModal: boolean = false;
+  // Step control for add driver modal
+  addDriverStep: number = 1;
+
+  // Add driver form data
+  newDriver: Partial<DisplayDriver> & { address: { houseNo: string; street: string; city: string; postalCode: string } } = {
+    firstName: '',
+    lastName: '',
+    username: '',
+    password: '',
+    email: '',
+    licenseNumber: '',
+    accountStatus: 'Active',
+    address: {
+      houseNo: '',
+      street: '',
+      city: '',
+      postalCode: ''
+    }
+  };
+
   constructor(public driverService: AdminDriverService) {}
 
   ngOnInit(): void {
@@ -192,5 +217,55 @@ export class DriversComponent implements OnInit {
         this.isLoading = false;
         this.loadDrivers();
       });
+  }
+
+  openAddDriverModal(): void {
+    if (!this.newDriver.address) {
+      this.newDriver.address = { houseNo: '', street: '', city: '', postalCode: '' };
+    }
+    this.addDriverStep = 1;
+    this.showAddDriverModal = true;
+  }
+
+  closeAddDriverModal(): void {
+    this.showAddDriverModal = false;
+    this.addDriverStep = 1;
+    // Reset form and address to avoid undefined
+    this.newDriver = {
+      firstName: '',
+      lastName: '',
+      username: '',
+      password: '',
+      email: '',
+      licenseNumber: '',
+      accountStatus: 'Active',
+      address: { houseNo: '', street: '', city: '', postalCode: '' }
+    };
+  }
+
+  nextAddDriverStep(): void {
+    if (this.addDriverStep === 1) {
+      this.addDriverStep = 2;
+    }
+  }
+
+  prevAddDriverStep(): void {
+    if (this.addDriverStep === 2) {
+      this.addDriverStep = 1;
+    }
+  }
+
+  addDriver(): void {
+    // Always set accountStatus to 'Active' before posting
+    const driverToAdd = { ...this.newDriver, accountStatus: 'Active' };
+    this.driverService.addDriver(driverToAdd).subscribe({
+      next: (driver) => {
+        this.loadDrivers();
+        this.closeAddDriverModal();
+      },
+      error: (err) => {
+        alert('Failed to add driver.');
+      }
+    });
   }
 }
