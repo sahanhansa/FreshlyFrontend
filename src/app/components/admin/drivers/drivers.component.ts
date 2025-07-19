@@ -15,6 +15,9 @@ export interface DisplayDriver {
   addressId: string;
   accountStatus: string;
   profileImageUrl: string;
+  dateJoined?: string;
+  isActive?: boolean;
+  recentOrders?: Order[];
 }
 
 @Component({
@@ -59,7 +62,10 @@ export class DriversComponent implements OnInit {
           licenseNumber: driver.licenseNumber || driver.licensNo || '',
           addressId: driver.addressId || (driver.address?.addressId ?? ''),
           accountStatus: driver.accountStatus === null || driver.accountStatus === '' ? 'Inactive' : driver.accountStatus || 'Inactive',
-          profileImageUrl: driver.profileImageUrl || 'assets/images/driver.png'
+          profileImageUrl: driver.profileImageUrl || 'assets/images/driver.png',
+          dateJoined: driver.dateJoined || driver.joinedDate || '',
+          isActive: typeof driver.isActive === 'boolean' ? driver.isActive : (driver.accountStatus === 'Active'),
+          recentOrders: driver.recentOrders || []
         }));
         this.isLoading = false;
         if (this.drivers.length > 0) {
