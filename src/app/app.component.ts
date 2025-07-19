@@ -6,8 +6,6 @@ import { LandingPageComponent } from './components/landing-page/landing-page.com
 import { filter } from 'rxjs/operators';
 import { ToastComponent} from './components/shared/toast/toast.component';
 
-
-
 @Component({
   selector: 'app-root',
   standalone: true,
