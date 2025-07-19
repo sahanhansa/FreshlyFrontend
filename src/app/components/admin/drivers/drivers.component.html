@@ -1,4 +1,4 @@
-<div class="p-8 bg-gray-100 min-h-screen">
+<div class="p-8 bg-gray-100 min-h-screen pt-16">
   <!-- Header Controls -->
   <div class="flex justify-between items-center mb-8 bg-white p-4 rounded-lg shadow-sm">
     <div class="flex items-center gap-2">
@@ -24,52 +24,42 @@
     <div class="flex bg-blue-500 rounded-[20px] overflow-hidden text-white shadow-lg">
       <div class="flex-1 p-8">
         <div class="flex items-center mb-8">
-          <img [src]="selectedDriver.profileImage" [alt]="selectedDriver.name" 
+          <img [src]="selectedDriver.profileImageUrl" [alt]="getFullName(selectedDriver)" 
                class="w-24 h-24 rounded-full object-cover mr-4"
-               (error)="selectedDriver.profileImage = 'assets/images/driver.png'">
+               (error)="selectedDriver.profileImageUrl = 'assets/images/driver.png'">
           <div>
-            <h3 class="text-2xl font-medium m-0">{{ selectedDriver.name }}</h3>
-            <p class="mt-2 opacity-90">#{{ selectedDriver.id }}</p>
+            <h3 class="text-2xl font-medium m-0">{{ getFullName(selectedDriver) }}</h3>
+            <p class="mt-2 opacity-90">#{{ selectedDriver.driverId }}</p>
           </div>
         </div>
         <div class="space-y-4">
           <div class="flex items-center">
-            <i class="fas fa-envelope w-5 mr-4"></i>
-            <span class="w-32">Email</span>
+            <span class="w-32 font-semibold">Driver ID</span>
+            <span>: {{ selectedDriver.driverId }}</span>
+          </div>
+          <div class="flex items-center">
+            <span class="w-32 font-semibold">First Name</span>
+            <span>: {{ selectedDriver.firstName }}</span>
+          </div>
+          <div class="flex items-center">
+            <span class="w-32 font-semibold">Last Name</span>
+            <span>: {{ selectedDriver.lastName }}</span>
+          </div>
+          <div class="flex items-center">
+            <span class="w-32 font-semibold">Email</span>
             <span>: {{ selectedDriver.email }}</span>
           </div>
           <div class="flex items-center">
-            <i class="fas fa-phone w-5 mr-4"></i>
-            <span class="w-32">Contact No</span>
-            <span>: {{ selectedDriver.contactNo }}</span>
+            <span class="w-32 font-semibold">License No</span>
+            <span>: {{ selectedDriver.licenseNumber }}</span>
           </div>
           <div class="flex items-center">
-            <i class="fas fa-truck w-5 mr-4"></i>
-            <span class="w-32">Vehicle No</span>
-            <span>: {{ selectedDriver.vehicleNo }}</span>
+            <span class="w-32 font-semibold">Address ID</span>
+            <span>: {{ selectedDriver.addressId }}</span>
           </div>
           <div class="flex items-center">
-            <i class="fas fa-map-marker-alt w-5 mr-4"></i>
-            <span class="w-32">Location</span>
-            <span>: {{ selectedDriver.location }}</span>
-          </div>
-          <div class="flex items-center">
-            <i class="fas fa-map w-5 mr-4"></i>
-            <span class="w-32">Region</span>
-            <span>: {{ selectedDriver.region }}</span>
-          </div>
-          <div class="flex items-center">
-            <i class="fas fa-university w-5 mr-4"></i>
-            <span class="w-32">Bank Name</span>
-            <span>: {{ selectedDriver.bankDetails.bankName }}</span>
-          </div>
-          <div class="flex items-center ml-8">
-            <span class="w-32">-Branch</span>
-            <span>: {{ selectedDriver.bankDetails.branch }}</span>
-          </div>
-          <div class="flex items-center ml-8">
-            <span class="w-32">-Account No</span>
-            <span>: {{ selectedDriver.bankDetails.accountNo }}</span>
+            <span class="w-32 font-semibold">Account Status</span>
+            <span>: {{ selectedDriver.accountStatus }}</span>
           </div>
         </div>
       </div>
@@ -77,56 +67,32 @@
         <button class="px-4 py-3 rounded-lg bg-blue-50 text-blue-500 font-medium hover:bg-blue-100 transition-colors">Picked Orders</button>
         <button class="px-4 py-3 rounded-lg bg-blue-50 text-blue-500 font-medium hover:bg-blue-100 transition-colors">Reserved Orders</button>
         <button class="px-4 py-3 rounded-lg bg-blue-50 text-blue-500 font-medium hover:bg-blue-100 transition-colors">Complaints</button>
-        <button class="px-4 py-3 rounded-lg bg-red-500 text-white font-medium hover:bg-red-600 transition-colors mt-auto">Remove User</button>
+        <button *ngIf="selectedDriver.accountStatus !== 'Deleted'" class="px-4 py-3 rounded-lg bg-red-500 text-white font-medium hover:bg-red-600 transition-colors mt-auto" (click)="removeUser(selectedDriver)">Deactivate Account</button>
+        <button *ngIf="selectedDriver.accountStatus === 'Deleted'" class="px-4 py-3 rounded-lg bg-green-500 text-white font-medium hover:bg-green-600 transition-colors mt-auto" (click)="restoreUser(selectedDriver)">Activate Account</button>
       </div>
     </div>
   </div>
 
-  <!-- Recent Orders Section -->
-  <div class="bg-white rounded-lg p-8 shadow-sm" *ngIf="selectedDriver">
-    <h2 class="text-2xl font-semibold mb-6 text-gray-800">Recent Orders</h2>
-    <div class="mb-8 border border-gray-100 rounded-lg overflow-hidden" *ngFor="let order of selectedDriver.recentOrders">
-      <div class="flex justify-between items-center p-4 bg-gray-50 border-b border-gray-100">
-        <div class="flex gap-8">
-          <span>Order ID: {{ order.orderId }}</span>
-          <span>Date: {{ order.date }}</span>
-          <span class="text-orange-500">Status: {{ order.status }}</span>
-          <span>Driver ID: {{ order.driverId }}</span>
-          <span>Laundry ID: {{ order.laundryId }}</span>
+  <!-- Recent Orders Section removed: not present in DisplayDriver -->
+
+  <!-- Driver List Tabs -->
+  <div class="mt-8 bg-white rounded-lg p-4 shadow-sm">
+    <h2 class="text-xl font-semibold mb-4">All Drivers</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div *ngFor="let driver of drivers" 
+           class="border border-gray-200 rounded-lg p-4 cursor-pointer hover:bg-blue-50 transition-colors"
+           [class.bg-blue-100]="selectedDriver?.driverId === driver.driverId"
+           (click)="selectDriver(driver)">
+        <div class="flex items-center">
+          <img [src]="driver.profileImageUrl || 'assets/images/driver.png'" [alt]="getFullName(driver)" 
+               class="w-12 h-12 rounded-full object-cover mr-3"
+               (error)="$any($event.target).src = 'assets/images/driver.png'">
+          <div>
+            <h4 class="font-medium">{{ getFullName(driver) }}</h4>
+            <p class="text-sm text-gray-500">ID: #{{ driver.driverId }}</p>
+            <p class="text-sm text-gray-500">Address ID: {{ driver.addressId }}</p>
+          </div>
         </div>
-        <button class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors text-sm"
-                (click)="toggleOrderDetails(order)">
-          <i class="fas" [class.fa-eye]="!order.isExpanded" [class.fa-eye-slash]="order.isExpanded"></i>
-          {{ order.isExpanded ? 'View Less' : 'View More' }}
-        </button>
-      </div>
-      <div class="overflow-x-auto" *ngIf="order.isExpanded">
-        <table class="w-full">
-          <thead>
-            <tr class="bg-gray-50">
-              <th class="p-4 text-left font-medium text-gray-700 border-b border-gray-100">Item</th>
-              <th class="p-4 text-left font-medium text-gray-700 border-b border-gray-100">Process</th>
-              <th class="p-4 text-left font-medium text-gray-700 border-b border-gray-100">Clothe type</th>
-              <th class="p-4 text-left font-medium text-gray-700 border-b border-gray-100">Count</th>
-              <th class="p-4 text-left font-medium text-gray-700 border-b border-gray-100">Price per Item(Rs.)</th>
-              <th class="p-4 text-left font-medium text-gray-700 border-b border-gray-100">Total Price(Rs.)</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let item of order.items" class="even:bg-blue-50">
-              <td class="p-4 text-gray-700">{{ item.item }}</td>
-              <td class="p-4 text-gray-700">{{ item.process }}</td>
-              <td class="p-4 text-gray-700">{{ item.clotheType }}</td>
-              <td class="p-4 text-gray-700">{{ item.count }}</td>
-              <td class="p-4 text-gray-700">{{ item.pricePerItem }}</td>
-              <td class="p-4 text-gray-700">{{ item.totalPrice }}</td>
-            </tr>
-            <tr class="bg-gray-50 font-medium">
-              <td colspan="5" class="p-4 text-right text-gray-700">Subtotal (Rs.)</td>
-              <td class="p-4 text-gray-700">{{ order.subtotal }}</td>
-            </tr>
-          </tbody>
-        </table>
       </div>
     </div>
   </div>
