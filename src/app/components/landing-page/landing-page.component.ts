@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
     templateUrl: './landing-page.component.html',
     styleUrls: ['./landing-page.component.css'],
     standalone: true,
-    imports: [NgClass, NgFor, NgIf, FooterComponent]
+    imports: [NgClass, NgFor, FooterComponent]
 })
 export class LandingPageComponent {
     // For animated bubbles in hero image

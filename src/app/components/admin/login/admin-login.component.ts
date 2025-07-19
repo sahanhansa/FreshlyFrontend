@@ -28,8 +28,14 @@ export class AdminLoginComponent implements OnInit {
     });
   }
 
+
   ngOnInit(): void {
     // Component initialization logic
+  }
+
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
+    this.inputType = this.showPassword ? 'text' : 'password';
   }
 
   onSubmit(): void {
@@ -43,7 +49,7 @@ export class AdminLoginComponent implements OnInit {
           localStorage.setItem('adminUsername', res.username);
           localStorage.setItem('adminId', res.userId);
           // Redirect to admin dashboard
-          this.router.navigate(['/admin-home']);
+          this.router.navigate(['/admin/dashboard']);
         },
         error: (err) => {
           // Handle error (show message, etc.)

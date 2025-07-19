@@ -2,7 +2,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
-import { LandingPageComponent } from './components/landing-page/landing-page.component';
 import { filter } from 'rxjs/operators';
 import { ToastComponent} from './components/shared/toast/toast.component';
 
