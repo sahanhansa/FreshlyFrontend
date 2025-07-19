@@ -21,7 +21,16 @@ export class ViewFeedbacksComponent implements OnInit {
   }
 
   loadFeedbacks(): void {
-    this.feedbackService.getFeedbacks().subscribe({
+    // Get laundry ID from localStorage
+    const laundryId = localStorage.getItem('laundryId'); // Assuming 'userId' contains the laundry ID
+    
+    if (!laundryId) {
+      console.error('Laundry ID not found in localStorage');
+      this.loading = false;
+      return;
+    }
+
+    this.feedbackService.getFeedbacks(laundryId).subscribe({
       next: (data) => {
         // Extend each feedback object with `showReply` and `replyText`
         this.feedbacks = data.map((f) => ({
@@ -29,6 +38,10 @@ export class ViewFeedbacksComponent implements OnInit {
           showReply: false,
           replyText: ''
         }));
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Error loading feedbacks:', error);
         this.loading = false;
       }
     });
