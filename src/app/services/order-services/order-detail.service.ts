@@ -26,4 +26,9 @@ export class OrderDetailService {
   deleteOrder(orderId: string): Observable<any> {
     return this.http.delete(`${this.apiUrl}/cancel/${orderId}`);
   }
+
+  // Get orders that are out for delivery (to pay)
+  getOutForDeliveryOrders(customerId: string): Observable<OrderDetailsDTO[]> {
+    return this.http.get<OrderDetailsDTO[]>(`${this.apiUrl}/customer/${customerId}/outfordelivery`);
+  }
 }
