@@ -13,7 +13,7 @@ import { CommonModule } from '@angular/common';
 })
 export class AddItemComponent implements OnInit {
   categories: string[] = ['ladies', 'gents', 'kids', 'other'];
-  availableServices: string[] = ['Regular Wash', 'Dry Clean', 'Press Only'];
+  availableServices: string[] = ['Regular Wash', 'Dry Clean', 'Press Only','Hand Wash'];
 
   imageUrl: string = '';
   itemName: string = '';
