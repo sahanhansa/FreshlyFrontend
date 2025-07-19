@@ -30,8 +30,14 @@ export class AdminLoginComponent implements OnInit {
     });
   }
 
+
   ngOnInit(): void {
     // Component initialization logic
+  }
+
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
+    this.inputType = this.showPassword ? 'text' : 'password';
   }
 
   onSubmit(): void {
@@ -43,7 +49,7 @@ export class AdminLoginComponent implements OnInit {
           // Store admin login data and clear any other user data
           this.authHelper.storeAdminLogin(res.token, res.username, res.userId);
           // Redirect to admin dashboard
-          this.router.navigate(['/admin-home']);
+          this.router.navigate(['/admin/dashboard']);
         },
         error: (err) => {
           // Handle error (show message, etc.)
