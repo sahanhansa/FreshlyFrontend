@@ -36,7 +36,7 @@ export class PaymentComponent implements OnInit {
       orderId: ['ORDER12345', Validators.required],
       cancelUrl: ['https://localhost:7276/api/payment/cancel', Validators.required],
       notifyUrl: ['https://localhost:7276/api/payment/notify', Validators.required],
-      returnUrl: ['https://localhost:7276/api/payment/return', Validators.required]
+      returnUrl: ['https://d106-45-121-88-32.ngrok-free.app/api/sessions/payment-webhook', Validators.required]
     });
   }
 

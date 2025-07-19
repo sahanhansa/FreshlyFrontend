@@ -42,6 +42,7 @@ export class AdminLoginComponent implements OnInit {
           localStorage.setItem('token', res.token);
           localStorage.setItem('adminUsername', res.username);
           localStorage.setItem('adminId', res.userId);
+          localStorage.setItem('role', "role");
           // Redirect to admin dashboard
           this.router.navigate(['/admin-home']);
         },

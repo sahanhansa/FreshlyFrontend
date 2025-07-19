@@ -1,4 +1,6 @@
+
 <div class="flex items-center justify-center min-h-screen p-4 bg-gradient-to-br">
+  
   <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-2xl min-h-[600px] relative overflow-hidden">
     
     <!-- Background Pattern -->
@@ -318,22 +320,40 @@
         [@slideInOut]>
         <div class="mb-8 text-center">
           <h2 class="mb-2 text-2xl font-bold text-gray-800">Submitted</h2>
-          <p class="text-sm text-gray-600">Please fill the form below to receive confirmation from the admin panel.</p>
+          <p class="text-sm text-gray-600">{{ accountStateMessage || 'Please fill the form below to receive confirmation from the admin panel.' }}</p>
         </div>
-        
         <div class="py-8 text-center">
-          <div class="mb-6 animate-bounce-in">
-            <div class="flex items-center justify-center w-20 h-20 mx-auto mb-4 bg-green-500 rounded-full shadow-lg">
-              <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
-              </svg>
+          <ng-container *ngIf="laundryId && ownerId; else errorBlock">
+            <div class="mb-6 animate-bounce-in">
+              <div class="flex items-center justify-center w-20 h-20 mx-auto mb-4 bg-green-500 rounded-full shadow-lg">
+                <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                </svg>
+              </div>
             </div>
-          </div>
-          
-          <h3 class="mb-4 text-xl font-semibold text-gray-800 animate-fade-in-up" style="animation-delay: 0.2s;">
-            Submit your request
-          </h3>
-          
+            <h3 class="mb-4 text-xl font-semibold text-gray-800 animate-fade-in-up" style="animation-delay: 0.2s;">
+              Account State
+            </h3>
+            <div class="mb-4 text-base text-gray-700">
+              <div>Laundry ID: <span class="font-mono text-blue-600">{{ laundryId }}</span></div>
+              <div>Owner ID: <span class="font-mono text-green-600">{{ ownerId }}</span></div>
+            </div>
+          </ng-container>
+          <ng-template #errorBlock>
+            <div class="mb-6 animate-fade-in">
+              <div class="flex items-center justify-center w-20 h-20 mx-auto mb-4 bg-red-500 rounded-full shadow-lg">
+                <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+              </div>
+            </div>
+            <h3 class="mb-4 text-xl font-semibold text-red-600 animate-fade-in-up" style="animation-delay: 0.2s;">
+              Registration Failed
+            </h3>
+            <p class="max-w-md mx-auto text-base leading-relaxed text-red-600 animate-fade-in-up" style="animation-delay: 0.4s;">
+              {{ accountStateMessage }}
+            </p>
+          </ng-template>
           <p class="max-w-md mx-auto text-sm leading-relaxed text-gray-600 animate-fade-in-up" style="animation-delay: 0.4s;">
             Please review all the information you previously typed in the past steps, and if all is okay, 
             submit your message to receive account confirmation in 24 - 48 hours.

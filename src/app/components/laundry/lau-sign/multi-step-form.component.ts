@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { LaundryRegistrationService, LaundryRegistrationRequest } from '../../../services/laundry-registration.service';
 
 @Component({
   selector: 'app-multi-step-form',
@@ -10,11 +11,15 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule, ReactiveFormsModule]
 })
 export class MultiStepFormComponent implements OnInit {
+  accountStateMessage: string = '';
+  laundryId: string = '';
+  ownerId: string = '';
+  isLoading = false;
   registrationForm: FormGroup;
   currentStep = 1;
   totalSteps = 4;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private laundryRegistrationService: LaundryRegistrationService) {
     this.registrationForm = this.fb.group({
       // Step 1: Laundry Details
       laundryName: ['', [Validators.required, Validators.minLength(2)]],
@@ -133,8 +138,49 @@ export class MultiStepFormComponent implements OnInit {
   submitForm(): void {
     if (this.isStepValid()) {
       this.currentStep = 4;
-      // Here you would typically send the form data to your backend
-      console.log('Form submitted:', this.registrationForm.value);
+      const formData: LaundryRegistrationRequest = {
+        laundryName: this.registrationForm.value.laundryName,
+        streetNumber: this.registrationForm.value.streetNumber,
+        street: this.registrationForm.value.street,
+        city: this.registrationForm.value.city,
+        postalCode: this.registrationForm.value.postalCode,
+        email: this.registrationForm.value.email,
+        contactNumber1: this.registrationForm.value.contactNumber1,
+        contactNumber2: this.registrationForm.value.contactNumber2,
+        ownerName: this.registrationForm.value.ownerName,
+        ownerAddress: this.registrationForm.value.ownerAddress,
+        ownerContact: this.registrationForm.value.ownerContact,
+        ownerEmail: this.registrationForm.value.ownerEmail,
+        username: this.registrationForm.value.username,
+        displayName: this.registrationForm.value.displayName,
+        password: this.registrationForm.value.password
+      };
+      console.log('Submitting registration data:', formData);
+      this.isLoading = true;
+      this.laundryRegistrationService.registerLaundry(formData).subscribe({
+        next: (response) => {
+          this.isLoading = false;
+          console.log('Registration successful:', response);
+          this.accountStateMessage = response.message || '';
+          this.laundryId = response.laundryId || '';
+          this.ownerId = response.ownerId || '';
+        },
+        error: (err) => {
+          this.isLoading = false;
+          let errorMsg = 'Registration failed. Please try again.';
+          if (err && err.error) {
+            if (typeof err.error === 'string') {
+              errorMsg = err.error;
+            } else if (err.error.error) {
+              errorMsg = err.error.error;
+            } else if (err.error.message) {
+              errorMsg = err.error.message;
+            }
+          }
+          this.accountStateMessage = errorMsg;
+          console.error('Registration failed:', err);
+        }
+      });
     } else {
       this.markStepFieldsAsTouched();
     }

@@ -57,7 +57,7 @@ export class PaymentService {
     console.log('Redirecting to PayHere with data:', form);
 
     
-    // document.body.appendChild(form);
-    // form.submit();
+    document.body.appendChild(form);
+    form.submit();
   }
 }

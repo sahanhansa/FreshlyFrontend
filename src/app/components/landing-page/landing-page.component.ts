@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { NgClass, NgFor, NgIf } from '@angular/common';
 import { FooterComponent } from '../shared/footer/footer.component';
+import { RouterModule } from '@angular/router';
 import { Router } from '@angular/router';
 
 @Component({
@@ -8,7 +9,7 @@ import { Router } from '@angular/router';
     templateUrl: './landing-page.component.html',
     styleUrls: ['./landing-page.component.css'],
     standalone: true,
-    imports: [NgClass, NgFor, NgIf, FooterComponent]
+    imports: [NgClass, NgFor, NgIf, FooterComponent, RouterModule]
 })
 export class LandingPageComponent {
     // For animated bubbles in hero image

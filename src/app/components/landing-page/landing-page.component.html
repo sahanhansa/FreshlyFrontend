@@ -10,11 +10,41 @@
                 </div>
             </div>
             <ul class="nav-menu">
-                <li><a href="#home">Home</a></li>
-                <li><a href="#services">Services</a></li>
-                <li><a href="#about">About Us</a></li>
-                <li><a href="#laundries">Laundries</a></li>
-                <li><a href="#contact">Contact us</a></li>
+                <li>
+                  <a 
+                    routerLink="/" 
+                    routerLinkActive="font-semibold text-blue-500" 
+                    [ngClass]="'  px-3 py-2 transition-colors duration-200'"
+                  >Home</a>
+                </li>
+                <li>
+                  <a 
+                    routerLink="/services" 
+                    routerLinkActive="font-semibold text-black" 
+                    [ngClass]="'text-gray-700 hover:text-blue-500 px-3 py-2 transition-colors duration-200'"
+                  >Services</a>
+                </li>
+                <li>
+                  <a 
+                    routerLink="/about" 
+                    routerLinkActive="font-semibold text-black" 
+                    [ngClass]="'text-gray-700 hover:text-blue-500 px-3 py-2 transition-colors duration-200'"
+                  >About Us</a>
+                </li>
+                <li>
+                  <a 
+                    routerLink="/laundries" 
+                    routerLinkActive="font-semibold text-black" 
+                    [ngClass]="'text-gray-700 hover:text-blue-500 px-3 py-2 transition-colors duration-200'"
+                  >Laundries</a>
+                </li>
+                <li>
+                  <a 
+                    routerLink="/contact" 
+                    routerLinkActive="font-semibold text-black" 
+                    [ngClass]="'text-gray-700 hover:text-blue-500 px-3 py-2 transition-colors duration-200'"
+                  >Contact us</a>
+                </li>
             </ul>
         </nav>
     </header>
