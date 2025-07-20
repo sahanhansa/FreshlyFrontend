@@ -25,7 +25,7 @@ export interface DriverContactUs {
 export class ContactusComponent implements OnInit {
   private baseUrl = `${environment.apiUrl}/api/Driver`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   driverId: string = localStorage.getItem('userId') || '';
 
@@ -37,6 +37,7 @@ export class ContactusComponent implements OnInit {
   errorMessage: string = '';
   selectedSubject: string = 'General Inquiry';
   message: string = '';
+  isLoading: boolean = false;
 
   subjects = [
     'General Inquiry',
@@ -49,7 +50,7 @@ export class ContactusComponent implements OnInit {
     this.loadDriverContactIntoForm();
   }
 
-onSubmit() {
+  onSubmit() {
   if (!this.firstName || !this.lastName || !this.email || !this.phoneNumber || !this.message) {
     this.errorMessage = 'Please fill in all required fields.';
     return;
@@ -58,21 +59,23 @@ onSubmit() {
   this.isSubmitting = true;
 
   const formData = {
-    driverId: this.driverId,
+    driverID: this.driverId,
     firstName: this.firstName,
     lastName: this.lastName,
     email: this.email,
-    phoneNumber: this.phoneNumber,
+    phoneNumber: Array.isArray(this.phoneNumber) ? this.phoneNumber : [this.phoneNumber],
     selectedSubject: this.selectedSubject,
     message: this.message
   };
 
-  const url = `${this.baseUrl}`;
+  console.log('API REQUEST:', formData);
+
+  const url = `${this.baseUrl}/AddMessage`;
 
   this.http.post<any>(url, formData)
     .pipe(
       finalize(() => {
-        this.isSubmitting = false; // ✅ Runs whether it succeeds or fails
+        this.isSubmitting = false;
       })
     )
     .subscribe({
@@ -80,7 +83,6 @@ onSubmit() {
         console.log('Form Submitted:', response);
         this.errorMessage = '';
         alert('Message sent successfully!');
-        // Optionally reset form here
       },
       error: error => {
         console.error('Error submitting form:', error);
@@ -89,17 +91,22 @@ onSubmit() {
     });
 }
 
-  getDriverContactDetails(): Observable<DriverContactUs | null> {
-    const url = `${this.baseUrl}/GetContactUsDetails/${this.driverId}`;
+getDriverContactDetails(): Observable<DriverContactUs | null> {
+  const url = `${this.baseUrl}/GetContactUsDetails/${this.driverId}`;
+  console.log('FETCH URL:', url);
 
-    return this.http.get<any>(url).pipe(
-      map(response => this.mapToDriverContactUs(response)),
-      catchError(error => {
-        console.error('Error fetching driver contact details:', error);
-        return of(null);
-      })
-    );
-  }
+  return this.http.get<any>(url).pipe(
+    map(response => {
+      console.log('API RESPONSE:', response);
+      return this.mapToDriverContactUs(response);
+    }),
+    catchError(error => {
+      console.error('API ERROR:', error);
+      return of(null);
+    })
+  );
+}
+
 
   private mapToDriverContactUs(data: any): DriverContactUs {
     console.log('Mapping driver contact data:', data);
@@ -112,15 +119,25 @@ onSubmit() {
     };
   }
 
-  loadDriverContactIntoForm() {
-    this.getDriverContactDetails().subscribe(contact => {
-      if (contact) {
-        this.firstName = contact.firstName;
-        this.lastName = contact.lastName;
-        this.email = contact.email;
-        this.phoneNumber = contact.phoneNumber.join(', ');
-        console.log('Driver contact loaded:', contact);
-      }
-    });
-  }
+ loadDriverContactIntoForm() {
+  this.isLoading = true;
+  console.log('LOAD START');
+
+  this.getDriverContactDetails().pipe(
+    finalize(() => {
+      console.log('FINALIZE → STOP LOADING');
+      this.isLoading = false; // ✅
+    })
+  ).subscribe(contact => {
+    console.log('SUBSCRIBE NEXT:', contact);
+    if (contact) {
+      this.firstName = contact.firstName;
+      this.lastName = contact.lastName;
+      this.email = contact.email;
+      this.phoneNumber = contact.phoneNumber.join(', ');
+    }
+  });
+}
+
+
 }
