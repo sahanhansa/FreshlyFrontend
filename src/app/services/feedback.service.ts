@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
-import { Feedback } from '../models/feedback.model';
+import { Feedback,FeedbackDTO, FeedbackRequest } from '../models/feedback.model';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +11,10 @@ import { Feedback } from '../models/feedback.model';
 export class FeedbackService {
   private apiUrl = `${environment.apiUrl}/api/feedback`;
   constructor(private http: HttpClient) { }
+
+  //getFeedbacks(id: string = this.TEST_LAUNDRY_ID): Observable<Feedback[]> {
+  //return this.http.get<Feedback[]>(`${this.baseUrl}/get-feedbacks/${id}`);
+ // }
 
 getFeedbacks(laundryId: string): Observable<Feedback[]> {
   return this.http.get<Feedback[]>(`${this.apiUrl}/get-my-feedbacks/${laundryId}`);
@@ -83,5 +87,15 @@ getFeedbacks(laundryId: string): Observable<Feedback[]> {
     }
     
     return throwError(() => new Error(errorMsg));
+  }
+
+  // Submit feedback for an order
+  submitFeedback(feedback: FeedbackRequest): Observable<FeedbackDTO> {
+    return this.http.post<FeedbackDTO>(this.apiUrl, feedback);
+  }
+
+  // Get feedback for a specific order
+  getFeedbackByOrderId(orderId: string): Observable<FeedbackDTO | null> {
+    return this.http.get<FeedbackDTO>(`${this.apiUrl}/order/${orderId}`);
   }
 }

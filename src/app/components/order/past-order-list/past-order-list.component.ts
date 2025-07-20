@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { OrderCardComponent } from '../order-card/order-card.component';
 import { OrderStatusStep } from '../order-status/order-status.component';
 
 // Define the interface for order items within completed orders
@@ -23,7 +22,7 @@ interface Order {
 @Component({
   selector: 'app-past-order-list',
   standalone: true,
-  imports: [CommonModule, OrderCardComponent],
+  imports: [CommonModule], // Removed OrderCardComponent since it's not used
   templateUrl: './past-order-list.component.html',
   styleUrl: './past-order-list.component.css'
 })
