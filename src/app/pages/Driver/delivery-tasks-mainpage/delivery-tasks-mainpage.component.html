@@ -1,5 +1,5 @@
 <div><app-driver-navbar></app-driver-navbar></div>
-<br><br><br><br>
+<br>
 <div><app-delivery-task-header></app-delivery-task-header></div>
 
 <div class="flex flex-col sm:flex-row w-full sm:flex-1 ml-5 gap-4 sm:items-center">
@@ -7,16 +7,17 @@
     <app-search-bar [initialValue]="searchQuery" (searchChanged)="onSearchChanged($event)">
     </app-search-bar>
   </div>
-  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:ml-4 w-full sm:w-auto">
-    <button (click)="onGlobalSearch()"
-      class="w-full sm:w-auto px-5 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition duration-200 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-300">
-      Global Search
-    </button>
-    <button (click)="onOwnSearch()"
-      class="w-full sm:w-auto px-5 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition duration-200 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-300">
-      Own Search
-    </button>
-  </div>
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:ml-4 w-full sm:w-auto">
+  <button (click)="onGlobalSearch()"
+    class="flex items-center justify-center w-full sm:w-auto px-7 py-3 bg-blue-600 text-white text-lg font-medium rounded-xl shadow-lg hover:bg-blue-700 hover:scale-105 transition transform duration-300 ease-out focus:outline-none focus:ring-5 focus:ring-blue-400 focus:ring-opacity-60">
+    Global Deliveries
+  </button>
+  <button (click)="onOwnSearch()"
+    class="flex items-center justify-center w-full sm:w-auto px-7 py-3 bg-blue-600 text-white text-lg font-medium rounded-xl shadow-lg hover:bg-blue-700 hover:scale-105 transition transform duration-300 ease-out focus:outline-none focus:ring-5 focus:ring-blue-400 focus:ring-opacity-60">
+    Own Deliveries
+  </button>
+</div>
+
 </div>
 <div>
   <app-delivery-order-card [searchQuery]="searchQuery" [currentPage]="currentPage" [itemsPerPage]="itemsPerPage"
