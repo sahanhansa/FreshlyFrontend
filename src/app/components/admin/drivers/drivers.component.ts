@@ -30,6 +30,25 @@ export interface DisplayDriver {
   styleUrl: './drivers.component.css'
 })
 export class DriversComponent implements OnInit {
+  showConfirmDriverModal: boolean = false;
+  confirmDriverAction: 'remove' | 'restore' = 'remove';
+  driverToConfirm: DisplayDriver | null = null;
+  confirmRemoveDriver(driver: DisplayDriver): void {
+    this.driverToConfirm = driver;
+    this.confirmDriverAction = 'remove';
+    this.showConfirmDriverModal = true;
+  }
+
+  confirmRestoreDriver(driver: DisplayDriver): void {
+    this.driverToConfirm = driver;
+    this.confirmDriverAction = 'restore';
+    this.showConfirmDriverModal = true;
+  }
+
+  closeConfirmDriverModal(): void {
+    this.showConfirmDriverModal = false;
+    this.driverToConfirm = null;
+  }
   drivers: DisplayDriver[] = [];
   selectedDriver: DisplayDriver | null = null;
   searchQuery: string = '';
@@ -187,6 +206,7 @@ export class DriversComponent implements OnInit {
 
   removeUser(driver: DisplayDriver): void {
     if (!driver || !driver.driverId) return;
+    this.showConfirmDriverModal = false;
     this.isLoading = true;
     this.driverService.removeDriver(driver.driverId)
       .pipe(
@@ -204,6 +224,7 @@ export class DriversComponent implements OnInit {
 
   restoreUser(driver: DisplayDriver): void {
     if (!driver || !driver.driverId) return;
+    this.showConfirmDriverModal = false;
     this.isLoading = true;
     this.driverService.restoreDriver(driver.driverId)
       .pipe(

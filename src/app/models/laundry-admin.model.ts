@@ -23,4 +23,7 @@ export interface LaundryAdminDTO {
   
   // Authentication - only used for creation
   password?: string; 
+
+  // Account status
+  accountStatus?: string | null;
 }

@@ -8,6 +8,22 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class CustomerService {
+  /**
+   * Update customer account status
+   */
+  updateCustomerStatus(customerId: string, status: string): Observable<void> {
+    let endpoint = '';
+    if (status === 'active') {
+      endpoint = `${this.apiUrl}/${customerId}/activate`;
+    } else if (status === 'inactive') {
+      endpoint = `${this.apiUrl}/${customerId}/delete`;
+    } else {
+      throw new Error('Invalid status');
+    }
+    return this.http.patch<void>(endpoint, {}).pipe(
+      catchError(error => this.handleError('Failed to update customer status')(error))
+    );
+  }
   private apiUrl = `${environment.apiUrl}/api/customer`;
 
   constructor(private http: HttpClient) { }
