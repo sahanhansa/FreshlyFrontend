@@ -6,9 +6,6 @@ import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { ToastComponent} from './components/shared/toast/toast.component';
 
-
-
-
 @Component({
   selector: 'app-root',
   standalone: true,

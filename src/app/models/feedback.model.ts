@@ -12,4 +12,18 @@ export interface Feedback {
   Submittedbytype?: 'c' | 'd' | 'l';
 }
 
+export interface FeedbackDTO {
+  feedbackId?: string;
+  description: string;
+  rating: number;
+  orderId: string;
+  laundryId: string;
+  submittedByType: string;
+}
 
+export interface FeedbackRequest {
+  description: string;
+  rating: number;
+  orderId: string;
+  laundryId?: string;
+}

@@ -42,7 +42,7 @@ export class OrderCardComponent {
   
   // Helper method to check if the order is completed
   isCompleted(): boolean {
-    return this.status === 'completed' || this.currentStep === 'Completed';
+    return this.status === 'completed' || this.currentStep === 'Delivered';
   }
 
   // Show a maximum of 2 items in the card
