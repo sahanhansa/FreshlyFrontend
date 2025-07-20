@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RevenuePerMonthComponent } from './revenue-per-month.component';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
+import jsPDF from 'jspdf';
+import { ViewChild } from '@angular/core';
+import { RevenuePerMonthComponent } from './revenue-per-month.component';
 
 interface DriverLeaderboard {
   name: string;
@@ -36,14 +38,31 @@ imports: [CommonModule, FormsModule, RevenuePerMonthComponent],
   styleUrl: './reports.component.css'
 })
 export class ReportsComponent implements OnInit {
-  fromDate: string = '12/24/2024';
-  toDate: string = '12/24/2024';
+  @ViewChild(RevenuePerMonthComponent) revenuePerMonthComp!: RevenuePerMonthComponent;
+  activeCustomers: number = 0;
+  totalCustomers: number = 0;
+  years: number[] = [];
+  months = [
+    { name: 'Jan', value: 0 },
+    { name: 'Feb', value: 1 },
+    { name: 'Mar', value: 2 },
+    { name: 'Apr', value: 3 },
+    { name: 'May', value: 4 },
+    { name: 'Jun', value: 5 },
+    { name: 'Jul', value: 6 },
+    { name: 'Aug', value: 7 },
+    { name: 'Sep', value: 8 },
+    { name: 'Oct', value: 9 },
+    { name: 'Nov', value: 10 },
+    { name: 'Dec', value: 11 }
+  ];
+  fromYear!: number;
+  fromMonth!: number;
+  toYear!: number;
+  toMonth!: number;
   
   // Statistics
-  activeUsers = {
-    current: 27,
-    total: 80
-  };
+  // activeUsers removed (was hardcoded)
   
   complaintsAnswered = 3298;
   avgSessionLength = '2m 34s';
@@ -101,7 +120,26 @@ export class ReportsComponent implements OnInit {
   constructor(private http: HttpClient) {}
 
   ngOnInit(): void {
+    const currentYear = new Date().getFullYear();
+    this.years = Array.from({ length: 10 }, (_, i) => currentYear - i);
+    this.fromYear = currentYear;
+    this.toYear = currentYear;
+    this.fromMonth = 0;
+    this.toMonth = 11;
     this.fetchRevenueData();
+    this.fetchActiveCustomers();
+  }
+
+  fetchActiveCustomers(): void {
+    this.http.get<any[]>(`${environment.apiUrl}/api/Customer`).subscribe({
+      next: (customers: any[]) => {
+        this.totalCustomers = customers.length;
+        this.activeCustomers = customers.filter(c => (c.AccountStatus || '').toLowerCase() === 'active').length;
+      },
+      error: (err: any) => {
+        console.error('Failed to fetch customers:', err);
+      }
+    });
   }
 
   fetchRevenueData(): void {
@@ -130,31 +168,51 @@ export class ReportsComponent implements OnInit {
   }
 
   downloadReport(): void {
-    // Fetch backend data and generate CSV after API call
+    // Fetch backend data and generate PDF with chart image
     this.http.get<any[]>(`${environment.apiUrl}/api/Order`).subscribe({
       next: (orders: any[]) => {
         const monthlyTotals = Array(12).fill(0);
+        let totalDeliveries = 0;
+        const from = new Date(this.fromYear, this.fromMonth, 1);
+        const to = new Date(this.toYear, this.toMonth + 1, 0, 23, 59, 59, 999);
         orders.forEach(order => {
           const total = order.totalCost;
           const dateStr = order.placedDate || order.placedDateTime;
           if (total == null || !dateStr) return;
           const date = new Date(dateStr);
-          const month = date.getMonth();
-          monthlyTotals[month] += Number(total);
+          if (date >= from && date <= to) {
+            const month = date.getMonth();
+            monthlyTotals[month] += Number(total);
+            const statusRaw = order.status?.statusDisplayName || order.status?.statusName || '';
+            const statusName = statusRaw.trim().toLowerCase();
+            if (statusName === 'delivered') {
+              totalDeliveries++;
+            }
+          }
         });
+        // Get chart image from child component
+        let chartImg = '';
+        if (this.revenuePerMonthComp && this.revenuePerMonthComp.getChartImage) {
+          chartImg = this.revenuePerMonthComp.getChartImage() || '';
+        }
+        // Create PDF
+        const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
+        doc.setFontSize(18);
+        doc.text('Monthly Revenue Report', 40, 40);
+        if (chartImg) {
+          doc.addImage(chartImg, 'PNG', 40, 60, 600, 300);
+        }
+        doc.setFontSize(12);
+        let y = 380;
+        doc.text('Month, Revenue (Rs)', 40, y);
+        y += 20;
         const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        const header = 'Month,Revenue (Rs)\n';
-        const rows = months.map((m, idx) => `${m},${monthlyTotals[idx]}`).join('\n');
-        const csvContent = header + rows;
-        const blob = new Blob([csvContent], { type: 'text/csv' });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'monthly-revenue-report.csv';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        window.URL.revokeObjectURL(url);
+        months.forEach((m, idx) => {
+          doc.text(`${m}, ${monthlyTotals[idx]}`, 40, y);
+          y += 18;
+        });
+        doc.text(`Total Deliveries: ${totalDeliveries}`, 40, y + 10);
+        doc.save('monthly-revenue-report.pdf');
       },
       error: (err: any) => {
         console.error('Failed to fetch orders for report:', err);

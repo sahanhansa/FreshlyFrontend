@@ -115,12 +115,12 @@
         <thead>
           <tr class="bg-gray-50">
             <th class="p-4 text-left font-medium text-gray-700 whitespace-nowrap border-b border-gray-100">Customer ID</th>
-            <th class="p-4 text-left font-medium text-gray-700 whitespace-nowrap border-b border-gray-100">First Name</th>
-            <th class="p-4 text-left font-medium text-gray-700 whitespace-nowrap border-b border-gray-100">Last Name</th>
+            <th class="p-4 text-left font-medium text-gray-700 whitespace-nowrap border-b border-gray-100">Name</th>
             <th class="p-4 text-left font-medium text-gray-700 whitespace-nowrap border-b border-gray-100">Email</th>
             <th class="p-4 text-left font-medium text-gray-700 whitespace-nowrap border-b border-gray-100">Username</th>
             <th class="p-4 text-left font-medium text-gray-700 whitespace-nowrap border-b border-gray-100">Address</th>
-            <th class="p-4 text-left font-medium text-gray-700 whitespace-nowrap border-b border-gray-100">Status</th>
+            <th class="p-4 text-left font-medium text-gray-700 whitespace-nowrap border-b border-gray-100">Contacts</th>
+            <th class="p-4 text-left font-medium text-gray-700 whitespace-nowrap border-b border-gray-100">Account Status</th>
             <th class="p-4 text-left font-medium text-gray-700 whitespace-nowrap border-b border-gray-100">Details</th>
           </tr>
         </thead>
@@ -140,20 +140,12 @@
             [ngClass]="{'bg-[#D0F6FF]': i % 2 === 1, 'bg-blue-100': customer === selectedCustomer()}"
           >
             <td class="p-4 text-gray-700 border-b border-gray-100">{{ customer?.customerId?.substring(0, 8) || '-' }}</td>
-            <td class="p-4 text-gray-700 border-b border-gray-100">{{ customer?.firstName || '-' }}</td>
-            <td class="p-4 text-gray-700 border-b border-gray-100">{{ customer?.lastName || '-' }}</td>
+            <td class="p-4 text-gray-700 border-b border-gray-100">{{ (customer?.firstName || '-') + ' ' + (customer?.lastName || '-') }}</td>
             <td class="p-4 text-gray-700 border-b border-gray-100">{{ customer?.email || '-' }}</td>
             <td class="p-4 text-gray-700 border-b border-gray-100">{{ customer?.username || '-' }}</td>
-            <td class="p-4 text-gray-700 border-b border-gray-100">{{ getAddressDetails(customer?.addressId) }}</td>
-            <td class="p-4 border-b border-gray-100">
-              <span class="px-3 py-1.5 rounded-full text-sm font-medium"
-                    [ngClass]="{
-                      'bg-green-100 text-green-800': customer.contacts && customer.contacts.length > 0,
-                      'bg-yellow-100 text-yellow-800': !customer.contacts || customer.contacts.length === 0
-                    }">
-                {{ customer.contacts && customer.contacts.length > 0 ? 'Active' : 'Pending' }}
-              </span>
-            </td>
+            <td class="p-4 text-gray-700 border-b border-gray-100">{{ customer?.address || '-' }}</td>
+            <td class="p-4 text-gray-700 border-b border-gray-100">{{ customer?.contacts?.length ? customer?.contacts?.join(', ') : '-' }}</td>
+            <td class="p-4 text-gray-700 border-b border-gray-100">{{ customer?.accountStatus || '-' }}</td>
             <td class="p-4 border-b border-gray-100">
               <button
                 (click)="selectCustomer(customer); $event.stopPropagation()"

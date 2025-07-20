@@ -7,10 +7,19 @@ import { environment } from '../../../environments/environment';
 export interface AdminOrderDTO {
   orderId: string;
   placedDate: string | null;
-  customerFName: string;
-  customerLName: string;
-  statusName: string;
+  customerFName?: string;
+  customerLName?: string;
+  statusName?: string;
   totalCost: number;
+  customer?: {
+    firstName: string;
+    lastName: string;
+    // Add other customer fields if needed
+  };
+  status?: {
+    statusDisplayName: string;
+    // Add other status fields if needed
+  };
 }
 
 @Injectable({
