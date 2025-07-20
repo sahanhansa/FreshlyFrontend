@@ -3,6 +3,7 @@ export interface AdminStats {
   totalDeliveries: number;
   totalHours: number;
   totalRevenue: number;
+  activeUsers: number;
 }
 
 export interface AdminPanelMember {
