@@ -66,6 +66,11 @@
             <span class="w-32">Contact</span>
             <span>: {{ selectedCustomer()?.contacts?.length ? selectedCustomer()?.contacts?.join(', ') : 'No contacts' }}</span>
           </div>
+          <div class="flex items-center">
+            <i class="fas fa-user-shield w-5 mr-4"></i>
+            <span class="w-32">Account Status</span>
+            <span>: {{ selectedCustomer()?.accountStatus || 'Unknown' }}</span>
+          </div>
         </div>
       </div>
       <div class="w-full md:w-52 p-8 flex flex-col gap-4 bg-white md:rounded-r-[20px]">
@@ -81,11 +86,19 @@
           <i class="fas fa-comment-alt mr-2"></i>
           Complaints
         </button>
-        <button 
-          (click)="promptDeleteConfirmation()" 
+        <button
+          *ngIf="selectedCustomer()?.accountStatus === 'inactive' || selectedCustomer()?.accountStatus === 'deleted'"
+          (click)="showConfirmStatusModal('activate')"
+          class="px-4 py-3 rounded-lg bg-green-500 text-white font-medium hover:bg-green-600 transition-colors mt-auto">
+          <i class="fas fa-check-circle mr-2"></i>
+          Activate
+        </button>
+        <button
+          *ngIf="selectedCustomer()?.accountStatus === 'active'"
+          (click)="showConfirmStatusModal('deactivate')"
           class="px-4 py-3 rounded-lg bg-red-500 text-white font-medium hover:bg-red-600 transition-colors mt-auto">
-          <i class="fas fa-trash-alt mr-2"></i>
-          Remove User
+          <i class="fas fa-ban mr-2"></i>
+          Deactivate
         </button>
       </div>
     </div>
@@ -102,7 +115,8 @@
         <thead>
           <tr class="bg-gray-50">
             <th class="p-4 text-left font-medium text-gray-700 whitespace-nowrap border-b border-gray-100">Customer ID</th>
-            <th class="p-4 text-left font-medium text-gray-700 whitespace-nowrap border-b border-gray-100">Name</th>
+            <th class="p-4 text-left font-medium text-gray-700 whitespace-nowrap border-b border-gray-100">First Name</th>
+            <th class="p-4 text-left font-medium text-gray-700 whitespace-nowrap border-b border-gray-100">Last Name</th>
             <th class="p-4 text-left font-medium text-gray-700 whitespace-nowrap border-b border-gray-100">Email</th>
             <th class="p-4 text-left font-medium text-gray-700 whitespace-nowrap border-b border-gray-100">Username</th>
             <th class="p-4 text-left font-medium text-gray-700 whitespace-nowrap border-b border-gray-100">Address</th>
@@ -126,10 +140,11 @@
             [ngClass]="{'bg-[#D0F6FF]': i % 2 === 1, 'bg-blue-100': customer === selectedCustomer()}"
           >
             <td class="p-4 text-gray-700 border-b border-gray-100">{{ customer?.customerId?.substring(0, 8) || '-' }}</td>
-            <td class="p-4 text-gray-700 border-b border-gray-100">{{ (customer?.firstName || '') + ' ' + (customer?.lastName || '') }}</td>
+            <td class="p-4 text-gray-700 border-b border-gray-100">{{ customer?.firstName || '-' }}</td>
+            <td class="p-4 text-gray-700 border-b border-gray-100">{{ customer?.lastName || '-' }}</td>
             <td class="p-4 text-gray-700 border-b border-gray-100">{{ customer?.email || '-' }}</td>
             <td class="p-4 text-gray-700 border-b border-gray-100">{{ customer?.username || '-' }}</td>
-            <td class="p-4 text-gray-700 border-b border-gray-100">{{ customer?.address || '-' }}</td>
+            <td class="p-4 text-gray-700 border-b border-gray-100">{{ getAddressDetails(customer?.addressId) }}</td>
             <td class="p-4 border-b border-gray-100">
               <span class="px-3 py-1.5 rounded-full text-sm font-medium"
                     [ngClass]="{
@@ -195,6 +210,41 @@
   </div>
 
   <!-- Delete Confirmation Dialog -->
+  <!-- Activate/Deactivate Confirmation Dialog -->
+  <div *ngIf="showConfirmStatus" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white p-6 rounded-lg shadow-xl max-w-md w-full mx-4 animate-fadeIn">
+      <div class="flex items-center mb-4 pb-3 border-b border-gray-200">
+        <div [ngClass]="confirmStatusAction === 'activate' ? 'bg-green-100' : 'bg-red-100'" class="p-2 rounded-full">
+          <svg *ngIf="confirmStatusAction === 'activate'" class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+          </svg>
+          <svg *ngIf="confirmStatusAction === 'deactivate'" class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </div>
+        <h2 class="ml-3 text-xl font-bold text-gray-800">Confirm {{ confirmStatusAction === 'activate' ? 'Activation' : 'Deactivation' }}</h2>
+      </div>
+      <div class="mb-6">
+        <p class="text-gray-700">Are you sure you want to {{ confirmStatusAction === 'activate' ? 'activate' : 'deactivate' }} customer <span class="font-semibold">{{ selectedCustomer()?.firstName }} {{ selectedCustomer()?.lastName }}</span>?</p>
+        <p class="mt-2 text-sm text-gray-600">This will {{ confirmStatusAction === 'activate' ? 'enable' : 'disable' }} the customer account.</p>
+      </div>
+      <div class="flex justify-end space-x-3">
+        <button
+          (click)="closeConfirmStatusModal()"
+          class="px-4 py-2 bg-gray-200 text-gray-800 font-medium rounded-md hover:bg-gray-300 transition focus:outline-none focus:ring-2 focus:ring-gray-300"
+        >
+          Cancel
+        </button>
+        <button
+          (click)="confirmStatusChange()"
+          [ngClass]="confirmStatusAction === 'activate' ? 'bg-green-600 hover:bg-green-700' : 'bg-red-600 hover:bg-red-700'"
+          class="px-4 py-2 text-white font-medium rounded-md transition focus:outline-none focus:ring-2 focus:ring-green-500"
+        >
+          {{ confirmStatusAction === 'activate' ? 'Activate' : 'Deactivate' }}
+        </button>
+      </div>
+    </div>
+  </div>
   <div *ngIf="showDeleteConfirmation()" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
     <div class="bg-white p-6 rounded-lg shadow-xl max-w-md w-full mx-4 animate-fadeIn">
       <div class="flex items-center mb-4 pb-3 border-b border-gray-200">

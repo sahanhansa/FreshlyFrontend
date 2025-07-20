@@ -13,11 +13,13 @@ import {
   LinearScale,
   PointElement,
   LineElement,
+  LineController,
   Title,
   Tooltip,
   Legend,
   ChartConfiguration
 } from 'chart.js';
+import { environment } from 'src/environments/environment';
 import { NavbarComponent } from "@app/components/shared/navbar/navbar.component";
 
 
@@ -27,6 +29,7 @@ Chart.register(
   LinearScale,
   PointElement,
   LineElement,
+  LineController,
   Title,
   Tooltip,
   Legend
@@ -40,6 +43,10 @@ Chart.register(
   styleUrl: './admin-dashboard.component.css'
 })
 export class AdminDashboardComponent implements OnInit, AfterViewInit {
+  orders: any[] = [];
+  laundryRevenueData: { [laundryId: string]: number[] } = {};
+  laundryNames: { [laundryId: string]: string } = {};
+  private chartInstance: Chart | null = null;
   @ViewChild('revenueChart') private revenueChart!: ElementRef<HTMLCanvasElement>;
 
   adminName: string = '';
@@ -63,19 +70,23 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit {
     { type: 'delivery', count: 8 }
   ];
   revenueData = {
-    laundryA: [10000, 15000, 18000, 25000, 32000, 38753, 28000, 22000, 18000, 20000, 23000, 22000],
-    laundryB: [22000, 28000, 15000, 35000, 25000, 20000, 30000, 35000, 20000, 12667, 35000, 38000]
+    monthlyIncome: [32000, 43000, 33000, 60000, 57000, 58753, 58000, 57000, 38000, 32667, 58000, 60000]
   };
   months: string[] = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
 
-  constructor(private router: Router, private laundryService: LaundryService, private driverService: AdminDriverService) {
+  constructor(
+    private router: Router,
+    private laundryService: LaundryService,
+    private driverService: AdminDriverService,
+    private http: HttpClient
+  ) {
     const storedName = localStorage.getItem('adminUsername');
     this.adminName = storedName ? storedName : 'Customer';
   }
 
   ngOnInit(): void {
     console.log('AdminDashboardComponent: ngOnInit');
-    this.initializeData();
+    // Fetch laundries first
     this.laundryService.getLaundries().subscribe({
       next: (laundries: any[]) => {
         this.laundries = laundries.map(laundry => ({
@@ -85,6 +96,12 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit {
           rating: laundry.rating || laundry.averageRating || 0,
           logo: 'assets/images/laundry.png'
         }));
+        // Map laundry names for chart labels
+        this.laundries.forEach(laundry => {
+          this.laundryNames[laundry.id] = laundry.name;
+        });
+        // Fetch orders after laundries
+        this.fetchOrdersAndProcessRevenue();
       },
       error: (err: any) => {
         console.error('Failed to fetch laundries:', err);
@@ -108,38 +125,41 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.initializeChart();
+    // Chart will be initialized after data is processed
   }
 
   private initializeChart(): void {
-    const canvas = this.revenueChart.nativeElement;
+    const canvas = this.revenueChart?.nativeElement;
+    if (!canvas) {
+      console.error('Canvas element not found!');
+      return;
+    }
     const ctx = canvas.getContext('2d');
     if (!ctx) {
       console.error('Could not get 2D context from canvas element');
       return;
     }
+    // Build datasets for each laundry
+    const datasets = Object.keys(this.laundryRevenueData).map((laundryId, idx) => {
+      const color = idx % 2 === 0 ? 'rgb(54, 162, 235)' : 'rgb(255, 99, 132)';
+      const bgColor = idx % 2 === 0 ? 'rgba(54, 162, 235, 0.2)' : 'rgba(255, 99, 132, 0.2)';
+      return {
+        label: this.laundryNames[laundryId] || `Laundry ${laundryId}`,
+        data: this.laundryRevenueData[laundryId],
+        borderColor: color,
+        backgroundColor: bgColor,
+        tension: 0.4,
+        fill: false,
+        pointRadius: 4,
+        pointHoverRadius: 6
+      };
+    });
+    console.log('Chart datasets:', datasets);
     const chartConfig: ChartConfiguration = {
       type: 'line',
       data: {
         labels: this.months,
-        datasets: [
-          {
-            label: 'Laundry A',
-            data: this.revenueData.laundryA,
-            borderColor: 'rgb(75, 192, 192)',
-            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-            tension: 0.1,
-            fill: true
-          },
-          {
-            label: 'Laundry B',
-            data: this.revenueData.laundryB,
-            borderColor: 'rgb(255, 99, 132)',
-            backgroundColor: 'rgba(255, 99, 132, 0.2)',
-            tension: 0.1,
-            fill: true
-          }
-        ]
+        datasets: datasets
       },
       options: {
         responsive: true,
@@ -147,7 +167,7 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit {
         plugins: {
           title: {
             display: true,
-            text: 'Monthly Revenue'
+            text: 'Monthly Revenue by Laundry'
           },
           legend: {
             display: true,
@@ -171,12 +191,47 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit {
         }
       }
     };
-    new Chart(ctx, chartConfig);
+    try {
+      this.chartInstance = new Chart(ctx, chartConfig);
+    } catch (error) {
+      console.error('Error creating Chart.js chart:', error);
+    }
+
   }
 
-  private initializeData(): void {
-    console.log('AdminDashboardComponent: Initializing data');
-    console.log('Stats:', this.stats);
-    console.log('Admin name:', this.adminName);
+  private fetchOrdersAndProcessRevenue(): void {
+    this.http.get<any[]>(`${environment.apiUrl}/api/Order`).subscribe({
+      next: (orders: any[]) => {
+        console.log('Fetched orders:', orders);
+        this.orders = orders;
+        this.processMonthlyRevenue();
+        this.initializeChart();
+      },
+      error: (err: any) => {
+        console.error('Failed to fetch orders:', err);
+      }
+    });
+  }
+
+  private processMonthlyRevenue(): void {
+    // Prepare monthly revenue for each laundry
+    this.laundryRevenueData = {};
+    // Initialize arrays for each laundry
+    this.laundries.forEach(laundry => {
+      this.laundryRevenueData[laundry.id] = Array(12).fill(0);
+    });
+    // Process each order
+    this.orders.forEach(order => {
+      // Use correct fields from API response
+      const laundryId = order.laundry?.laundryId;
+      const total = order.totalCost;
+      const dateStr = order.placedDate || order.placedDateTime;
+      if (!laundryId || total == null || !dateStr) return;
+      const date = new Date(dateStr);
+      const month = date.getMonth(); // 0-based
+      if (this.laundryRevenueData[laundryId]) {
+        this.laundryRevenueData[laundryId][month] += Number(total);
+      }
+    });
   }
 }
