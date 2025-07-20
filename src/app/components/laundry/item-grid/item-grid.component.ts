@@ -8,6 +8,7 @@ interface ItemResponse {
   itemId: string;
   itemName: string;
   categoryName: string;
+  description?: string;
   imageUrl: string;
   services: {
     serviceId: string;

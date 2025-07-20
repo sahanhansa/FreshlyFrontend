@@ -1,67 +1,85 @@
-<div class="border-2 rounded-lg shadow-md min-h-[450px] max-w-l flex flex-col">
-  <!-- Header Section -->
-  <div class="bg-blue-500 text-white rounded-t-lg px-3 py-3 flex flex-col items-center min-h-[150px]">
-  <img src="assets/laundry-man.jpg" class="w-24 h-24 mb-3 rounded-full border-white shadow-md" alt="Laundry Logo">
-    <h2 class="text-lg font-bold tracking-wide">{{ laundry?.name }}</h2>
-    <p class="text-sm">{{ laundry?.tagline }}</p>
+<div class="border-2 rounded-lg shadow-md h-full max-w-l flex flex-col">
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="flex items-center justify-center h-full">
+    <div class="text-center">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
+      <p class="mt-4 text-gray-600">Loading laundry details...</p>
+    </div>
   </div>
 
-  <!-- Details Section -->
-  <div class="p-4 text-sm space-y-4 flex-grow">
-    <!-- Reg No -->
-    <div class="flex items-start gap-2">
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-500 stroke-[2.5] mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M10 3H5a2 2 0 00-2 2v5m0 4v5a2 2 0 002 2h5m4 0h5a2 2 0 002-2v-5m0-4V5a2 2 0 00-2-2h-5" />
+  <!-- Error State -->
+  <div *ngIf="error && !isLoading" class="flex items-center justify-center h-full">
+    <div class="text-center">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-red-500 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
       </svg>
-      <div>
-        <p class="font-semibold">Reg No:</p>
-        <p class="ml-2">{{ laundry?.regNo }}</p>
+      <p class="text-red-600">{{ error }}</p>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div *ngIf="!isLoading && !error && laundry">
+    <!-- Header Section -->
+    <div class="bg-blue-500 text-white rounded-t-lg px-3 py-3 flex flex-col items-center min-h-[150px]">
+      <div *ngIf="laundry.logoUrl; else noLogo" class="w-24 h-24 mb-3">
+        <img [src]="laundry.logoUrl" class="w-24 h-24 rounded-full border-white shadow-md" alt="Laundry Logo">
       </div>
+      <ng-template #noLogo>
+        <div class="w-24 h-24 mb-3 rounded-full border-white shadow-md bg-white/20 flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-white/60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+          </svg>
+        </div>
+      </ng-template>
+      <h2 class="text-lg font-bold tracking-wide">{{ laundry.laundryName }}</h2>
+      <p class="text-sm">Professional Laundry Services</p>
     </div>
 
-    <!-- Address -->
-    <div class="flex items-start gap-2">
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-500 stroke-[2.5] mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path d="M12 2C8.1 2 5 5.1 5 9c0 5.3 7 13 7 13s7-7.7 7-13c0-3.9-3.1-7-7-7z"/>
-        <circle cx="12" cy="9" r="2.5" fill="currentColor"/>
-      </svg>
-      <div>
-        <p class="font-semibold">Address:</p>
-        <p class="ml-2">{{ laundry?.address }}</p>
+    <!-- Details Section -->
+    <div class="p-4 text-sm space-y-4 flex-grow">
+      <!-- Reg No -->
+      <div class="flex items-start gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-500 stroke-[2.5] mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M10 3H5a2 2 0 00-2 2v5m0 4v5a2 2 0 002 2h5m4 0h5a2 2 0 002-2v-5m0-4V5a2 2 0 00-2-2h-5" />
+        </svg>
+        <div>
+          <p class="font-semibold">Laundry ID:</p>
+          <p class="ml-2">{{ laundry.laundryId }}</p>
+        </div>
       </div>
-    </div>
 
-    <!-- Contact No -->
-    <div class="flex items-start gap-2">
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-500 stroke-[2.5] mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M22 16.92v3a2 2 0 01-2.18 2 19.86 19.86 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.86 19.86 0 013.08 4.18 2 2 0 015.06 2h3a2 2 0 012 1.72c.13.91.37 1.79.72 2.64a2 2 0 01-.45 2.11l-1.27 1.27a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.85.35 1.73.59 2.64.72a2 2 0 011.72 2z"/>
-      </svg>
-      <div>
-        <p class="font-semibold">Contact No:</p>
-        <p class="ml-2">{{ laundry?.contact }}</p>
+      <!-- Address -->
+      <div class="flex items-start gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-500 stroke-[2.5] mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path d="M12 2C8.1 2 5 5.1 5 9c0 5.3 7 13 7 13s7-7.7 7-13c0-3.9-3.1-7-7-7z"/>
+          <circle cx="12" cy="9" r="2.5" fill="currentColor"/>
+        </svg>
+        <div>
+          <p class="font-semibold">Address:</p>
+          <p class="ml-2">{{ laundry.address }}</p>
+        </div>
       </div>
-    </div>
 
-    <!-- Email -->
-    <div class="flex items-start gap-2">
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-500 stroke-[2.5] mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path d="M4 4h16c1.1 0 2 .9 2 2v12a2 2 0 01-2 2H4a2 2 0 01-2-2V6c0-1.1.9-2 2-2zm0 2v.01L12 13 20 6.01V6H4z"/>
-      </svg>
-      <div>
-        <p class="font-semibold">Email:</p>
-        <p class="ml-2">{{ laundry?.email }}</p>
+      <!-- Contact No -->
+      <div class="flex items-start gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-500 stroke-[2.5] mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M22 16.92v3a2 2 0 01-2.18 2 19.86 19.86 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.86 19.86 0 013.08 4.18 2 2 0 015.06 2h3a2 2 0 012 1.72c.13.91.37 1.79.72 2.64a2 2 0 01-.45 2.11l-1.27 1.27a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.85.35 1.73.59 2.64.72a2 2 0 011.72 2z"/>
+        </svg>
+        <div>
+          <p class="font-semibold">Contact No:</p>
+          <p class="ml-2">{{ laundry.contactNumber }}</p>
+        </div>
       </div>
-    </div>
 
-
-    <!-- Core Services -->
-    <div class="flex items-start gap-2">
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-500 stroke-[2.5] mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M9 11l3 3L22 4M4 6h16M4 12h8m-8 6h4"/>
-      </svg>
-      <div>
-        <p class="font-semibold">Core Services:</p>
-        <p class="ml-2">{{ laundry?.services }}</p>
+      <!-- Email -->
+      <div class="flex items-start gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-500 stroke-[2.5] mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path d="M4 4h16c1.1 0 2 .9 2 2v12a2 2 0 01-2 2H4a2 2 0 01-2-2V6c0-1.1.9-2 2-2zm0 2v.01L12 13 20 6.01V6H4z"/>
+        </svg>
+        <div>
+          <p class="font-semibold">Email:</p>
+          <p class="ml-2">{{ laundry.email }}</p>
+        </div>
       </div>
     </div>
   </div>

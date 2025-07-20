@@ -8,8 +8,12 @@
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <app-laundry-details-card [laundry]="laundry"></app-laundry-details-card>
-      <app-owner-details-card [owner]="owner"></app-owner-details-card>
+      <div class="h-[500px]">
+        <app-laundry-details-card [laundryId]="laundryId"></app-laundry-details-card>
+      </div>
+      <div class="h-[500px]">
+        <app-owner-details-card [laundryId]="laundryId"></app-owner-details-card>
+      </div>
     </div>
 
     <div class="ml-2 mr-2 mt-5"><app-access-notice></app-access-notice></div>

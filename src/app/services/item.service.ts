@@ -74,30 +74,49 @@ export class ItemService {
   }
 
   // Get single item by ID
-  getItemById(itemId: string): Observable<Item> {
+  getItemById(itemId: string): Observable<any> {
     const laundryId = localStorage.getItem('laundryId');
     if (!laundryId) {
       return throwError(() => new Error('Laundry ID not found. Please login again.'));
     }
 
-    return this.http.get<any>(`${this.apiUrl}/GetItemById/${itemId}/${laundryId}`)
+    // Use the correct GET endpoint
+    const url = `${this.apiUrl}/GetItemByLaundryId/${laundryId}/${itemId}`;
+    console.log('Calling API:', url);
+    console.log('LaundryId:', laundryId);
+    console.log('ItemId:', itemId);
+
+    // Add authorization header if token exists
+    const token = localStorage.getItem('token');
+    const headers: any = {};
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    return this.http.get<any>(url, { headers })
       .pipe(
-        map(item => this.mapDtoToItem(item)),
+        map(item => {
+          console.log('Raw item response:', item);
+          return item; // Return the raw API response
+        }),
         catchError(error => {
-          console.error('Error fetching item:', error);
-          return throwError(() => new Error('Failed to load item. Please try again.'));
+          console.error('Error fetching item - Full error:', error);
+          console.error('Error status:', error.status);
+          console.error('Error message:', error.message);
+          console.error('Error URL:', error.url);
+          return throwError(() => new Error(`Failed to load item: ${error.status} - ${error.message}`));
         })
       );
   }
 
-  // Update item method
+  // Update item method using PATCH
   updateItem(itemId: string, item: AddItemDTO): Observable<any> {
     const laundryId = localStorage.getItem('laundryId');
     if (!laundryId) {
       return throwError(() => new Error('Laundry ID not found. Please login again.'));
     }
 
-    return this.http.put(`${this.apiUrl}/update-item/${itemId}/${laundryId}`, item, {
+    return this.http.patch(`${this.apiUrl}/update-item/${itemId}/${laundryId}`, item, {
       responseType: 'text' as 'json',
       observe: 'response'
     }).pipe(
@@ -116,6 +135,36 @@ export class ItemService {
         return throwError(() => new Error(errorMessage));
       })
     );
+  }
+
+  // Delete item method
+  deleteItem(itemId: string): Observable<any> {
+    const laundryId = localStorage.getItem('laundryId');
+    if (!laundryId) {
+      return throwError(() => new Error('Laundry ID not found. Please login again.'));
+    }
+
+    // Add authorization header if token exists
+    const token = localStorage.getItem('token');
+    const headers: any = {};
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    return this.http.delete(`${this.apiUrl}/delete-item/${itemId}/${laundryId}`, { headers })
+      .pipe(
+        map(response => {
+          console.log('Item deleted successfully:', response);
+          return response;
+        }),
+        catchError(error => {
+          console.error('ItemService - Delete error:', error);
+          let errorMessage = 'Failed to delete item. Please try again.';
+          if (error.error?.message) errorMessage = error.error.message;
+          else if (error.message) errorMessage = error.message;
+          return throwError(() => new Error(errorMessage));
+        })
+      );
   }
 
 }
