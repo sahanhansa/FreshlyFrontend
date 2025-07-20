@@ -3,6 +3,7 @@ export interface OrderDetailsDTO {
   orderIdFormatted: string;
   orderDate: string;
   orderDateFormatted: string;
+  laundryId: string;
   laundryName: string;
   laundryLocation: string;
   items: OrderItemDTO[];
