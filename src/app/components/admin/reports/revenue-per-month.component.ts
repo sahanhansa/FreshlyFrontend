@@ -21,6 +21,12 @@ Chart.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, B
   styleUrls: []
 })
 export class RevenuePerMonthComponent implements OnInit {
+  /** Returns the chart as a PNG data URL */
+  getChartImage(): string | null {
+    const canvas = this.revenueBarChart?.nativeElement;
+    if (!canvas) return null;
+    return canvas.toDataURL('image/png');
+  }
   @ViewChild('revenueBarChart') private revenueBarChart!: ElementRef<HTMLCanvasElement>;
   months: string[] = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
   private chartInstance: Chart | null = null;
