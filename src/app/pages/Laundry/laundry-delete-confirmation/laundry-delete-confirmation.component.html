@@ -1,0 +1,7 @@
+<app-delete-confirmation 
+  [itemId]="itemId"
+  [itemName]="itemName"
+  [isDeleting]="isDeleting"
+  (confirmed)="onDeleteConfirmed($event)"
+  (cancelled)="onDeleteCancelled()"
+></app-delete-confirmation> 

@@ -24,6 +24,7 @@ import { HowItWorksComponent } from './components/customer/how-it-works/how-it-w
 import { LandingPageComponent } from './components/landing-page/landing-page.component';
 import { NewOrdersComponent } from './pages/Laundry/new-orders/new-orders.component';
 import { processingOrdersComponent } from './pages/Laundry/processing-orders/processing-orders.component';
+import { CompletedOrdersComponent } from './pages/Laundry/completed-orders/completed-orders.component';
 import { ConfirmOrdersComponent } from './pages/Laundry/confirm-orders/confirm-orders.component';
 import { InvoiceSuccessedComponent } from './pages/Laundry/invoice-successed/invoice-successed.component';
 import { LaundryFeedbacksComponent } from './pages/Laundry/laundry-feedbacks/laundry-feedbacks.component';
@@ -37,6 +38,7 @@ import { ItemPageComponent } from './pages/order/item-list-page/item-list-page.c
 import { CustomerLayoutComponent } from './components/customer/customer-layout/customer-layout.component';
 import { LaundryAddItemComponent } from './pages/Laundry/laundry-add-item/laundry-add-item.component';
 import { LaundryEditItemComponent } from './pages/Laundry/laundry-edit-item/laundry-edit-item.component';
+import { LaundryDeleteConfirmationComponent } from './pages/Laundry/laundry-delete-confirmation/laundry-delete-confirmation.component';
 import {LaundryOrderSummaryComponent } from './pages/Laundry/laundry-order-summary/laundry-order-summary.component';
 import { LogoutPageComponent } from './pages/Driver/logout-page/logout-page.component';
 // import {LaundryHomeComponent} from './components/laundry/laundry-home/laundry-home.component';
@@ -139,6 +141,9 @@ export const routes: Routes = [
     // Route for processingorders page
   {path: 'processing-orders', component:processingOrdersComponent},
 
+    // Route for completed orders page
+  {path: 'completed-orders', component:CompletedOrdersComponent},
+
  // Route for confirm orders page
   {path: 'confirm-orders', component:ConfirmOrdersComponent},
 
@@ -163,7 +168,9 @@ export const routes: Routes = [
 
      {path: 'laundry-add-item', component:LaundryAddItemComponent},
 
-     {path: 'laundry-edit-item', component:LaundryEditItemComponent },
+     {path: 'laundry-edit-item/:id', component:LaundryEditItemComponent },
+
+     {path: 'laundry-delete-confirmation/:id', component:LaundryDeleteConfirmationComponent },
 
     {path: 'order-summary', component:LaundryOrderSummaryComponent },
 

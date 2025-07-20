@@ -9,29 +9,32 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class OrderService {
-  private apiUrl = `${environment.apiUrl}/api/Orders`; 
-  private newOrdersUrl = `${this.apiUrl}/neworders`;
-  private baseUrl = `${environment.apiUrl}/api/Orders`;
-  // Temporary laundryId for testing - replace with actual ID in production
-  private readonly TEST_LAUNDRY_ID = 'efaa5020-331b-11f0-a791-c138d5830fc3';
+  private apiUrl = `${environment.apiUrl}/api/Order`; 
+ 
 
 
   constructor(private http: HttpClient) {}
 
-  getNewOrders(laundryId: string = this.TEST_LAUNDRY_ID): Observable<Order[]> {
-    return this.http.get<Order[]>(`${this.baseUrl}/${laundryId}/new-orders`).pipe(
+  getNewOrders(laundryId: string): Observable<Order[]> {
+    return this.http.get<Order[]>(`${this.apiUrl}/${laundryId}/new-orders`).pipe(
       catchError(this.handleError)
     );
   }
 
-  getProcessingOrders(laundryId: string = this.TEST_LAUNDRY_ID): Observable<Order[]> {
-    return this.http.get<Order[]>(`${this.baseUrl}/${laundryId}/processing-orders`).pipe(
+  getProcessingOrders(laundryId: string): Observable<Order[]> {
+    return this.http.get<Order[]>(`${this.apiUrl}/${laundryId}/processing-orders`).pipe(
       catchError(this.handleError)
     );
   }
 
-  getAllOrders(laundryId: string = this.TEST_LAUNDRY_ID): Observable<Order[]> {
-    return this.http.get<Order[]>(`${this.baseUrl}/${laundryId}/all-orders`).pipe(
+  getCompletedOrders(laundryId: string): Observable<Order[]> {
+    return this.http.get<Order[]>(`${this.apiUrl}/${laundryId}/completed-orders`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  getAllOrders(laundryId: string): Observable<Order[]> {
+    return this.http.get<Order[]>(`${this.apiUrl}/${laundryId}/all-orders`).pipe(
       catchError(this.handleError)
     );
   }

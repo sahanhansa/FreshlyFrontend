@@ -1,6 +1,6 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ItemService } from '../../../services/item.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-delete-confirmation',
@@ -9,26 +9,23 @@ import { ItemService } from '../../../services/item.service';
   templateUrl: './delete-confirmation.component.html'
 })
 export class DeleteConfirmationComponent {
+  @Input() itemId: string = '';
+  @Input() itemName: string = '';
+  @Input() isDeleting: boolean = false;
+  @Output() confirmed = new EventEmitter<string>();
+  @Output() cancelled = new EventEmitter<void>();
 
-  @Input() itemId!: string;
-  @Input() title: string = 'Confirm Deletion';
-  @Input() message: string = 'Are you sure you want to delete this item? This action cannot be undone.';
-  @Input() button1Text: string = 'Yes';
-  @Input() button2Text: string = 'No';
+  constructor(private router: Router) {}
 
-  orderType: string = '';
+  onConfirm() {
+    this.confirmed.emit(this.itemId);
+  }
 
-  constructor(private service: ItemService) {}
+  onCancel() {
+    this.cancelled.emit();
+  }
 
-  onDeleteConfirm() {
-    this.service.getDeleteItem(this.itemId).subscribe({
-      next: () => {
-        console.log('Item deleted successfully');
-        // Handle UI feedback or modal close here
-      },
-      error: err => {
-        console.error('Delete failed', err);
-      }
-    });
+  onBack() {
+    this.router.navigate(['/laundry-items']);
   }
 }

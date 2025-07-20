@@ -1,35 +1,49 @@
-<div *ngIf="pagedDeliveries.length > 0; else noDlivery" class="flex flex-wrap justify-center gap-6 mt-5 mb-5">
-  <div *ngFor="let delivery of pagedDeliveries" class="w-[22%] min-w-[240px] max-w-[300px]">
-    <div class="bg-[#d4f6ff] p-4 rounded-[15px] shadow-md font-sans transition-transform duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg">
+<div *ngIf="pagedDeliveries.length > 0; else noDelivery"
+  class="flex flex-wrap justify-center gap-6 mt-10 mb-12 px-4">
 
-      <div class="flex justify-between items-center mb-3">
-        <p class="order-id font-semibold text-sm break-words">Order ID: #{{ delivery.id }}</p>
+  <div *ngFor="let delivery of pagedDeliveries"
+    class="w-full sm:w-[48%] md:w-[30%] lg:w-[22%] min-w-[250px] max-w-[300px]">
+
+    <div
+      class="flex flex-col h-full bg-white border border-gray-400 rounded-2xl shadow-lg hover:shadow-xl transition hover:-translate-y-1 duration-300 ease-in-out p-6">
+
+      <!-- Top: Order ID & Status -->
+      <div class="flex justify-between items-center mb-4">
+        <p class="text-gray-900 font-bold text-sm tracking-wide break-words">
+          📦 Order ID - {{ delivery.id }}
+        </p>
+
+        <span
+          class="inline-flex items-center gap-1 px-3 py-1 text-xs font-bold rounded-full uppercase tracking-wide"
+          [ngClass]="{
+            'bg-yellow-100 text-yellow-800': delivery.status === 'Delivery Pending',
+            'bg-green-100 text-green-800': delivery.status === 'Delivery Complete'
+          }">
+          {{ delivery.status }}
+        </span>
       </div>
 
-      <span 
-        class="status text-sm font-medium px-3 py-1 rounded-full"
-        [ngClass]="{ 
-          'pending': delivery.status === 'Delivery Pending',
-          'complete': delivery.status === 'Delivery Complete'
-        }">
-        {{ delivery.status }}
-      </span>
-
-      <div class="order-details text-sm mt-2 space-y-1">
-        <p><strong>Customer:</strong> {{ delivery.customerName }}</p>
-        <p><strong>Customer ID:</strong> {{ delivery.customerId }}</p>
-        <p><strong>Address:</strong> {{ delivery.address }}</p>
-        <p><strong>Contact:</strong> {{ delivery.contact }}</p>
-        <p><strong>Laundry Name:</strong> {{ delivery.laundryName }}</p>
+      <!-- Order Details -->
+      <div class="text-gray-700 text-[13px] space-y-1.5 flex-grow leading-relaxed">
+        <p><span class="font-medium">👤 Customer:</span> {{ delivery.customerName }}</p>
+        <p><span class="font-medium">🆔 Customer ID:</span> {{ delivery.customerId }}</p>
+        <p class="break-words"><span class="font-medium">🏠 Address:</span> {{ delivery.address }}</p>
+        <p><span class="font-medium">📞 Contact:</span> {{ delivery.contact }}</p>
+        <p><span class="font-medium">🧺 Laundry:</span> {{ delivery.laundryName }}</p>
       </div>
 
-      <button class="view-button"
-        [routerLink]="['/delivery-order-details', delivery.id]">
-        View Order Details
+      <!-- CTA Button -->
+      <button
+        [routerLink]="['/delivery-order-details', delivery.id]"
+        class="mt-5 inline-flex items-center justify-center gap-2 px-4 py-2 w-full bg-blue-600 text-white text-sm font-semibold rounded-full hover:bg-blue-700 hover:scale-[1.02] transition duration-200 shadow hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400">
+        📄 View Order Details
       </button>
     </div>
   </div>
 </div>
-<ng-template #noDlivery>
-  <div class="text-center text-gray-600 mt-5">No deliveries available.</div>
+
+<ng-template #noDelivery>
+  <div class="text-center text-gray-500 mt-12 text-2xl font-semibold">
+    🚫 No deliveries available.
+  </div>
 </ng-template>
