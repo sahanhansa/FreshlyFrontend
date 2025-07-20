@@ -9,6 +9,14 @@ import { environment } from '../../environments/environment';
 })
 export class LaundryAdminService {
   /**
+   * Create a new laundry account (with owner and address)
+   */
+  createLaundryAccount(payload: any): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/create-laundry-account`, payload).pipe(
+      catchError(this.handleError('Failed to create laundry account'))
+    );
+  }
+  /**
    * Activate a laundry account
    */
   activateLaundry(laundryId: string): Observable<void> {
