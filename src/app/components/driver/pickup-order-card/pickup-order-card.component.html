@@ -1,44 +1,56 @@
-<div *ngIf="pagedPickups.length > 0; else noPickups" class="flex flex-wrap justify-center gap-6 mt-5 mb-5">
-  <div *ngFor="let pickup of pagedPickups" class="w-[22%] min-w-[240px] max-w-[300px]">
-    <div
-      class="bg-[#d4f6ff] p-4 rounded-[15px] shadow-md font-sans transition-transform duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg">
+<!-- Cards Container -->
+<div *ngIf="pagedPickups.length > 0; else noPickups" class="flex flex-wrap justify-center gap-6 mt-10 mb-12 px-4">
 
-      <!-- Order ID and Status -->
-      <div class="flex justify-between items-center mb-3">
-        <p class="order-id font-semibold text-sm break-words">Order ID: #{{ pickup.id }}</p>
+  <!-- Single Card -->
+  <div *ngFor="let pickup of pagedPickups" class="w-full sm:w-[48%] md:w-[30%] lg:w-[22%] min-w-[250px] max-w-[300px]">
+
+    <div
+      class="flex flex-col h-full bg-white border border-gray-400 rounded-2xl shadow-lg hover:shadow-xl transition hover:-translate-y-1 duration-300 ease-in-out p-6">
+
+      <!-- Top: Order ID & Status -->
+      <div class="flex justify-between items-center mb-4">
+        <p class="text-gray-900 font-bold text-sm tracking-wide break-words">
+          📦 Order ID - {{ pickup.id }}
+        </p>
+
+        <span class="inline-flex items-center gap-1 px-3 py-1 text-xs font-bold rounded-full uppercase tracking-wide"
+          [ngClass]="{
+      'bg-yellow-100 text-yellow-800': pickup.status === 'order placed' && pickup.pickupDriverId === null,
+      'bg-blue-100 text-blue-800': pickup.status === 'order placed' && pickup.pickupDriverId !== null,
+      'bg-green-100 text-green-800': pickup.status !== 'order placed'
+    }">
+          {{
+          pickup.status === 'order placed' && pickup.pickupDriverId !== null
+          ? 'In Progress'
+          : pickup.status === 'order placed'
+          ? 'Pending'
+          : 'Complete'
+          }}
+        </span>
       </div>
 
-      <span class="status text-sm font-medium px-3 py-1 rounded-full" [ngClass]="{
-            'pickup-pending': pickup.status?.trim() === 'order placed' && pickup.pickupDriverId === null,
-            'pickup-InProgress': pickup.status?.trim() === 'order placed' && pickup.pickupDriverId !== null,
-            'pickup-complete': pickup.status?.trim() === 'order picked up'
-          }">
-
-        {{
-        pickup.status === 'order placed' && pickup.pickupDriverId !== null
-        ? 'In Progress'
-        :pickup.status === 'order placed' ?
-        'Pending' :'Complete'
-        }}
-      </span>
 
       <!-- Order Details -->
-      <div class="order-details text-sm mt-2 space-y-1">
-        <p><strong>Customer:</strong> {{ pickup.customerName }}</p>
-        <p><strong>Customer ID:</strong> {{ pickup.customerId }}</p>
-        <p><strong>Address:</strong> {{ pickup.address }}</p>
-        <p><strong>Contact:</strong> {{ pickup.contact }}</p>
-        <p><strong>Laundry Name:</strong> {{ pickup.laundryName }}</p>
+      <div class="text-gray-700 text-[13px] space-y-1.5 flex-grow leading-relaxed">
+        <p><span class="font-medium">👤 Customer:</span> {{ pickup.customerName }}</p>
+        <p><span class="font-medium">🆔 Customer ID:</span> {{ pickup.customerId }}</p>
+        <p class="break-words"><span class="font-medium">🏠 Address:</span> {{ pickup.address }}</p>
+        <p><span class="font-medium">📞 Contact:</span> {{ pickup.contact }}</p>
+        <p><span class="font-medium">🧺 Laundry:</span> {{ pickup.laundryName }}</p>
       </div>
-      <!-- buttton - view order -->
-      <button class="view-button" [routerLink]="['/order-details-pending', pickup.id]">
-        View Order Details
+
+      <!-- CTA Button -->
+      <button [routerLink]="['/order-details-pending', pickup.id]"
+        class="mt-5 inline-flex items-center justify-center gap-2 px-4 py-2 w-full bg-blue-600 text-white text-sm font-semibold rounded-full hover:bg-blue-700 hover:scale-[1.02] transition duration-200 shadow hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400">
+        📄 View Details
       </button>
-
-
     </div>
   </div>
 </div>
+
+<!-- Empty State -->
 <ng-template #noPickups>
-  <div class="text-center text-gray-600 mt-5">No pickups available.</div>
+  <div class="text-center text-gray-500 mt-12 text-2xl font-semibold ">
+    🚫 No pickups available.
+  </div>
 </ng-template>
