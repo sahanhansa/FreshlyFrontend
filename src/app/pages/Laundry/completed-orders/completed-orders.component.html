@@ -8,10 +8,10 @@
     <!-- Centered Title and Subtitle -->
     <div class="text-center mt-8 sm:mt-10 mb-4 sm:mb-6 max-w-full sm:max-w-3xl md:max-w-4xl lg:max-w-5xl mx-auto px-2">
       <h1 class="font-bold drop-shadow-md text-1xl sm:text-2xl md:text-3xl lg:text-4xl">
-        Processing Orders
+        Completed Orders
       </h1>
       <p class="text-gray-700 text-base sm:text-md md:text-lg lg:text-xl mt-1 sm:mt-2">
-       Here are the orders currently being processed for customers
+        Here are the orders that have been successfully completed
       </p>
     </div>
 
@@ -21,7 +21,7 @@
     <!-- Loading State -->
     <div *ngIf="loading" class="text-center py-8">
       <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-      <p class="mt-2 text-gray-600">Loading processing orders...</p>
+      <p class="mt-2 text-gray-600">Loading completed orders...</p>
     </div>
 
     <!-- Error State -->
@@ -37,8 +37,8 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
           </svg>
         </div>
-        <h3 class="text-lg font-medium text-gray-900 mb-2">No Processing Orders</h3>
-        <p class="text-gray-500">There are no orders currently being processed. All orders have been completed or are waiting to be started.</p>
+        <h3 class="text-lg font-medium text-gray-900 mb-2">No Completed Orders</h3>
+        <p class="text-gray-500">There are no completed orders yet. Orders will appear here once they have been successfully delivered to customers.</p>
       </div>
     </div>
 
@@ -56,9 +56,9 @@
         </thead>
         <tbody>
           <tr *ngFor="let order of orders; let i = index"
-         [ngClass]="{ 'bg-white': i % 2 === 0, 'bg-[#D0F6FF]': i % 2 === 1 }"
-         class="h-12">
-          <td class="px-4 sm:px-6 py-2 sm:py-3 font-semibold text-black text-sm sm:text-base">
+              [ngClass]="{ 'bg-white': i % 2 === 0, 'bg-[#D0F6FF]': i % 2 === 1 }"
+              class="h-12">
+            <td class="px-4 sm:px-6 py-2 sm:py-3 font-semibold text-black text-sm sm:text-base">
               #{{ order.orderId }}
             </td>
             <td class="px-4 sm:px-6 py-2 sm:py-3 text-black text-sm sm:text-base">
@@ -77,7 +77,7 @@
 
     </div>
 
-    <!-- Increased margin-top here -->
+    <!-- Pagination -->
     <app-pagination class="mt-8 max-w-full sm:max-w-3xl md:max-w-4xl lg:max-w-6xl mx-auto px-2 sm:px-0"></app-pagination>
 
   </div>
