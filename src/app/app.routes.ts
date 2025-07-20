@@ -24,6 +24,7 @@ import { HowItWorksComponent } from './components/customer/how-it-works/how-it-w
 import { LandingPageComponent } from './components/landing-page/landing-page.component';
 import { NewOrdersComponent } from './pages/Laundry/new-orders/new-orders.component';
 import { processingOrdersComponent } from './pages/Laundry/processing-orders/processing-orders.component';
+import { CompletedOrdersComponent } from './pages/Laundry/completed-orders/completed-orders.component';
 import { ConfirmOrdersComponent } from './pages/Laundry/confirm-orders/confirm-orders.component';
 import { InvoiceSuccessedComponent } from './pages/Laundry/invoice-successed/invoice-successed.component';
 import { LaundryFeedbacksComponent } from './pages/Laundry/laundry-feedbacks/laundry-feedbacks.component';
@@ -139,6 +140,9 @@ export const routes: Routes = [
 
     // Route for processingorders page
   {path: 'processing-orders', component:processingOrdersComponent},
+
+    // Route for completed orders page
+  {path: 'completed-orders', component:CompletedOrdersComponent},
 
  // Route for confirm orders page
   {path: 'confirm-orders', component:ConfirmOrdersComponent},
