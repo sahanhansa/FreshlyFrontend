@@ -45,6 +45,9 @@
   <!-- Header Controls -->
   <div class="flex justify-between items-center mb-8 bg-white p-4 rounded-lg shadow-sm">
     <div class="flex items-center gap-2">
+      <button (click)="openAddLaundryModal()" class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors font-semibold mr-4">
+        + Add New Laundry
+      </button>
       <span>Show</span>
       <select [ngModel]="entriesPerPage()" 
               (ngModelChange)="onEntriesChange($event)"
@@ -67,6 +70,33 @@
   </div>
   
   <h1 class="text-4xl text-gray-800 mb-8 font-inter drop-shadow-lg">Laundry Management</h1>
+  <!-- Add Laundry Modal -->
+  <div *ngIf="showAddLaundryModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white p-6 rounded-lg shadow-xl max-w-lg w-full mx-4 animate-fadeIn">
+      <h2 class="text-2xl font-bold mb-4">Add New Laundry</h2>
+      <form (ngSubmit)="submitAddLaundry()">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <input [(ngModel)]="newLaundry.ownerFirstName" name="ownerFirstName" placeholder="Owner First Name" class="border p-2 rounded w-full" required>
+          <input [(ngModel)]="newLaundry.ownerLastName" name="ownerLastName" placeholder="Owner Last Name" class="border p-2 rounded w-full" required>
+          <input [(ngModel)]="newLaundry.ownerEmail" name="ownerEmail" placeholder="Owner Email" class="border p-2 rounded w-full" required>
+          <input [(ngModel)]="newLaundry.ownerPassword" name="ownerPassword" placeholder="Owner Password" type="password" class="border p-2 rounded w-full" required>
+          <input [(ngModel)]="newLaundry.ownerUsername" name="ownerUsername" placeholder="Owner Username" class="border p-2 rounded w-full" required>
+          <input [(ngModel)]="newLaundry.houseNo" name="houseNo" placeholder="Owner House No" class="border p-2 rounded w-full" required>
+          <input [(ngModel)]="newLaundry.street" name="street" placeholder="Owner Street" class="border p-2 rounded w-full" required>
+          <input [(ngModel)]="newLaundry.city" name="city" placeholder="Owner City" class="border p-2 rounded w-full" required>
+          <input [(ngModel)]="newLaundry.postalCode" name="postalCode" placeholder="Owner Postal Code" class="border p-2 rounded w-full" required>
+          <input [(ngModel)]="newLaundry.laundryName" name="laundryName" placeholder="Laundry Name" class="border p-2 rounded w-full" required>
+          <input [(ngModel)]="newLaundry.laundryUsername" name="laundryUsername" placeholder="Laundry Username" class="border p-2 rounded w-full" required>
+          <input [(ngModel)]="newLaundry.laundryPassword" name="laundryPassword" placeholder="Laundry Password" type="password" class="border p-2 rounded w-full" required>
+          <input [(ngModel)]="newLaundry.laundryEmail" name="laundryEmail" placeholder="Laundry Email" class="border p-2 rounded w-full" required>
+        </div>
+        <div class="flex justify-end mt-6 gap-3">
+          <button type="button" (click)="closeAddLaundryModal()" class="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300">Cancel</button>
+          <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">Add Laundry</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <!-- Laundry Profile Card - Placed at the top -->
   <div *ngIf="selectedLaundry()" class="mb-6">

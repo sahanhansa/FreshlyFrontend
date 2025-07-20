@@ -9,7 +9,7 @@ export interface Feedback {
   isExpanded?: boolean; // For UI expansion state
   customerFName: string;
   customerLName: string;
-  Submittedbytype?: 'c' | 'd' | 'l';
+  submittedByType?: 'c' | 'd' | 'l';
 }
 
 export interface FeedbackDTO {
