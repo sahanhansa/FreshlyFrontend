@@ -1,28 +1,25 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-interface OrderItem {
-  name: string;
-  quantity: number;
-}
-
-// Define types for the order status
+// Define types for the order status to match your backend values
 export type OrderStatusStep = 
   'Order placed' | 
   'Order pickup scheduled' | 
-  'Picked up' | 
+  'Order picked up' | 
   'Processing in laundry' | 
   'Finished processing' | 
   'Out for delivery' | 
-  'Completed';
+  'Delivered';
 
-// Interface defining the complete order details needed for status display
 export interface OrderDetails {
   id: string;
   laundryName: string;
   date: string; 
   totalAmount: number;
-  items: OrderItem[];
+  items: {
+    name: string;
+    quantity: number;
+  }[];
   status: 'ongoing' | 'completed'; 
   currentStep: OrderStatusStep; 
 }
@@ -34,7 +31,6 @@ export interface OrderDetails {
   templateUrl: './order-status.component.html',
   styleUrl: './order-status.component.css'
 })
-
 export class OrderStatusComponent {
   @Input() visible: boolean = false;
   @Input() order: OrderDetails | null = null;
@@ -45,35 +41,28 @@ export class OrderStatusComponent {
   orderStatusSteps: OrderStatusStep[] = [
     'Order placed',
     'Order pickup scheduled',
-    'Picked up',
+    'Order picked up',
     'Processing in laundry',
     'Finished processing',
     'Out for delivery',
-    'Completed'
+    'Delivered'
   ];
   
-  // Method to close the modal and emit the close event
   closeModal(): void {
     this.close.emit();
   }
   
-  // Method to handle order cancellation and emit the cancel event with the order ID
   cancelOrder(): void {
     if (this.order) {
       this.cancel.emit(this.order.id);
-      this.closeModal();
     }
   }
   
-  // Method to determine if an order can be cancelled based on its current status
   canCancelOrder(): boolean {
     if (!this.order) return false;
-    
-    const cancelableStatuses: OrderStatusStep[] = ['Order placed', 'Order pickup scheduled'];
-    return cancelableStatuses.includes(this.order.currentStep as OrderStatusStep);
+    return this.order.currentStep === 'Order placed';
   }
   
-  // Helper methods for status timeline
   isStepCompleted(step: string): boolean {
     if (!this.order) return false;
     
@@ -83,17 +72,15 @@ export class OrderStatusComponent {
     return stepIndex <= currentStepIndex;
   }
   
-  // Checks if a step is the current active step in the process
   isCurrentStep(step: string): boolean {
     return this.order?.currentStep === step;
   }
   
-  // Get estimated delivery date (1 week from order date)
   getEstimatedDeliveryDate(): string {
     if (!this.order) return '';
     
     try {
-      // Parse the order date
+      // Parse the order date (assuming format like "15 July 2025")
       const dateParts = this.order.date.split(' ');
       const day = parseInt(dateParts[0]);
       const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
@@ -121,11 +108,8 @@ export class OrderStatusComponent {
     }
   }
   
-  // Determines if delivery is expected today
   isDeliveryToday(): boolean {
     if (!this.order) return false;
-    
-    // If order is in "Out for delivery" status, delivery is today
     return this.order.currentStep === 'Out for delivery';
   }
 }

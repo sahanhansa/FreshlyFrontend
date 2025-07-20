@@ -1,6 +1,9 @@
-<div class="p-8 bg-gray-100 min-h-screen">
+<div class="p-8 bg-gray-100 min-h-screen pt-16">
   <!-- Header Controls -->
   <div class="flex justify-between items-center mb-8 bg-white p-4 rounded-lg shadow-sm">
+    <button (click)="openAddDriverModal()" class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors font-semibold mr-4">
+      + Add New Driver
+    </button>
     <div class="flex items-center gap-2">
       <span>Show</span>
       <select [(ngModel)]="entriesPerPage" 
@@ -19,57 +22,69 @@
 
   <h1 class="text-4xl text-gray-800 mb-8 font-inter drop-shadow-lg">Driver Details</h1>
 
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="flex justify-center items-center py-16">
+    <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-500"></div>
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-8">
+    <p>{{ error }}</p>
+    <button 
+      (click)="loadDrivers()" 
+      class="mt-2 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors">
+      Try Again
+    </button>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!isLoading && !error && drivers.length === 0" class="bg-white p-8 rounded-lg text-center">
+    <i class="fas fa-user-slash text-4xl text-gray-400 mb-4"></i>
+    <h3 class="text-xl font-medium text-gray-700 mb-2">No Drivers Found</h3>
+    <p class="text-gray-500">There are no drivers matching your criteria or no drivers are registered in the system.</p>
+  </div>
+
   <!-- Driver Details Card -->
-  <div class="mb-8" *ngIf="selectedDriver">
+  <div class="mb-8" *ngIf="!isLoading && selectedDriver">
     <div class="flex bg-blue-500 rounded-[20px] overflow-hidden text-white shadow-lg">
       <div class="flex-1 p-8">
         <div class="flex items-center mb-8">
-          <img [src]="selectedDriver.profileImage" [alt]="selectedDriver.name" 
+          <img [src]="selectedDriver.profileImageUrl" [alt]="getFullName(selectedDriver)" 
                class="w-24 h-24 rounded-full object-cover mr-4"
-               (error)="selectedDriver.profileImage = 'assets/images/driver.png'">
+               (error)="selectedDriver.profileImageUrl = 'assets/images/driver.png'">
           <div>
-            <h3 class="text-2xl font-medium m-0">{{ selectedDriver.name }}</h3>
-            <p class="mt-2 opacity-90">#{{ selectedDriver.id }}</p>
+            <h3 class="text-2xl font-medium m-0">{{ getFullName(selectedDriver) }}</h3>
+            <p class="mt-2 opacity-90">#{{ selectedDriver.driverId }}</p>
           </div>
         </div>
         <div class="space-y-4">
           <div class="flex items-center">
-            <i class="fas fa-envelope w-5 mr-4"></i>
-            <span class="w-32">Email</span>
+            <span class="w-32 font-semibold">Driver ID</span>
+            <span>: {{ selectedDriver.driverId }}</span>
+          </div>
+          <div class="flex items-center">
+            <span class="w-32 font-semibold">First Name</span>
+            <span>: {{ selectedDriver.firstName }}</span>
+          </div>
+          <div class="flex items-center">
+            <span class="w-32 font-semibold">Last Name</span>
+            <span>: {{ selectedDriver.lastName }}</span>
+          </div>
+          <div class="flex items-center">
+            <span class="w-32 font-semibold">Email</span>
             <span>: {{ selectedDriver.email }}</span>
           </div>
           <div class="flex items-center">
-            <i class="fas fa-phone w-5 mr-4"></i>
-            <span class="w-32">Contact No</span>
-            <span>: {{ selectedDriver.contactNo }}</span>
+            <span class="w-32 font-semibold">License No</span>
+            <span>: {{ selectedDriver.licenseNumber }}</span>
           </div>
           <div class="flex items-center">
-            <i class="fas fa-truck w-5 mr-4"></i>
-            <span class="w-32">Vehicle No</span>
-            <span>: {{ selectedDriver.vehicleNo }}</span>
+            <span class="w-32 font-semibold">Address ID</span>
+            <span>: {{ selectedDriver.addressId }}</span>
           </div>
           <div class="flex items-center">
-            <i class="fas fa-map-marker-alt w-5 mr-4"></i>
-            <span class="w-32">Location</span>
-            <span>: {{ selectedDriver.location }}</span>
-          </div>
-          <div class="flex items-center">
-            <i class="fas fa-map w-5 mr-4"></i>
-            <span class="w-32">Region</span>
-            <span>: {{ selectedDriver.region }}</span>
-          </div>
-          <div class="flex items-center">
-            <i class="fas fa-university w-5 mr-4"></i>
-            <span class="w-32">Bank Name</span>
-            <span>: {{ selectedDriver.bankDetails.bankName }}</span>
-          </div>
-          <div class="flex items-center ml-8">
-            <span class="w-32">-Branch</span>
-            <span>: {{ selectedDriver.bankDetails.branch }}</span>
-          </div>
-          <div class="flex items-center ml-8">
-            <span class="w-32">-Account No</span>
-            <span>: {{ selectedDriver.bankDetails.accountNo }}</span>
+            <span class="w-32 font-semibold">Account Status</span>
+            <span>: {{ selectedDriver.accountStatus }}</span>
           </div>
         </div>
       </div>
@@ -77,62 +92,50 @@
         <button class="px-4 py-3 rounded-lg bg-blue-50 text-blue-500 font-medium hover:bg-blue-100 transition-colors">Picked Orders</button>
         <button class="px-4 py-3 rounded-lg bg-blue-50 text-blue-500 font-medium hover:bg-blue-100 transition-colors">Reserved Orders</button>
         <button class="px-4 py-3 rounded-lg bg-blue-50 text-blue-500 font-medium hover:bg-blue-100 transition-colors">Complaints</button>
-        <button class="px-4 py-3 rounded-lg bg-red-500 text-white font-medium hover:bg-red-600 transition-colors mt-auto">Remove User</button>
+        <button *ngIf="selectedDriver.accountStatus !== 'Deleted'" class="px-4 py-3 rounded-lg bg-red-500 text-white font-medium hover:bg-red-600 transition-colors mt-auto" (click)="confirmRemoveDriver(selectedDriver)">Deactivate Account</button>
+        <button *ngIf="selectedDriver.accountStatus === 'Deleted'" class="px-4 py-3 rounded-lg bg-green-500 text-white font-medium hover:bg-green-600 transition-colors mt-auto" (click)="confirmRestoreDriver(selectedDriver)">Activate Account</button>
+  <!-- Confirmation Modal for Remove/Restore Driver -->
+  <div *ngIf="showConfirmDriverModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+    <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md relative">
+      <h2 class="text-xl font-semibold mb-4 text-black">{{ confirmDriverAction === 'remove' ? 'Deactivate Driver' : 'Activate Driver' }}</h2>
+      <span class="text-black">Are you sure you want to {{ confirmDriverAction === 'remove' ? 'deactivate' : 'activate' }} this driver?</span><br>
+      <div class="flex justify-end gap-4">
+        <button class="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 font-medium" (click)="closeConfirmDriverModal()">Cancel</button>
+        <button *ngIf="confirmDriverAction === 'remove' && driverToConfirm" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 font-medium" (click)="removeUser(driverToConfirm)">Deactivate</button>
+        <button *ngIf="confirmDriverAction === 'restore' && driverToConfirm" class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 font-medium" (click)="restoreUser(driverToConfirm)">Activate</button>
+      </div>
+    </div>
+  </div>
       </div>
     </div>
   </div>
 
-  <!-- Recent Orders Section -->
-  <div class="bg-white rounded-lg p-8 shadow-sm" *ngIf="selectedDriver">
-    <h2 class="text-2xl font-semibold mb-6 text-gray-800">Recent Orders</h2>
-    <div class="mb-8 border border-gray-100 rounded-lg overflow-hidden" *ngFor="let order of selectedDriver.recentOrders">
-      <div class="flex justify-between items-center p-4 bg-gray-50 border-b border-gray-100">
-        <div class="flex gap-8">
-          <span>Order ID: {{ order.orderId }}</span>
-          <span>Date: {{ order.date }}</span>
-          <span class="text-orange-500">Status: {{ order.status }}</span>
-          <span>Driver ID: {{ order.driverId }}</span>
-          <span>Laundry ID: {{ order.laundryId }}</span>
+  <!-- Recent Orders Section removed: not present in DisplayDriver -->
+
+  <!-- Driver List Tabs -->
+  <div class="mt-8 bg-white rounded-lg p-4 shadow-sm">
+    <h2 class="text-xl font-semibold mb-4">All Drivers</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div *ngFor="let driver of drivers" 
+           class="border border-gray-200 rounded-lg p-4 cursor-pointer hover:bg-blue-50 transition-colors"
+           [class.bg-blue-100]="selectedDriver?.driverId === driver.driverId"
+           (click)="selectDriver(driver)">
+        <div class="flex items-center">
+          <img [src]="driver.profileImageUrl || 'assets/images/driver.png'" [alt]="getFullName(driver)" 
+               class="w-12 h-12 rounded-full object-cover mr-3"
+               (error)="$any($event.target).src = 'assets/images/driver.png'">
+          <div>
+            <h4 class="font-medium">{{ getFullName(driver) }}</h4>
+            <p class="text-sm text-gray-500">ID: #{{ driver.driverId }}</p>
+            <p class="text-sm text-gray-500">Address ID: {{ driver.addressId }}</p>
+          </div>
         </div>
-        <button class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors text-sm"
-                (click)="toggleOrderDetails(order)">
-          <i class="fas" [class.fa-eye]="!order.isExpanded" [class.fa-eye-slash]="order.isExpanded"></i>
-          {{ order.isExpanded ? 'View Less' : 'View More' }}
-        </button>
-      </div>
-      <div class="overflow-x-auto" *ngIf="order.isExpanded">
-        <table class="w-full">
-          <thead>
-            <tr class="bg-gray-50">
-              <th class="p-4 text-left font-medium text-gray-700 border-b border-gray-100">Item</th>
-              <th class="p-4 text-left font-medium text-gray-700 border-b border-gray-100">Process</th>
-              <th class="p-4 text-left font-medium text-gray-700 border-b border-gray-100">Clothe type</th>
-              <th class="p-4 text-left font-medium text-gray-700 border-b border-gray-100">Count</th>
-              <th class="p-4 text-left font-medium text-gray-700 border-b border-gray-100">Price per Item(Rs.)</th>
-              <th class="p-4 text-left font-medium text-gray-700 border-b border-gray-100">Total Price(Rs.)</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let item of order.items" class="even:bg-blue-50">
-              <td class="p-4 text-gray-700">{{ item.item }}</td>
-              <td class="p-4 text-gray-700">{{ item.process }}</td>
-              <td class="p-4 text-gray-700">{{ item.clotheType }}</td>
-              <td class="p-4 text-gray-700">{{ item.count }}</td>
-              <td class="p-4 text-gray-700">{{ item.pricePerItem }}</td>
-              <td class="p-4 text-gray-700">{{ item.totalPrice }}</td>
-            </tr>
-            <tr class="bg-gray-50 font-medium">
-              <td colspan="5" class="p-4 text-right text-gray-700">Subtotal (Rs.)</td>
-              <td class="p-4 text-gray-700">{{ order.subtotal }}</td>
-            </tr>
-          </tbody>
-        </table>
       </div>
     </div>
   </div>
 
   <!-- Pagination -->
-  <div class="flex justify-center items-center gap-2 mt-8">
+  <div class="flex justify-center items-center gap-2 mt-8" *ngIf="!isLoading && drivers.length > 0">
     <button class="px-4 py-2 border border-gray-200 rounded text-gray-700 hover:border-blue-500 hover:text-blue-500 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:border-gray-200 disabled:hover:text-gray-700 transition-colors"
             (click)="onPageChange(currentPage - 1)" 
             [disabled]="currentPage === 1">Previous</button>
@@ -142,5 +145,61 @@
             (click)="onPageChange(page)">{{ page }}</button>
     <button class="px-4 py-2 border border-gray-200 rounded text-gray-700 hover:border-blue-500 hover:text-blue-500 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:border-gray-200 disabled:hover:text-gray-700 transition-colors"
             (click)="onPageChange(currentPage + 1)">Next</button>
+  </div>
+
+  <!-- Add Driver Modal -->
+  <div *ngIf="showAddDriverModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+    <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-lg relative">
+      <button (click)="closeAddDriverModal()" class="absolute top-4 right-4 text-gray-500 hover:text-gray-700">&times;</button>
+      <h2 class="text-2xl font-semibold mb-6">Add New Driver</h2>
+      <form (ngSubmit)="addDriver()" #addDriverForm="ngForm">
+        <!-- Step 1: Basic Info -->
+        <ng-container *ngIf="addDriverStep === 1">
+          <div class="mb-4">
+            <label class="block font-medium mb-1">First Name</label>
+            <input [(ngModel)]="newDriver.firstName" name="firstName" required class="w-full px-3 py-2 border rounded" />
+          </div>
+          <div class="mb-4">
+            <label class="block font-medium mb-1">Last Name</label>
+            <input [(ngModel)]="newDriver.lastName" name="lastName" required class="w-full px-3 py-2 border rounded" />
+          </div>
+          <div class="mb-4">
+            <label class="block font-medium mb-1">Username</label>
+            <input [(ngModel)]="newDriver.username" name="username" required class="w-full px-3 py-2 border rounded" />
+          </div>
+          <div class="mb-4">
+            <label class="block font-medium mb-1">Password</label>
+            <input [(ngModel)]="newDriver.password" name="password" type="password" required class="w-full px-3 py-2 border rounded" />
+          </div>
+          <div class="mb-4">
+            <label class="block font-medium mb-1">Email</label>
+            <input [(ngModel)]="newDriver.email" name="email" type="email" required class="w-full px-3 py-2 border rounded" />
+          </div>
+          <div class="mb-4">
+            <label class="block font-medium mb-1">License No</label>
+            <input [(ngModel)]="newDriver.licenseNumber" name="licenseNumber" required class="w-full px-3 py-2 border rounded" />
+          </div>
+          <div class="flex justify-end mt-6">
+            <button type="button" class="px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 font-semibold" (click)="nextAddDriverStep()">Next</button>
+          </div>
+        </ng-container>
+        <!-- Step 2: Address Info -->
+        <ng-container *ngIf="addDriverStep === 2">
+          <div class="mb-4">
+            <label class="block font-medium mb-1">Address</label>
+            <div class="grid grid-cols-2 gap-2">
+              <input [(ngModel)]="newDriver.address.houseNo" name="houseNo" placeholder="House No" class="px-3 py-2 border rounded" />
+              <input [(ngModel)]="newDriver.address.street" name="street" placeholder="Street" class="px-3 py-2 border rounded" />
+              <input [(ngModel)]="newDriver.address.city" name="city" placeholder="City" class="px-3 py-2 border rounded" />
+              <input [(ngModel)]="newDriver.address.postalCode" name="postalCode" placeholder="Postal Code" class="px-3 py-2 border rounded" />
+            </div>
+          </div>
+          <div class="flex justify-between mt-6">
+            <button type="button" class="px-6 py-2 bg-gray-400 text-white rounded hover:bg-gray-500 font-semibold" (click)="prevAddDriverStep()">Back</button>
+            <button type="submit" class="px-6 py-2 bg-green-500 text-white rounded hover:bg-green-600 font-semibold">Add Driver</button>
+          </div>
+        </ng-container>
+      </form>
+    </div>
   </div>
 </div>

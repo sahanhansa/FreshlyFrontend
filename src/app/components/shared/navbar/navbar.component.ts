@@ -1,3 +1,4 @@
+
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router, NavigationEnd } from '@angular/router';
@@ -37,34 +38,78 @@ export class NavbarComponent implements OnInit {
     const userId = localStorage.getItem('userId');
     const username = localStorage.getItem('username');
     
-    // Determine user type based on localStorage and current route
-    // Check URL first for driver detection since drivers and customers both use userId/username
+    // Determine user type based on current route and localStorage
+    // Priority: URL pattern > current login session > fallback
+    
     if (currentUrl.includes('/driver') || currentUrl.includes('driver-home')) {
       this.currentPage = 'driver';
       localStorage.setItem('currentPage', 'driver');
-    } else if (adminId && adminUsername) {
-      this.currentPage = 'admin';
-      localStorage.setItem('currentPage', 'admin');
-    } else if (laundryId && laundryName) {
-      this.currentPage = 'laundry';
-      localStorage.setItem('currentPage', 'laundry');
-    } else if (userId && username) {
-      // If we have userId/username but not in driver URL, it's a customer
-      this.currentPage = 'customer';
-      localStorage.setItem('currentPage', 'customer');
+    } else if (currentUrl.includes('/laundry') || currentUrl.includes('laundry-home')) {
+      // If URL contains laundry, prioritize laundry detection
+      if (laundryId && laundryName) {
+        this.currentPage = 'laundry';
+        localStorage.setItem('currentPage', 'laundry');
+      } else {
+        // Clear any conflicting data and redirect to login
+        this.clearConflictingData();
+        this.currentPage = null;
+      }
+    } else if (currentUrl.includes('/admin') || currentUrl.includes('admin-home')) {
+      // If URL contains admin, prioritize admin detection
+      if (adminId && adminUsername) {
+        this.currentPage = 'admin';
+        localStorage.setItem('currentPage', 'admin');
+      } else {
+        this.clearConflictingData();
+        this.currentPage = null;
+      }
+    } else if (currentUrl.includes('/cus-home') || currentUrl.includes('/order')) {
+      // Customer routes
+      if (userId && username) {
+        this.currentPage = 'customer';
+        localStorage.setItem('currentPage', 'customer');
+      } else {
+        this.clearConflictingData();
+        this.currentPage = null;
+      }
     } else {
-      // Fallback: try to get from localStorage if already set
-      this.currentPage = localStorage.getItem('currentPage');
+      // Fallback: check localStorage for current session
+      if (laundryId && laundryName) {
+        this.currentPage = 'laundry';
+        localStorage.setItem('currentPage', 'laundry');
+      } else if (adminId && adminUsername) {
+        this.currentPage = 'admin';
+        localStorage.setItem('currentPage', 'admin');
+      } else if (userId && username) {
+        this.currentPage = 'customer';
+        localStorage.setItem('currentPage', 'customer');
+      } else {
+        this.currentPage = localStorage.getItem('currentPage');
+      }
     }
     
     console.log('Current URL:', currentUrl);
     console.log('Detected user type:', this.currentPage);
     console.log('LocalStorage keys:', {
       adminId: !!adminId,
+      adminUsername: !!adminUsername,
       laundryId: !!laundryId,
+      laundryName: !!laundryName,
       userId: !!userId,
+      username: !!username,
       currentPage: localStorage.getItem('currentPage')
     });
+  }
+
+  private clearConflictingData(): void {
+    // Clear data from other user types to prevent conflicts
+    localStorage.removeItem('adminId');
+    localStorage.removeItem('adminUsername');
+    localStorage.removeItem('laundryId');
+    localStorage.removeItem('laundryName');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('username');
+    localStorage.removeItem('token');
   }
   
   // Toggle mobile menu state

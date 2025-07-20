@@ -2,23 +2,18 @@
   <!-- Item Image -->
   <div class="flex justify-center">
     <img 
-      [src]="imageUrl" 
-      [alt]="name"
-      class="w-28 h-28 object-cover rounded-lg "
+      [src]="item.imageUrl || 'assets/shirt.jpg'" 
+      [alt]="item.itemName"
+      class="w-28 h-28 object-cover rounded-lg"
     />
   </div>
 
   <!-- Item Name -->
-  <h3 class="text-xl font-semibold text-gray-800 text-center mb-3">{{ name }}</h3>
+  <h3 class="text-xl font-semibold text-gray-800 text-center mb-3">{{ item.itemName }}</h3>
 
   <!-- Current Price -->
   <div class="text-center mb-3">
     <span class="text-lg font-bold text-blue-600">Rs {{ getCurrentPrice() }}</span>
-  </div>
-
-  <!-- Materials -->
-  <div class="text-center mb-4">
-    <p class="text-sm text-gray-600">{{ materials.join(', ') }}</p>
   </div>
 
   <!-- Service Dropdowns -->
@@ -40,14 +35,14 @@
         class="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-md shadow-md z-10 min-w-full"
       >
         <button 
-          *ngFor="let service of availableServices"
-          (click)="selectService(service.id)"
+          *ngFor="let service of item.services"
+          (click)="selectService(service.serviceId)"
           class="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 first:rounded-t-md last:rounded-b-md transition"
-          [class.bg-blue-50]="selectedServiceId === service.id"
-          [class.text-blue-600]="selectedServiceId === service.id"
-          [class.font-medium]="selectedServiceId === service.id"
+          [class.bg-blue-50]="selectedServiceId === service.serviceId"
+          [class.text-blue-600]="selectedServiceId === service.serviceId"
+          [class.font-medium]="selectedServiceId === service.serviceId"
         >
-          {{ service.name }}
+          {{ service.serviceName }} - Rs {{ service.price }}
         </button>
       </div>
     </div>
@@ -56,7 +51,7 @@
   <!-- Edit Button -->
  <div class="flex justify-end">
   <a 
-    routerLink="/laundry-edit-item"
+    [routerLink]="['/laundry-edit-item', item.itemId]"
     class="flex items-center space-x-2 px-1 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded-xl transition duration-200 shadow hover:shadow-md"
     style="width: 70px;"
   >

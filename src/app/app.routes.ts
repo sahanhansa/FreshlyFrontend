@@ -37,6 +37,7 @@ import { ItemPageComponent } from './pages/order/item-list-page/item-list-page.c
 import { CustomerLayoutComponent } from './components/customer/customer-layout/customer-layout.component';
 import { LaundryAddItemComponent } from './pages/Laundry/laundry-add-item/laundry-add-item.component';
 import { LaundryEditItemComponent } from './pages/Laundry/laundry-edit-item/laundry-edit-item.component';
+import { LaundryDeleteConfirmationComponent } from './pages/Laundry/laundry-delete-confirmation/laundry-delete-confirmation.component';
 import {LaundryOrderSummaryComponent } from './pages/Laundry/laundry-order-summary/laundry-order-summary.component';
 import { LogoutPageComponent } from './pages/Driver/logout-page/logout-page.component';
 // import {LaundryHomeComponent} from './components/laundry/laundry-home/laundry-home.component';
@@ -163,7 +164,9 @@ export const routes: Routes = [
 
      {path: 'laundry-add-item', component:LaundryAddItemComponent},
 
-     {path: 'laundry-edit-item', component:LaundryEditItemComponent },
+     {path: 'laundry-edit-item/:id', component:LaundryEditItemComponent },
+
+     {path: 'laundry-delete-confirmation/:id', component:LaundryDeleteConfirmationComponent },
 
     {path: 'order-summary', component:LaundryOrderSummaryComponent },
 

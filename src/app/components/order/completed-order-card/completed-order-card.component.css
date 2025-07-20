@@ -1,0 +1,53 @@
+/* filepath: d:\Logic loom\Newest\FreshlyFrontend\src\app\components\order\completed-order-card\completed-order-card.component.css */
+.rate-button {
+  position: relative;
+  overflow: hidden;
+}
+
+.rate-button::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: all 0.8s;
+}
+
+.rate-button:hover::after {
+  left: 100%;
+}
+
+/* Custom scrollbar for items list */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #cfd7df;
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #a6b0bb;
+}
+
+.rate-link {
+  position: relative;
+  overflow: hidden;
+  outline: none;
+}
+
+.rate-link:focus {
+  outline: none;
+}
+
+.rate-link:active .rate-link-circle {
+  transform: scale(0.95);
+}
