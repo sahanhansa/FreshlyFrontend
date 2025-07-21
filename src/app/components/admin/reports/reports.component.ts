@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 import { ViewChild } from '@angular/core';
 import { RevenuePerMonthComponent } from './revenue-per-month.component';
 
@@ -89,33 +90,9 @@ export class ReportsComponent implements OnInit {
     { month: 'Dec', amount: 0 }
   ];
 
-  // Driver Leaderboard
-  driverLeaderboard: DriverLeaderboard[] = [
-    { name: 'Jesse Thomas', points: 637, correctPercentage: '98%', rank: 1, trend: 'up' },
-    { name: 'Thisal Mathiyazhagan', points: 637, correctPercentage: '89%', rank: 2, trend: 'down' },
-    { name: 'Helen Chuang', points: 637, correctPercentage: '86%', rank: 3, trend: 'up' },
-    { name: 'Lura Silverman', points: 637, correctPercentage: '', rank: 4, trend: 'up' },
-    { name: 'Winifred Groton', points: 637, correctPercentage: '', rank: 5, trend: 'down' },
-    { name: 'Ken Alba', points: 637, correctPercentage: '', rank: 6, trend: 'up' },
-    { name: 'Alice LeBeau', points: 637, correctPercentage: '', rank: 7, trend: 'down' },
-    { name: 'Adrian Lu', points: 637, correctPercentage: '', rank: 8, trend: 'up' },
-    { name: 'Evelyn Hamilton', points: 637, correctPercentage: '', rank: 9, trend: 'down' },
-    { name: 'Rosa Fiddlebrook', points: 637, correctPercentage: '', rank: 10, trend: 'up' }
-  ];
+  // Driver Leaderboard (to be populated dynamically)
+  driverLeaderboard: DriverLeaderboard[] = [];
 
-  // Laundries Leaderboard
-  laundriesLeaderboard: LaundryLeaderboard[] = [
-    { name: 'Houston Facility', points: 52, userCount: 52, correctPercentage: '97%', rank: 1, trend: 'up' },
-    { name: 'Test Group', points: 52, userCount: 52, correctPercentage: '95%', rank: 2, trend: 'down' },
-    { name: 'Sales Leadership', points: 52, userCount: 52, correctPercentage: '87%', rank: 3, trend: 'up' },
-    { name: 'Northeast Region', points: 52, userCount: 52, correctPercentage: '', rank: 4, trend: 'up' },
-    { name: 'Southeast Region', points: 52, userCount: 52, correctPercentage: '', rank: 5, trend: 'down' },
-    { name: 'District Managers', points: 52, userCount: 52, correctPercentage: '', rank: 6, trend: 'up' },
-    { name: 'Senior Managers', points: 52, userCount: 52, correctPercentage: '', rank: 7, trend: 'down' },
-    { name: 'New Hires', points: 52, userCount: 52, correctPercentage: '', rank: 8, trend: 'up' },
-    { name: 'Southwest Region', points: 52, userCount: 52, correctPercentage: '', rank: 9, trend: 'down' },
-    { name: 'Northwest Region', points: 52, userCount: 52, correctPercentage: '', rank: 10, trend: 'up' }
-  ];
 
   constructor(private http: HttpClient) {}
 
@@ -168,51 +145,102 @@ export class ReportsComponent implements OnInit {
   }
 
   downloadReport(): void {
-    // Fetch backend data and generate PDF with chart image
+    // Fetch backend data and generate a well-organized admin report PDF with tables
     this.http.get<any[]>(`${environment.apiUrl}/api/Order`).subscribe({
       next: (orders: any[]) => {
-        const monthlyTotals = Array(12).fill(0);
-        let totalDeliveries = 0;
+        // --- Data Analysis ---
         const from = new Date(this.fromYear, this.fromMonth, 1);
         const to = new Date(this.toYear, this.toMonth + 1, 0, 23, 59, 59, 999);
-        orders.forEach(order => {
+        const filteredOrders = orders.filter(order => {
+          const dateStr = order.placedDate || order.placedDateTime;
+          if (!dateStr) return false;
+          const date = new Date(dateStr);
+          return date >= from && date <= to;
+        });
+        const totalOrders = filteredOrders.length;
+        const totalRevenue = filteredOrders.reduce((sum, o) => sum + Number(o.totalCost || 0), 0);
+        const averageOrderValue = totalOrders ? (totalRevenue / totalOrders) : 0;
+        // Order status breakdown
+        const statusCounts: any = { delivered: 0, inTransit: 0, pending: 0, cancelled: 0 };
+        filteredOrders.forEach(order => {
+          const status = (order.status?.statusDisplayName || order.status?.statusName || '').toLowerCase();
+          if (status === 'delivered') statusCounts.delivered++;
+          else if (status === 'in transit') statusCounts.inTransit++;
+          else if (status === 'pending') statusCounts.pending++;
+          else if (status === 'cancelled') statusCounts.cancelled++;
+        });
+        // Monthly revenue
+        const monthlyTotals = Array(12).fill(0);
+        filteredOrders.forEach(order => {
           const total = order.totalCost;
           const dateStr = order.placedDate || order.placedDateTime;
           if (total == null || !dateStr) return;
           const date = new Date(dateStr);
-          if (date >= from && date <= to) {
-            const month = date.getMonth();
-            monthlyTotals[month] += Number(total);
-            const statusRaw = order.status?.statusDisplayName || order.status?.statusName || '';
-            const statusName = statusRaw.trim().toLowerCase();
-            if (statusName === 'delivered') {
-              totalDeliveries++;
-            }
-          }
+          const month = date.getMonth();
+          monthlyTotals[month] += Number(total);
         });
         // Get chart image from child component
         let chartImg = '';
         if (this.revenuePerMonthComp && this.revenuePerMonthComp.getChartImage) {
           chartImg = this.revenuePerMonthComp.getChartImage() || '';
         }
-        // Create PDF
+        // --- PDF Generation ---
         const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
+        let y = 40;
+        doc.setFont('helvetica', 'bold');
         doc.setFontSize(18);
-        doc.text('Monthly Revenue Report', 40, 40);
-        if (chartImg) {
-          doc.addImage(chartImg, 'PNG', 40, 60, 600, 300);
-        }
+        doc.text('Admin Dashboard Report – ' + this.months[this.toMonth].name + ' ' + this.toYear, 40, y);
+        doc.setFont('helvetica', 'normal');
+        y += 30;
         doc.setFontSize(12);
-        let y = 380;
-        doc.text('Month, Revenue (Rs)', 40, y);
+        doc.text('Platform: Freshly', 40, y);
+        doc.text('Generated by: Admin Panel', 200, y);
+        doc.text('Date Generated: ' + new Date().toLocaleString(), 400, y);
+        y += 30;
+        doc.setFontSize(14);
+        doc.text('Summary Overview (' + this.months[this.fromMonth].name + ' ' + this.fromYear + ' – ' + this.months[this.toMonth].name + ' ' + this.toYear + ')', 40, y);
         y += 20;
-        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        months.forEach((m, idx) => {
-          doc.text(`${m}, ${monthlyTotals[idx]}`, 40, y);
-          y += 18;
+        doc.setFontSize(12);
+        autoTable(doc, {
+          startY: y,
+          head: [['Metric', 'Value']],
+          body: [
+            ['Total Orders', totalOrders],
+            ['Total Revenue (Rs)', totalRevenue.toFixed(2)],
+            ['Average Order Value (Rs)', averageOrderValue.toFixed(2)]
+          ],
+          theme: 'grid',
+          styles: { font: 'helvetica', fontSize: 12 },
         });
-        doc.text(`Total Deliveries: ${totalDeliveries}`, 40, y + 10);
-        doc.save('monthly-revenue-report.pdf');
+        y = (doc as any).lastAutoTable ? (doc as any).lastAutoTable.finalY + 10 : y + 10;
+        autoTable(doc, {
+          startY: y,
+          head: [['Order Status', 'Count']],
+          body: [
+            ['Delivered', statusCounts.delivered],
+            ['In Transit', statusCounts.inTransit],
+            ['Pending', statusCounts.pending],
+            ['Cancelled', statusCounts.cancelled]
+          ],
+          theme: 'grid',
+          styles: { font: 'helvetica', fontSize: 12 },
+        });
+        y = (doc as any).lastAutoTable ? (doc as any).lastAutoTable.finalY + 10 : y + 10;
+        doc.setFontSize(14);
+        doc.text('Monthly Revenue Chart', 40, y);
+        y += 20;
+        if (chartImg) {
+          doc.addImage(chartImg, 'PNG', 40, y, 600, 200);
+          y += 210;
+        }
+        autoTable(doc, {
+          startY: y,
+          head: [['Month', 'Revenue (Rs)']],
+          body: this.months.map((m, idx) => [m.name, monthlyTotals[idx].toFixed(2)]),
+          theme: 'grid',
+          styles: { font: 'helvetica', fontSize: 12 },
+        });
+        doc.save('admin-dashboard-report.pdf');
       },
       error: (err: any) => {
         console.error('Failed to fetch orders for report:', err);

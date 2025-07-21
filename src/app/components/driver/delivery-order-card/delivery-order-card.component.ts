@@ -43,8 +43,8 @@ export class DeliveryOrderCardComponent implements OnInit, OnChanges {
 
   get sortedDeliveries(): DeliveryOrder[] {
     return this.filteredDeliveries.slice().sort((a, b) => {
-      if (a.status === 'Delivery Pending' && b.status === 'Delivery Complete') return -1;
-      if (a.status === 'Delivery Complete' && b.status === 'Delivery Pending') return 1;
+      if (a.status === 'finished processing' && b.status === 'delivered') return -1;
+      if (a.status === 'delivered' && b.status === 'finished processing') return 1;
       return 0;
     });
   }

@@ -1,15 +1,15 @@
 <app-driver-navbar></app-driver-navbar>
-<br>
-<div> <app-pickup-tasks-header></app-pickup-tasks-header>
-     
+
+<div> <app-pickup-tasks-header></app-pickup-tasks-header>  
 </div>
+<br>
 <div class="flex flex-col sm:flex-row w-full sm:flex-1 ml-5 gap-4 sm:items-center">
         <div class="w-full sm:max-w-4xl">
                 <app-search-bar [initialValue]="searchQuery" (searchChanged)="onSearchChanged($event)">
                 </app-search-bar>
         </div>
 
-   <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:ml-4 w-full sm:w-auto">
+   <!-- <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:ml-4 w-full sm:w-auto">
     <button (click)="onGlobalSearch()"
             class="flex items-center justify-center w-full sm:w-auto px-7 py-3 bg-blue-600 text-white text-lg font-medium rounded-xl shadow-lg hover:bg-blue-700 hover:scale-105 transition transform duration-300 ease-out focus:outline-none focus:ring-5 focus:ring-blue-400 focus:ring-opacity-60">
         Global Pickups
@@ -18,7 +18,28 @@
             class="flex items-center justify-center w-full sm:w-auto px-7 py-3 bg-blue-600 text-white text-lg font-medium rounded-xl shadow-lg hover:bg-blue-700 hover:scale-105 transition transform duration-300 ease-out focus:outline-none focus:ring-5 focus:ring-blue-400 focus:ring-opacity-60">
         Own Pickups
     </button>
+</div> -->
+
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:ml-4 w-full sm:w-auto">
+  <button
+    (click)="selectMode('global')"
+    [class]="globalBtnClass"
+  >
+    Global Pickups
+  </button>
+
+  <button
+    (click)="selectMode('own')"
+    [class]="ownBtnClass"
+  >
+    My Pickups
+  </button>
 </div>
+
+
+
+
+
 
 </div>
 

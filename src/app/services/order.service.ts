@@ -10,11 +10,12 @@ import { environment } from '../../environments/environment';
 })
 
 export class OrderService {
+
   private apiUrl = `${environment.apiUrl}/api/Order`; 
   private laundryApiUrl = `${environment.apiUrl}/api/Laundry`;
   private cache = new Map<string, Observable<any>>();
   private readonly CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
-
+ 
   constructor(private http: HttpClient) {}
 
   getNewOrders(laundryId: string): Observable<Order[]> {

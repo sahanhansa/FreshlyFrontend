@@ -13,10 +13,11 @@ export interface DisplayDriver {
   username?: string;
   password?: string;
   email: string;
-  licenseNumber: string;
+  licenseNo: string;
   addressId: string;
   accountStatus: string;
   profileImageUrl: string;
+  profileImage?: string;
   dateJoined?: string;
   isActive?: boolean;
   recentOrders?: Order[];
@@ -30,6 +31,14 @@ export interface DisplayDriver {
   styleUrl: './drivers.component.css'
 })
 export class DriversComponent implements OnInit {
+  imageLoading: boolean = true;
+  profileImageFile: File | null = null;
+  onProfileImageSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.profileImageFile = input.files[0];
+    }
+  }
   showConfirmDriverModal: boolean = false;
   confirmDriverAction: 'remove' | 'restore' = 'remove';
   driverToConfirm: DisplayDriver | null = null;
@@ -63,20 +72,47 @@ export class DriversComponent implements OnInit {
   addDriverStep: number = 1;
 
   // Add driver form data
-  newDriver: Partial<DisplayDriver> & { address: { houseNo: string; street: string; city: string; postalCode: string } } = {
+  newDriver: {
+    driverId?: string;
+    firstName: string;
+    lastName: string;
+    username: string;
+    password: string;
+    email: string;
+    licenseNo: string;
+    address: {
+      houseNo: string;
+      street: string;
+      city: string;
+      postalCode: string;
+    };
+    accountStatus: string;
+    vehicleNo: string;
+    profileImage: string;
+    contacts: Array<{
+      contactNumber: string;
+    }>;
+  } = {
     firstName: '',
     lastName: '',
     username: '',
     password: '',
     email: '',
-    licenseNumber: '',
+    licenseNo: '',
     accountStatus: 'Active',
     address: {
       houseNo: '',
       street: '',
       city: '',
       postalCode: ''
-    }
+    },
+    vehicleNo: '',
+    profileImage: '',
+    contacts: [
+      {
+        contactNumber: ''
+      }
+    ]
   };
 
   constructor(public driverService: AdminDriverService) {}
@@ -103,10 +139,11 @@ export class DriversComponent implements OnInit {
           firstName: driver.firstName || '',
           lastName: driver.lastName || '',
           email: driver.email || '',
-          licenseNumber: driver.licenseNumber || driver.licensNo || '',
+          licenseNo: driver.licenseNo || driver.licenseNumber || driver.licensNo || '',
           addressId: driver.addressId || (driver.address?.addressId ?? ''),
           accountStatus: driver.accountStatus === null || driver.accountStatus === '' ? 'Inactive' : driver.accountStatus || 'Inactive',
           profileImageUrl: driver.profileImageUrl || 'assets/images/driver.png',
+          profileImage: driver.profileImage || '',
           dateJoined: driver.dateJoined || driver.joinedDate || '',
           isActive: typeof driver.isActive === 'boolean' ? driver.isActive : (driver.accountStatus === 'Active'),
           recentOrders: driver.recentOrders || []
@@ -134,6 +171,7 @@ export class DriversComponent implements OnInit {
 
   selectDriver(driver: DisplayDriver | null): void {
     this.selectedDriver = driver;
+    this.imageLoading = true;
     
     // If the driver doesn't have recent orders data yet, fetch it
     if (driver && (!driver.recentOrders || driver.recentOrders.length === 0)) {
@@ -181,7 +219,7 @@ export class DriversComponent implements OnInit {
         (driver.firstName || '').toLowerCase().includes(query) ||
         (driver.lastName || '').toLowerCase().includes(query) ||
         (driver.email || '').toLowerCase().includes(query) ||
-        (driver.licenseNumber || '').toLowerCase().includes(query) ||
+        (driver.licenseNo || '').toLowerCase().includes(query) ||
         (driver.addressId || '').toLowerCase().includes(query) ||
         (driver.accountStatus || '').toLowerCase().includes(query)
       );
@@ -258,9 +296,21 @@ export class DriversComponent implements OnInit {
       username: '',
       password: '',
       email: '',
-      licenseNumber: '',
+      licenseNo: '',
       accountStatus: 'Active',
-      address: { houseNo: '', street: '', city: '', postalCode: '' }
+      address: {
+        houseNo: '',
+        street: '',
+        city: '',
+        postalCode: ''
+      },
+      vehicleNo: '',
+      profileImage: '',
+      contacts: [
+        {
+          contactNumber: ''
+        }
+      ]
     };
   }
 
@@ -277,9 +327,27 @@ export class DriversComponent implements OnInit {
   }
 
   addDriver(): void {
-    // Always set accountStatus to 'Active' before posting
-    const driverToAdd = { ...this.newDriver, accountStatus: 'Active' };
-    this.driverService.addDriver(driverToAdd).subscribe({
+    const formData = new FormData();
+    // Driver fields (camelCase for backend compatibility)
+    formData.append('firstName', this.newDriver.firstName);
+    formData.append('lastName', this.newDriver.lastName);
+    formData.append('username', this.newDriver.username);
+    formData.append('password', this.newDriver.password);
+    formData.append('email', this.newDriver.email);
+    formData.append('licenseNo', this.newDriver.licenseNo);
+    formData.append('accountStatus', 'active');
+    formData.append('vehicleNo', this.newDriver.vehicleNo); // <-- Added vehicleNo
+    // Address fields
+    formData.append('houseNo', this.newDriver.address.houseNo);
+    formData.append('street', this.newDriver.address.street);
+    formData.append('city', this.newDriver.address.city);
+    formData.append('postalCode', this.newDriver.address.postalCode);
+    // Profile image
+    if (this.profileImageFile) {
+      formData.append('profileImage', this.profileImageFile);
+    }
+    // Send request
+    this.driverService.addDriver(formData).subscribe({
       next: (driver) => {
         this.loadDrivers();
         this.closeAddDriverModal();

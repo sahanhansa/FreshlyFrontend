@@ -64,14 +64,9 @@ export class AdminDriverService {
     return this.http.get<Driver[]>(this.apiUrl);
   }
 
-  addDriver(driver: any): Observable<Driver> {
-    // Map licenseNumber to LicensNo for backend compatibility
-    const driverToSend = { ...driver };
-    if (driver.licenseNumber) {
-      driverToSend.LicensNo = driver.licenseNumber;
-      delete driverToSend.licenseNumber;
-    }
-    return this.http.post<Driver>(this.apiUrl, driverToSend);
+  addDriver(formData: FormData): Observable<Driver> {
+    // Send FormData directly for multipart/form-data (file upload)
+    return this.http.post<Driver>(this.apiUrl, formData);
   }
 
   getDriverById(id: string): Observable<Driver> {
