@@ -17,6 +17,7 @@ export interface DisplayDriver {
   addressId: string;
   accountStatus: string;
   profileImageUrl: string;
+  profileImage?: string;
   dateJoined?: string;
   isActive?: boolean;
   recentOrders?: Order[];
@@ -30,6 +31,14 @@ export interface DisplayDriver {
   styleUrl: './drivers.component.css'
 })
 export class DriversComponent implements OnInit {
+  imageLoading: boolean = true;
+  profileImageFile: File | null = null;
+  onProfileImageSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.profileImageFile = input.files[0];
+    }
+  }
   showConfirmDriverModal: boolean = false;
   confirmDriverAction: 'remove' | 'restore' = 'remove';
   driverToConfirm: DisplayDriver | null = null;
@@ -134,6 +143,7 @@ export class DriversComponent implements OnInit {
           addressId: driver.addressId || (driver.address?.addressId ?? ''),
           accountStatus: driver.accountStatus === null || driver.accountStatus === '' ? 'Inactive' : driver.accountStatus || 'Inactive',
           profileImageUrl: driver.profileImageUrl || 'assets/images/driver.png',
+          profileImage: driver.profileImage || '',
           dateJoined: driver.dateJoined || driver.joinedDate || '',
           isActive: typeof driver.isActive === 'boolean' ? driver.isActive : (driver.accountStatus === 'Active'),
           recentOrders: driver.recentOrders || []
@@ -161,6 +171,7 @@ export class DriversComponent implements OnInit {
 
   selectDriver(driver: DisplayDriver | null): void {
     this.selectedDriver = driver;
+    this.imageLoading = true;
     
     // If the driver doesn't have recent orders data yet, fetch it
     if (driver && (!driver.recentOrders || driver.recentOrders.length === 0)) {
@@ -316,16 +327,27 @@ export class DriversComponent implements OnInit {
   }
 
   addDriver(): void {
-    // Always set accountStatus to 'Active' before posting
-    const driverToAdd = {
-      ...this.newDriver,
-      accountStatus: 'Active',
-      contacts: this.newDriver.contacts.map(contact => ({
-        ...contact,
-        userType: 'Driver'
-      }))
-    };
-    this.driverService.addDriver(driverToAdd).subscribe({
+    const formData = new FormData();
+    // Driver fields (camelCase for backend compatibility)
+    formData.append('firstName', this.newDriver.firstName);
+    formData.append('lastName', this.newDriver.lastName);
+    formData.append('username', this.newDriver.username);
+    formData.append('password', this.newDriver.password);
+    formData.append('email', this.newDriver.email);
+    formData.append('licenseNo', this.newDriver.licenseNo);
+    formData.append('accountStatus', 'active');
+    formData.append('vehicleNo', this.newDriver.vehicleNo); // <-- Added vehicleNo
+    // Address fields
+    formData.append('houseNo', this.newDriver.address.houseNo);
+    formData.append('street', this.newDriver.address.street);
+    formData.append('city', this.newDriver.address.city);
+    formData.append('postalCode', this.newDriver.address.postalCode);
+    // Profile image
+    if (this.profileImageFile) {
+      formData.append('profileImage', this.profileImageFile);
+    }
+    // Send request
+    this.driverService.addDriver(formData).subscribe({
       next: (driver) => {
         this.loadDrivers();
         this.closeAddDriverModal();
