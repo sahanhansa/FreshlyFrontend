@@ -7,7 +7,7 @@ import { PickupsService, PickupOrder } from '../../../services/driver/pickups.se
   selector: 'app-order-details-pending',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './order-details-pending.component.html',
+  templateUrl:'./order-details-pending.component.html',
   styleUrls: ['./order-details-pending.component.css']
 })
 export class OrderDetailsPendingComponent  {

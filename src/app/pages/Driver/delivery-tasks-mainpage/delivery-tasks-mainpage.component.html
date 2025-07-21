@@ -1,52 +1,65 @@
-<div><app-driver-navbar></app-driver-navbar></div>
+<!-- ✅ NAVBAR always full width -->
+<div class="w-full">
+  <app-driver-navbar></app-driver-navbar>
+</div>
 
-<div><app-delivery-task-header></app-delivery-task-header></div>
-<br>
-<div class="flex flex-col sm:flex-row w-full sm:flex-1 ml-5 gap-4 sm:items-center">
-  <div class="w-full sm:max-w-4xl">
-    <app-search-bar [initialValue]="searchQuery" (searchChanged)="onSearchChanged($event)">
+<!-- ✅ HEADER -->
+<div class="w-full px-4 sm:px-6 md:px-12 lg:px-20 my-6">
+  <app-delivery-task-header></app-delivery-task-header>
+</div>
+
+<!-- ✅ SEARCH + BUTTONS WRAPPER -->
+<div class="flex flex-col sm:flex-row sm:items-center gap-4 w-full px-4 sm:px-6 md:px-12 lg:px-20 mb-8">
+
+  <!-- Search Bar Block -->
+  <div class="w-full sm:flex-1">
+    <app-search-bar
+      [initialValue]="searchQuery"
+      (searchChanged)="onSearchChanged($event)">
     </app-search-bar>
   </div>
-  <!-- <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:ml-4 w-full sm:w-auto">
-  <button (click)="onGlobalSearch()"
-    class="flex items-center justify-center w-full sm:w-auto px-7 py-3 bg-blue-600 text-white text-lg font-medium rounded-xl shadow-lg hover:bg-blue-700 hover:scale-105 transition transform duration-300 ease-out focus:outline-none focus:ring-5 focus:ring-blue-400 focus:ring-opacity-60">
-    Global Deliveries
-  </button>
-  <button (click)="onOwnSearch()"
-    class="flex items-center justify-center w-full sm:w-auto px-7 py-3 bg-blue-600 text-white text-lg font-medium rounded-xl shadow-lg hover:bg-blue-700 hover:scale-105 transition transform duration-300 ease-out focus:outline-none focus:ring-5 focus:ring-blue-400 focus:ring-opacity-60">
-    Own Deliveries
-  </button>
-</div> -->
 
-<div class="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:ml-4 w-full sm:w-auto">
-  <button
-    (click)="selectMode('global')"
-    [class]="globalBtnClass"
-  >
-    Global Deliveries
-  </button>
+  <!-- Toggle Buttons Block -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full sm:w-auto sm:ml-4">
+    <button
+      (click)="selectMode('global')"
+      [class]="globalBtnClass"
+      class="flex items-center justify-center px-6 py-3 w-full bg-blue-600 text-white rounded-xl shadow-lg hover:bg-blue-700 hover:scale-105 transition transform duration-300 ease-out focus:outline-none focus:ring-4 focus:ring-blue-400 focus:ring-opacity-50">
+      Global Deliveries
+    </button>
 
-  <button
-    (click)="selectMode('own')"
-    [class]="ownBtnClass"
-  >
-    My Deliveries
-  </button>
-</div>
-
-
+    <button
+      (click)="selectMode('own')"
+      [class]="ownBtnClass"
+      class="flex items-center justify-center px-6 py-3 w-full bg-blue-600 text-white rounded-xl shadow-lg hover:bg-blue-700 hover:scale-105 transition transform duration-300 ease-out focus:outline-none focus:ring-4 focus:ring-blue-400 focus:ring-opacity-50">
+      My Deliveries
+    </button>
+  </div>
 
 </div>
-<div>
-  <app-delivery-order-card [searchQuery]="searchQuery" [currentPage]="currentPage" [itemsPerPage]="itemsPerPage"
-    (totalItemChange)="onTotalItemChange($event)" [isOwnSearch]="isOwnSearch">
+
+<!-- ✅ ORDER CARDS WRAPPER -->
+<div class="w-full px-4 sm:px-6 md:px-12 lg:px-20 mb-8">
+  <app-delivery-order-card
+    [searchQuery]="searchQuery"
+    [currentPage]="currentPage"
+    [itemsPerPage]="itemsPerPage"
+    (totalItemChange)="onTotalItemChange($event)"
+    [isOwnSearch]="isOwnSearch">
   </app-delivery-order-card>
 </div>
 
-<div>
-  <app-pagination [currentPage]="currentPage" [totalItems]="totalItems" [itemsPerPage]="itemsPerPage"
+<!-- ✅ PAGINATION WRAPPER -->
+<div class="w-full px-4 sm:px-6 md:px-12 lg:px-20 mb-8">
+  <app-pagination
+    [currentPage]="currentPage"
+    [totalItems]="totalItems"
+    [itemsPerPage]="itemsPerPage"
     (pageChange)="onPageChanged($event)">
   </app-pagination>
 </div>
 
-<div><app-footer></app-footer></div>
+<!-- ✅ FOOTER always full width -->
+<div class="w-full">
+  <app-footer></app-footer>
+</div>

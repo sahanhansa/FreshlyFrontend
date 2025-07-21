@@ -1,26 +1,57 @@
-<div><app-driver-navbar></app-driver-navbar></div>
+<!-- ✅ NAVBAR -->
+<div class="w-full">
+  <app-driver-navbar></app-driver-navbar>
+</div>
 
-<div><app-order-details-header></app-order-details-header></div>
-<br>
-<div *ngIf="!deliveryOrder" class="loading-container">
-  <div class="spinner"></div>
-  <p class="loading-text">Loading order details...</p>
-</div>
-<div *ngIf="deliveryOrder">
-<div><app-delivery-order-details [deliveryOrder]="deliveryOrder" (noteChange)="onInputReceived($event)"></app-delivery-order-details></div>
-<br>
-<div *ngIf="driverId != null && deliveryOrder.status === 'finished processing'">
-<div><app-delivery-question-1 [orderId]="orderId"   (confirmed2)="onOrderConfirmed($event)"></app-delivery-question-1></div>
-</div>
-<br>
-<div *ngIf="driverId != null && deliveryOrder.status === 'out for delivery'">
-<div><app-delivery-question-2  [orderId]="orderId"   (confirmed3)="onOrderConfirmed($event)" [note]="note"></app-delivery-question-2></div>
-</div>
- <div *ngIf="driverId == null">
-<div><app-delivery-taken-order [orderId]="orderId"   (confirmed1)="onOrderConfirmed($event)" ></app-delivery-taken-order></div>
-</div>
-<br>
-</div>
-<br>
+<!-- ✅ MAIN CONTENT -->
+<main class="flex flex-col items-center justify-start w-full min-h-screen px-4 sm:px-6 md:px-12 lg:px-20 bg-white">
 
-<div><app-footer></app-footer></div>
+  <!-- ✅ HEADER -->
+  <div class="w-full max-w-7xl mt-6">
+    <app-order-details-header></app-order-details-header>
+  </div>
+
+  <!-- ✅ LOADING STATE -->
+  <div *ngIf="!deliveryOrder" class="flex flex-col items-center justify-center w-full h-64">
+    <div class="spinner"></div>
+    <p class="mt-4 text-lg text-gray-600">Loading order details...</p>
+  </div>
+
+  <!-- ✅ MAIN ORDER CONTENT -->
+  <div *ngIf="deliveryOrder" class="w-full max-w-4xl flex flex-col gap-8 mt-8">
+    <!-- ✅ Order Details Card -->
+    <app-delivery-order-details
+      [deliveryOrder]="deliveryOrder"
+      (noteChange)="onInputReceived($event)">
+    </app-delivery-order-details>
+
+    <!-- ✅ Conditional Questions -->
+    <div *ngIf="driverId != null && deliveryOrder.status === 'finished processing'">
+      <app-delivery-question-1
+        [orderId]="orderId"
+        (confirmed2)="onOrderConfirmed($event)">
+      </app-delivery-question-1>
+    </div>
+
+    <div *ngIf="driverId != null && deliveryOrder.status === 'out for delivery'">
+      <app-delivery-question-2
+        [orderId]="orderId"
+        [note]="note"
+        (confirmed3)="onOrderConfirmed($event)">
+      </app-delivery-question-2>
+    </div>
+
+    <div *ngIf="driverId == null">
+      <app-delivery-taken-order
+        [orderId]="orderId"
+        (confirmed1)="onOrderConfirmed($event)">
+      </app-delivery-taken-order>
+    </div>
+  </div>
+
+</main>
+
+<!-- ✅ FOOTER -->
+<div class="w-full mt-12">
+  <app-footer></app-footer>
+</div>
