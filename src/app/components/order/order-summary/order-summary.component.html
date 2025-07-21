@@ -1,11 +1,11 @@
-<div class="max-w-3xl mx-auto p-4 sm:p-6 bg-white border border-gray-200 rounded-lg shadow-lg my-5 transition-all duration-300 hover:shadow-xl">
+<div class="max-w-3xl mx-auto p-4 sm:p-6 bg-white rounded-lg shadow-lg my-5 transition-all duration-300 hover:shadow-xl">
   <!-- Header with -->
-  <div class="bg-white pb-3 border-b border-gray-200 flex justify-between items-center">
-    <div>
+  <div class="bg-white pb-3 border-b border-gray-200 ">
+    <div class="bg-white flex justify-between items-center">
       <h2 class="text-lg font-semibold text-gray-800">Order Summary</h2>
-      <p class="text-sm text-gray-600">{{ laundryName }}</p>
+      <p class="text-sm text-gray-500 font-medium">Order ID: <span class="font-bold text-gray-800">{{ orderId }}</span></p>
     </div>
-    <p class="text-sm text-gray-500 font-medium">Order ID: <span class="font-bold text-gray-800">{{ orderId }}</span></p>
+    <p class="text-sm text-gray-600">{{ laundryName }}</p>
   </div>
 
   <!-- Order Items -->

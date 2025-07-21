@@ -75,10 +75,10 @@ export class LaundryPageComponent implements OnInit {
   }
 
   // Method to handle favorite toggle from the laundry card
-  toggleFavorite(laundry: Laundry) {
-    laundry.isFavorite = !laundry.isFavorite; 
-    this.sortLaundries(); 
-  }
+  // toggleFavorite(laundry: Laundry) {
+  //   laundry.isFavorite = !laundry.isFavorite; 
+  //   this.sortLaundries(); 
+  // }
 
   // Sort the laundries to pin favorites to the top
   sortLaundries() {

@@ -17,6 +17,8 @@ export class ToPayOrderCardComponent {
   
   @Output() payNow = new EventEmitter<string>();
   
+  showLaundryNote = false;
+
   onPayClick(): void {
     this.payNow.emit(this.orderId);
   }
