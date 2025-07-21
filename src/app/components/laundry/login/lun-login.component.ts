@@ -15,6 +15,10 @@ import { ReactiveFormsModule } from '@angular/forms';
   imports: [CommonModule, ReactiveFormsModule, NgClass, NgIf]
 })
 export class LunLoginComponent implements OnInit {
+  successMessage: string = '';
+  showSuccessPopup: boolean = false;
+  errorMessage: string = '';
+  showErrorPopup: boolean = false;
   loginForm: FormGroup;
   inputType: string = 'password';
   selectedRole: string = 'customer'; // Default role
@@ -46,12 +50,29 @@ export class LunLoginComponent implements OnInit {
           localStorage.setItem('token', res.token);
           localStorage.setItem('laundryName', res.username);
           localStorage.setItem('laundryId', res.userId);
-          // Redirect to customer home
-          this.router.navigate(['/laundry-home']);
+          localStorage.setItem('role', 'laundry');
+          // Show success popup
+          this.successMessage = 'Login successful! Redirecting...';
+          this.showSuccessPopup = true;
+          setTimeout(() => {
+            this.showSuccessPopup = false;
+            this.router.navigate(['/laundry-home']);
+          }, 1500);
         },
         error: (err) => {
-          // Handle error (show message, etc.)
-          alert('Login failed. Please check your credentials.');
+          // Show backend error message in popup
+          let errorMsg = 'Login failed. Please check your credentials.';
+          if (err && err.error) {
+            if (typeof err.error === 'string') {
+              errorMsg = err.error;
+            } else if (err.error.error) {
+              errorMsg = err.error.error;
+            } else if (err.error.message) {
+              errorMsg = err.error.message;
+            }
+          }
+          this.errorMessage = errorMsg;
+          this.showErrorPopup = true;
         }
       });
       // Add your authentication logic here

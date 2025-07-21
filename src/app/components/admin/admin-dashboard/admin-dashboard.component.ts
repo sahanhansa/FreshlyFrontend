@@ -3,6 +3,8 @@ import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angula
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
+import { NgForm } from '@angular/forms';
 // Import interfaces for type safety
 import { AdminStats, AdminPanelMember, Laundry, Driver, PendingAction } from '../../../models/admin.interface';
 import { AdminDriverService } from '../../../services/admin/admin-driver.service';
@@ -22,7 +24,6 @@ import {
 import { environment } from 'src/environments/environment';
 import { NavbarComponent } from "@app/components/shared/navbar/navbar.component";
 
-
 // Register Chart.js components
 Chart.register(
   CategoryScale,
@@ -38,11 +39,12 @@ Chart.register(
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule, HttpClientModule, NavbarComponent],
+  imports: [CommonModule, RouterModule, HttpClientModule, FormsModule],
   templateUrl: './admin-dashboard.component.html',
   styleUrl: './admin-dashboard.component.css'
 })
 export class AdminDashboardComponent implements OnInit, AfterViewInit {
+  adminRole: string = '';
   orders: any[] = [];
   laundryRevenueData: { [laundryId: string]: number[] } = {};
   laundryNames: { [laundryId: string]: string } = {};
@@ -51,11 +53,13 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit {
 
   adminName: string = '';
   laundries: Laundry[] = [];
+  customers: any[] = [];
   stats: AdminStats = {
-    totalPickups: 75,
-    totalDeliveries: 357,
-    totalHours: 65,
-    totalRevenue: 128
+    totalPickups: 0,
+    totalDeliveries: 0,
+    totalHours: 0,
+    totalRevenue: 0,
+    activeUsers: 0
   };
   adminPanel: AdminPanelMember[] = [
     { id: 1, name: 'Lahiru Gayantha', role: 'Chief Executive Officer', image: 'assets/images/admin1.jpg' },
@@ -73,6 +77,8 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit {
     monthlyIncome: [32000, 43000, 33000, 60000, 57000, 58753, 58000, 57000, 38000, 32667, 58000, 60000]
   };
   months: string[] = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
+  statusMap: { [id: string]: string } = {};
+  showAddAdminForm: boolean = false;
 
   constructor(
     private router: Router,
@@ -82,66 +88,99 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit {
   ) {
     const storedName = localStorage.getItem('adminUsername');
     this.adminName = storedName ? storedName : 'Customer';
+    // Get role from localStorage if available
+    const storedRole = localStorage.getItem('adminRole');
+    this.adminRole = storedRole ? storedRole : '';
   }
 
   ngOnInit(): void {
     console.log('AdminDashboardComponent: ngOnInit');
-    // Fetch laundries first
-    this.laundryService.getLaundries().subscribe({
-      next: (laundries: any[]) => {
-        this.laundries = laundries.map(laundry => ({
-          id: laundry.id || laundry.laundryId || '',
-          name: laundry.name || laundry.laundryName || 'Unnamed Laundry',
-          location: laundry.location || laundry.city || 'Location not available',
-          rating: laundry.rating || laundry.averageRating || 0,
-          logo: 'assets/images/laundry.png'
-        }));
-        // Map laundry names for chart labels
-        this.laundries.forEach(laundry => {
-          this.laundryNames[laundry.id] = laundry.name;
+    // Fetch statuses first
+    this.http.get<any[]>(`${environment.apiUrl}/api/Status`).subscribe({
+      next: (statuses: any[]) => {
+        this.statusMap = {};
+        statuses.forEach((status: any) => {
+          this.statusMap[status.StatusID || status.statusId] = status.StatusName || status.statusName;
         });
-        // Fetch orders after laundries
-        this.fetchOrdersAndProcessRevenue();
+        // Fetch laundries after statuses
+        this.laundryService.getLaundries().subscribe({
+          next: (laundries: any[]) => {
+            this.laundries = laundries.map((laundry: any) => ({
+              id: laundry.id || laundry.laundryId || '',
+              name: laundry.name || laundry.laundryName || 'Unnamed Laundry',
+              location: laundry.location || laundry.city || 'Location not available',
+              rating: laundry.rating || laundry.averageRating || 0,
+              logo: 'assets/images/laundry.png',
+              accountStatus: laundry.accountStatus || laundry.status || ''
+            }));
+            this.laundries.forEach((laundry: any) => {
+              this.laundryNames[laundry.id] = laundry.name;
+            });
+            this.updateActiveUsers();
+            // Fetch orders after laundries
+            this.fetchOrdersAndProcessRevenue();
+          },
+          error: (err: any) => {
+            console.error('Failed to fetch laundries:', err);
+          }
+        });
       },
       error: (err: any) => {
-        console.error('Failed to fetch laundries:', err);
+        console.error('Failed to fetch statuses:', err);
       }
     });
 
     this.driverService.getDrivers().subscribe({
       next: (drivers: any[]) => {
-        this.drivers = drivers.map(driver => ({
+        this.drivers = drivers.map((driver: any) => ({
           id: driver.driverId || '',
-          name: (driver.firstName ? driver.firstName : '') + (driver.lastName ? ' ' + driver.lastName : ''),
+          name: driver.name || driver.fullName || 'Unnamed Driver',
           location: driver.address?.city || 'Location not available',
           rating: driver.rating || 0,
-          photo: driver.profileImageUrl || 'assets/images/driver.png'
+          photo: driver.profileImageUrl || 'assets/images/driver.png',
+          accountStatus: driver.accountStatus || driver.status || ''
         }));
+        this.updateActiveUsers();
       },
       error: (err: any) => {
         console.error('Failed to fetch drivers:', err);
       }
     });
+
+    // Fetch customers for active users
+    this.http.get<any[]>(`${environment.apiUrl}/api/Customer`).subscribe({
+      next: (customers: any[]) => {
+        this.customers = customers.map((customer: any) => ({
+          ...customer,
+          accountStatus: customer.accountStatus || customer.status || ''
+        }));
+        this.updateActiveUsers();
+      },
+      error: (err: any) => {
+        console.error('Failed to fetch customers:', err);
+      }
+    });
   }
 
   ngAfterViewInit(): void {
-    // Chart will be initialized after data is processed
+    // Required by AfterViewInit interface. Chart is initialized after data loads.
+  }
+
+  private updateActiveUsers(): void {
+    // Aggregate active users from customers, drivers, laundries
+    const activeCustomers = this.customers?.filter((c: any) => (c.accountStatus || '').toLowerCase() === 'active').length || 0;
+    const activeDrivers = this.drivers?.filter((d: any) => (d.accountStatus || '').toLowerCase() === 'active').length || 0;
+    const activeLaundries = this.laundries?.filter((l: any) => (l.accountStatus || '').toLowerCase() === 'active').length || 0;
+    this.stats.activeUsers = activeCustomers + activeDrivers + activeLaundries;
   }
 
   private initializeChart(): void {
-    const canvas = this.revenueChart?.nativeElement;
-    if (!canvas) {
-      console.error('Canvas element not found!');
-      return;
-    }
-    const ctx = canvas.getContext('2d');
-    if (!ctx) {
-      console.error('Could not get 2D context from canvas element');
-      return;
-    }
-    // Build datasets for each laundry
+    if (!this.revenueChart) return;
+    const ctx = this.revenueChart.nativeElement.getContext('2d');
+    if (!ctx) return;
+    // Prepare datasets for Chart.js
     const datasets = Object.keys(this.laundryRevenueData).map((laundryId, idx) => {
-      const color = idx % 2 === 0 ? 'rgb(54, 162, 235)' : 'rgb(255, 99, 132)';
+      const color = idx % 2 === 0 ? 'rgba(54, 162, 235, 1)' : 'rgba(255, 99, 132, 1)';
       const bgColor = idx % 2 === 0 ? 'rgba(54, 162, 235, 0.2)' : 'rgba(255, 99, 132, 0.2)';
       return {
         label: this.laundryNames[laundryId] || `Laundry ${laundryId}`,
@@ -196,7 +235,6 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit {
     } catch (error) {
       console.error('Error creating Chart.js chart:', error);
     }
-
   }
 
   private fetchOrdersAndProcessRevenue(): void {
@@ -206,6 +244,34 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit {
         this.orders = orders;
         this.processMonthlyRevenue();
         this.initializeChart();
+        // Count pickups and deliveries using order.status.statusDisplayName or statusName (trimmed)
+        let pickupCount = 0;
+        let deliveryCount = 0;
+        orders.forEach(order => {
+          const statusRaw = order.status?.statusDisplayName || order.status?.statusName || '';
+          const statusName = statusRaw.trim().toLowerCase();
+          if (statusName === 'order picked up' || statusName === 'out for delivery') {
+            pickupCount++;
+          }
+          if (statusName === 'delivered') {
+            deliveryCount++;
+          }
+        });
+        this.stats.totalPickups = pickupCount;
+        this.stats.totalDeliveries = deliveryCount;
+        // Calculate total revenue
+        this.stats.totalRevenue = orders.reduce((sum, order) => sum + Number(order.totalCost || 0), 0);
+        // Calculate total hours (difference between placedDateTime and pickupDateTime for all orders)
+        let totalHours = 0;
+        orders.forEach(order => {
+          const placed = order.placedDateTime ? new Date(order.placedDateTime) : null;
+          const pickup = order.pickupDate && order.pickupTime ? new Date(order.pickupDate + 'T' + order.pickupTime) : null;
+          if (placed && pickup && pickup > placed) {
+            const diffMs = pickup.getTime() - placed.getTime();
+            totalHours += diffMs / (1000 * 60 * 60);
+          }
+        });
+        this.stats.totalHours = Math.round(totalHours);
       },
       error: (err: any) => {
         console.error('Failed to fetch orders:', err);
@@ -217,11 +283,11 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit {
     // Prepare monthly revenue for each laundry
     this.laundryRevenueData = {};
     // Initialize arrays for each laundry
-    this.laundries.forEach(laundry => {
+    this.laundries.forEach((laundry: any) => {
       this.laundryRevenueData[laundry.id] = Array(12).fill(0);
     });
     // Process each order
-    this.orders.forEach(order => {
+    this.orders.forEach((order: any) => {
       // Use correct fields from API response
       const laundryId = order.laundry?.laundryId;
       const total = order.totalCost;
@@ -233,5 +299,51 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit {
         this.laundryRevenueData[laundryId][month] += Number(total);
       }
     });
+  }
+
+  onAddAdmin(): void {
+    this.showAddAdminForm = true;
+  }
+
+  submitAddAdmin(form: any): void {
+    const token = localStorage.getItem('token');
+    const now = new Date().toISOString();
+    const adminData = {
+      username: form.value.username,
+      password: form.value.password,
+      firstName: form.value.firstName || '',
+      lastName: form.value.lastName || '',
+      email: form.value.email,
+      role: form.value.role,
+      createdAt: now,
+      lastLogin: now,
+      passwordResetToken: '',
+      passwordResetExpiry: now
+    };
+    this.http.post(
+      `${environment.apiUrl}/api/Admin`,
+      adminData,
+      { headers: { Authorization: `Bearer ${token}` } }
+    ).subscribe({
+      next: (res) => {
+        this.showAddAdminForm = false;
+        // Optionally show a success message or refresh admin list
+      },
+      error: (err) => {
+        console.error('Failed to add admin:', err);
+        // Optionally show an error message
+      }
+    });
+  }
+
+  confirmAddAdmin(form: NgForm) {
+    // Show a confirmation dialog when Add Admin is pressed
+    if (form.value.password !== form.value.retypePassword) {
+      alert('Passwords do not match.');
+      return;
+    }
+    if (confirm('Are you sure you want to add this admin?')) {
+      this.submitAddAdmin(form);
+    }
   }
 }

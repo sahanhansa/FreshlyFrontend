@@ -110,24 +110,40 @@
                     </div>
                     <div class="grid grid-cols-2 gap-4">
                       <div>
-                        <p class="font-medium text-gray-700">Customer:</p>
-                        <p>{{ order.customerName }}</p>
+                        <p class="font-medium text-gray-700">Order Status:</p>
+                        <p>{{ getStatusDisplayName(order.status) }}</p>
                       </div>
-                      <div>
-                        <p class="font-medium text-gray-700">Status:</p>
-                        <p [class]="'inline-block px-3 py-1 rounded-full text-sm font-medium ' + 
-                          (order.status === 'Completed' ? 'bg-green-100 text-green-700' :
-                           order.status === 'Picked Up' ? 'bg-blue-100 text-blue-700' :
-                           order.status === 'Cancelled' ? 'bg-red-100 text-red-700' :
-                           'bg-orange-100 text-orange-700')">
-                          {{ order.status }}
-                        </p>
-                      </div>
-                    </div>
-                    <div class="grid grid-cols-1 gap-4">
                       <div>
                         <p class="font-medium text-gray-700">Total Cost:</p>
                         <p class="text-blue-500 font-medium">{{ order.totalCost | currency }}</p>
+                      </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                      <div *ngIf="order.customer">
+                        <p class="font-medium text-gray-700">Customer Details:</p>
+                        <p>Customer ID: {{ order.customer.customerId }}</p>
+                        <p>First Name: {{ order.customer.firstName }}</p>
+                        <p>Last Name: {{ order.customer.lastName }}</p>
+                        <p>Email: {{ order.customer.email }}</p>
+                        <p>Username: {{ order.customer.username }}</p>
+                        <div *ngIf="order.customer.address">
+                          <p>Address: {{ order.customer.address.fullAddress }}</p>
+                          <p>City: {{ order.customer.address.city }}</p>
+                          <p>Postal Code: {{ order.customer.address.postalCode }}</p>
+                        </div>
+                      </div>
+                      <div *ngIf="order.laundry">
+                        <p class="font-medium text-gray-700">Laundry Details:</p>
+                        <p>Laundry Name: {{ order.laundry.laundryName }}</p>
+                        <p>Laundry ID: {{ order.laundry.laundryId }}</p>
+                      </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                      <div *ngIf="order.status && typeof order.status === 'object'">
+                        <p class="font-medium text-gray-700">Status Details:</p>
+                        <p *ngIf="getStatusField(order.status, 'statusID')">Status ID: {{ getStatusField(order.status, 'statusID') }}</p>
+                        <p *ngIf="getStatusField(order.status, 'statusName')">Status Name: {{ getStatusField(order.status, 'statusName') }}</p>
+                        <p>Status Display Name: {{ getStatusField(order.status, 'statusDisplayName') }}</p>
                       </div>
                     </div>
                   </div>

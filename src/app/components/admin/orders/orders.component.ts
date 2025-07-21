@@ -18,10 +18,35 @@ interface DisplayOrderItem {
 interface DisplayOrder {
   id: string;
   date: string;
-  status: string;
+  status: string | {
+    statusID?: string;
+    statusName?: string;
+    statusDisplayName: string;
+  };
   customerName: string;
   totalCost: number;
   isExpanded?: boolean;
+  customer?: {
+    customerId?: string;
+    firstName: string;
+    lastName: string;
+    email?: string;
+    username?: string;
+    address?: {
+      addressId?: string;
+      houseNo?: string;
+      street?: string;
+      city?: string;
+      postalCode?: string;
+      fullAddress?: string;
+      placedDate?: string | null;
+    };
+  };
+  laundry?: {
+    laundryId?: string;
+    laundryName?: string;
+    statusName?: string;
+  };
 }
 
 @Component({
@@ -33,6 +58,18 @@ interface DisplayOrder {
   styleUrl: './orders.component.css'
 })
 export class OrdersComponent implements OnInit {
+  getStatusField(status: string | { statusID?: string; statusName?: string; statusDisplayName?: string }, field: 'statusID' | 'statusName' | 'statusDisplayName'): string {
+    if (typeof status === 'object' && status && field in status) {
+      return (status as any)[field] || '';
+    }
+    return '';
+  }
+  getStatusDisplayName(status: string | { statusDisplayName: string }): string {
+    if (typeof status === 'object' && status && 'statusDisplayName' in status) {
+      return status.statusDisplayName;
+    }
+    return status as string;
+  }
   orders: DisplayOrder[] = [];
   selectedOrder: DisplayOrder | null = null;
   itemsPerPage = 9;
@@ -98,9 +135,11 @@ export class OrdersComponent implements OnInit {
       return {
         id: order.orderId,
         date: this.formatDate(order.placedDate || ''),
-        status: order.statusName,
-        customerName: `${order.customerFName} ${order.customerLName}`,
-        totalCost: order.totalCost
+        status: order.status ? order.status : (order.statusName || ''),
+        customerName: order.customer ? `${order.customer.firstName} ${order.customer.lastName}` : `${order.customerFName} ${order.customerLName}`,
+        totalCost: order.totalCost,
+        customer: order.customer,
+        laundry: (order as any).laundry // fallback for missing type
       };
     });
   }
@@ -121,7 +160,7 @@ export class OrdersComponent implements OnInit {
       this.searchQuery ? 
         order.id.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
         order.customerName.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-        order.status.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+        (typeof order.status === 'string' ? order.status.toLowerCase().includes(this.searchQuery.toLowerCase()) : (order.status.statusDisplayName || '').toLowerCase().includes(this.searchQuery.toLowerCase())) ||
         order.totalCost.toString().includes(this.searchQuery)
       : true
     );

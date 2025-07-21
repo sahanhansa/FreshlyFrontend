@@ -2,7 +2,33 @@
 <div class="min-h-screen flex flex-col">
   <app-navbar></app-navbar>
   <app-search-bar></app-search-bar>
-  <div class="overflow-x-auto">
+  
+  <!-- Loading State -->
+  <div *ngIf="loading" class="text-center py-8">
+    <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+    <p class="mt-2 text-gray-600">Loading orders...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !loading" class="text-center py-8">
+    <p class="text-red-600">{{ error }}</p>
+  </div>
+
+  <!-- No Orders Message -->
+  <div *ngIf="!loading && !error && orders.length === 0" class="text-center py-12">
+    <div class="max-w-md mx-auto">
+      <div class="mb-4">
+        <svg class="mx-auto h-16 w-16 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+      </div>
+      <h3 class="text-lg font-medium text-gray-900 mb-2">No Orders</h3>
+      <p class="text-gray-500">There are no orders to display at the moment.</p>
+    </div>
+  </div>
+
+  <!-- Orders Table -->
+  <div *ngIf="!loading && !error && orders.length > 0" class="overflow-x-auto">
     <table class="min-w-full table-auto border-separate border-spacing-y-4">
       <thead>
         <tr class="text-left text-gray-700">
@@ -15,50 +41,39 @@
         </tr>
       </thead>
      <tbody>
-  <tr *ngFor="let order of orders" class="bg-blue-100 rounded-lg">
-    <td class="px-6 py-4 font-semibold text-black">#{{ order.orderId.slice(0, 32) }}</td>
-    <td class="px-6 py-4 text-black">{{ order.customerFName }} {{ order.customerLName }}</td>
+  <tr *ngFor="let order of orders" class="bg-blue-100 rounded-lg" [ngClass]="getStatusBorderClass(order)">
+          <td class="px-6 py-4 font-semibold text-black">#{{ order.orderId.slice(0, 8) }}</td>
+          <td class="px-6 py-4 text-black">{{ order.customer.customerFName }} {{ order.customer.customerLName }}</td>
     <td class="px-6 py-4 text-black">{{ order.placedDate | date: 'dd/MM/yyyy' }}</td>
     <td class="px-6 py-4">
-      <span class="px-3 py-1 rounded-full text-m font-semibold"
-            [ngClass]="{
-              'bg-green-100 text-green-800': order.statusName === 'Completed',
-              'bg-yellow-100 text-yellow-800': order.statusName === 'Processing in Laundry',
-              'bg-blue-200 text-blue-800': order.statusName === 'Finished Processing'
-            }">
-        {{ order.statusName }}
-      </span>
+            <span class="px-3 py-1 rounded-full text-sm font-semibold" [ngClass]="getStatusBadgeClass(order)">
+              {{ order.status.statusName }}
+            </span>
     </td>
-
-    <td class="px-6 py-4 text-black">Rs. {{ order.amount }}</td>
-
-  <td class="px-18 py-4 flex items-center gap-2">
-  <a [routerLink]="['/order-summary']" class="cursor-pointer">
-    <svg xmlns="http://www.w3.org/2000/svg"
-         class="h-6 w-6 text-blue-600"
-         viewBox="0 0 24 24"
-         fill="currentColor">
-      <path d="M6 2a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8.828a2 2 0 00-.586-1.414l-4.828-4.828A2 2 0 0013.172 2H6zm7 1.414L18.586 9H14a1 1 0 01-1-1V3.414zM9 13h.75v4H9v-4zm2.25 0h.75a1.5 1.5 0 010 3h-.75v-3zm3 0h.5a.5.5 0 01.5.5v3a.5.5 0 01-1 0v-3a.5.5 0 01.5-.5z"/>
-    </svg>
-  </a>
-</td>
-
-
-
-     <td class="px-6 py-4">
-  <button class ="cursor-pointer" >
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="red">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3m-4 0h14" />
-    </svg>
-  </button>
-</td>
-
+          <td class="px-6 py-4 text-black">Rs. {{ getOrderAmount(order.orderId) }}</td>
+          <td class="px-6 py-4 flex flex-col gap-2">
+    <!-- PDF icon for navigation -->
+    <button (click)="goToOrderDetails(order)" class="cursor-pointer" title="Order Details">
+      <svg xmlns="http://www.w3.org/2000/svg"
+           class="h-6 w-6 text-blue-600"
+           viewBox="0 0 24 24"
+           fill="currentColor">
+        <path d="M6 2a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8.828a2 2 0 00-.586-1.414l-4.828-4.828A2 2 0 0013.172 2H6zm7 1.414L18.586 9H14a1 1 0 01-1-1V3.414zM9 13h.75v4H9v-4zm2.25 0h.75a1.5 1.5 0 010 3h-.75v-3zm3 0h.5a.5.5 0 01.5.5v3a.5.5 0 01-1 0v-3a.5.5 0 01.5-.5z"/>
+      </svg>
+    </button>
+  </td>
+  <td class="px-6 py-4">
+    <button class="cursor-pointer">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="red">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3m-4 0h14" />
+      </svg>
+    </button>
+  </td>
   </tr>
 </tbody>
-
     </table>
   </div>
 </div>
-<app-pagination ></app-pagination>
+<app-pagination></app-pagination>
   <app-footer></app-footer>
 

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { NgClass, NgFor, NgIf } from '@angular/common';
 import { FooterComponent } from '../shared/footer/footer.component';
+import { RouterModule } from '@angular/router';
 import { Router } from '@angular/router';
 
 @Component({
@@ -8,19 +9,42 @@ import { Router } from '@angular/router';
     templateUrl: './landing-page.component.html',
     styleUrls: ['./landing-page.component.css'],
     standalone: true,
-    imports: [NgClass, NgFor, FooterComponent]
+    imports: [NgClass, NgFor, NgIf, FooterComponent, RouterModule]
 })
 export class LandingPageComponent {
     // For animated bubbles in hero image
     bubbles = Array(4);
+    
     constructor(private router: Router) { }
-    goTo(link: string) {
+    
+    // Enhanced goTo method to handle both login and signup
+    goTo(link: string, action?: 'login' | 'signup') {
         localStorage.setItem("Link", link);
+        
         switch (link) {
             case 'whoareyou':
-                this.router.navigate(['/whoareyou']);
+                if (action) {
+                    // Navigate with query parameter to specify action
+                    this.router.navigate(['/whoareyou'], { 
+                        queryParams: { action: action } 
+                    });
+                } else {
+                    // Default navigation (login)
+                    this.router.navigate(['/whoareyou']);
+                }
                 break;
+            default:
+                console.error('Invalid link:', link);
         }
+    }
+
+    // Separate methods for cleaner template usage
+    navigateToLogin() {
+        this.goTo('whoareyou', 'login');
+    }
+
+    navigateToSignup() {
+        this.goTo('whoareyou', 'signup');
     }
 
     // Steps for the process section

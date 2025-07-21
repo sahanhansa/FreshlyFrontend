@@ -1,0 +1,257 @@
+<div class="min-h-screen flex flex-col">
+
+  
+  <!-- Loading State -->
+  <div *ngIf="loading" class="flex-1 flex items-center justify-center">
+    <div class="text-center">
+      <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      <p class="mt-2 text-gray-600">Loading order details...</p>
+    </div>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !loading" class="flex-1 flex items-center justify-center">
+    <div class="text-center">
+      <p class="text-red-600 mb-4">{{ error }}</p>
+      <button (click)="goBack()" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+        Go Back
+      </button>
+    </div>
+  </div>
+
+  <!-- Order Details Content -->
+  <div *ngIf="!loading && !error && orderDetails" class="flex-1 p-6">
+    <div class="max-w-6xl mx-auto">
+      <!-- Header -->
+      <div class="mb-6">
+        <h1 class="text-3xl font-bold text-gray-900">Processing Order Details</h1>
+      </div>
+
+      <!-- Order Summary Card -->
+      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <h2 class="text-xl font-semibold text-gray-900 mb-4">Order Information</h2>
+        <div class="space-y-3">
+          <div>
+            <span class="text-gray-600 font-medium">Order ID:</span>
+            <span class="ml-2 text-lg font-semibold text-blue-600">{{ orderDetails.orderIdFormatted }}</span>
+          </div>
+          <div>
+            <span class="text-gray-600 font-medium">Order Date:</span>
+            <span class="ml-2">{{ orderDetails.orderDateFormatted }}</span>
+          </div>
+          <div *ngIf="orderDetails.customer">
+            <span class="text-gray-600 font-medium">Customer:</span>
+            <span class="ml-2">{{ orderDetails.customer.customerFName }} {{ orderDetails.customer.customerLName }}</span>
+          </div>
+          <div>
+            <span class="text-gray-600 font-medium">Status:</span>
+            <span class="ml-2 px-3 py-1 rounded-full text-sm font-semibold"
+                  [ngClass]="{
+                    'bg-green-100 text-green-800': orderDetails.status === 'delivered',
+                    'bg-yellow-100 text-yellow-800': orderDetails.status === 'Processing in Laundry' || orderDetails.status === 'processing',
+                    'bg-blue-200 text-blue-800': orderDetails.status === 'Finished Processing' || orderDetails.status === 'finished',
+                    'bg-orange-100 text-orange-800': orderDetails.status === 'order picked up' || orderDetails.status === 'picked up',
+                    'bg-purple-100 text-purple-800': orderDetails.status === 'out for delivery' || orderDetails.status === 'delivery',
+                    'bg-gray-100 text-gray-800': orderDetails.status === 'order placed' || orderDetails.status === 'placed'
+                  }">
+              {{ orderDetails.status }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Services and Items -->
+      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <h2 class="text-xl font-semibold text-gray-900 mb-4">Services & Items</h2>
+        
+        <div class="space-y-8">
+          <div *ngFor="let serviceGroup of getItemsByService() | keyvalue; trackBy: trackByService" class="border rounded-lg p-6 transition-all duration-200 hover:shadow-md">
+            <!-- Service Title -->
+            <h3 class="text-lg font-semibold text-blue-600 mb-4 border-b pb-2">{{ serviceGroup.key }}</h3>
+            
+            <!-- Items in this service -->
+            <div class="space-y-4">
+              <div *ngFor="let item of serviceGroup.value; trackBy: trackByItem" class="border rounded-lg p-4 bg-gray-50">
+                <div class="grid grid-cols-1 lg:grid-cols-5 gap-4 items-center">
+                  <!-- Item Name -->
+                  <div>
+                    <span class="text-gray-600 font-medium">Item Name:</span>
+                    <p class="font-semibold">{{ item.itemName }}</p>
+                  </div>
+                  
+                  <!-- Quantity with +/- buttons -->
+                  <div>
+                    <span class="text-gray-600 font-medium">Quantity:</span>
+                    <div class="flex items-center gap-2 mt-1">
+                      <button 
+                        (click)="openAdjustmentModal(item, 'remove')"
+                        class="w-8 h-8 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600 transition-all duration-200 hover:scale-105 active:scale-95">
+                        -
+                      </button>
+                      <span class="font-semibold min-w-[2rem] text-center">{{ item.quantity }}</span>
+                      <button 
+                        (click)="openAdjustmentModal(item, 'add')"
+                        class="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center hover:bg-blue-700 transition-all duration-200 hover:scale-105 active:scale-95">
+                        +
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <!-- Unit Price -->
+                  <div>
+                    <span class="text-gray-600 font-medium">Unit Price:</span>
+                    <p class="font-semibold">Rs. {{ item.price }}</p>
+                  </div>
+                  
+                  <!-- Status Dropdown -->
+                  <div>
+                    <span class="text-gray-600 font-medium">Status:</span>
+                    <select 
+                      [(ngModel)]="item.status"
+                      (change)="updateItemStatus(item, item.status || 'processing')"
+                      class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                      <option value="processing">Processing</option>
+                      <option value="finished">Finished</option>
+                    </select>
+                  </div>
+                  
+                  <!-- Total for this item -->
+                  <div>
+                    <span class="text-gray-600 font-medium">Total:</span>
+                    <p class="font-semibold">Rs. {{ item.price * item.quantity }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Finish Processing Button -->
+      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <div class="flex justify-center">
+          <button 
+            (click)="finishProcessing()" 
+            [disabled]="!canFinishOrder() || processing"
+            class="px-8 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed font-semibold transition-all duration-200">
+            <span *ngIf="!processing">Finish Processing</span>
+            <span *ngIf="processing" class="flex items-center">
+              <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              Finishing...
+            </span>
+          </button>
+        </div>
+        <p *ngIf="!canFinishOrder()" class="text-center text-gray-500 mt-2">
+          All items must be marked as "Finished" to complete processing
+        </p>
+      </div>
+
+      <!-- Total Amount and Invoice -->
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-xl font-semibold text-gray-900">Total Amount</h2>
+          <span class="text-2xl font-bold text-blue-600">Rs. {{ orderDetails.totalAmount }}</span>
+        </div>
+        <div class="flex justify-center">
+          <button 
+            (click)="sendInvoice()" 
+            [disabled]="sendingInvoice"
+            class="px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed font-semibold transition-all duration-200">
+            <span *ngIf="!sendingInvoice">Send Invoice</span>
+            <span *ngIf="sendingInvoice" class="flex items-center">
+              <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              Sending...
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Adjustment Modal -->
+<div *ngIf="showAdjustmentModal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
+  <div class="bg-white rounded-lg p-6 w-full max-w-md mx-4 animate-pulse">
+    <h3 class="text-lg font-semibold mb-4">
+      {{ adjustmentType === 'add' ? 'Add Item' : 'Remove Item' }}
+    </h3>
+    
+    <form [formGroup]="adjustmentForm" (ngSubmit)="submitAdjustment()">
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Name</label>
+          <input 
+            type="text" 
+            formControlName="name"
+            [class]="'mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 ' + (adjustmentForm.get('name')?.invalid && adjustmentForm.get('name')?.touched ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : 'border-gray-300')">
+          <div *ngIf="adjustmentForm.get('name')?.invalid && adjustmentForm.get('name')?.touched" class="text-red-500 text-sm mt-1">
+            Name is required
+          </div>
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Mobile Number</label>
+          <input 
+            type="tel" 
+            formControlName="mobileNumber"
+            [class]="'mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 ' + (adjustmentForm.get('mobileNumber')?.invalid && adjustmentForm.get('mobileNumber')?.touched ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : 'border-gray-300')">
+          <div *ngIf="adjustmentForm.get('mobileNumber')?.invalid && adjustmentForm.get('mobileNumber')?.touched" class="text-red-500 text-sm mt-1">
+            Valid 10-digit mobile number is required
+          </div>
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Reason</label>
+          <textarea 
+            formControlName="reason"
+            rows="3"
+            [class]="'mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 ' + (adjustmentForm.get('reason')?.invalid && adjustmentForm.get('reason')?.touched ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : 'border-gray-300')"></textarea>
+          <div *ngIf="adjustmentForm.get('reason')?.invalid && adjustmentForm.get('reason')?.touched" class="text-red-500 text-sm mt-1">
+            Reason is required
+          </div>
+        </div>
+        
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Date</label>
+            <input 
+              type="date" 
+              formControlName="date"
+              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200">
+          </div>
+          
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Time</label>
+            <input 
+              type="time" 
+              formControlName="time"
+              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200">
+          </div>
+        </div>
+      </div>
+      
+      <div class="flex justify-end space-x-3 mt-6">
+        <button 
+          type="button"
+          (click)="closeAdjustmentModal()"
+          class="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors duration-200">
+          Cancel
+        </button>
+        <button 
+          type="submit"
+          [disabled]="adjustmentForm.invalid"
+          class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200">
+          Submit
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<app-footer></app-footer> 

@@ -14,6 +14,72 @@ import { SharedImports } from '../../../shared/shared-imports';
   styleUrl: './laundries.component.css'
 })
 export class LaundriesComponent implements OnInit {
+  showAddLaundryModal = false;
+  newLaundry: any = {
+    ownerFirstName: '',
+    ownerLastName: '',
+    ownerEmail: '',
+    ownerPassword: '',
+    ownerUsername: '',
+    houseNo: '',
+    street: '',
+    city: '',
+    postalCode: '',
+    laundryName: '',
+    laundryUsername: '',
+    laundryPassword: '',
+    laundryEmail: ''
+  };
+
+  openAddLaundryModal() {
+    this.showAddLaundryModal = true;
+  }
+
+  closeAddLaundryModal() {
+    this.showAddLaundryModal = false;
+    this.newLaundry = {
+      ownerFirstName: '',
+      ownerLastName: '',
+      ownerEmail: '',
+      ownerPassword: '',
+      ownerUsername: '',
+      houseNo: '',
+      street: '',
+      city: '',
+      postalCode: '',
+      laundryName: '',
+      laundryUsername: '',
+      laundryPassword: '',
+      laundryEmail: ''
+    };
+  }
+
+  submitAddLaundry() {
+    // Basic validation: check for empty or placeholder values
+    const requiredFields = [
+      'ownerFirstName', 'ownerLastName', 'ownerEmail', 'ownerPassword', 'ownerUsername',
+      'houseNo', 'street', 'city', 'postalCode',
+      'laundryName', 'laundryUsername', 'laundryPassword', 'laundryEmail'
+    ];
+    for (const field of requiredFields) {
+      const value = (this.newLaundry[field] || '').trim();
+      if (!value || value.toLowerCase() === 'string') {
+        alert(`Please enter a valid value for ${field.replace(/([A-Z])/g, ' $1')}`);
+        return;
+      }
+    }
+    this.laundryService
+      .createLaundryAccount(this.newLaundry)
+      .subscribe({
+        next: () => {
+          this.closeAddLaundryModal();
+          // Optionally reload laundries list here if you have a method for it
+        },
+        error: (err: any) => {
+          alert('Failed to add laundry: ' + (err?.message || err));
+        }
+      });
+  }
   showStatusChangeConfirmation = signal<boolean>(false);
 
   /**
