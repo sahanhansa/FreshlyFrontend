@@ -10,39 +10,39 @@
     </div>
 
     <div *ngIf="rejectedItems.length > 0; else noRejectedItems">
-      <!-- Table -->
-      <table class="min-w-full table-auto border-collapse mt-3 mb-6">
-        <thead>
-          <tr class="bg-[#D0F6FF] text-left text-gray-700 font-semibold text-sm sm:text-base">
-            <th class="px-4 sm:px-6 py-2 sm:py-3">Item</th>
-            <th class="px-4 sm:px-6 py-2 sm:py-3">Quantity</th>
-            <th class="px-4 sm:px-6 py-2 sm:py-3">Reason</th>
-            <th class="px-4 sm:px-6 py-2 sm:py-3">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let item of rejectedItems; let i = index"
-              [ngClass]="{ 'bg-white': i % 2 === 0, 'bg-[#D0F6FF]': i % 2 === 1 }"
-              class="h-14 text-sm sm:text-base text-black">
-            <td class="px-4 sm:px-6 py-3 font-semibold">{{ item.itemName }}</td>
-            <td class="px-4 sm:px-6 py-3">{{ item.quantity }}</td>
-            <td class="px-4 sm:px-6 py-3">{{ item.reason }}</td>
-            <td class="px-4 sm:px-6 py-3 flex justify-center items-center gap-2 flex-wrap">
-           
-              <button [routerLink]="['/rejected-items-details']"
-              class="flex items-center gap-1 border border-black text-black rounded-full px-3 py-1 text-xs sm:text-sm hover:bg-gray-500 hover:text-white transition">
-                View Order
-                </button>
+<!-- Table -->
+<table class="min-w-full table-auto border-collapse mt-3 mb-6">
+  <thead>
+    <tr class="bg-[#D0F6FF] text-left text-gray-700 font-semibold text-sm sm:text-base">
+      <th class="px-4 sm:px-6 py-2 sm:py-3">Item</th>
+      <th class="px-4 sm:px-6 py-2 sm:py-3">Quantity</th>
+      <th class="px-4 sm:px-6 py-2 sm:py-3">Reason</th>
+      <th class="px-4 sm:px-6 py-2 sm:py-3">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let item of rejectedItems; let i = index"
+        [ngClass]="{ 'bg-white': i % 2 === 0, 'bg-[#D0F6FF]': i % 2 === 1 }"
+        class="h-14 text-sm sm:text-base text-black">
+      <td class="px-4 sm:px-6 py-3 font-semibold">{{ item.itemName }}</td>
+      <td class="px-4 sm:px-6 py-3">{{ item.quantity }}</td>
+      <td class="px-4 sm:px-6 py-3">{{ item.reason }}</td>
+      <td class="px-4 sm:px-6 py-3 flex justify-center items-center gap-2 flex-wrap">
+     
+        <button [routerLink]="['/rejected-items-details']"
+        class="flex items-center gap-1 border border-black text-black rounded-full px-3 py-1 text-xs sm:text-sm hover:bg-gray-500 hover:text-white transition">
+          View Order
+          </button>
 
-              <!-- <button (click)="trackOrder(item.orderId)"  -->
-               <button
-                      class="flex items-center gap-1 border border-blue-600 text-blue-600 rounded-full px-3 py-1 text-xs sm:text-sm hover:bg-blue-600 hover:text-white transition">
-                Track
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+        <!-- <button (click)="trackOrder(item.orderId)"  -->
+         <button
+                class="flex items-center gap-1 border border-blue-600 text-blue-600 rounded-full px-3 py-1 text-xs sm:text-sm hover:bg-blue-600 hover:text-white transition">
+          Track
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>
     </div>
     <ng-template #noRejectedItems>
       <div class="text-center text-gray-500 py-8">
