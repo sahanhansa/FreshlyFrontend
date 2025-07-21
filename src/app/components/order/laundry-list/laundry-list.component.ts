@@ -21,13 +21,13 @@ export class LaundryListComponent {
   
   // Output events that communicate with the laundry page
   @Output() selectLaundry = new EventEmitter<string>();
-  @Output() favoriteToggled = new EventEmitter<Laundry>();
+  //@Output() favoriteToggled = new EventEmitter<Laundry>();
   @Output() retryLoading = new EventEmitter<void>();
 
   // Method called when a laundry's favorite status is toggled
-  toggleFavorite(laundry: Laundry) {
-    this.favoriteToggled.emit(laundry);
-  }
+  // toggleFavorite(laundry: Laundry) {
+  //   this.favoriteToggled.emit(laundry);
+  // }
 
   // Method called when a laundry is selected
   onSelectLaundry(laundryId: string) {

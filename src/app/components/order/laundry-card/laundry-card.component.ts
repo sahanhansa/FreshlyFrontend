@@ -17,19 +17,19 @@ export class LaundryCardComponent {
   @Input() public rating: number = 0;
   @Input() public hasRatings: boolean = false; 
   @Input() public imageUrl!: string;
-  @Input() public isFavorite: boolean = false;
+  //@Input() public isFavorite: boolean = false;
 
   // Output event emitters
-  @Output() public favoriteToggled = new EventEmitter<void>();
+  //@Output() public favoriteToggled = new EventEmitter<void>();
   @Output() public selectLaundry = new EventEmitter<string>(); 
 
   // Constructor to inject Router for navigation
   constructor(private router: Router) {} 
 
   // Method called when the favorite icon is clicked
-  toggleFavorite() {
-    this.favoriteToggled.emit();
-  }
+  // toggleFavorite() {
+  //   this.favoriteToggled.emit();
+  // }
 
   // Method called when the "Select Laundry" button is clicked
   onSelectLaundry() {

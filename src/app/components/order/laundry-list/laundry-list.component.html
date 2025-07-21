@@ -33,11 +33,11 @@
           [rating]="laundry.rating"
           [hasRatings]="laundry.hasRatings"
           [imageUrl]="laundry.imageUrl"
-          [isFavorite]="laundry.isFavorite ?? false"
-          (favoriteToggled)="toggleFavorite(laundry)"
           (selectLaundry)="onSelectLaundry(laundry.id.toString())"
           class="w-full">
         </app-laundry-card>
+        <!-- [isFavorite]="laundry.isFavorite ?? false" -->
+         <!--(favoriteToggled)="toggleFavorite(laundry)"-->
       </div>
     </div>
   </div>
