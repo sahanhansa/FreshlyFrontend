@@ -39,10 +39,11 @@ import { CustomerLayoutComponent } from './components/customer/customer-layout/c
 import { LaundryAddItemComponent } from './pages/Laundry/laundry-add-item/laundry-add-item.component';
 import { LaundryEditItemComponent } from './pages/Laundry/laundry-edit-item/laundry-edit-item.component';
 import { LaundryDeleteConfirmationComponent } from './pages/Laundry/laundry-delete-confirmation/laundry-delete-confirmation.component';
-import {LaundryOrderSummaryComponent } from './pages/Laundry/laundry-order-summary/laundry-order-summary.component';
+import { ProcessingOrderDetailsComponent} from './components/laundry/processing-order-details/processing-order-details.component';
+import { CompletedOrderDetailsComponent } from './components/Laundry/completed-order-details/completed-order-details.component';
 import { LogoutPageComponent } from './pages/Driver/logout-page/logout-page.component';
-// import {LaundryHomeComponent} from './components/laundry/laundry-home/laundry-home.component';
 import {AdminLoginComponent} from './components/admin/login/admin-login.component';
+import { NewOrderDetailsComponent } from './components/laundry/new-order-details/new-order-details.component';
 
 
 
@@ -138,6 +139,12 @@ export const routes: Routes = [
      // Route for new orders page
   {path: 'new-orders', component:NewOrdersComponent},
 
+  // Route for new order details
+  {
+    path: 'new-order-details/:orderId/:statusId',
+    loadComponent: () => import('./components/laundry/new-order-details/new-order-details.component').then(m => m.NewOrderDetailsComponent)
+  },
+
     // Route for processingorders page
   {path: 'processing-orders', component:processingOrdersComponent},
 
@@ -172,10 +179,11 @@ export const routes: Routes = [
 
      {path: 'laundry-delete-confirmation/:id', component:LaundryDeleteConfirmationComponent },
 
-    {path: 'order-summary', component:LaundryOrderSummaryComponent },
+     {path: 'processing-order-details/:orderId/:statusId', component:ProcessingOrderDetailsComponent },
 
-    
+     {path: 'completed-order-details/:orderId/:statusId', component:CompletedOrderDetailsComponent },
 
+     {path: 'new-order-details/:orderId/:statusId', component:NewOrderDetailsComponent }
     
     ]
 

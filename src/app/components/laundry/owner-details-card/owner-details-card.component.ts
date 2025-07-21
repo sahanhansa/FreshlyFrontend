@@ -20,7 +20,7 @@ interface OwnerDetails {
   selector: 'app-owner-details-card',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './owner-details-card.component.html',
+ templateUrl: './owner-details-card.component.html',
 })
 export class OwnerDetailsCardComponent implements OnInit {
   @Input() laundryId: string = '';
