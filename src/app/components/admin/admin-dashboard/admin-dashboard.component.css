@@ -1,1 +1,5 @@
-/* Component-specific styles can be added here */
+/* Zoom out admin dashboard for better layout */
+:host {
+  display: block;
+  zoom: 0.85;
+}

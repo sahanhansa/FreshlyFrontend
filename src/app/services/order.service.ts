@@ -9,7 +9,9 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class OrderService {
-  private apiUrl = `${environment.apiUrl}/api/Order`; 
+  private apiUrl = `${environment.apiUrl}/api/Order`;
+  private laundryApiUrl = `${environment.apiUrl}/api/Laundry`;
+  private cache = new Map<string, any>();
 
 
   constructor(private http: HttpClient) {}
