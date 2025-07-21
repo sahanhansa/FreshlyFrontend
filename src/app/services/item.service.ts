@@ -160,11 +160,11 @@ export class ItemService {
         catchError(error => {
           console.error('ItemService - Delete error:', error);
           let errorMessage = 'Failed to delete item. Please try again.';
-          if (error.error?.message) errorMessage = error.error.message;
-          else if (error.message) errorMessage = error.message;
-          return throwError(() => new Error(errorMessage));
-        })
-      );
+        if (error.error?.message) errorMessage = error.error.message;
+        else if (error.message) errorMessage = error.message;
+        return throwError(() => new Error(errorMessage));
+      })
+    );
   }
 
 }
