@@ -40,7 +40,20 @@ export class PaymentComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.loadPayHereScript();
+  }
+
+  private loadPayHereScript(): void {
+    const scriptId = 'payhere-script';
+    if (!document.getElementById(scriptId)) {
+      const script = document.createElement('script');
+      script.id = scriptId;
+      script.type = 'text/javascript';
+      script.src = 'https://www.payhere.lk/lib/payhere.js';
+      document.body.appendChild(script);
+    }
+  }
 
   onSubmit(): void {
     if (this.paymentForm.valid) {

@@ -49,9 +49,17 @@
     <div class="flex bg-blue-500 rounded-[20px] overflow-hidden text-white shadow-lg">
       <div class="flex-1 p-8">
         <div class="flex items-center mb-8">
-          <img [src]="selectedDriver.profileImageUrl" [alt]="getFullName(selectedDriver)" 
-               class="w-24 h-24 rounded-full object-cover mr-4"
-               (error)="selectedDriver.profileImageUrl = 'assets/images/driver.png'">
+          <div class="relative w-24 h-24 mr-4">
+            <img [src]="selectedDriver.profileImage && selectedDriver.profileImage.trim() ? selectedDriver.profileImage : 'assets/images/driver.png'"
+                 [alt]="getFullName(selectedDriver)"
+                 class="w-24 h-24 rounded-full object-cover"
+                 (load)="imageLoading = false"
+                 (error)="selectedDriver.profileImage = ''; imageLoading = false"
+                 [style.visibility]="imageLoading ? 'hidden' : 'visible'">
+            <div *ngIf="imageLoading" class="absolute inset-0 flex items-center justify-center">
+              <div class="animate-spin rounded-full h-10 w-10 border-t-4 border-b-4 border-white"></div>
+            </div>
+          </div>
           <div>
             <h3 class="text-2xl font-medium m-0">{{ getFullName(selectedDriver) }}</h3>
             <p class="mt-2 opacity-90">#{{ selectedDriver.driverId }}</p>
@@ -115,22 +123,41 @@
   <!-- Driver List Tabs -->
   <div class="mt-8 bg-white rounded-lg p-4 shadow-sm">
     <h2 class="text-xl font-semibold mb-4">All Drivers</h2>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-      <div *ngFor="let driver of drivers" 
-           class="border border-gray-200 rounded-lg p-4 cursor-pointer hover:bg-blue-50 transition-colors"
-           [class.bg-blue-100]="selectedDriver?.driverId === driver.driverId"
-           (click)="selectDriver(driver)">
-        <div class="flex items-center">
-          <img [src]="driver.profileImageUrl || 'assets/images/driver.png'" [alt]="getFullName(driver)" 
-               class="w-12 h-12 rounded-full object-cover mr-3"
-               (error)="$any($event.target).src = 'assets/images/driver.png'">
-          <div>
-            <h4 class="font-medium">{{ getFullName(driver) }}</h4>
-            <p class="text-sm text-gray-500">ID: #{{ driver.driverId }}</p>
-            <p class="text-sm text-gray-500">Address ID: {{ driver.addressId }}</p>
-          </div>
-        </div>
-      </div>
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead>
+          <tr class="bg-gray-50">
+            <th class="p-4 text-left font-medium text-gray-700 whitespace-nowrap border-b border-gray-100">Driver ID</th>
+            <th class="p-4 text-left font-medium text-gray-700 whitespace-nowrap border-b border-gray-100">Name</th>
+            <th class="p-4 text-left font-medium text-gray-700 whitespace-nowrap border-b border-gray-100">Email</th>
+            <th class="p-4 text-left font-medium text-gray-700 whitespace-nowrap border-b border-gray-100">License No</th>
+            <th class="p-4 text-left font-medium text-gray-700 whitespace-nowrap border-b border-gray-100">Address ID</th>
+            <th class="p-4 text-left font-medium text-gray-700 whitespace-nowrap border-b border-gray-100">Account Status</th>
+            <th class="p-4 text-left font-medium text-gray-700 whitespace-nowrap border-b border-gray-100">Details</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngIf="drivers.length === 0">
+            <td colspan="7" class="p-4 text-gray-500 text-center">
+              No drivers found. {{ searchQuery ? 'Try a different search term.' : '' }}
+            </td>
+          </tr>
+          <tr *ngFor="let driver of drivers; let i = index"
+              (click)="selectDriver(driver)"
+              [class]="'whitespace-nowrap hover:bg-gray-100 transition-colors duration-150'"
+              [ngClass]="{'bg-[#D0F6FF]': i % 2 === 1, 'bg-blue-100': driver === selectedDriver}">
+            <td class="p-4 text-gray-700 border-b border-gray-100">{{ driver?.driverId || '-' }}</td>
+            <td class="p-4 text-gray-700 border-b border-gray-100">{{ (driver?.firstName || '-') + ' ' + (driver?.lastName || '-') }}</td>
+            <td class="p-4 text-gray-700 border-b border-gray-100">{{ driver?.email || '-' }}</td>
+            <td class="p-4 text-gray-700 border-b border-gray-100">{{ driver?.licenseNo || '-' }}</td>
+            <td class="p-4 text-gray-700 border-b border-gray-100">{{ driver?.addressId || '-' }}</td>
+            <td class="p-4 text-gray-700 border-b border-gray-100">{{ driver?.accountStatus || '-' }}</td>
+            <td class="p-4 border-b border-gray-100">
+              <button class="px-3 py-2 rounded bg-blue-500 text-white font-medium hover:bg-blue-600 transition-colors" (click)="$event.stopPropagation(); selectDriver(driver)">Details</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 
@@ -149,37 +176,45 @@
 
   <!-- Add Driver Modal -->
   <div *ngIf="showAddDriverModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-    <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-lg relative">
+    <div class="bg-white rounded-xl shadow-lg p-6 w-full max-w-2xl relative">
       <button (click)="closeAddDriverModal()" class="absolute top-4 right-4 text-gray-500 hover:text-gray-700">&times;</button>
       <h2 class="text-2xl font-semibold mb-6">Add New Driver</h2>
       <form (ngSubmit)="addDriver()" #addDriverForm="ngForm">
         <!-- Step 1: Basic Info -->
         <ng-container *ngIf="addDriverStep === 1">
-          <div class="mb-4">
-            <label class="block font-medium mb-1">First Name</label>
-            <input [(ngModel)]="newDriver.firstName" name="firstName" required class="w-full px-3 py-2 border rounded" />
-          </div>
-          <div class="mb-4">
-            <label class="block font-medium mb-1">Last Name</label>
-            <input [(ngModel)]="newDriver.lastName" name="lastName" required class="w-full px-3 py-2 border rounded" />
-          </div>
-          <div class="mb-4">
-            <label class="block font-medium mb-1">Username</label>
-            <input [(ngModel)]="newDriver.username" name="username" required class="w-full px-3 py-2 border rounded" />
-          </div>
-          <div class="mb-4">
-            <label class="block font-medium mb-1">Password</label>
-            <input [(ngModel)]="newDriver.password" name="password" type="password" required class="w-full px-3 py-2 border rounded" />
-          </div>
-          <div class="mb-4">
-            <label class="block font-medium mb-1">Email</label>
-            <input [(ngModel)]="newDriver.email" name="email" type="email" required class="w-full px-3 py-2 border rounded" />
-          </div>
-          <div class="mb-4">
-            <label class="block font-medium mb-1">License No</label>
-            <input [(ngModel)]="newDriver.licenseNo" name="licenseNo" required class="w-full px-3 py-2 border rounded" />
-            <label class="block text-gray-700 font-medium mb-2 mt-4">Vehicle No</label>
-            <input [(ngModel)]="newDriver.vehicleNo" name="vehicleNo" required class="w-full px-3 py-2 border rounded" />
+          <div class="grid grid-cols-2 gap-4">
+            <div class="mb-4 col-span-2">
+              <label class="block font-medium mb-1">Profile Image</label>
+              <input type="file" (change)="onProfileImageSelected($event)" accept="image/*" class="w-full px-3 py-2 border rounded" />
+            </div>
+            <div class="mb-4">
+              <label class="block font-medium mb-1">First Name</label>
+              <input [(ngModel)]="newDriver.firstName" name="firstName" required class="w-full px-3 py-2 border rounded" />
+            </div>
+            <div class="mb-4">
+              <label class="block font-medium mb-1">Last Name</label>
+              <input [(ngModel)]="newDriver.lastName" name="lastName" required class="w-full px-3 py-2 border rounded" />
+            </div>
+            <div class="mb-4">
+              <label class="block font-medium mb-1">Username</label>
+              <input [(ngModel)]="newDriver.username" name="username" required class="w-full px-3 py-2 border rounded" />
+            </div>
+            <div class="mb-4">
+              <label class="block font-medium mb-1">Password</label>
+              <input [(ngModel)]="newDriver.password" name="password" type="password" required class="w-full px-3 py-2 border rounded" />
+            </div>
+            <div class="mb-4">
+              <label class="block font-medium mb-1">Email</label>
+              <input [(ngModel)]="newDriver.email" name="email" type="email" required class="w-full px-3 py-2 border rounded" />
+            </div>
+            <div class="mb-4">
+              <label class="block font-medium mb-1">License No</label>
+              <input [(ngModel)]="newDriver.licenseNo" name="licenseNo" required class="w-full px-3 py-2 border rounded" />
+            </div>
+            <div class="mb-4">
+              <label class="block text-gray-700 font-medium mb-2">Vehicle No</label>
+              <input [(ngModel)]="newDriver.vehicleNo" name="vehicleNo" required class="w-full px-3 py-2 border rounded" />
+            </div>
           </div>
           <div class="flex justify-end mt-6">
             <button type="button" class="px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 font-semibold" (click)="nextAddDriverStep()">Next</button>
@@ -201,6 +236,7 @@
             <button type="submit" class="px-6 py-2 bg-green-500 text-white rounded hover:bg-green-600 font-semibold">Add Driver</button>
           </div>
         </ng-container>
+        <!-- Ensure proper closing of form and modal divs -->
       </form>
     </div>
   </div>
