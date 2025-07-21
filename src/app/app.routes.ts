@@ -22,6 +22,11 @@ import { CusHomeComponent } from './components/customer/cus-home/cus-home.compon
 import { LaundrySignupComponent } from './components/customer/laundry-signup/laundry-signup.component';
 import { HowItWorksComponent } from './components/customer/how-it-works/how-it-works.component';
 import { LandingPageComponent } from './components/landing-page/landing-page.component';
+import { HomePageComponent } from './components/landing-page/home-page.component';
+import { ServicesPageComponent } from './components/landing-page/services-page.component';
+import { AboutPageComponent } from './components/landing-page/about-page.component';
+import { LaundriesPageComponent } from './components/landing-page/laundries-page.component';
+import { ContactPageComponent } from './components/landing-page/contact-page.component';
 import { NewOrdersComponent } from './pages/Laundry/new-orders/new-orders.component';
 import { processingOrdersComponent } from './pages/Laundry/processing-orders/processing-orders.component';
 import { CompletedOrdersComponent } from './pages/Laundry/completed-orders/completed-orders.component';
@@ -44,7 +49,7 @@ import { CompletedOrderDetailsComponent } from './components/Laundry/completed-o
 import { LogoutPageComponent } from './pages/Driver/logout-page/logout-page.component';
 import {AdminLoginComponent} from './components/admin/login/admin-login.component';
 import { NewOrderDetailsComponent } from './components/laundry/new-order-details/new-order-details.component';
-
+import {MultiStepFormComponent} from './components/laundry/lau-sign/multi-step-form.component';
 
 
 
@@ -54,15 +59,24 @@ export const routes: Routes = [
    // Landing page at root
     { path: '', component: LandingPageComponent, pathMatch: 'full' },
 
+    // Landing page navigation routes
+    { path: 'home', component: HomePageComponent },
+    { path: 'services', component: ServicesPageComponent },
+    { path: 'about', component: AboutPageComponent },
+    { path: 'laundries', component: LaundriesPageComponent },
+    { path: 'contact', component: ContactPageComponent },
+
     // Route to identify the user type
     { path: 'whoareyou', component: WhoAreYouComponent }, 
 
     // Route for user login
     {path:'cus-login', component: LoginComponent},    // Route for general user signup
+    {path:'cus-signup', component: SignupComponent},    // Route for general user signup
     {path:'lun-login', component: LunLoginComponent},    // Route for general user signup
     {path:'driver-login', component: DriverLoginComponent},    // Route for general user signup
     {path:'admin-login', component: AdminLoginComponent},    // Route for general user signup
     {path:'signup', component: SignupComponent},    // Route for customer home page
+    {path:'lun-signup', component: MultiStepFormComponent},    // Route for laundry signup multi-step form
     //{ path: 'cus-home', component: CusHomeComponent },    // Route for laundry partner home page
   
 
@@ -79,7 +93,7 @@ export const routes: Routes = [
   // {path: 'laundry/:id', component: ItemPageComponent},
 
   //driver routes
-  {path: 'driver-home-page', component:DriverHomePageComponent },
+  {path: 'driver-home-page', component:DriverHomePageComponent, canActivate: [() => import('./guards/role.guard').then(m => m.RoleGuard)], data: { role: 'driver' } },
   {path: 'pickups-tasks-mainpage', component: PickupsTasksMainpageComponent },
   {path: 'delivery-tasks-mainpage', component: DeliveryTasksMainpageComponent},
   {path: 'driver-contactus-page', component: DriverContactusPageComponent},
@@ -96,6 +110,8 @@ export const routes: Routes = [
   {
     path: 'admin',
     component: AdminLayoutComponent,
+    canActivate: [() => import('./guards/role.guard').then(m => m.RoleGuard)],
+    data: { role: 'admin' },
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: AdminDashboardComponent },
@@ -113,6 +129,8 @@ export const routes: Routes = [
   {
     path: 'cus-home',
     component: CustomerLayoutComponent,
+    canActivate: [() => import('./guards/role.guard').then(m => m.RoleGuard)],
+    data: { role: 'customer' },
     children: [
       { path: '', redirectTo: 'home', pathMatch: 'full' },
       
@@ -122,6 +140,7 @@ export const routes: Routes = [
       { path: 'basket', component: BasketComponent },
       {path: 'laundry/:id', component: ItemPageComponent},
       // Replace with actual profile component if needed
+      { path: 'profile', loadComponent: () => import('./components/customer/profile/profile.component').then(m => m.ProfileComponent) },
       // Add more customer pages as needed
       { path: 'laundries', component: LaundryPageComponent },
     ]

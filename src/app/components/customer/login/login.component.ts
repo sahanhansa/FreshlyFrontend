@@ -39,10 +39,28 @@ export class LoginComponent implements OnInit {
       const loginData = { username, password };
       this.authService.customerLogin(loginData).subscribe({
         next: (res: any) => {
-          // Save token, username, userId to localStorage
-          localStorage.setItem('token', res.token);
-          localStorage.setItem('username', res.username);
-          localStorage.setItem('userId', res.userId);
+
+          // Save all response fields to localStorage
+          let hasContactNumbers = false;
+          Object.keys(res).forEach(key => {
+            if (key === 'contactNumbers') {
+              hasContactNumbers = true;
+              if (Array.isArray(res[key])) {
+                localStorage.setItem('contactNumbers', JSON.stringify(res[key]));
+              } else if (typeof res[key] === 'string') {
+                localStorage.setItem('contactNumbers', JSON.stringify([res[key]]));
+              } else {
+                localStorage.setItem('contactNumbers', '');
+              }
+            } else {
+              localStorage.setItem(key, res[key] !== null ? res[key].toString() : '');
+            }
+          });
+          // If contactNumbers not present, fallback to contactNumber
+          if (!hasContactNumbers && res.contactNumber) {
+            localStorage.setItem('contactNumbers', JSON.stringify([res.contactNumber]));
+          }
+           localStorage.setItem('role', 'customer');
           // Redirect to customer home
           this.router.navigate(['/cus-home']);
         },
