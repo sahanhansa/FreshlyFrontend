@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { Router } from '@angular/router';
 import { CommonModule, NgClass, NgIf } from '@angular/common';
 import { AuthService } from '../../../services/auth.service';
+import { AuthHelperService } from '../../../services/auth-helper.service';
 
 @Component({
   selector: 'app-admin-login',
@@ -20,7 +21,8 @@ export class AdminLoginComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private authHelper: AuthHelperService
   ) {
     this.loginForm = this.formBuilder.group({
       username: ['', [Validators.required]],
@@ -28,8 +30,14 @@ export class AdminLoginComponent implements OnInit {
     });
   }
 
+
   ngOnInit(): void {
     // Component initialization logic
+  }
+
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
+    this.inputType = this.showPassword ? 'text' : 'password';
   }
 
   onSubmit(): void {
@@ -44,7 +52,7 @@ export class AdminLoginComponent implements OnInit {
           localStorage.setItem('adminId', res.userId);
           localStorage.setItem('role', "role");
           // Redirect to admin dashboard
-          this.router.navigate(['/admin-home']);
+          this.router.navigate(['/admin/dashboard']);
         },
         error: (err) => {
           // Handle error (show message, etc.)

@@ -9,6 +9,21 @@ export interface Feedback {
   isExpanded?: boolean; // For UI expansion state
   customerFName: string;
   customerLName: string;
+  submittedByType?: 'c' | 'd' | 'l';
 }
 
+export interface FeedbackDTO {
+  feedbackId?: string;
+  description: string;
+  rating: number;
+  orderId: string;
+  laundryId: string;
+  submittedByType: string;
+}
 
+export interface FeedbackRequest {
+  description: string;
+  rating: number;
+  orderId: string;
+  laundryId?: string;
+}

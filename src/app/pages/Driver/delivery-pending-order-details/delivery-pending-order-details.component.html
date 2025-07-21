@@ -1,14 +1,26 @@
 <div><app-driver-navbar></app-driver-navbar></div>
-<br><br><br><br>
+
 <div><app-order-details-header></app-order-details-header></div>
 <br>
-<div><app-delivery-order-details></app-delivery-order-details></div>
+<div *ngIf="!deliveryOrder" class="loading-container">
+  <div class="spinner"></div>
+  <p class="loading-text">Loading order details...</p>
+</div>
+<div *ngIf="deliveryOrder">
+<div><app-delivery-order-details [deliveryOrder]="deliveryOrder" (noteChange)="onInputReceived($event)"></app-delivery-order-details></div>
 <br>
-
-<div><app-delivery-question-1></app-delivery-question-1></div>
+<div *ngIf="driverId != null && deliveryOrder.status === 'finished processing'">
+<div><app-delivery-question-1 [orderId]="orderId"   (confirmed2)="onOrderConfirmed($event)"></app-delivery-question-1></div>
+</div>
 <br>
-<div><app-delivery-question-2></app-delivery-question-2></div>
+<div *ngIf="driverId != null && deliveryOrder.status === 'out for delivery'">
+<div><app-delivery-question-2  [orderId]="orderId"   (confirmed3)="onOrderConfirmed($event)" [note]="note"></app-delivery-question-2></div>
+</div>
+ <div *ngIf="driverId == null">
+<div><app-delivery-taken-order [orderId]="orderId"   (confirmed1)="onOrderConfirmed($event)" ></app-delivery-taken-order></div>
+</div>
 <br>
+</div>
 <br>
 
 <div><app-footer></app-footer></div>

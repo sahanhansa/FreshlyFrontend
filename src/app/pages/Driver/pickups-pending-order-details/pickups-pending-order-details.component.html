@@ -1,12 +1,45 @@
-<div><app-driver-navbar></app-driver-navbar></div>
-<br><br><br><br>
-<div><app-pickup-details-header></app-pickup-details-header></div>
-<br>
 
-<div><app-order-details-pending></app-order-details-pending></div>
-<br>
-<br>
-<div><app-pickup-question></app-pickup-question></div>
+<div><app-driver-navbar></app-driver-navbar></div>
+
+<div><app-pickup-details-header></app-pickup-details-header></div>
+
+
+<!-- ✅ Show this if `pickupOrder` is null -->
+<!-- Modern loading spinner -->
+<div *ngIf="!pickupOrder" class="loading-container">
+  <div class="spinner"></div>
+  <p class="loading-text">Loading order details...</p>
+</div>
+
+
+<!-- ✅ Show this only when `pickupOrder` is available -->
+<div *ngIf="pickupOrder">
+  <app-order-details-pending 
+    (noteChange)="onInputReceived($event)" 
+    [pickupOrder]="pickupOrder">
+  </app-order-details-pending>
+
+  <br><br>
+
+  <!-- If driverId is null, show taken order -->
+  <div *ngIf="driverId == null">
+    <app-driver-taken-order 
+      [orderId]="orderId" 
+      (orderConfirmed)="onOrderConfirmed($event)">
+    </app-driver-taken-order>
+  </div>
+
+  <!-- If driverId is not null AND status is 'order placed', show pickup question -->
+  <div *ngIf="driverId != null && pickupOrder.status === 'order placed'">
+    <app-pickup-question 
+      (orderedConfirmed)="onOrderConfirmed($event)" 
+      [note]="note" 
+      [orderId]="orderId">
+    </app-pickup-question>
+  </div>
+</div>
+
+
 <br>
 <br>
 <div><app-footer></app-footer>

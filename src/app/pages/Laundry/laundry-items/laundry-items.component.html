@@ -1,11 +1,23 @@
 
 <div class="min-h-screen flex flex-col">
-  
 
-  <main class="flex-grow">
-    <app-header></app-header>
-  </main>
+   <app-navbar></app-navbar>
+    <app-item-category></app-item-category>
 
+    <!-- Add New Item Button -->
+   <div class="flex justify-end mt-6 mr-14">
+  <a
+    routerLink="/laundry-add-item"
+    class="flex items-center space-x-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md shadow transition duration-200"
+  >
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+    </svg>
+    <span>Add New Item</span>
+  </a>
+</div>
+
+  <app-item-grid></app-item-grid>
 
   <app-footer></app-footer>
 

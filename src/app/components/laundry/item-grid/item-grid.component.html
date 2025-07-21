@@ -1,0 +1,55 @@
+<div class="min-h-screen flex flex-col items-center justify-center px-4">
+  <!-- Loading State -->
+  <div *ngIf="loading" class="flex items-center justify-center mt-10">
+    <div class="text-lg">Loading items...</div>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !loading" class="flex items-center justify-center mt-10">
+    <div class="text-red-600 text-lg">{{ error }}</div>
+  </div>
+
+  <!-- Item Grid -->
+  <div *ngIf="!loading && !error" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-10">
+    <app-laundry-item-card 
+      *ngFor="let item of paginatedItems" 
+      [item]="item"
+    />
+  </div>
+
+  <!-- No Items Message -->
+  <div *ngIf="!loading && !error && allItems.length === 0" class="flex items-center justify-center mt-10">
+    <div class="text-lg text-gray-600">No items found. Add some items to get started!</div>
+  </div>
+
+  <!-- Pagination -->
+  <div class="flex items-center space-x-2 justify-center p-4 mt-10">
+    <button 
+      (click)="prevPage()"
+      class="px-4 py-2 text-gray-500 hover:text-gray-700"
+      [disabled]="currentPage === 1"
+    >
+      Previous
+    </button>
+
+    <button 
+      *ngFor="let page of [].constructor(totalPages); let i = index"
+      (click)="setPage(i + 1)"
+      class="px-4 py-2 rounded-md border transition-all"
+      [ngClass]="{
+        'bg-[#0A84FF] text-white': currentPage === i + 1,
+        'bg-gray-200 text-gray-700': currentPage !== i + 1
+      }"
+    >
+      {{ i + 1 }}
+    </button>
+
+    <button 
+      (click)="nextPage()"
+      class="px-4 py-2 text-gray-500 hover:text-gray-700"
+      [disabled]="currentPage === totalPages"
+    >
+      Next
+    </button>
+  </div>
+</div>

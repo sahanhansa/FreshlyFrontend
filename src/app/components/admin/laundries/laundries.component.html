@@ -1,12 +1,53 @@
-<div class="p-8 bg-gray-100 min-h-screen">
+  <!-- Status Change Confirmation Dialog -->
+  <div *ngIf="showStatusChangeConfirmation()" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white p-6 rounded-lg shadow-xl max-w-md w-full mx-4 animate-fadeIn">
+      <div class="flex items-center mb-4 pb-3 border-b border-gray-200">
+        <div class="bg-yellow-100 p-2 rounded-full" *ngIf="selectedLaundry()?.accountStatus?.toLowerCase() === 'active'">
+          <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </div>
+        <div class="bg-green-100 p-2 rounded-full" *ngIf="selectedLaundry()?.accountStatus?.toLowerCase() !== 'active'">
+          <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
+        <h2 class="ml-3 text-xl font-bold text-gray-800">Confirm {{ selectedLaundry()?.accountStatus?.toLowerCase() === 'active' ? 'Deactivation' : 'Activation' }}</h2>
+      </div>
+      <div class="mb-6">
+        <p class="text-gray-700">Are you sure you want to {{ selectedLaundry()?.accountStatus?.toLowerCase() === 'active' ? 'deactivate' : 'activate' }} laundry <span class="font-semibold">{{ selectedLaundry()?.laundryName }}</span>?</p>
+        <p class="mt-2 text-sm text-gray-600">This will update the account status in the system.</p>
+      </div>
+      <div class="flex justify-end space-x-3">
+        <button
+          (click)="cancelStatusChange()"
+          class="px-4 py-2 bg-gray-200 text-gray-800 font-medium rounded-md hover:bg-gray-300 transition focus:outline-none focus:ring-2 focus:ring-gray-300"
+        >
+          Cancel
+        </button>
+        <button
+          (click)="confirmStatusChange()"
+          [disabled]="loading()"
+          class="px-4 py-2 font-medium rounded-md transition focus:outline-none focus:ring-2"
+          [ngClass]="selectedLaundry()?.accountStatus?.toLowerCase() === 'active' ? 'bg-yellow-600 text-white hover:bg-yellow-700 focus:ring-yellow-300' : 'bg-green-600 text-white hover:bg-green-700 focus:ring-green-300'"
+        >
+          {{ selectedLaundry()?.accountStatus?.toLowerCase() === 'active' ? 'Deactivate' : 'Activate' }}
+        </button>
+      </div>
+    </div>
+  </div>
+<div class="p-8 bg-gray-100 min-h-screen pt-16">
   <!-- Loading Indicator -->
-  <div *ngIf="loading() || deleteInProgress()" class="flex justify-center mb-4">
+  <div *ngIf="loading()" class="flex justify-center mb-4">
     <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
   </div>
 
   <!-- Header Controls -->
   <div class="flex justify-between items-center mb-8 bg-white p-4 rounded-lg shadow-sm">
     <div class="flex items-center gap-2">
+      <button (click)="openAddLaundryModal()" class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors font-semibold mr-4">
+        + Add New Laundry
+      </button>
       <span>Show</span>
       <select [ngModel]="entriesPerPage()" 
               (ngModelChange)="onEntriesChange($event)"
@@ -29,6 +70,33 @@
   </div>
   
   <h1 class="text-4xl text-gray-800 mb-8 font-inter drop-shadow-lg">Laundry Management</h1>
+  <!-- Add Laundry Modal -->
+  <div *ngIf="showAddLaundryModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white p-6 rounded-lg shadow-xl max-w-lg w-full mx-4 animate-fadeIn">
+      <h2 class="text-2xl font-bold mb-4">Add New Laundry</h2>
+      <form (ngSubmit)="submitAddLaundry()">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <input [(ngModel)]="newLaundry.ownerFirstName" name="ownerFirstName" placeholder="Owner First Name" class="border p-2 rounded w-full" required>
+          <input [(ngModel)]="newLaundry.ownerLastName" name="ownerLastName" placeholder="Owner Last Name" class="border p-2 rounded w-full" required>
+          <input [(ngModel)]="newLaundry.ownerEmail" name="ownerEmail" placeholder="Owner Email" class="border p-2 rounded w-full" required>
+          <input [(ngModel)]="newLaundry.ownerPassword" name="ownerPassword" placeholder="Owner Password" type="password" class="border p-2 rounded w-full" required>
+          <input [(ngModel)]="newLaundry.ownerUsername" name="ownerUsername" placeholder="Owner Username" class="border p-2 rounded w-full" required>
+          <input [(ngModel)]="newLaundry.houseNo" name="houseNo" placeholder="Owner House No" class="border p-2 rounded w-full" required>
+          <input [(ngModel)]="newLaundry.street" name="street" placeholder="Owner Street" class="border p-2 rounded w-full" required>
+          <input [(ngModel)]="newLaundry.city" name="city" placeholder="Owner City" class="border p-2 rounded w-full" required>
+          <input [(ngModel)]="newLaundry.postalCode" name="postalCode" placeholder="Owner Postal Code" class="border p-2 rounded w-full" required>
+          <input [(ngModel)]="newLaundry.laundryName" name="laundryName" placeholder="Laundry Name" class="border p-2 rounded w-full" required>
+          <input [(ngModel)]="newLaundry.laundryUsername" name="laundryUsername" placeholder="Laundry Username" class="border p-2 rounded w-full" required>
+          <input [(ngModel)]="newLaundry.laundryPassword" name="laundryPassword" placeholder="Laundry Password" type="password" class="border p-2 rounded w-full" required>
+          <input [(ngModel)]="newLaundry.laundryEmail" name="laundryEmail" placeholder="Laundry Email" class="border p-2 rounded w-full" required>
+        </div>
+        <div class="flex justify-end mt-6 gap-3">
+          <button type="button" (click)="closeAddLaundryModal()" class="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300">Cancel</button>
+          <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">Add Laundry</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <!-- Laundry Profile Card - Placed at the top -->
   <div *ngIf="selectedLaundry()" class="mb-6">
@@ -47,6 +115,12 @@
           </div>
         </div>
         <div class="space-y-4">
+          <div class="flex items-center">
+            <i class="fas fa-user-shield w-5 mr-4"></i>
+            <span class="w-32">Account Status</span>
+            <span>: {{ selectedLaundry()?.accountStatus || 'Unknown' }}</span>
+            <!-- Only show status text here. Button is in right-side group. -->
+          </div>
           <div class="flex items-center">
             <i class="fas fa-envelope w-5 mr-4"></i>
             <span class="w-32">Email</span>
@@ -98,10 +172,13 @@
           Feedbacks
         </button>
         <button 
-          (click)="promptDeleteConfirmation()" 
-          class="px-4 py-3 rounded-lg bg-red-500 text-white font-medium hover:bg-red-600 transition-colors mt-auto">
-          <i class="fas fa-trash-alt mr-2"></i>
-          Remove Laundry
+          (click)="promptStatusChangeConfirmation()"
+          [disabled]="loading()"
+          class="px-4 py-3 rounded-lg font-medium transition-colors mt-auto flex items-center"
+          [ngClass]="selectedLaundry()?.accountStatus?.toLowerCase() === 'active' ? 'bg-yellow-500 text-white hover:bg-yellow-600' : 'bg-green-500 text-white hover:bg-green-600'">
+          <i class="fas" [ngClass]="selectedLaundry()?.accountStatus?.toLowerCase() === 'active' ? 'fa-user-slash mr-2' : 'fa-user-check mr-2'"></i>
+          <span *ngIf="!loading()">{{ selectedLaundry()?.accountStatus?.toLowerCase() === 'active' ? 'Deactivate' : 'Activate' }}</span>
+          <span *ngIf="loading()" class="flex items-center"><span class="animate-spin h-4 w-4 border-t-2 border-b-2 border-white rounded-full mr-2"></span>{{ selectedLaundry()?.accountStatus?.toLowerCase() === 'active' ? 'Deactivating...' : 'Activating...' }}</span>
         </button>
       </div>
     </div>
@@ -200,47 +277,5 @@
     {{ error() }}
   </div>
 
-  <!-- Success Message - Moved below the table -->
-  <div *ngIf="deleteSuccess()" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mt-6">
-    Laundry deleted successfully!
-  </div>
-
-  <!-- Delete Error Message - Moved below the table -->
-  <div *ngIf="deleteError()" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mt-6">
-    {{ deleteError() }}
-  </div>
-
-  <!-- Delete Confirmation Dialog -->
-  <div *ngIf="showDeleteConfirmation()" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-    <div class="bg-white p-6 rounded-lg shadow-xl max-w-md w-full mx-4 animate-fadeIn">
-      <div class="flex items-center mb-4 pb-3 border-b border-gray-200">
-        <div class="bg-red-100 p-2 rounded-full">
-          <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-          </svg>
-        </div>
-        <h2 class="ml-3 text-xl font-bold text-gray-800">Confirm Deletion</h2>
-      </div>
-      
-      <div class="mb-6">
-        <p class="text-gray-700">Are you sure you want to delete laundry <span class="font-semibold">{{ selectedLaundry()?.laundryName }}</span>?</p>
-        <p class="mt-2 text-sm text-gray-600">This action cannot be undone. This will permanently delete the laundry account and all associated data.</p>
-      </div>
-      
-      <div class="flex justify-end space-x-3">
-        <button
-          (click)="cancelDelete()"
-          class="px-4 py-2 bg-gray-200 text-gray-800 font-medium rounded-md hover:bg-gray-300 transition focus:outline-none focus:ring-2 focus:ring-gray-300"
-        >
-          Cancel
-        </button>
-        <button
-          (click)="confirmDelete()"
-          class="px-4 py-2 bg-red-600 text-white font-medium rounded-md hover:bg-red-700 transition focus:outline-none focus:ring-2 focus:ring-red-500"
-        >
-          Delete Laundry
-        </button>
-      </div>
-    </div>
-  </div>
+  <!-- ...existing code... -->
 </div>

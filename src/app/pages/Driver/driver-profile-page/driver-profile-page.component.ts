@@ -7,7 +7,7 @@ import { FooterComponent } from '../../../components/shared/footer/footer.compon
   selector: 'app-driver-profile-page',
   imports: [DriverProfileComponent, ProfileHeaderComponent, DriverNavbarComponent, FooterComponent],
   templateUrl: './driver-profile-page.component.html',
-  styleUrls: ['./driver-profile-page.component.scss']
+  styleUrls: ['./driver-profile-page.component.css']
 })
 export class DriverProfilePageComponent {
 

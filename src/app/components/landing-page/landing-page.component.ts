@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
     templateUrl: './landing-page.component.html',
     styleUrls: ['./landing-page.component.css'],
     standalone: true,
+    imports: [NgClass, NgFor, FooterComponent]
     imports: [NgClass, NgFor, NgIf, FooterComponent, RouterModule]
 })
 export class LandingPageComponent {

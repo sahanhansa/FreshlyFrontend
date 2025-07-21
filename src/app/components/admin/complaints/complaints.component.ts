@@ -1,3 +1,4 @@
+// ...existing code...
 import { Component, OnInit, signal, computed } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -14,7 +15,38 @@ import { FeedbackService } from '../../../services/feedback.service';
   styleUrls: ['./complaints.component.css']
 })
 export class ComplaintsComponent implements OnInit {
-  // Data and pagination properties using signals
+// Data and pagination properties using signals
+  selectedCategory = signal<'customer' | 'driver' | 'laundry'>('customer');
+
+  filterByCategory(category: 'customer' | 'driver' | 'laundry'): void {
+    this.selectedCategory.set(category);
+    let filtered: Feedback[] = [];
+    switch (category) {
+      case 'customer':
+        filtered = this.feedbacks().filter(f => {
+          const type = (f.submittedByType || '').toLowerCase();
+          return type === 'c';
+        });
+        break;
+      case 'driver':
+        filtered = this.feedbacks().filter(f => {
+          const type = (f.submittedByType || '').toLowerCase();
+          return type === 'd';
+        });
+        break;
+      case 'laundry':
+        filtered = this.feedbacks().filter(f => {
+          const type = (f.submittedByType || '').toLowerCase();
+          return type === 'l';
+        });
+        break;
+    }
+    this.filteredFeedbacks.set(filtered);
+    this.currentPage.set(1);
+    this.calculateTotalPages();
+    this.updatePageNumbers();
+    this.updatePaginatedComplaints();
+  }
   feedbacks = signal<Feedback[]>([]);
   filteredFeedbacks = signal<Feedback[]>([]);
   paginatedComplaints = signal<Feedback[]>([]);
@@ -63,7 +95,8 @@ export class ComplaintsComponent implements OnInit {
     this.feedbackService.getAllFeedback().subscribe({
       next: (data) => {
         this.feedbacks.set(data);
-        this.filteredFeedbacks.set([...data]);
+        // Filter by selected category on load
+        this.filterByCategory(this.selectedCategory());
         this.calculateTotalPages();
         this.updatePageNumbers();
         this.updatePaginatedComplaints();

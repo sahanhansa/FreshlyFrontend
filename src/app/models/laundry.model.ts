@@ -21,3 +21,15 @@ export interface LaundryWithAddressDTO {
   City?: string;
   AverageRating?: number;
 }
+
+
+export interface LaundryDetails {
+  laundryId: string;
+  laundryName?: string;
+  laundryEmail?: string;
+  laundryImageLink?: string;
+  houseNo?: string;
+  street?: string;
+  city?: string;
+username?: string;
+}

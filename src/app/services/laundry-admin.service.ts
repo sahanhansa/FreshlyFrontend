@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, catchError, throwError } from 'rxjs';
+import { Observable, catchError, throwError, of } from 'rxjs';
 import { LaundryAdminDTO } from '../models/laundry-admin.model';
 import { environment } from '../../environments/environment';
 
@@ -8,6 +8,33 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class LaundryAdminService {
+  /**
+   * Create a new laundry account (with owner and address)
+   */
+  createLaundryAccount(payload: any): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/create-laundry-account`, payload).pipe(
+      catchError(this.handleError('Failed to create laundry account'))
+    );
+  }
+  /**
+   * Activate a laundry account
+   */
+  activateLaundry(laundryId: string): Observable<void> {
+    const endpoint = `${this.apiUrl}/${laundryId}/activate`;
+    return this.http.patch<void>(endpoint, {}).pipe(
+      catchError(this.handleError(`Failed to activate laundry with ID ${laundryId}`))
+    );
+  }
+
+  /**
+   * Deactivate a laundry account
+   */
+  deactivateLaundry(laundryId: string): Observable<void> {
+    const endpoint = `${this.apiUrl}/${laundryId}/deactivate`;
+    return this.http.patch<void>(endpoint, {}).pipe(
+      catchError(this.handleError(`Failed to deactivate laundry with ID ${laundryId}`))
+    );
+  }
   private apiUrl = `${environment.apiUrl}/api/Laundry`;
   
   constructor(private http: HttpClient) {
@@ -18,7 +45,7 @@ export class LaundryAdminService {
    * Get all laundries for admin view
    */
   getLaundries(): Observable<LaundryAdminDTO[]> {
-    // Use the correct endpoint for getting laundries for admin
+    // Use the correct endpoint for getting all laundries for admin
     return this.http.get<LaundryAdminDTO[]>(`${this.apiUrl}/laundry-list-for-admin`).pipe(
       catchError(this.handleError('Failed to fetch laundries'))
     );
@@ -54,32 +81,24 @@ export class LaundryAdminService {
   /**
    * Delete a laundry
    */
+  /**
+   * Deactivate a laundry (PATCH /api/Laundry/{id}/delete)
+   */
   deleteLaundry(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
-      catchError(this.handleError(`Failed to delete laundry with ID ${id}`))
+    return this.http.patch<void>(`${this.apiUrl}/${id}/delete`, {}).pipe(
+      catchError(this.handleError(`Failed to deactivate laundry with ID ${id}`))
     );
   }
   
   /**
    * Error handler
    */
-  private handleError(operation: string) {
+  private handleError(message: string) {
     return (error: any): Observable<never> => {
-      console.error(`${operation}:`, error);
-
-      let errorMessage = `${operation}. Please try again later.`;
-
-      if (error.status === 0) {
-        errorMessage = 'Cannot reach the server. Please check if the API is running at http://localhost:5027/api/Laundry.';
-      } else if (error.status === 400) {
-        errorMessage = error.error?.message || 'Bad request. Please check your input.';
-      } else if (error.status === 404) {
-        errorMessage = 'API endpoint not found. Make sure the backend service is configured correctly.';
-      } else if (error.error?.message) {
-        errorMessage = error.error.message;
-      }
-
-      return throwError(() => new Error(errorMessage));
+      console.error(message, error);
+      return throwError(() => new Error(`${message}: ${error.message}`));
     };
   }
+  
+  // ...existing code...
 }

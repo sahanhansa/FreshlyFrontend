@@ -1,0 +1,64 @@
+<div class="w-80 bg-white rounded-2xl shadow-xl hover:shadow-2xl transition-shadow duration-300 p-6 border border-gray-200 mx-auto min-h-[20rem]">
+  <!-- Item Image -->
+  <div class="flex justify-center">
+    <img 
+      [src]="item.imageUrl || 'assets/shirt.jpg'" 
+      [alt]="item.itemName"
+      class="w-28 h-28 object-cover rounded-lg"
+    />
+  </div>
+
+  <!-- Item Name -->
+  <h3 class="text-xl font-semibold text-gray-800 text-center mb-3">{{ item.itemName }}</h3>
+
+  <!-- Current Price -->
+  <div class="text-center mb-3">
+    <span class="text-lg font-bold text-blue-600">Rs {{ getCurrentPrice() }}</span>
+  </div>
+
+  <!-- Service Dropdowns -->
+  <div class="flex justify-center mb-4">
+    <div class="relative">
+      <button 
+        (click)="toggleDropdown()"
+        class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md text-sm font-medium transition duration-200 flex items-center gap-2 min-w-[120px] justify-between"
+      >
+        {{ getSelectedServiceName() }}
+        <svg class="w-4 h-4 transition-transform duration-200" [class.rotate-180]="isDropdownOpen" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+        </svg>
+      </button>
+      
+      <!-- Dropdown Menu -->
+      <div 
+        *ngIf="isDropdownOpen"
+        class="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-md shadow-md z-10 min-w-full"
+      >
+        <button 
+          *ngFor="let service of item.services"
+          (click)="selectService(service.serviceId)"
+          class="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 first:rounded-t-md last:rounded-b-md transition"
+          [class.bg-blue-50]="selectedServiceId === service.serviceId"
+          [class.text-blue-600]="selectedServiceId === service.serviceId"
+          [class.font-medium]="selectedServiceId === service.serviceId"
+        >
+          {{ service.serviceName }} - Rs {{ service.price }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Button -->
+ <div class="flex justify-end">
+  <a 
+    [routerLink]="['/laundry-edit-item', item.itemId]"
+    class="flex items-center space-x-2 px-1 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded-xl transition duration-200 shadow hover:shadow-md"
+    style="width: 70px;"
+  >
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+    </svg>
+    <span>Edit</span>
+  </a>
+</div>
+</div>

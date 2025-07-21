@@ -1,0 +1,49 @@
+<div class="max-w-5xl mx-auto">
+  <!-- Loading state -->
+  <div *ngIf="isLoading" class="flex justify-center py-10">
+    <div class="flex flex-col items-center">
+      <div class="w-12 h-12 border-4 border-blue-200 border-t-blue-500 rounded-full animate-spin"></div>
+      <p class="mt-4 text-gray-600">Loading completed orders...</p>
+    </div>
+  </div>
+
+  <!-- Error state -->
+  <div *ngIf="error && !isLoading" class="bg-red-50 border border-red-200 text-red-700 p-4 rounded-lg my-4 text-center">
+    <p>{{ error }}</p>
+    <button 
+      (click)="loadCompletedOrders()" 
+      class="mt-2 px-4 py-1 bg-red-100 hover:bg-red-200 rounded-md text-red-700 text-sm transition-colors">
+      Try Again
+    </button>
+  </div>
+
+  <!-- Empty state -->
+  <div *ngIf="!isLoading && !error && displayOrders.length === 0" class="text-center py-10">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+    </svg>
+    <p class="mt-4 text-gray-600">No completed orders found.</p>
+  </div>
+
+  <!-- Orders list with increased spacing -->
+  <div *ngIf="!isLoading && displayOrders.length > 0" class="space-y-8 py-4">
+    <app-completed-order-card
+      *ngFor="let order of displayOrders"
+      [orderId]="order.orderIdFormatted"
+      [laundryName]="order.laundryName"
+      [date]="order.date"
+      [totalAmount]="order.totalAmount"
+      [items]="order.items"
+      (rateOrder)="initiateRating(order.orderId)"
+    ></app-completed-order-card>
+  </div>
+  
+  <!-- Feedback Modal -->
+  <app-feedback 
+    *ngIf="showFeedbackModal" 
+    [orderId]="selectedOrderId"
+    [laundryId]="selectedLaundryId"
+    (close)="closeFeedbackModal()"
+    (submitted)="handleFeedbackSubmitted()"
+  ></app-feedback>
+</div>

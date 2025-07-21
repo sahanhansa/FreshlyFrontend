@@ -7,7 +7,7 @@ import { FooterComponent } from '../../../components/shared/footer/footer.compon
   selector: 'app-logout-page',
   imports: [CommonModule,  LogoutComponent],
   templateUrl: './logout-page.component.html',
-  styleUrl: './logout-page.component.scss'
+  styleUrl: './logout-page.component.css'
 })
 export class LogoutPageComponent {
 

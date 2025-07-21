@@ -2,14 +2,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { AddToBasketDTO, BasketItemDTO, TemporaryOrderSummary } from '../models/basket.model';
+import { AddToBasketDTO, BasketItemDTO, TemporaryOrderSummary, ConfirmOrderDTO } from '../models/basket.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BasketService {
   private apiUrl = `${environment.apiUrl}/api/TemporaryOrder`;
-  private readonly temporaryCustomerId = 'e9194d78-2e64-11f0-a04a-30d0423f455f';
+  private readonly temporaryCustomerId = 'a4dca9b3-5f58-11f0-8064-0022481a06a0';
 
   constructor(private http: HttpClient) { }
 
@@ -91,5 +91,14 @@ export class BasketService {
     return this.http.delete(
       `${this.apiUrl}/${temporaryOrderId}/item/${itemId}/service/${serviceId}`
     );
+  }
+
+  /**
+   * Confirms an order (places it and updates all related data)
+   * @param dto ConfirmOrderDTO
+   * @returns Observable<boolean>
+   */
+  confirmOrder(dto: ConfirmOrderDTO) {
+    return this.http.post<boolean>(`${environment.apiUrl}/api/order/confirm`, dto);
   }
 }

@@ -29,6 +29,7 @@ import { LaundriesPageComponent } from './components/landing-page/laundries-page
 import { ContactPageComponent } from './components/landing-page/contact-page.component';
 import { NewOrdersComponent } from './pages/Laundry/new-orders/new-orders.component';
 import { processingOrdersComponent } from './pages/Laundry/processing-orders/processing-orders.component';
+import { CompletedOrdersComponent } from './pages/Laundry/completed-orders/completed-orders.component';
 import { ConfirmOrdersComponent } from './pages/Laundry/confirm-orders/confirm-orders.component';
 import { InvoiceSuccessedComponent } from './pages/Laundry/invoice-successed/invoice-successed.component';
 import { LaundryFeedbacksComponent } from './pages/Laundry/laundry-feedbacks/laundry-feedbacks.component';
@@ -40,10 +41,16 @@ import { LaundryPageComponent } from './pages/order/laundry-list-page/laundry-li
 import { BasketComponent } from './pages/order/basket/basket.component';
 import { ItemPageComponent } from './pages/order/item-list-page/item-list-page.component';
 import { CustomerLayoutComponent } from './components/customer/customer-layout/customer-layout.component';
+import { LaundryAddItemComponent } from './pages/Laundry/laundry-add-item/laundry-add-item.component';
+import { LaundryEditItemComponent } from './pages/Laundry/laundry-edit-item/laundry-edit-item.component';
+import { LaundryDeleteConfirmationComponent } from './pages/Laundry/laundry-delete-confirmation/laundry-delete-confirmation.component';
+import { ProcessingOrderDetailsComponent} from './components/laundry/processing-order-details/processing-order-details.component';
+import { CompletedOrderDetailsComponent } from './components/Laundry/completed-order-details/completed-order-details.component';
 import { LogoutPageComponent } from './pages/Driver/logout-page/logout-page.component';
-import {LaundryHomeComponent} from './components/laundry/laundry-home/laundry-home.component';
 import {AdminLoginComponent} from './components/admin/login/admin-login.component';
-import { MultiStepFormComponent } from './components/laundry/lau-sign/multi-step-form.component';
+import { NewOrderDetailsComponent } from './components/laundry/new-order-details/new-order-details.component';
+
+
 
 
 // Define the application's routes
@@ -141,7 +148,7 @@ export const routes: Routes = [
   
   
  // Route for laundry home
-   {path: 'laundry-home', component: LaundryHomeComponent, canActivate: [() => import('./guards/role.guard').then(m => m.RoleGuard)], data: { role: 'laundry' }},
+   {path: 'laundry-home', component: HomeComponent},
    
   { path: 'laundry-home', redirectTo: '/laundry/home', pathMatch: 'full' },
 
@@ -151,8 +158,17 @@ export const routes: Routes = [
      // Route for new orders page
   {path: 'new-orders', component:NewOrdersComponent},
 
+  // Route for new order details
+  {
+    path: 'new-order-details/:orderId/:statusId',
+    loadComponent: () => import('./components/laundry/new-order-details/new-order-details.component').then(m => m.NewOrderDetailsComponent)
+  },
+
     // Route for processingorders page
   {path: 'processing-orders', component:processingOrdersComponent},
+
+    // Route for completed orders page
+  {path: 'completed-orders', component:CompletedOrdersComponent},
 
  // Route for confirm orders page
   {path: 'confirm-orders', component:ConfirmOrdersComponent},
@@ -175,12 +191,20 @@ export const routes: Routes = [
     // Route for laundry-summary page
     {path: 'laundry-summary', component:LaundrySummaryComponent},
 
-    // Payment routes
-    { path: 'payment', loadComponent: () => import('./components/payment/payment.component').then(m => m.PaymentComponent) },
-    { path: 'payment-success', loadComponent: () => import('./components/payment-success/payment-success.component').then(m => m.PaymentSuccessComponent) },
-    { path: 'payment-cancel', loadComponent: () => import('./components/payment-cancel/payment-cancel.component').then(m => m.PaymentCancelComponent) }
 
-]
+     {path: 'laundry-add-item', component:LaundryAddItemComponent},
+
+     {path: 'laundry-edit-item/:id', component:LaundryEditItemComponent },
+
+     {path: 'laundry-delete-confirmation/:id', component:LaundryDeleteConfirmationComponent },
+
+     {path: 'processing-order-details/:orderId/:statusId', component:ProcessingOrderDetailsComponent },
+
+     {path: 'completed-order-details/:orderId/:statusId', component:CompletedOrderDetailsComponent },
+
+     {path: 'new-order-details/:orderId/:statusId', component:NewOrderDetailsComponent }
+    
+    ]
 
 
 // Define the routing module

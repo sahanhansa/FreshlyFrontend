@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { SubtotalPipe } from '../../../pipes/subtotal.pipe';
 import { OrderService } from '../../../services/order.service';
 import { HttpClientModule } from '@angular/common/http';
-import { Order, OrderItem } from '../../../models/order.model';
+import { AdminOrderService, AdminOrderDTO } from '../../../services/admin/admin-order.service';
 
 // Internal representation for display
 interface DisplayOrderItem {
@@ -19,23 +18,59 @@ interface DisplayOrderItem {
 interface DisplayOrder {
   id: string;
   date: string;
-  status: string;
-  customerId: string;
-  driverId: string;
-  laundryId: string;
-  items: DisplayOrderItem[];
+  status: string | {
+    statusID?: string;
+    statusName?: string;
+    statusDisplayName: string;
+  };
+  customerName: string;
+  totalCost: number;
   isExpanded?: boolean;
+  customer?: {
+    customerId?: string;
+    firstName: string;
+    lastName: string;
+    email?: string;
+    username?: string;
+    address?: {
+      addressId?: string;
+      houseNo?: string;
+      street?: string;
+      city?: string;
+      postalCode?: string;
+      fullAddress?: string;
+      placedDate?: string | null;
+    };
+  };
+  laundry?: {
+    laundryId?: string;
+    laundryName?: string;
+    statusName?: string;
+  };
 }
 
 @Component({
   selector: 'app-orders',
   standalone: true,
-  imports: [CommonModule, FormsModule, SubtotalPipe, HttpClientModule],
+  imports: [CommonModule, FormsModule, HttpClientModule],
   providers: [OrderService],
   templateUrl: './orders.component.html',
   styleUrl: './orders.component.css'
 })
-export class OrdersComponent implements OnInit {  orders: DisplayOrder[] = [];
+export class OrdersComponent implements OnInit {
+  getStatusField(status: string | { statusID?: string; statusName?: string; statusDisplayName?: string }, field: 'statusID' | 'statusName' | 'statusDisplayName'): string {
+    if (typeof status === 'object' && status && field in status) {
+      return (status as any)[field] || '';
+    }
+    return '';
+  }
+  getStatusDisplayName(status: string | { statusDisplayName: string }): string {
+    if (typeof status === 'object' && status && 'statusDisplayName' in status) {
+      return status.statusDisplayName;
+    }
+    return status as string;
+  }
+  orders: DisplayOrder[] = [];
   selectedOrder: DisplayOrder | null = null;
   itemsPerPage = 9;
   currentPage = 1;
@@ -45,7 +80,7 @@ export class OrdersComponent implements OnInit {  orders: DisplayOrder[] = [];
   // Add Math reference to use in template
   Math = Math;
 
-  constructor(private orderService: OrderService) { }
+  constructor(private orderService: AdminOrderService) { }
 
   ngOnInit(): void {
     this.fetchOrders();
@@ -79,8 +114,8 @@ export class OrdersComponent implements OnInit {  orders: DisplayOrder[] = [];
     this.loading = true;
     this.error = null;
 
-    this.orderService.getOrderDetails().subscribe({
-      next: (apiOrders: Order[]) => {
+    this.orderService.getOrders().subscribe({
+      next: (apiOrders: AdminOrderDTO[]) => {
         this.orders = this.transformOrderData(apiOrders);
         this.loading = false;
       },
@@ -93,31 +128,18 @@ export class OrdersComponent implements OnInit {  orders: DisplayOrder[] = [];
     });
   }
 
-  private transformOrderData(apiOrders: Order[]): DisplayOrder[] {
+  private transformOrderData(apiOrders: AdminOrderDTO[]): DisplayOrder[] {
     if (!apiOrders || apiOrders.length === 0) return [];
 
     return apiOrders.map(order => {
       return {
         id: order.orderId,
         date: this.formatDate(order.placedDate || ''),
-        status: order.status?.statusName || 'Processing',
-        customerId: order.customer?.customerId || 'N/A',
-        driverId: order.user?.userId || 'N/A',
-        laundryId: order.laundry?.laundryId || 'N/A',
-        items: this.transformOrderItems(order.items || [])
-      };
-    });
-  }
-
-  private transformOrderItems(apiItems: OrderItem[]): DisplayOrderItem[] {
-    return apiItems.map(item => {
-      return {
-        item: item.item,
-        process: item.process,
-        clotheType: item.clotheType,
-        count: item.count,
-        pricePerItem: item.pricePerItem,
-        totalPrice: item.totalPrice
+        status: order.status ? order.status : (order.statusName || ''),
+        customerName: order.customer ? `${order.customer.firstName} ${order.customer.lastName}` : `${order.customerFName} ${order.customerLName}`,
+        totalCost: order.totalCost,
+        customer: order.customer,
+        laundry: (order as any).laundry // fallback for missing type
       };
     });
   }
@@ -137,10 +159,9 @@ export class OrdersComponent implements OnInit {  orders: DisplayOrder[] = [];
     return this.orders.filter(order => 
       this.searchQuery ? 
         order.id.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-        order.customerId.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-        order.driverId.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-        order.laundryId.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-        order.status.toLowerCase().includes(this.searchQuery.toLowerCase())
+        order.customerName.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+        (typeof order.status === 'string' ? order.status.toLowerCase().includes(this.searchQuery.toLowerCase()) : (order.status.statusDisplayName || '').toLowerCase().includes(this.searchQuery.toLowerCase())) ||
+        order.totalCost.toString().includes(this.searchQuery)
       : true
     );
   }

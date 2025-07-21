@@ -6,5 +6,40 @@ app-driver-navbar {
     z-index: 1000; /* Ensure it stays above other content */
   }
   
-
+  /*loading css */
   
+  body, .content-wrapper {
+    padding-top: 60px; /* adjust based on actual navbar height */
+  }
+  
+    /* Container centers the spinner & text */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px; /* adjust as needed */
+}
+
+/* Modern circle spinner */
+.spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border-left-color: #3b82f6; /* Tailwind Blue-500, adjust as you like */
+  animation: spin 1s ease infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-text {
+  margin-top: 1rem;
+  font-size: 1rem;
+  color: #333;
+  font-weight: 500;
+}
