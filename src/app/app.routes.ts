@@ -49,7 +49,7 @@ import { CompletedOrderDetailsComponent } from './components/Laundry/completed-o
 import { LogoutPageComponent } from './pages/Driver/logout-page/logout-page.component';
 import {AdminLoginComponent} from './components/admin/login/admin-login.component';
 import { NewOrderDetailsComponent } from './components/laundry/new-order-details/new-order-details.component';
-
+import {MultiStepFormComponent} from './components/laundry/lau-sign/multi-step-form.component';
 
 
 
