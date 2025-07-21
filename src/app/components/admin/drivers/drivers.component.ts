@@ -13,7 +13,7 @@ export interface DisplayDriver {
   username?: string;
   password?: string;
   email: string;
-  licenseNumber: string;
+  licenseNo: string;
   addressId: string;
   accountStatus: string;
   profileImageUrl: string;
@@ -63,20 +63,47 @@ export class DriversComponent implements OnInit {
   addDriverStep: number = 1;
 
   // Add driver form data
-  newDriver: Partial<DisplayDriver> & { address: { houseNo: string; street: string; city: string; postalCode: string } } = {
+  newDriver: {
+    driverId?: string;
+    firstName: string;
+    lastName: string;
+    username: string;
+    password: string;
+    email: string;
+    licenseNo: string;
+    address: {
+      houseNo: string;
+      street: string;
+      city: string;
+      postalCode: string;
+    };
+    accountStatus: string;
+    vehicleNo: string;
+    profileImage: string;
+    contacts: Array<{
+      contactNumber: string;
+    }>;
+  } = {
     firstName: '',
     lastName: '',
     username: '',
     password: '',
     email: '',
-    licenseNumber: '',
+    licenseNo: '',
     accountStatus: 'Active',
     address: {
       houseNo: '',
       street: '',
       city: '',
       postalCode: ''
-    }
+    },
+    vehicleNo: '',
+    profileImage: '',
+    contacts: [
+      {
+        contactNumber: ''
+      }
+    ]
   };
 
   constructor(public driverService: AdminDriverService) {}
@@ -103,7 +130,7 @@ export class DriversComponent implements OnInit {
           firstName: driver.firstName || '',
           lastName: driver.lastName || '',
           email: driver.email || '',
-          licenseNumber: driver.licenseNumber || driver.licensNo || '',
+          licenseNo: driver.licenseNo || driver.licenseNumber || driver.licensNo || '',
           addressId: driver.addressId || (driver.address?.addressId ?? ''),
           accountStatus: driver.accountStatus === null || driver.accountStatus === '' ? 'Inactive' : driver.accountStatus || 'Inactive',
           profileImageUrl: driver.profileImageUrl || 'assets/images/driver.png',
@@ -181,7 +208,7 @@ export class DriversComponent implements OnInit {
         (driver.firstName || '').toLowerCase().includes(query) ||
         (driver.lastName || '').toLowerCase().includes(query) ||
         (driver.email || '').toLowerCase().includes(query) ||
-        (driver.licenseNumber || '').toLowerCase().includes(query) ||
+        (driver.licenseNo || '').toLowerCase().includes(query) ||
         (driver.addressId || '').toLowerCase().includes(query) ||
         (driver.accountStatus || '').toLowerCase().includes(query)
       );
@@ -258,9 +285,21 @@ export class DriversComponent implements OnInit {
       username: '',
       password: '',
       email: '',
-      licenseNumber: '',
+      licenseNo: '',
       accountStatus: 'Active',
-      address: { houseNo: '', street: '', city: '', postalCode: '' }
+      address: {
+        houseNo: '',
+        street: '',
+        city: '',
+        postalCode: ''
+      },
+      vehicleNo: '',
+      profileImage: '',
+      contacts: [
+        {
+          contactNumber: ''
+        }
+      ]
     };
   }
 
@@ -278,7 +317,14 @@ export class DriversComponent implements OnInit {
 
   addDriver(): void {
     // Always set accountStatus to 'Active' before posting
-    const driverToAdd = { ...this.newDriver, accountStatus: 'Active' };
+    const driverToAdd = {
+      ...this.newDriver,
+      accountStatus: 'Active',
+      contacts: this.newDriver.contacts.map(contact => ({
+        ...contact,
+        userType: 'Driver'
+      }))
+    };
     this.driverService.addDriver(driverToAdd).subscribe({
       next: (driver) => {
         this.loadDrivers();
