@@ -48,6 +48,10 @@ export class AdminLoginComponent implements OnInit {
         next: (res: any) => {
           // Store admin login data and clear any other user data
           this.authHelper.storeAdminLogin(res.token, res.username, res.userId);
+          // Store role for dashboard UI
+          if (res.role) {
+            localStorage.setItem('adminRole', res.role);
+          }
           // Redirect to admin dashboard
           this.router.navigate(['/admin/dashboard']);
         },

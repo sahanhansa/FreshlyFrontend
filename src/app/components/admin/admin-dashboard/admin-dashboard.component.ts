@@ -1,9 +1,10 @@
-// ...existing code...
 // Angular core imports for component, lifecycle hooks, and DOM access
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
+import { NgForm } from '@angular/forms';
 // Import interfaces for type safety
 import { AdminStats, AdminPanelMember, Laundry, Driver, PendingAction } from '../../../models/admin.interface';
 import { AdminDriverService } from '../../../services/admin/admin-driver.service';
@@ -23,7 +24,6 @@ import {
 import { environment } from 'src/environments/environment';
 import { NavbarComponent } from "@app/components/shared/navbar/navbar.component";
 
-
 // Register Chart.js components
 Chart.register(
   CategoryScale,
@@ -39,11 +39,12 @@ Chart.register(
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule, HttpClientModule, NavbarComponent],
+  imports: [CommonModule, RouterModule, HttpClientModule, FormsModule],
   templateUrl: './admin-dashboard.component.html',
   styleUrl: './admin-dashboard.component.css'
 })
 export class AdminDashboardComponent implements OnInit, AfterViewInit {
+  adminRole: string = '';
   orders: any[] = [];
   laundryRevenueData: { [laundryId: string]: number[] } = {};
   laundryNames: { [laundryId: string]: string } = {};
@@ -77,6 +78,7 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit {
   };
   months: string[] = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
   statusMap: { [id: string]: string } = {};
+  showAddAdminForm: boolean = false;
 
   constructor(
     private router: Router,
@@ -86,6 +88,9 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit {
   ) {
     const storedName = localStorage.getItem('adminUsername');
     this.adminName = storedName ? storedName : 'Customer';
+    // Get role from localStorage if available
+    const storedRole = localStorage.getItem('adminRole');
+    this.adminRole = storedRole ? storedRole : '';
   }
 
   ngOnInit(): void {
@@ -294,5 +299,51 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit {
         this.laundryRevenueData[laundryId][month] += Number(total);
       }
     });
+  }
+
+  onAddAdmin(): void {
+    this.showAddAdminForm = true;
+  }
+
+  submitAddAdmin(form: any): void {
+    const token = localStorage.getItem('token');
+    const now = new Date().toISOString();
+    const adminData = {
+      username: form.value.username,
+      password: form.value.password,
+      firstName: form.value.firstName || '',
+      lastName: form.value.lastName || '',
+      email: form.value.email,
+      role: form.value.role,
+      createdAt: now,
+      lastLogin: now,
+      passwordResetToken: '',
+      passwordResetExpiry: now
+    };
+    this.http.post(
+      `${environment.apiUrl}/api/Admin`,
+      adminData,
+      { headers: { Authorization: `Bearer ${token}` } }
+    ).subscribe({
+      next: (res) => {
+        this.showAddAdminForm = false;
+        // Optionally show a success message or refresh admin list
+      },
+      error: (err) => {
+        console.error('Failed to add admin:', err);
+        // Optionally show an error message
+      }
+    });
+  }
+
+  confirmAddAdmin(form: NgForm) {
+    // Show a confirmation dialog when Add Admin is pressed
+    if (form.value.password !== form.value.retypePassword) {
+      alert('Passwords do not match.');
+      return;
+    }
+    if (confirm('Are you sure you want to add this admin?')) {
+      this.submitAddAdmin(form);
+    }
   }
 }
