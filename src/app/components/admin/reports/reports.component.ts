@@ -89,33 +89,11 @@ export class ReportsComponent implements OnInit {
     { month: 'Dec', amount: 0 }
   ];
 
-  // Driver Leaderboard
-  driverLeaderboard: DriverLeaderboard[] = [
-    { name: 'Jesse Thomas', points: 637, correctPercentage: '98%', rank: 1, trend: 'up' },
-    { name: 'Thisal Mathiyazhagan', points: 637, correctPercentage: '89%', rank: 2, trend: 'down' },
-    { name: 'Helen Chuang', points: 637, correctPercentage: '86%', rank: 3, trend: 'up' },
-    { name: 'Lura Silverman', points: 637, correctPercentage: '', rank: 4, trend: 'up' },
-    { name: 'Winifred Groton', points: 637, correctPercentage: '', rank: 5, trend: 'down' },
-    { name: 'Ken Alba', points: 637, correctPercentage: '', rank: 6, trend: 'up' },
-    { name: 'Alice LeBeau', points: 637, correctPercentage: '', rank: 7, trend: 'down' },
-    { name: 'Adrian Lu', points: 637, correctPercentage: '', rank: 8, trend: 'up' },
-    { name: 'Evelyn Hamilton', points: 637, correctPercentage: '', rank: 9, trend: 'down' },
-    { name: 'Rosa Fiddlebrook', points: 637, correctPercentage: '', rank: 10, trend: 'up' }
-  ];
+  // Driver Leaderboard (to be populated dynamically)
+  driverLeaderboard: DriverLeaderboard[] = [];
 
   // Laundries Leaderboard
-  laundriesLeaderboard: LaundryLeaderboard[] = [
-    { name: 'Houston Facility', points: 52, userCount: 52, correctPercentage: '97%', rank: 1, trend: 'up' },
-    { name: 'Test Group', points: 52, userCount: 52, correctPercentage: '95%', rank: 2, trend: 'down' },
-    { name: 'Sales Leadership', points: 52, userCount: 52, correctPercentage: '87%', rank: 3, trend: 'up' },
-    { name: 'Northeast Region', points: 52, userCount: 52, correctPercentage: '', rank: 4, trend: 'up' },
-    { name: 'Southeast Region', points: 52, userCount: 52, correctPercentage: '', rank: 5, trend: 'down' },
-    { name: 'District Managers', points: 52, userCount: 52, correctPercentage: '', rank: 6, trend: 'up' },
-    { name: 'Senior Managers', points: 52, userCount: 52, correctPercentage: '', rank: 7, trend: 'down' },
-    { name: 'New Hires', points: 52, userCount: 52, correctPercentage: '', rank: 8, trend: 'up' },
-    { name: 'Southwest Region', points: 52, userCount: 52, correctPercentage: '', rank: 9, trend: 'down' },
-    { name: 'Northwest Region', points: 52, userCount: 52, correctPercentage: '', rank: 10, trend: 'up' }
-  ];
+  laundriesLeaderboard: LaundryLeaderboard[] = [];
 
   constructor(private http: HttpClient) {}
 

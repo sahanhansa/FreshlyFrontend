@@ -19,8 +19,8 @@
 
   <!-- Content -->
   <div *ngIf="!isLoading && !error && laundry">
-    <!-- Header Section -->
-    <div class="bg-blue-500 text-white rounded-t-lg px-3 py-3 flex flex-col items-center min-h-[150px]">
+  <!-- Header Section -->
+  <div class="bg-blue-500 text-white rounded-t-lg px-3 py-3 flex flex-col items-center min-h-[150px]">
       <div *ngIf="laundry.logoUrl; else noLogo" class="w-24 h-24 mb-3">
         <img [src]="laundry.logoUrl" class="w-24 h-24 rounded-full border-white shadow-md" alt="Laundry Logo">
       </div>
@@ -33,53 +33,53 @@
       </ng-template>
       <h2 class="text-lg font-bold tracking-wide">{{ laundry.laundryName }}</h2>
       <p class="text-sm">Professional Laundry Services</p>
-    </div>
+  </div>
 
-    <!-- Details Section -->
-    <div class="p-4 text-sm space-y-4 flex-grow">
-      <!-- Reg No -->
-      <div class="flex items-start gap-2">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-500 stroke-[2.5] mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M10 3H5a2 2 0 00-2 2v5m0 4v5a2 2 0 002 2h5m4 0h5a2 2 0 002-2v-5m0-4V5a2 2 0 00-2-2h-5" />
-        </svg>
-        <div>
+  <!-- Details Section -->
+  <div class="p-4 text-sm space-y-4 flex-grow">
+    <!-- Reg No -->
+    <div class="flex items-start gap-2">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-500 stroke-[2.5] mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M10 3H5a2 2 0 00-2 2v5m0 4v5a2 2 0 002 2h5m4 0h5a2 2 0 002-2v-5m0-4V5a2 2 0 00-2-2h-5" />
+      </svg>
+      <div>
           <p class="font-semibold">Laundry ID:</p>
           <p class="ml-2">{{ laundry.laundryId }}</p>
-        </div>
       </div>
+    </div>
 
-      <!-- Address -->
-      <div class="flex items-start gap-2">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-500 stroke-[2.5] mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path d="M12 2C8.1 2 5 5.1 5 9c0 5.3 7 13 7 13s7-7.7 7-13c0-3.9-3.1-7-7-7z"/>
-          <circle cx="12" cy="9" r="2.5" fill="currentColor"/>
-        </svg>
-        <div>
-          <p class="font-semibold">Address:</p>
+    <!-- Address -->
+    <div class="flex items-start gap-2">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-500 stroke-[2.5] mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path d="M12 2C8.1 2 5 5.1 5 9c0 5.3 7 13 7 13s7-7.7 7-13c0-3.9-3.1-7-7-7z"/>
+        <circle cx="12" cy="9" r="2.5" fill="currentColor"/>
+      </svg>
+      <div>
+        <p class="font-semibold">Address:</p>
           <p class="ml-2">{{ laundry.address }}</p>
-        </div>
       </div>
+    </div>
 
-      <!-- Contact No -->
-      <div class="flex items-start gap-2">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-500 stroke-[2.5] mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M22 16.92v3a2 2 0 01-2.18 2 19.86 19.86 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.86 19.86 0 013.08 4.18 2 2 0 015.06 2h3a2 2 0 012 1.72c.13.91.37 1.79.72 2.64a2 2 0 01-.45 2.11l-1.27 1.27a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.85.35 1.73.59 2.64.72a2 2 0 011.72 2z"/>
-        </svg>
-        <div>
-          <p class="font-semibold">Contact No:</p>
+    <!-- Contact No -->
+    <div class="flex items-start gap-2">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-500 stroke-[2.5] mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M22 16.92v3a2 2 0 01-2.18 2 19.86 19.86 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.86 19.86 0 013.08 4.18 2 2 0 015.06 2h3a2 2 0 012 1.72c.13.91.37 1.79.72 2.64a2 2 0 01-.45 2.11l-1.27 1.27a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.85.35 1.73.59 2.64.72a2 2 0 011.72 2z"/>
+      </svg>
+      <div>
+        <p class="font-semibold">Contact No:</p>
           <p class="ml-2">{{ laundry.contactNumber }}</p>
-        </div>
       </div>
+    </div>
 
-      <!-- Email -->
-      <div class="flex items-start gap-2">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-500 stroke-[2.5] mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path d="M4 4h16c1.1 0 2 .9 2 2v12a2 2 0 01-2 2H4a2 2 0 01-2-2V6c0-1.1.9-2 2-2zm0 2v.01L12 13 20 6.01V6H4z"/>
-        </svg>
-        <div>
-          <p class="font-semibold">Email:</p>
+    <!-- Email -->
+    <div class="flex items-start gap-2">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-500 stroke-[2.5] mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path d="M4 4h16c1.1 0 2 .9 2 2v12a2 2 0 01-2 2H4a2 2 0 01-2-2V6c0-1.1.9-2 2-2zm0 2v.01L12 13 20 6.01V6H4z"/>
+      </svg>
+      <div>
+        <p class="font-semibold">Email:</p>
           <p class="ml-2">{{ laundry.email }}</p>
-        </div>
+    </div>
       </div>
     </div>
   </div>

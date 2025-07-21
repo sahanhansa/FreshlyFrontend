@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
+import { Router } from '@angular/router';
 import { OrderService } from '../../../services/order.service'; // Import OrderService for fetching orders
 import { Order } from '../../../models/order.model'; // Import Order model to type the orders array
 import { SearchBarComponent } from '../../../components/shared/search-bar/search-bar.component';
@@ -20,10 +21,18 @@ export class NewOrdersComponent implements OnInit { // The component class that 
   loading = false; // Flag to indicate if data is still being loaded
   error: string | null = null; // Variable to store any error message
 
-  constructor(private orderService: OrderService) {} // Inject the OrderService to interact with the backend API
+  constructor(
+    private orderService: OrderService,
+    private router: Router
+  ) {} // Inject the OrderService to interact with the backend API
 
   ngOnInit(): void {
     this.loadNewOrders(); // Fetch the new orders when the component is initialized
+  }
+
+  viewOrderDetails(orderId: string, statusId: string): void {
+    console.log('Navigating to order details:', orderId, statusId);
+    this.router.navigate(['/new-order-details', orderId, statusId]);
   }
 
   // Method to fetch regular orders from the backend
