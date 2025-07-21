@@ -23,7 +23,7 @@
   <div *ngIf="!loading && !error && laundries.length > 0">
     <!-- Laundry Cards Grid -->
     <div class="px-4 md:px-6 pb-8">
-      <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+      <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-8 sm:gap-6">
         <!-- Pass laundry data to card -->
         <app-laundry-card
           *ngFor="let laundry of laundries"
