@@ -23,11 +23,21 @@
       <div class="flex items-center gap-4">
         <div class="flex items-center gap-2">
           <label class="text-gray-700">From:</label>
-          <input type="text" [(ngModel)]="fromDate" class="px-3 py-2 border rounded-md">
+          <select [(ngModel)]="fromYear" class="px-2 py-2 border rounded-md mr-2">
+            <option *ngFor="let y of years" [value]="y">{{ y }}</option>
+          </select>
+          <select [(ngModel)]="fromMonth" class="px-2 py-2 border rounded-md">
+            <option *ngFor="let m of months" [value]="m.value">{{ m.name }}</option>
+          </select>
         </div>
         <div class="flex items-center gap-2">
           <label class="text-gray-700">To:</label>
-          <input type="text" [(ngModel)]="toDate" class="px-3 py-2 border rounded-md">
+          <select [(ngModel)]="toYear" class="px-2 py-2 border rounded-md mr-2">
+            <option *ngFor="let y of years" [value]="y">{{ y }}</option>
+          </select>
+          <select [(ngModel)]="toMonth" class="px-2 py-2 border rounded-md">
+            <option *ngFor="let m of months" [value]="m.value">{{ m.name }}</option>
+          </select>
         </div>
       </div>
       <button class="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors" (click)="downloadReport()">
@@ -37,24 +47,14 @@
     </div>
 
     <div class="bg-white rounded-lg shadow p-6 mb-6">
-      <div class="flex items-center justify-between mb-4">
-        <h3 class="text-xl font-semibold">Revenue Per Month</h3>
-        <div class="flex items-center gap-2 px-3 py-2 border rounded-md cursor-pointer">
-          <span>Month</span>
-          <i class="fas fa-chevron-down"></i>
-        </div>
-      </div>
-      <div class="h-64">
-        <!-- Chart will be rendered here -->
-      </div>
+      <app-revenue-per-month></app-revenue-per-month>
     </div>
 
     <div class="grid grid-cols-3 gap-6 mb-6">
       <div class="bg-white rounded-lg shadow p-6">
         <h4 class="text-gray-600 mb-2">Active Users</h4>
         <div class="text-2xl font-bold">
-          <span class="text-blue-600">{{ activeUsers.current }}</span>
-          <span class="text-gray-400">/{{ activeUsers.total }}</span>
+          <!-- Active users display removed: property no longer exists -->
         </div>
       </div>
       <div class="bg-white rounded-lg shadow p-6">

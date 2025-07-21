@@ -8,6 +8,33 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class LaundryAdminService {
+  /**
+   * Create a new laundry account (with owner and address)
+   */
+  createLaundryAccount(payload: any): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/create-laundry-account`, payload).pipe(
+      catchError(this.handleError('Failed to create laundry account'))
+    );
+  }
+  /**
+   * Activate a laundry account
+   */
+  activateLaundry(laundryId: string): Observable<void> {
+    const endpoint = `${this.apiUrl}/${laundryId}/activate`;
+    return this.http.patch<void>(endpoint, {}).pipe(
+      catchError(this.handleError(`Failed to activate laundry with ID ${laundryId}`))
+    );
+  }
+
+  /**
+   * Deactivate a laundry account
+   */
+  deactivateLaundry(laundryId: string): Observable<void> {
+    const endpoint = `${this.apiUrl}/${laundryId}/deactivate`;
+    return this.http.patch<void>(endpoint, {}).pipe(
+      catchError(this.handleError(`Failed to deactivate laundry with ID ${laundryId}`))
+    );
+  }
   private apiUrl = `${environment.apiUrl}/api/Laundry`;
   
   constructor(private http: HttpClient) {
@@ -18,20 +45,9 @@ export class LaundryAdminService {
    * Get all laundries for admin view
    */
   getLaundries(): Observable<LaundryAdminDTO[]> {
-    // Use the correct endpoint for getting all laundries
-    return this.http.get<LaundryAdminDTO[]>(`${this.apiUrl}`).pipe(
-      catchError(error => {
-        console.error('Error fetching laundries:', error);
-        
-        // For development purposes only - return mock data if the API fails
-        // Comment this out or remove in production
-        if (error.status === 404 || error.status === 0) {
-          console.warn('API endpoint not found, using mock data');
-          return of(this.getMockLaundries());
-        }
-        
-        return this.handleError('Failed to fetch laundries')(error);
-      })
+    // Use the correct endpoint for getting all laundries for admin
+    return this.http.get<LaundryAdminDTO[]>(`${this.apiUrl}/laundry-list-for-admin`).pipe(
+      catchError(this.handleError('Failed to fetch laundries'))
     );
   }
 
@@ -65,9 +81,12 @@ export class LaundryAdminService {
   /**
    * Delete a laundry
    */
+  /**
+   * Deactivate a laundry (PATCH /api/Laundry/{id}/delete)
+   */
   deleteLaundry(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
-      catchError(this.handleError(`Failed to delete laundry with ID ${id}`))
+    return this.http.patch<void>(`${this.apiUrl}/${id}/delete`, {}).pipe(
+      catchError(this.handleError(`Failed to deactivate laundry with ID ${id}`))
     );
   }
   
@@ -81,48 +100,5 @@ export class LaundryAdminService {
     };
   }
   
-  /**
-   * Mock data for development/testing purposes
-   * This should be removed in production
-   */
-  private getMockLaundries(): LaundryAdminDTO[] {
-    return [
-      {
-        laundryId: '1001',
-        laundryName: 'CleanPress Laundry',
-        username: 'cleanpress',
-        email: 'contact@cleanpress.com',
-        ownerId: '101',
-        ownerName: 'John Doe',
-        fullAddress: '123 Main Street, Colombo 3, Sri Lanka',
-        averageRating: 4.5,
-        totalOrders: 250,
-        feedbackCount: 150
-      },
-      {
-        laundryId: '1002',
-        laundryName: 'SparkleFresh Services',
-        username: 'sparklefresh',
-        email: 'info@sparklefresh.com',
-        ownerId: '102',
-        ownerName: 'Jane Smith',
-        fullAddress: '45 Park Avenue, Kandy, Sri Lanka',
-        averageRating: 4.2,
-        totalOrders: 180,
-        feedbackCount: 95
-      },
-      {
-        laundryId: '1003',
-        laundryName: 'Quick & Clean Laundry',
-        username: 'quickclean',
-        email: 'service@quickclean.com',
-        ownerId: '103',
-        ownerName: 'Robert Johnson',
-        fullAddress: '78 Beach Road, Galle, Sri Lanka',
-        averageRating: 4.7,
-        totalOrders: 320,
-        feedbackCount: 210
-      }
-    ];
-  }
+  // ...existing code...
 }

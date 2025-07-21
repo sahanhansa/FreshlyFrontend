@@ -18,7 +18,13 @@
   </div>
 
     <!-- Form -->
-    <form class="bg-white p-6 rounded-xl w-full space-y-4">
+    <form (ngSubmit)="onSubmit()" class="bg-white p-6 rounded-xl w-full space-y-4">
+      <!-- Loading indicator -->
+      <div *ngIf="loading" class="text-center py-4">
+        <div class="text-blue-600 text-sm">Loading item details...</div>
+      </div>
+      
+
       <!-- Item Name -->
       <div>
         <label class="block text-gray-600">Item Name</label>
@@ -30,7 +36,20 @@
       <div>
         <label class="block text-gray-600">Description</label>
         <textarea [(ngModel)]="item.description" name="description"
+                  placeholder="Enter item description..."
                   class="w-full mt-1 p-2 border rounded-md"></textarea>
+      </div>
+
+      <!-- Category -->
+      <div>
+        <label class="block text-gray-600">Category</label>
+        <select [(ngModel)]="item.categoryName" name="category" 
+                class="w-full mt-1 p-2 border rounded-md bg-white cursor-pointer">
+          <option value="">Select Category</option>
+          <option *ngFor="let category of categories" [value]="category">
+            {{ category }}
+          </option>
+        </select>
       </div>
 
 
@@ -38,25 +57,20 @@
 <div>
   <label class="block text-gray-600 mb-1">Services</label>
   <div class="space-y-3">
-    <div *ngFor="let service of item.services; let i = index">
-      <div class="flex gap-2 items-center">
-       <input type="text" [(ngModel)]="service.serviceName" [name]="'service' + i + 'name'"
-               placeholder="Service Name" class="flex-1 p-2 border rounded-md" />
+    <div *ngFor="let service of item.services; let i = index" class="flex gap-2 items-center">
+      <select [(ngModel)]="service.serviceName" [name]="'service' + i + 'name'" (change)="onServiceChange(i)" required class="flex-1 p-2 border rounded-md bg-white cursor-pointer">
+        <option *ngFor="let s of availableServices" [value]="s">{{ s }}</option>
+      </select>
 
-        <div class="flex flex-col">
-          <label class="text-xs text-gray-500 pl-1">Unit Price</label>
-          <input type="number" [(ngModel)]="service.price" [name]="'service' + i + 'price'"
-                 placeholder="Price" class="w-32 p-2 border rounded-md" />
-        </div>
-
-        <button type="button" (click)="removeService(i)"
-                class="text-red-500 font-bold px-2 text-lg">✕</button>
+      <div class="flex flex-col">
+        <label class="text-xs text-gray-500 pl-1">Unit Price</label>
+        <input type="number" [(ngModel)]="service.price" [name]="'service' + i + 'price'" placeholder="Price" required class="w-32 p-2 border rounded-md" />
       </div>
+
+      <button type="button" (click)="removeService(i)" class="text-red-500 font-bold px-2 text-lg" *ngIf="item.services.length > 1">✕</button>
     </div>
 
-    <button type="button" (click)="addService()"
-            [disabled]="item.services.length >= 3"
-            class="text-blue-600 underline text-sm">
+    <button type="button" (click)="addService()" [disabled]="item.services.length >= 3" class="text-blue-600 underline text-sm">
       + Add Service
     </button>
   </div>
@@ -65,12 +79,15 @@
 
       <!-- Buttons -->
       <div class="flex justify-between pt-4">
-    <button type="button" class="bg-red-600 text-white px-4 py-2 rounded-full">
-      Remove Item
-    </button>
+        <button 
+          type="button" 
+          (click)="onRemoveItem()"
+          class="bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700 transition duration-200"
+        >
+          Remove Item
+        </button>
 
-
-        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-full">
+        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition duration-200">
           Done
         </button>
       </div>

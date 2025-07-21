@@ -44,6 +44,7 @@ export class DriverLoginComponent implements OnInit {
           localStorage.setItem('token', res.token);
           localStorage.setItem('username', res.username);
           localStorage.setItem('userId', res.userId);
+          localStorage.setItem('role', 'driver');
           // Redirect to customer home
           this.router.navigate(['/driver-home-page']);
         },

@@ -1,39 +1,94 @@
-<div class="min-h-screen flex flex-col items-center justify-center bg-white">
-  <div class="w-full max-w-md p-8 bg-white rounded-lg shadow">
-    <h2 class="text-2xl md:text-3xl font-bold text-center text-[#1c1c4c] mb-2">
-      Change Account Details
-    </h2>
-    <p class="text-center text-gray-500 mb-8">
-      Please fill the form below to change an account details.
-    </p>
+<div class="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-12">
+  <div class="w-full max-w-2xl bg-white rounded-2xl shadow-xl p-8 space-y-10">
 
-    <form [formGroup]="accountForm" (ngSubmit)="onSubmit()" class="space-y-4">
-      <input type="text" placeholder="Name" formControlName="name" class="w-full p-3 rounded-md bg-blue-100 outline-none"/>
+    <!-- Profile Image Section -->
+    <div class="flex flex-col items-center text-center space-y-4">
+      <div class="relative w-32 h-32">
+        <img
+          [src]="imagePreview || 'https://via.placeholder.com/150'"
+          alt="Profile"
+          class="w-32 h-32 rounded-full object-cover border-4 border-white shadow-md"
+        />
+        <label
+          for="profileImage"
+          class="absolute bottom-0 right-0 bg-blue-600 text-white p-2 rounded-full cursor-pointer hover:bg-blue-700 transition duration-200"
+          title="Change Profile Picture"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+            viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M15.232 5.232l3.536 3.536M9 13h3l8-8a2.828 2.828 0 10-4-4l-8 8v3z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M16 7l-1.5-1.5" />
+          </svg>
+        </label>
+        <input id="profileImage" type="file" hidden (change)="onImageSelected($event)" accept="image/*" />
+      </div>
+      <h2 class="text-2xl font-bold text-gray-800">Edit Profile</h2>
+      <p class="text-gray-500">Update your personal information and profile photo.</p>
+    </div>
 
-      <div class="flex flex-col md:flex-row md:space-x-4">
-        <input type="text" placeholder="House No." formControlName="houseNo" class="w-full p-3 rounded-md bg-blue-100 outline-none mb-4 md:mb-0"/>
-        <input type="text" placeholder="Street" formControlName="street" class="w-full p-3 rounded-md bg-blue-100 outline-none"/>
+    <!-- Account Details Form -->
+    <form [formGroup]="accountForm" (ngSubmit)="onAccountSubmit()" class="space-y-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <input type="text" placeholder="First Name" formControlName="firstName"
+          class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none" />
+
+        <input type="text" placeholder="Last Name" formControlName="lastName"
+          class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none" />
       </div>
 
-      <div class="flex flex-col md:flex-row md:space-x-4">
-        <input type="text" placeholder="City" formControlName="city" class="w-full p-3 rounded-md bg-blue-100 outline-none mb-4 md:mb-0"/>
-        <input type="text" placeholder="Postal Code" formControlName="postalCode" class="w-full p-3 rounded-md bg-blue-100 outline-none"/>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <input type="text" placeholder="Contact Number" formControlName="contactNumber"
+          class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none" />
+
+        <input type="email" placeholder="Email" formControlName="email"
+          class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none" />
       </div>
 
-      <input type="email" placeholder="Email" formControlName="email" class="w-full p-3 rounded-md bg-blue-100 outline-none"/>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <input type="text" placeholder="House No." formControlName="houseNo"
+          class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none" />
 
-      <input type="text" placeholder="Contact Number" formControlName="contactNumber" class="w-full p-3 rounded-md bg-blue-100 outline-none"/>
+        <input type="text" placeholder="Street" formControlName="street"
+          class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none" />
+      </div>
 
-      <input type="text" placeholder="Driver License Number" formControlName="driverLicenseNumber" class="w-full p-3 rounded-md bg-blue-100 outline-none"/>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <input type="text" placeholder="City" formControlName="city"
+          class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none" />
 
-      <input type="password" placeholder="Password" formControlName="password" class="w-full p-3 rounded-md bg-blue-100 outline-none"/>
+        <input type="text" placeholder="Postal Code" formControlName="postalCode"
+          class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none" />
+      </div>
 
-      <input type="password" placeholder="Re-enter password" formControlName="confirmPassword" class="w-full p-3 rounded-md bg-blue-100 outline-none"/>
-
-      <button type="submit" class="w-full bg-[#008cff] hover:bg-blue-700 text-white py-3 rounded-full font-semibold">
-        Save
+      <button
+        type="submit"
+        class="w-full py-3 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition duration-200"
+      >
+        Save Details
       </button>
     </form>
+
+    <!-- Change Password Section -->
+    <div class="pt-8 border-t border-gray-200">
+      <h3 class="text-xl font-semibold text-gray-800 mb-4">Change Password</h3>
+      <form [formGroup]="passwordForm" (ngSubmit)="onPasswordSubmit()" class="space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <input type="password" placeholder="New Password" formControlName="password"
+            class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 outline-none" />
+
+          <input type="password" placeholder="Confirm New Password" formControlName="confirmPassword"
+            class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 outline-none" />
+        </div>
+        <button
+          type="submit"
+          class="w-full py-3 rounded-lg bg-green-600 text-white font-semibold hover:bg-green-700 transition duration-200"
+        >
+          Update Password
+        </button>
+      </form>
+    </div>
+
   </div>
 </div>
-

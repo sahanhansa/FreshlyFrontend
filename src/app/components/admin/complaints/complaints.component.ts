@@ -23,13 +23,22 @@ export class ComplaintsComponent implements OnInit {
     let filtered: Feedback[] = [];
     switch (category) {
       case 'customer':
-        filtered = this.feedbacks().filter(f => f.Submittedbytype === 'c');
+        filtered = this.feedbacks().filter(f => {
+          const type = (f.submittedByType || '').toLowerCase();
+          return type === 'c';
+        });
         break;
       case 'driver':
-        filtered = this.feedbacks().filter(f => f.Submittedbytype === 'd');
+        filtered = this.feedbacks().filter(f => {
+          const type = (f.submittedByType || '').toLowerCase();
+          return type === 'd';
+        });
         break;
       case 'laundry':
-        filtered = this.feedbacks().filter(f => f.Submittedbytype === 'l');
+        filtered = this.feedbacks().filter(f => {
+          const type = (f.submittedByType || '').toLowerCase();
+          return type === 'l';
+        });
         break;
     }
     this.filteredFeedbacks.set(filtered);
@@ -86,7 +95,8 @@ export class ComplaintsComponent implements OnInit {
     this.feedbackService.getAllFeedback().subscribe({
       next: (data) => {
         this.feedbacks.set(data);
-        this.filteredFeedbacks.set([...data]);
+        // Filter by selected category on load
+        this.filterByCategory(this.selectedCategory());
         this.calculateTotalPages();
         this.updatePageNumbers();
         this.updatePaginatedComplaints();

@@ -14,6 +14,172 @@ import { SharedImports } from '../../../shared/shared-imports';
   styleUrl: './laundries.component.css'
 })
 export class LaundriesComponent implements OnInit {
+  showAddLaundryModal = false;
+  newLaundry: any = {
+    ownerFirstName: '',
+    ownerLastName: '',
+    ownerEmail: '',
+    ownerPassword: '',
+    ownerUsername: '',
+    houseNo: '',
+    street: '',
+    city: '',
+    postalCode: '',
+    laundryName: '',
+    laundryUsername: '',
+    laundryPassword: '',
+    laundryEmail: ''
+  };
+
+  openAddLaundryModal() {
+    this.showAddLaundryModal = true;
+  }
+
+  closeAddLaundryModal() {
+    this.showAddLaundryModal = false;
+    this.newLaundry = {
+      ownerFirstName: '',
+      ownerLastName: '',
+      ownerEmail: '',
+      ownerPassword: '',
+      ownerUsername: '',
+      houseNo: '',
+      street: '',
+      city: '',
+      postalCode: '',
+      laundryName: '',
+      laundryUsername: '',
+      laundryPassword: '',
+      laundryEmail: ''
+    };
+  }
+
+  submitAddLaundry() {
+    // Basic validation: check for empty or placeholder values
+    const requiredFields = [
+      'ownerFirstName', 'ownerLastName', 'ownerEmail', 'ownerPassword', 'ownerUsername',
+      'houseNo', 'street', 'city', 'postalCode',
+      'laundryName', 'laundryUsername', 'laundryPassword', 'laundryEmail'
+    ];
+    for (const field of requiredFields) {
+      const value = (this.newLaundry[field] || '').trim();
+      if (!value || value.toLowerCase() === 'string') {
+        alert(`Please enter a valid value for ${field.replace(/([A-Z])/g, ' $1')}`);
+        return;
+      }
+    }
+    this.laundryService
+      .createLaundryAccount(this.newLaundry)
+      .subscribe({
+        next: () => {
+          this.closeAddLaundryModal();
+          // Optionally reload laundries list here if you have a method for it
+        },
+        error: (err: any) => {
+          alert('Failed to add laundry: ' + (err?.message || err));
+        }
+      });
+  }
+  showStatusChangeConfirmation = signal<boolean>(false);
+
+  /**
+   * Show confirmation dialog for status change
+   */
+  promptStatusChangeConfirmation(): void {
+    this.showStatusChangeConfirmation.set(true);
+  }
+
+  /**
+   * Cancel status change operation
+   */
+  cancelStatusChange(): void {
+    this.showStatusChangeConfirmation.set(false);
+  }
+
+  /**
+   * Confirm and execute status change operation
+   */
+  confirmStatusChange(): void {
+    const laundry = this.selectedLaundry();
+    if (!laundry) return;
+    this.loading.set(true);
+    if ((laundry.accountStatus || '').toLowerCase() === 'active') {
+      // Use PATCH /api/Laundry/{id}/delete for deactivation
+      this.laundryService.deleteLaundry(laundry.laundryId).subscribe({
+        next: () => {
+          this.selectedLaundry.set({ ...laundry, accountStatus: 'Inactive' });
+          this.laundries.set(this.laundries().map(l => l.laundryId === laundry.laundryId ? { ...l, accountStatus: 'Inactive' } : l));
+          this.filteredLaundries.set(this.filteredLaundries().map(l => l.laundryId === laundry.laundryId ? { ...l, accountStatus: 'Inactive' } : l));
+          this.loading.set(false);
+          this.showStatusChangeConfirmation.set(false);
+        },
+        error: (err) => {
+          this.error.set(err.message);
+          this.loading.set(false);
+        }
+      });
+    } else {
+      // Use PATCH /api/Laundry/{id}/activate for activation
+      this.laundryService.activateLaundry(laundry.laundryId).subscribe({
+        next: () => {
+          this.selectedLaundry.set({ ...laundry, accountStatus: 'Active' });
+          this.laundries.set(this.laundries().map(l => l.laundryId === laundry.laundryId ? { ...l, accountStatus: 'Active' } : l));
+          this.filteredLaundries.set(this.filteredLaundries().map(l => l.laundryId === laundry.laundryId ? { ...l, accountStatus: 'Active' } : l));
+          this.loading.set(false);
+          this.showStatusChangeConfirmation.set(false);
+        },
+        error: (err) => {
+          this.error.set(err.message);
+          this.loading.set(false);
+        }
+      });
+    }
+  }
+  /**
+   * Activate selected laundry account
+   */
+  activateLaundry(): void {
+    const laundry = this.selectedLaundry();
+    if (!laundry) return;
+    this.loading.set(true);
+    this.laundryService.activateLaundry(laundry.laundryId).subscribe({
+      next: () => {
+        // Update local state
+        this.selectedLaundry.set({ ...laundry, accountStatus: 'Active' });
+        // Also update in laundries and filteredLaundries arrays
+        this.laundries.set(this.laundries().map(l => l.laundryId === laundry.laundryId ? { ...l, accountStatus: 'Active' } : l));
+        this.filteredLaundries.set(this.filteredLaundries().map(l => l.laundryId === laundry.laundryId ? { ...l, accountStatus: 'Active' } : l));
+        this.loading.set(false);
+      },
+      error: (err) => {
+        this.error.set(err.message);
+        this.loading.set(false);
+      }
+    });
+  }
+
+  /**
+   * Deactivate selected laundry account
+   */
+  deactivateLaundry(): void {
+    const laundry = this.selectedLaundry();
+    if (!laundry) return;
+    this.loading.set(true);
+    this.laundryService.deactivateLaundry(laundry.laundryId).subscribe({
+      next: () => {
+        // Update local state
+        this.selectedLaundry.set({ ...laundry, accountStatus: 'Inactive' });
+        // Also update in laundries and filteredLaundries arrays
+        this.laundries.set(this.laundries().map(l => l.laundryId === laundry.laundryId ? { ...l, accountStatus: 'Inactive' } : l));
+        this.filteredLaundries.set(this.filteredLaundries().map(l => l.laundryId === laundry.laundryId ? { ...l, accountStatus: 'Inactive' } : l));
+        this.loading.set(false);
+      },
+      error: (err) => {
+        this.error.set(err.message);
+        this.loading.set(false);
+      }
+    });
+  }
   // Data collections
   laundries = signal<LaundryAdminDTO[]>([]);
   filteredLaundries = signal<LaundryAdminDTO[]>([]);
@@ -25,10 +191,7 @@ export class LaundriesComponent implements OnInit {
   searchText = signal<string>('');
   entriesPerPage = signal<number>(10);
   selectedLaundry = signal<LaundryAdminDTO | null>(null);
-  showDeleteConfirmation = signal<boolean>(false);
-  deleteInProgress = signal<boolean>(false);
-  deleteSuccess = signal<boolean>(false);
-  deleteError = signal<string | null>(null);
+  // ...existing code...
   currentPage = signal<number>(1);
 
   constructor(private laundryService: LaundryAdminService) {}
@@ -99,57 +262,7 @@ export class LaundriesComponent implements OnInit {
     this.selectedLaundry.set(laundry);
   }
 
-  /**
-   * Show delete confirmation dialog
-   */
-  promptDeleteConfirmation(): void {
-    this.showDeleteConfirmation.set(true);
-  }
-
-  /**
-   * Cancel delete operation
-   */
-  cancelDelete(): void {
-    this.showDeleteConfirmation.set(false);
-  }
-
-  /**
-   * Confirm and execute delete operation
-   */
-  confirmDelete(): void {
-    this.removeLaundry();
-    this.showDeleteConfirmation.set(false);
-  }
-
-  /**
-   * Remove the selected laundry from the database
-   */
-  removeLaundry(): void {
-    if (!this.selectedLaundry()) return;
-
-    this.deleteInProgress.set(true);
-    this.deleteError.set(null);
-
-    this.laundryService.deleteLaundry(this.selectedLaundry()!.laundryId).subscribe({
-      next: () => {
-        const newLaundries = this.laundries().filter(l => l.laundryId !== this.selectedLaundry()?.laundryId);
-        this.laundries.set(newLaundries);
-        this.filteredLaundries.set(this.filteredLaundries().filter(l => l.laundryId !== this.selectedLaundry()?.laundryId));
-        this.deleteSuccess.set(true);
-        this.selectedLaundry.set(this.filteredLaundries().length > 0 ? this.filteredLaundries()[0] : null);
-        this.deleteInProgress.set(false);
-
-        setTimeout(() => {
-          this.deleteSuccess.set(false);
-        }, 3000);
-      },
-      error: (err) => {
-        console.error('Error deleting laundry:', err);
-        this.deleteError.set(err.message);
-        this.deleteInProgress.set(false);
-      }
-    });
-  }
+  // ...existing code...
 
   /**
    * Get paginated laundries

@@ -29,4 +29,12 @@ export class HomeComponent implements OnInit {
    goToProcessingOrder() {
     this.router.navigate(['/processing-orders']);
   }
+
+  goToCompletedOrder() {
+    this.router.navigate(['/completed-orders']);
+  }
+
+  goToRejectedItems() {
+    this.router.navigate(['/processing-orders']);
+  }
 }

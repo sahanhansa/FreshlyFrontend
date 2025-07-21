@@ -1,88 +1,258 @@
-<div class="bg-gray-50 text-gray-900 sm:px-10 max-w-full mx-auto">
-  <div class="bg-gray-50 text-gray-900 py-10 px-6 sm:px-10 max-w-3xl mx-auto">
-    <h2 class="text-center text-xl sm:text-2xl font-semibold mb-3 tracking-tight">🧺 Simplifying Your Laundry Journey</h2>
-    <p class="text-gray-600 text-base text-center mb-8">Step by Step</p>
-    <div class="space-y-6">
-      <!-- Step 1 -->
-      <div class="flex items-center gap-5 p-5 rounded-xl shadow-md bg-white transition-all duration-300 ease-in-out hover:shadow-xl hover:scale-[1.03] ">
-        <img src="assets/customer/search.png" alt="Browse Laundry" class="w-14 h-14 object-cover rounded-lg ">
-        <div>
-          <h3 class="text-lg font-semibold mb-1">Browse Laundry Services</h3>
-          <p class="text-gray-600 text-base">Explore providers near you, compare prices, services, and ratings.</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laundry Service Steps</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .animate-fade-in-up {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+        
+        .step-card:hover {
+            transform: translateY(-8px);
+        }
+        
+        .step-number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .step-connector {
+            background: linear-gradient(to bottom, #e2e8f0 0%, #cbd5e0 100%);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="px-4 py-16 bg-gradient-to-br from-slate-50 to-blue-50 sm:px-8">
+        <div class="mx-auto max-w-7xl">
+            <!-- Header Section -->
+            <div class="mb-16 text-center">
+                <div class="inline-block p-2 mb-4 bg-blue-100 rounded-full">
+                    <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    </svg>
+                </div>
+                <h2 class="mb-4 text-4xl font-bold text-transparent sm:text-5xl bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text">
+                    How It Works
+                </h2>
+                <p class="max-w-2xl mx-auto text-xl leading-relaxed text-gray-600">
+                    Simplifying your laundry journey with our seamless 8-step process
+                </p>
+                <div class="w-24 h-1 mx-auto mt-6 rounded-full bg-gradient-to-r from-blue-500 to-purple-600"></div>
+            </div>
+
+            <!-- Steps Grid -->
+            <div class="space-y-8">
+                <!-- Step 1 -->
+                <div class="relative p-8 transition-all duration-500 bg-white border border-gray-100 shadow-xl step-card group rounded-3xl hover:shadow-2xl">
+                    <div class="flex flex-col items-center gap-8 lg:flex-row">
+                        <div class="relative flex-shrink-0">
+                            <div class="flex items-center justify-center w-16 h-16 text-xl font-bold text-white shadow-lg step-number rounded-2xl">
+                                1
+                            </div>
+                            <div class="absolute transition-opacity duration-300 -inset-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl opacity-20 group-hover:opacity-40"></div>
+                        </div>
+                        <div class="flex items-center justify-center transition-transform duration-300 w-28 h-28 bg-gradient-to-br from-blue-50 to-indigo-100 rounded-2xl group-hover:scale-110">
+                            <img src="assets/laundry.png" class="object-contain w-16 h-16" alt="Choose Service">
+                        </div>
+                        <div class="flex-1 text-center lg:text-left">
+                            <h3 class="mb-3 text-2xl font-bold text-gray-800 transition-colors duration-300 group-hover:text-blue-600">
+                                Choose Your Service
+                            </h3>
+                            <p class="text-lg leading-relaxed text-gray-600">
+                                Browse and select from our comprehensive range of professional laundry services tailored to meet your specific needs.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="relative p-8 transition-all duration-500 bg-white border border-gray-100 shadow-xl step-card group rounded-3xl hover:shadow-2xl">
+                    <div class="flex flex-col items-center gap-8 lg:flex-row">
+                        <div class="relative flex-shrink-0">
+                            <div class="flex items-center justify-center w-16 h-16 text-xl font-bold text-white shadow-lg step-number rounded-2xl">
+                                2
+                            </div>
+                            <div class="absolute transition-opacity duration-300 -inset-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl opacity-20 group-hover:opacity-40"></div>
+                        </div>
+                        <div class="flex items-center justify-center transition-transform duration-300 w-28 h-28 bg-gradient-to-br from-green-50 to-emerald-100 rounded-2xl group-hover:scale-110">
+                            <img src="assets/map.webp" class="object-contain w-16 h-16" alt="Set Location">
+                        </div>
+                        <div class="flex-1 text-center lg:text-left">
+                            <h3 class="mb-3 text-2xl font-bold text-gray-800 transition-colors duration-300 group-hover:text-green-600">
+                                Set Your Location
+                            </h3>
+                            <p class="text-lg leading-relaxed text-gray-600">
+                                Add or confirm your pickup and delivery address to ensure we reach you at the right place and time.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="relative p-8 transition-all duration-500 bg-white border border-gray-100 shadow-xl step-card group rounded-3xl hover:shadow-2xl">
+                    <div class="flex flex-col items-center gap-8 lg:flex-row">
+                        <div class="relative flex-shrink-0">
+                            <div class="flex items-center justify-center w-16 h-16 text-xl font-bold text-white shadow-lg step-number rounded-2xl">
+                                3
+                            </div>
+                            <div class="absolute transition-opacity duration-300 -inset-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl opacity-20 group-hover:opacity-40"></div>
+                        </div>
+                        <div class="flex items-center justify-center transition-transform duration-300 w-28 h-28 bg-gradient-to-br from-purple-50 to-violet-100 rounded-2xl group-hover:scale-110">
+                            <img src="assets/clothes.jpg" class="object-contain w-16 h-16" alt="Select Items">
+                        </div>
+                        <div class="flex-1 text-center lg:text-left">
+                            <h3 class="mb-3 text-2xl font-bold text-gray-800 transition-colors duration-300 group-hover:text-purple-600">
+                                Select Your Items
+                            </h3>
+                            <p class="text-lg leading-relaxed text-gray-600">
+                                Choose the garments and items you want professionally cleaned with our specialized care treatments.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="relative p-8 transition-all duration-500 bg-white border border-gray-100 shadow-xl step-card group rounded-3xl hover:shadow-2xl">
+                    <div class="flex flex-col items-center gap-8 lg:flex-row">
+                        <div class="relative flex-shrink-0">
+                            <div class="flex items-center justify-center w-16 h-16 text-xl font-bold text-white shadow-lg step-number rounded-2xl">
+                                4
+                            </div>
+                            <div class="absolute transition-opacity duration-300 -inset-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl opacity-20 group-hover:opacity-40"></div>
+                        </div>
+                        <div class="flex items-center justify-center transition-transform duration-300 w-28 h-28 bg-gradient-to-br from-orange-50 to-amber-100 rounded-2xl group-hover:scale-110">
+                            <img src="assets/correct-mark.jpg" class="object-contain w-16 h-16" alt="Confirm Order">
+                        </div>
+                        <div class="flex-1 text-center lg:text-left">
+                            <h3 class="mb-3 text-2xl font-bold text-gray-800 transition-colors duration-300 group-hover:text-orange-600">
+                                Confirm Your Order
+                            </h3>
+                            <p class="text-lg leading-relaxed text-gray-600">
+                                Review your selections and finalize your order with our secure, one-click confirmation process.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 5 -->
+                <div class="relative p-8 transition-all duration-500 bg-white border border-gray-100 shadow-xl step-card group rounded-3xl hover:shadow-2xl">
+                    <div class="flex flex-col items-center gap-8 lg:flex-row">
+                        <div class="relative flex-shrink-0">
+                            <div class="flex items-center justify-center w-16 h-16 text-xl font-bold text-white shadow-lg step-number rounded-2xl">
+                                5
+                            </div>
+                            <div class="absolute transition-opacity duration-300 -inset-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl opacity-20 group-hover:opacity-40"></div>
+                        </div>
+                        <div class="flex items-center justify-center transition-transform duration-300 w-28 h-28 bg-gradient-to-br from-cyan-50 to-blue-100 rounded-2xl group-hover:scale-110">
+                            <img src="assets/dilevery-boy.png" class="object-contain w-16 h-16" alt="Pickup Service">
+                        </div>
+                        <div class="flex-1 text-center lg:text-left">
+                            <h3 class="mb-3 text-2xl font-bold text-gray-800 transition-colors duration-300 group-hover:text-cyan-600">
+                                Scheduled Pickup
+                            </h3>
+                            <p class="text-lg leading-relaxed text-gray-600">
+                                Our professional team will collect your clothes at your preferred time with careful handling and attention.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 6 -->
+                <div class="relative p-8 transition-all duration-500 bg-white border border-gray-100 shadow-xl step-card group rounded-3xl hover:shadow-2xl">
+                    <div class="flex flex-col items-center gap-8 lg:flex-row">
+                        <div class="relative flex-shrink-0">
+                            <div class="flex items-center justify-center w-16 h-16 text-xl font-bold text-white shadow-lg step-number rounded-2xl">
+                                6
+                            </div>
+                            <div class="absolute transition-opacity duration-300 -inset-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl opacity-20 group-hover:opacity-40"></div>
+                        </div>
+                        <div class="flex items-center justify-center transition-transform duration-300 w-28 h-28 bg-gradient-to-br from-rose-50 to-pink-100 rounded-2xl group-hover:scale-110">
+                            <img src="assets/customer-img.jpeg" class="object-contain w-16 h-16" alt="Track Progress">
+                        </div>
+                        <div class="flex-1 text-center lg:text-left">
+                            <h3 class="mb-3 text-2xl font-bold text-gray-800 transition-colors duration-300 group-hover:text-rose-600">
+                                Track Your Order
+                            </h3>
+                            <p class="text-lg leading-relaxed text-gray-600">
+                                Stay informed with real-time updates and notifications about your order's progress through every stage.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 7 -->
+                <div class="relative p-8 transition-all duration-500 bg-white border border-gray-100 shadow-xl step-card group rounded-3xl hover:shadow-2xl">
+                    <div class="flex flex-col items-center gap-8 lg:flex-row">
+                        <div class="relative flex-shrink-0">
+                            <div class="flex items-center justify-center w-16 h-16 text-xl font-bold text-white shadow-lg step-number rounded-2xl">
+                                7
+                            </div>
+                            <div class="absolute transition-opacity duration-300 -inset-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl opacity-20 group-hover:opacity-40"></div>
+                        </div>
+                        <div class="flex items-center justify-center transition-transform duration-300 w-28 h-28 bg-gradient-to-br from-indigo-50 to-blue-100 rounded-2xl group-hover:scale-110">
+                            <img src="assets/pick-driver.png" class="object-contain w-16 h-16" alt="Delivery Service">
+                        </div>
+                        <div class="flex-1 text-center lg:text-left">
+                            <h3 class="mb-3 text-2xl font-bold text-gray-800 transition-colors duration-300 group-hover:text-indigo-600">
+                                Fresh Delivery
+                            </h3>
+                            <p class="text-lg leading-relaxed text-gray-600">
+                                Your freshly cleaned and perfectly pressed clothes are delivered back to your doorstep with care.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 8 -->
+                <div class="relative p-8 transition-all duration-500 bg-white border border-gray-100 shadow-xl step-card group rounded-3xl hover:shadow-2xl">
+                    <div class="flex flex-col items-center gap-8 lg:flex-row">
+                        <div class="relative flex-shrink-0">
+                            <div class="flex items-center justify-center w-16 h-16 text-xl font-bold text-white shadow-lg step-number rounded-2xl">
+                                8
+                            </div>
+                            <div class="absolute transition-opacity duration-300 -inset-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl opacity-20 group-hover:opacity-40"></div>
+                        </div>
+                        <div class="flex items-center justify-center transition-transform duration-300 w-28 h-28 bg-gradient-to-br from-emerald-50 to-green-100 rounded-2xl group-hover:scale-110">
+                            <img src="assets/oder-mobile.avif" class="object-contain w-16 h-16" alt="Secure Payment">
+                        </div>
+                        <div class="flex-1 text-center lg:text-left">
+                            <h3 class="mb-3 text-2xl font-bold text-gray-800 transition-colors duration-300 group-hover:text-emerald-600">
+                                Secure Payment
+                            </h3>
+                            <p class="text-lg leading-relaxed text-gray-600">
+                                Complete your transaction with our secure payment system, offering multiple convenient payment options.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Call to Action -->
+            <div class="mt-16 text-center">
+                <div class="inline-block p-8 shadow-2xl bg-gradient-to-br from-blue-600 to-purple-700 rounded-3xl">
+                    <h3 class="mb-4 text-2xl font-bold text-white">Ready to Get Started?</h3>
+                    <p class="max-w-md mx-auto mb-6 text-blue-100">
+                        Experience the convenience of professional laundry service today
+                    </p>
+                    <button class="px-8 py-4 font-bold text-blue-600 transition-all duration-300 bg-white shadow-lg rounded-xl hover:bg-blue-50 hover:scale-105">
+                        Book Your Service Now
+                    </button>
+                </div>
+            </div>
         </div>
-      </div>
-      <!-- Step 2 -->
-      <div class="flex items-center gap-5 p-5 rounded-xl shadow-md bg-white transition-all duration-300 ease-in-out hover:shadow-xl hover:scale-[1.03] ">
-        <img src="assets/customer/order.png" alt="Place Order" class="w-14 h-14 object-cover rounded-lg ">
-        <div>
-          <h3 class="text-lg font-semibold mb-1">Place Your Order</h3>
-          <p class="text-gray-600 text-base">Select items, service types, quantity and confirm your order.</p>
-        </div>
-      </div>
-      <!-- Step 3 -->
-      <div class="flex items-center gap-5 p-5 rounded-xl shadow-md bg-white transition-all duration-300 ease-in-out hover:shadow-xl hover:scale-[1.03] ">
-        <img src="assets/customer/schedule.png" alt="Schedule Pickup" class="w-14 h-14 object-cover rounded-lg ">
-        <div>
-          <h3 class="text-lg font-semibold mb-1">Schedule Pickup</h3>
-          <p class="text-gray-600 text-base">Pick a time slot that works best for you for pickup.</p>
-        </div>
-      </div>
-      <!-- Step 4 -->
-      <div class="flex items-center gap-5 p-5 rounded-xl shadow-md bg-white transition-all duration-300 ease-in-out hover:shadow-xl hover:scale-[1.03] ">
-        <img src="assets/customer/location.png" alt="Update Location" class="w-14 h-14 object-cover rounded-lg">
-        <div>
-          <h3 class="text-lg font-semibold mb-1">Update Your Location</h3>
-          <p class="text-gray-600 text-base">Add or confirm where we should pick up and deliver your clothes.</p>
-        </div>
-      </div>
-      <!-- Step 5 -->
-      <div class="flex items-center gap-5 p-5 rounded-xlshadow-md bg-white transition-all duration-300 ease-in-out hover:shadow-xl hover:scale-[1.03] ">
-        <img src="assets/customer/pickup.png" alt="Pickup" class="w-14 h-14 object-cover rounded-lg ">
-        <div>
-          <h3 class="text-lg font-semibold mb-1">Laundry Pickup</h3>
-          <p class="text-gray-600 text-base">Our driver arrives at your doorstep on time to collect your clothes.</p>
-        </div>
-      </div>
-      <!-- Step 6 -->
-      <div class="flex items-center gap-5 p-5 rounded-xl shadow-md bg-white transition-all duration-300 ease-in-out hover:shadow-xl hover:scale-[1.03] ">
-        <img src="assets/customer/processing.png" alt="Laundry in Process" class="w-14 h-14 object-cover rounded-lg ">
-        <div>
-          <h3 class="text-lg font-semibold mb-1">Laundry in Process</h3>
-          <p class="text-gray-600 text-base">Your laundry is washed, dried, and folded with utmost care.</p>
-        </div>
-      </div>
-      <!-- Step 7 -->
-      <div class="flex items-center gap-5 p-5 rounded-xl shadow-md bg-white transition-all duration-300 ease-in-out hover:shadow-xl hover:scale-[1.03] ">
-        <img src="assets/customer/cleaned.png" alt="Delivery Ready" class="w-14 h-14 object-cover rounded-lg">
-        <div>
-          <h3 class="text-lg font-semibold mb-1">Ready for Delivery</h3>
-          <p class="text-gray-600 text-base">You'll receive updates once your laundry is packed and out for delivery.</p>
-        </div>
-      </div>
-      <!-- Step 8 -->
-      <div class="flex items-center gap-5 p-5 rounded-xlshadow-md bg-white transition-all duration-300 ease-in-out hover:shadow-xl hover:scale-[1.03] ">
-        <img src="assets/customer/delivery.png" alt="Delivered" class="w-14 h-14 object-cover rounded-lg">
-        <div>
-          <h3 class="text-lg font-semibold mb-1">Delivered to Your Door</h3>
-          <p class="text-gray-600 text-base">Your freshly cleaned clothes are delivered at your convenience.</p>
-        </div>
-      </div>
-      <!-- Step 9 -->
-      <div class="flex items-center gap-5 p-5 rounded-xl shadow-md bg-white transition-all duration-300 ease-in-out hover:shadow-xl hover:scale-[1.03] ">
-        <img src="assets/customer/payment.png" alt="Payment" class="w-14 h-14 object-cover rounded-lg ">
-        <div>
-          <h3 class="text-lg font-semibold mb-1">Make Payment</h3>
-          <p class="text-gray-600 text-base">Pay securely online or opt for cash on delivery.</p>
-        </div>
-      </div>
-      <!-- Step 10 -->
-      <div class="flex items-center gap-5 p-5 rounded-xl shadow-md bg-white transition-all duration-300 ease-in-out hover:shadow-xl hover:scale-[1.03] ">
-        <img src="assets/customer/rating.png" alt="Rate Service" class="w-14 h-14 object-cover rounded-lg ">
-        <div>
-          <h3 class="text-lg font-semibold mb-1">Rate the Service</h3>
-          <p class="text-gray-600 text-base">Tell us about your experience. Your feedback helps us improve.</p>
-        </div>
-      </div>
     </div>
-  </div>
-</div>
+</body>
+</html>

@@ -47,4 +47,34 @@ export class PickupsTasksMainpageComponent {
   onOwnSearch(): void {
     this.isOwnSearch = true;
   }
+
+
+
+  // seach button handler
+
+  selectedMode: 'global' | 'own' = 'global';
+
+  get globalBtnClass(): string {
+    return this.selectedMode === 'global'
+      ? 'mode-btn flex items-center justify-center w-full sm:w-auto px-7 py-3 bg-blue-700 text-white text-lg font-medium rounded-xl shadow-xl scale-105 transition transform duration-300 ease-out focus:outline-none focus:ring-4 focus:ring-blue-400 focus:ring-opacity-60'
+      : 'mode-btn flex items-center justify-center w-full sm:w-auto px-7 py-3 bg-blue-600 text-white text-lg font-medium rounded-xl shadow-lg transition transform duration-300 ease-out focus:outline-none focus:ring-4 focus:ring-blue-400 focus:ring-opacity-60';
+  }
+
+  get ownBtnClass(): string {
+    return this.selectedMode === 'own'
+      ? 'mode-btn flex items-center justify-center w-full sm:w-auto px-7 py-3 bg-blue-700 text-white text-lg font-medium rounded-xl shadow-xl scale-105 transition transform duration-300 ease-out focus:outline-none focus:ring-4 focus:ring-blue-400 focus:ring-opacity-60'
+      : 'mode-btn flex items-center justify-center w-full sm:w-auto px-7 py-3 bg-blue-600 text-white text-lg font-medium rounded-xl shadow-lg transition transform duration-300 ease-out focus:outline-none focus:ring-4 focus:ring-blue-400 focus:ring-opacity-60';
+  }
+
+  selectMode(mode: 'global' | 'own'): void {
+    this.selectedMode = mode;
+
+    if (mode === 'global') {
+      this.onGlobalSearch();
+    } else {
+      this.onOwnSearch();
+    }
+  }
+
+  
 }

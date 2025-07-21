@@ -1,9 +1,38 @@
-<div class="border-2 rounded-lg shadow-md min-h-[450px] max-w-l flex flex-col">
+<div class="border-2 rounded-lg shadow-md h-full max-w-l flex flex-col">
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="flex items-center justify-center h-full">
+    <div class="text-center">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
+      <p class="mt-4 text-gray-600">Loading laundry details...</p>
+    </div>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !isLoading" class="flex items-center justify-center h-full">
+    <div class="text-center">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-red-500 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+      </svg>
+      <p class="text-red-600">{{ error }}</p>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div *ngIf="!isLoading && !error && laundry">
   <!-- Header Section -->
   <div class="bg-blue-500 text-white rounded-t-lg px-3 py-3 flex flex-col items-center min-h-[150px]">
-  <img src="assets/laundry-man.jpg" class="w-24 h-24 mb-3 rounded-full border-white shadow-md" alt="Laundry Logo">
-    <h2 class="text-lg font-bold tracking-wide">{{ laundry?.name }}</h2>
-    <p class="text-sm">{{ laundry?.tagline }}</p>
+      <div *ngIf="laundry.logoUrl; else noLogo" class="w-24 h-24 mb-3">
+        <img [src]="laundry.logoUrl" class="w-24 h-24 rounded-full border-white shadow-md" alt="Laundry Logo">
+      </div>
+      <ng-template #noLogo>
+        <div class="w-24 h-24 mb-3 rounded-full border-white shadow-md bg-white/20 flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-white/60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+          </svg>
+        </div>
+      </ng-template>
+      <h2 class="text-lg font-bold tracking-wide">{{ laundry.laundryName }}</h2>
+      <p class="text-sm">Professional Laundry Services</p>
   </div>
 
   <!-- Details Section -->
@@ -14,8 +43,8 @@
         <path stroke-linecap="round" stroke-linejoin="round" d="M10 3H5a2 2 0 00-2 2v5m0 4v5a2 2 0 002 2h5m4 0h5a2 2 0 002-2v-5m0-4V5a2 2 0 00-2-2h-5" />
       </svg>
       <div>
-        <p class="font-semibold">Reg No:</p>
-        <p class="ml-2">{{ laundry?.regNo }}</p>
+          <p class="font-semibold">Laundry ID:</p>
+          <p class="ml-2">{{ laundry.laundryId }}</p>
       </div>
     </div>
 
@@ -27,7 +56,7 @@
       </svg>
       <div>
         <p class="font-semibold">Address:</p>
-        <p class="ml-2">{{ laundry?.address }}</p>
+          <p class="ml-2">{{ laundry.address }}</p>
       </div>
     </div>
 
@@ -38,7 +67,7 @@
       </svg>
       <div>
         <p class="font-semibold">Contact No:</p>
-        <p class="ml-2">{{ laundry?.contact }}</p>
+          <p class="ml-2">{{ laundry.contactNumber }}</p>
       </div>
     </div>
 
@@ -49,19 +78,8 @@
       </svg>
       <div>
         <p class="font-semibold">Email:</p>
-        <p class="ml-2">{{ laundry?.email }}</p>
-      </div>
+          <p class="ml-2">{{ laundry.email }}</p>
     </div>
-
-
-    <!-- Core Services -->
-    <div class="flex items-start gap-2">
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-500 stroke-[2.5] mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M9 11l3 3L22 4M4 6h16M4 12h8m-8 6h4"/>
-      </svg>
-      <div>
-        <p class="font-semibold">Core Services:</p>
-        <p class="ml-2">{{ laundry?.services }}</p>
       </div>
     </div>
   </div>
