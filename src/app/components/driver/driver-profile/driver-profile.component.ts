@@ -41,6 +41,8 @@ export class DriverProfileComponent {
   location: string = '';
   photoUrl: string = '';
 
+  isLoading: boolean = false;
+  
   ngOnInit(): void {
     this.loadDriverProfileIntoForm();
   }
