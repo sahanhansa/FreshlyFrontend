@@ -22,9 +22,6 @@ import { CusHomeComponent } from './components/customer/cus-home/cus-home.compon
 import { LaundrySignupComponent } from './components/customer/laundry-signup/laundry-signup.component';
 import { HowItWorksComponent } from './components/customer/how-it-works/how-it-works.component';
 import { LandingPageComponent } from './components/landing-page/landing-page.component';
-import { NewOrdersComponent } from './pages/Laundry/new-orders/new-orders.component';
-import { processingOrdersComponent } from './pages/Laundry/processing-orders/processing-orders.component';
-import { CompletedOrdersComponent } from './pages/Laundry/completed-orders/completed-orders.component';
 import { ConfirmOrdersComponent } from './pages/Laundry/confirm-orders/confirm-orders.component';
 import { InvoiceSuccessedComponent } from './pages/Laundry/invoice-successed/invoice-successed.component';
 import { LaundryFeedbacksComponent } from './pages/Laundry/laundry-feedbacks/laundry-feedbacks.component';
@@ -42,9 +39,14 @@ import { LaundryDeleteConfirmationComponent } from './pages/Laundry/laundry-dele
 import { ProcessingOrderDetailsComponent} from './components/laundry/processing-order-details/processing-order-details.component';
 import { CompletedOrderDetailsComponent } from './components/Laundry/completed-order-details/completed-order-details.component';
 import { LogoutPageComponent } from './pages/Driver/logout-page/logout-page.component';
-import {AdminLoginComponent} from './components/admin/login/admin-login.component';
+import { AdminLoginComponent} from './components/admin/login/admin-login.component';
 import { NewOrderDetailsComponent } from './components/laundry/new-order-details/new-order-details.component';
-
+import {  RejectedItemDetailsComponent } from './components/laundry/rejected-item-details/rejected-item-details.component';
+import { NewOrdersComponent } from './pages/Laundry/new-orders/new-orders.component';
+import { processingOrdersComponent } from './pages/Laundry/processing-orders/processing-orders.component';
+import { CompletedOrdersComponent } from './pages/Laundry/completed-orders/completed-orders.component';
+import { RejectedItemsComponent}  from './pages/Laundry/rejected-items/rejected-items.component';
+import { ContactUsComponent } from './pages/Laundry/contact-us/contact-us.component';
 
 
 
@@ -139,12 +141,6 @@ export const routes: Routes = [
      // Route for new orders page
   {path: 'new-orders', component:NewOrdersComponent},
 
-  // Route for new order details
-  {
-    path: 'new-order-details/:orderId/:statusId',
-    loadComponent: () => import('./components/laundry/new-order-details/new-order-details.component').then(m => m.NewOrderDetailsComponent)
-  },
-
     // Route for processingorders page
   {path: 'processing-orders', component:processingOrdersComponent},
 
@@ -183,8 +179,14 @@ export const routes: Routes = [
 
      {path: 'completed-order-details/:orderId/:statusId', component:CompletedOrderDetailsComponent },
 
-     {path: 'new-order-details/:orderId/:statusId', component:NewOrderDetailsComponent }
+     {path: 'new-order-details/:orderId/:statusId', component:NewOrderDetailsComponent },
+
+     {path: 'rejected-item-details' , component: RejectedItemDetailsComponent },
+
+      {path: 'rejected-items', component:RejectedItemsComponent },
+   
     
+      {path: 'laundry-contactus', component:ContactUsComponent },
     ]
 
 

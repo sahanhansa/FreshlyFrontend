@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FeedbackService } from '../../../services/feedback.service';
 import { Feedback } from '@app/models/feedback.model';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-view-feedbacks',
@@ -11,10 +12,10 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './view-feedbacks.component.html'
 })
 export class ViewFeedbacksComponent implements OnInit {
-  feedbacks: (Feedback & { showReply?: boolean; replyText?: string })[] = [];
+  feedbacks: (Feedback & { showReply?: boolean; replyText?: string; read?: boolean })[] = [];
   loading: boolean = true;
 
-  constructor(private feedbackService: FeedbackService) {}
+  constructor(private feedbackService: FeedbackService, private router: Router) {}
 
   ngOnInit(): void {
     this.loadFeedbacks();
@@ -22,7 +23,7 @@ export class ViewFeedbacksComponent implements OnInit {
 
   loadFeedbacks(): void {
     // Get laundry ID from localStorage
-    const laundryId = localStorage.getItem('laundryId'); // Assuming 'userId' contains the laundry ID
+    const laundryId = localStorage.getItem('laundryId'); 
     
     if (!laundryId) {
       console.error('Laundry ID not found in localStorage');
@@ -30,13 +31,17 @@ export class ViewFeedbacksComponent implements OnInit {
       return;
     }
 
+    // Get read feedbacks from localStorage
+    const readFeedbacks: string[] = JSON.parse(localStorage.getItem('laundryReadFeedbacks') || '[]');
+
     this.feedbackService.getFeedbacks(laundryId).subscribe({
       next: (data) => {
-        // Extend each feedback object with `showReply` and `replyText`
+        // Extend each feedback object with `showReply`, `replyText`, and `read`
         this.feedbacks = data.map((f) => ({
           ...f,
           showReply: false,
-          replyText: ''
+          replyText: '',
+          read: readFeedbacks.includes(f.feedbackId)
         }));
         this.loading = false;
       },
@@ -60,5 +65,30 @@ export class ViewFeedbacksComponent implements OnInit {
 
     this.feedbacks[index].showReply = false;
     this.feedbacks[index].replyText = '';
+  }
+
+  viewOrder(feedback: any): void {
+    // Navigate to delivered/completed order details
+    if (feedback.orderId && feedback.status?.statusID) {
+      this.router.navigate(['/completed-order-details', feedback.orderId, feedback.status.statusID]);
+    } else {
+      alert('Order details not available for this feedback.');
+    }
+  }
+
+  markAsReadAndMove(feedback: any, index: number): void {
+    if (!feedback.read) {
+      feedback.read = true;
+      // Remove from current position
+      this.feedbacks.splice(index, 1);
+      // Add to the top
+      this.feedbacks.unshift(feedback);
+      // Store in localStorage
+      const readFeedbacks: string[] = JSON.parse(localStorage.getItem('laundryReadFeedbacks') || '[]');
+      if (!readFeedbacks.includes(feedback.feedbackId)) {
+        readFeedbacks.push(feedback.feedbackId);
+        localStorage.setItem('laundryReadFeedbacks', JSON.stringify(readFeedbacks));
+      }
+    }
   }
 }
