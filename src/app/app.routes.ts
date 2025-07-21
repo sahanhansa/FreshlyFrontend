@@ -50,9 +50,6 @@ import { LogoutPageComponent } from './pages/Driver/logout-page/logout-page.comp
 import { AdminLoginComponent} from './components/admin/login/admin-login.component';
 import { NewOrderDetailsComponent } from './components/laundry/new-order-details/new-order-details.component';
 import {  RejectedItemDetailsComponent } from './components/laundry/rejected-item-details/rejected-item-details.component';
-import { NewOrdersComponent } from './pages/Laundry/new-orders/new-orders.component';
-import { processingOrdersComponent } from './pages/Laundry/processing-orders/processing-orders.component';
-import { CompletedOrdersComponent } from './pages/Laundry/completed-orders/completed-orders.component';
 import { RejectedItemsComponent}  from './pages/Laundry/rejected-items/rejected-items.component';
 import { ContactUsComponent } from './pages/Laundry/contact-us/contact-us.component';
 import {MultiStepFormComponent} from './components/laundry/lau-sign/multi-step-form.component';
