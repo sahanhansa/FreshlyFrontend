@@ -57,67 +57,68 @@ export class ItemCardComponent implements OnInit {
   ) {}
   
   ngOnInit(): void {
-    // Get the laundry ID from the route
-    this.route.paramMap.subscribe(params => {
-      const id = params.get('id');
-      if (id) {
-        this.laundryId = id;
-      }
-    });
-
-    this.selectedGarment.valueChanges.subscribe((value) => {
-    this.onGarmentChange(value);
-    this.updatePrice();
+  this.route.paramMap.subscribe(params => {
+    const id = params.get('id');
+    if (id) {
+      this.laundryId = id;
+    }
   });
-    
-    // Get fabric types from the service
-    this.fabricTypes = this.getFabricTypes(this.item.services)
-    
-    // Set default values
-    if (this.fabricTypes.length > 0) {
-      this.selectedGarment.setValue(this.fabricTypes[0].garmentTypeId);
-    }
-    
-    // Set default service if the item has services
-    if (this.serviceTypes && this.serviceTypes.length > 0) {
-      this.selectedService.setValue(this.serviceTypes[0].serviceId);
-      this.updatePrice();
-    }
-    
-    // Listen for service selection changes to update price
-    this.selectedService.valueChanges.subscribe(() => {
-      this.updatePrice();
-    });
 
-    // Listen for quantity changes to update price
-    this.quantity.valueChanges.subscribe(() => {
-      this.updatePrice();
-    });
+  // Populate fabric types from item.services
+  this.fabricTypes = this.getFabricTypes(this.item.services);
 
-    // Check what properties are actually available
-    console.log('Item data:', this.item);
+  if (this.fabricTypes.length > 0) {
+    const defaultGarmentId = this.fabricTypes[0].garmentTypeId;
+    this.selectedGarment.setValue(defaultGarmentId);
+
+    // Manually trigger onGarmentChange to populate serviceTypes first
+    this.onGarmentChange(defaultGarmentId, true); // true = indicate it's from init
   }
 
-onGarmentChange(garmentId: any) {
+  // Watchers
+  this.selectedGarment.valueChanges.subscribe((value) => {
+    this.onGarmentChange(value);
+  });
+
+  this.selectedService.valueChanges.subscribe(() => {
+    this.updatePrice();
+  });
+
+  this.quantity.valueChanges.subscribe(() => {
+    this.updatePrice();
+  });
+
+  console.log('Item data:', this.item);
+}
+
+
+onGarmentChange(garmentId: any, fromInit = false): void {
   this.itemService.getItemsByLaundryIdAndGarmentId(this.laundryId, garmentId).subscribe({
     next: (res: any) => {
-      console.log(res);
-      // Clear existing serviceTypes to avoid duplicates
+      if (!res || res.length === 0) return;
+
       this.serviceTypes = [];
 
-      // Add new service types
       res[0].services.forEach((service: any) => {
         this.serviceTypes.push({
           serviceId: service.serviceId,
           serviceName: service.serviceName
         });
       });
+
+      // If this was triggered from ngOnInit, set first service and update price
+      if (fromInit && this.serviceTypes.length > 0) {
+        const defaultServiceId = this.serviceTypes[0].serviceId;
+        this.selectedService.setValue(defaultServiceId);
+        this.updatePrice(); // now fabricType, serviceType and quantity are all available
+      }
     },
     error: (err: any) => {
       console.error(err);
     }
   });
 }
+
 
 
 
