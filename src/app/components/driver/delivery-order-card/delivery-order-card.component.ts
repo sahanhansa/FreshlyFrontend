@@ -70,17 +70,20 @@ export class DeliveryOrderCardComponent implements OnInit, OnChanges {
   filterDeliveries(): void {
     const query = this.searchQuery?.toLowerCase() || '';
 
-    this.filteredDeliveries = this.deliveries.filter(delivery => {
-      const matchesQuery = delivery.customerName.toLowerCase().includes(query);
+this.filteredDeliveries = this.deliveries.filter(delivery => {
+  const matchesQuery =
+    delivery.address.toLowerCase().includes(query) ||
+    delivery.laundryName.toLowerCase().includes(query);
 
-      if (this.isOwnSearch) {
-        // Own search: show only this driver’s orders
-        return matchesQuery && delivery.deliverDriver === this.userId;
-      } else {
-        // Global search: show only unassigned, placed orders
-        return matchesQuery && delivery.deliverDriver === null && delivery.status === 'finished processing';
-      }
-    });
+  if (this.isOwnSearch) {
+    // Own search: only show this driver’s orders
+    return matchesQuery && delivery.deliverDriver === this.userId;
+  } else {
+    // Global search: show only unassigned placed orders
+    return matchesQuery && delivery.deliverDriver === null && delivery.status === 'finished processing';
+  }
+});
+
     this.totalItemChange.emit(this.filteredDeliveries.length);
   }
 

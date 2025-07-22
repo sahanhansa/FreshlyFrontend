@@ -2,15 +2,17 @@
   <!-- Sidebar -->
   <div class="bg-[#3a9ee1] text-white flex flex-col items-center p-6 w-full md:w-1/3">
     <img [src]="photoUrl" alt="Driver Photo" class="w-32 h-32 rounded-full object-cover mb-4 border-4 border-white" />
+   
     <h2 class="text-xl font-semibold mb-1">{{ name }}</h2>
-    <p class="text-sm mb-6">Driver ID: {{ id }}</p>
+    <br>
+    <!-- <p class="text-sm mb-6">Driver ID: {{ id }}</p> -->
 
     <div class="flex flex-col w-full gap-3">
       <a class="bg-white text-blue-600 py-2 rounded-full flex justify-between items-center px-4 font-semibold hover:bg-gray-100"
       [routerLink]="['/complete-tasks-page']">
         Completed Orders <span>➔</span>
       </a>
-      <button class="bg-white text-blue-600 py-2 rounded-full flex justify-between items-center px-4 font-semibold hover:bg-gray-100">
+      <button [routerLink]="['/reports']" class="bg-white text-blue-600 py-2 rounded-full flex justify-between items-center px-4 font-semibold hover:bg-gray-100">
         View Reports <span>➔</span>
       </button>
       <button [routerLink]="['/edit-details-form']" class="bg-white text-blue-600 py-2 rounded-full flex justify-between items-center px-4 font-semibold hover:bg-gray-100">

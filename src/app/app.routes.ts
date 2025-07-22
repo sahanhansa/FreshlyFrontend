@@ -50,6 +50,7 @@ import { LogoutPageComponent } from './pages/Driver/logout-page/logout-page.comp
 import {AdminLoginComponent} from './components/admin/login/admin-login.component';
 import { NewOrderDetailsComponent } from './components/laundry/new-order-details/new-order-details.component';
 import {MultiStepFormComponent} from './components/laundry/lau-sign/multi-step-form.component';
+import { ReportsComponent } from './pages/Driver/reports/reports.component';
 
 
 
@@ -102,6 +103,7 @@ export const routes: Routes = [
   {path: 'driver-profile-page', component: DriverProfilePageComponent},
   {path: 'complete-tasks-page',component: CompleteTasksPageComponent} ,
   {path: 'edit-details-form', component: EditDetailsFormComponent},
+  {path: 'reports', component: ReportsComponent},
   {path: 'logout-page', component: LogoutPageComponent},
   
   
