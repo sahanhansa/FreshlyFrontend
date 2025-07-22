@@ -2,10 +2,11 @@
   <div class="order-header">
     <span class="order-title">Order ID: #{{ deliveryOrder.id }}</span>
 
-    
 
 
-<span class="inline-flex items-center gap-1 px-3 py-1 text-xs font-bold rounded-full uppercase tracking-wide" [ngClass]="{
+
+    <span class="inline-flex items-center gap-1 px-3 py-1 text-xs font-bold rounded-full uppercase tracking-wide"
+      [ngClass]="{
   'bg-yellow-100 text-yellow-800': 
     (deliveryOrder.status == 'out for delivery' && deliveryOrder.deliverDriver !== null) ||
     deliveryOrder.status == 'finished processing'&& deliveryOrder.deliverDriver == null,
@@ -13,18 +14,18 @@
   'bg-green-100 text-green-800': deliveryOrder.status == 'delivered'
 }">
 
-  {{
-    deliveryOrder.status?.trim() === 'finished processing' && deliveryOrder.deliverDriver == null
+      {{
+      deliveryOrder.status?.trim() === 'finished processing' && deliveryOrder.deliverDriver == null
       ? 'Released'
       : deliveryOrder.status?.trim() === 'finished processing' && deliveryOrder.deliverDriver != null
-        ? 'In Progress'
+      ? 'In Progress'
       : deliveryOrder.status?.trim() === 'out for delivery' && deliveryOrder.deliverDriver != null
-        ? 'Out for Delivery'
+      ? 'Out for Delivery'
       : deliveryOrder.status?.trim() === 'delivered'
-        ? 'Delivered'
-        : ''
-  }}
-</span>
+      ? 'Delivered'
+      : ''
+      }}
+    </span>
 
 
 
@@ -59,25 +60,39 @@
     </div>
     <div class="row">
       <span class="label">Payment Method:</span>
-      <span class="value">Cash on Delivery</span>
+      <span class="value">{{ deliveryOrder.paymenthMethod === "COD" ? 'Cash On Delivery' : 'Online Payment' }}
+      </span>
     </div>
-  </div>
+    <div class="row"
+      *ngIf="deliveryOrder.paymenthMethod === 'COD'||  !deliveryOrder.isPaid">
+      <span class="label">Total Amount:</span>
+      <span class="value">{{ deliveryOrder.totalAmount }}</span>
+    </div>
 
-  <div *ngIf="deliveryOrder.status === 'out for delivery'">
-    <label for="note" class="label">Add Note:</label>
-    <br>
-    <textarea (input)="onNoteChange($event)" id="note" class="note-input"
-      placeholder="Enter your notes here..."></textarea>
-  </div>
-  <div *ngIf="deliveryOrder.status === 'delivered'">
+    <div *ngIf="deliveryOrder.status === 'out for delivery'">
+      <label for="note" class="label">Add Note:</label>
+      <br>
+      <textarea (input)="onNoteChange($event)" id="note" class="note-input"
+        placeholder="Enter your notes here..."></textarea>
+    </div>
+    <div *ngIf="deliveryOrder.status === 'delivered'">
+      <div class="row">
+        <span class="label">Note:</span>
+        <span class="value"> {{ deliveryOrder.note }}</span>
+      </div>
+      <br>
+    </div>
+
     <div class="row">
-      <span class="label">Note:</span>
-      <span class="value"> {{ deliveryOrder.note }}</span>
+      <span></span>
+      <span class="value">{{ deliveryOrder.isPaid ? 'PAID' : 'NOT PAID' }}
+      </span>
     </div>
-    <br>
   </div>
 
-  
+
+
+
 </div>
 
 <br>
