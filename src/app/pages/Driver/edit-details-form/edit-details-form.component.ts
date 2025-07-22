@@ -28,6 +28,9 @@ export class EditDetailsFormComponent implements OnInit {
   passwordForm: FormGroup;
   submittedAccount = false;
   submittedPassword = false;
+  showCurrentPassword = false;
+  showNewPassword = false;
+  showConfirmPassword = false;
 
   selectedImage: File | null = null;
   imagePreview: string | ArrayBuffer | null = null;
@@ -47,10 +50,11 @@ export class EditDetailsFormComponent implements OnInit {
 
     this.passwordForm = this.fb.group(
       {
-        password: ['', [Validators.required, Validators.minLength(6)]],
-        confirmPassword: ['', Validators.required],
+        currentPassword: [''],
+        password: [''],
+        confirmPassword: ['']
       },
-      { validator: this.passwordMatchValidator }
+      { validators: this.passwordMatchValidator }
     );
   }
 
@@ -88,11 +92,6 @@ export class EditDetailsFormComponent implements OnInit {
     });
   }
 
-  passwordMatchValidator(group: AbstractControl) {
-    const password = group.get('password')?.value;
-    const confirmPassword = group.get('confirmPassword')?.value;
-    return password === confirmPassword ? null : { notMatching: true };
-  }
 
   onAccountSubmit() {
     this.submittedAccount = true;
@@ -118,48 +117,70 @@ export class EditDetailsFormComponent implements OnInit {
       this.loadAccountDetails();
     } else {
       console.log('Account form invalid');
+      alert("Account form invalid")
     }
   }
 
-updateImage() {
-  if (!this.selectedImage) {
-    console.warn('No image selected.');
-    return;
+  updateImage() {
+    if (!this.selectedImage) {
+      console.warn('No image selected.');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', this.selectedImage);
+    formData.append('driverID', this.driverId);
+
+    console.log('--- FormData Preview ---');
+    formData.forEach((value, key) => {
+      console.log(`${key}:`, value);
+    });
+
+    this.http.patch(`${this.baseUrl}/update-profile`, formData).subscribe({
+      next: (res) => console.log('Image updated:', res),
+      error: (err) => console.error(err),
+    });
+    alert('Account details updated successfully!');
+    this.loadAccountDetails();
   }
 
-  const formData = new FormData();
-  formData.append('file', this.selectedImage);
-  formData.append('driverID', this.driverId);
 
-  console.log('--- FormData Preview ---');
-  formData.forEach((value, key) => {
-    console.log(`${key}:`, value);
-  });
-
-  this.http.patch(`${this.baseUrl}/update-profile`, formData).subscribe({
-    next: (res) => console.log('Image updated:', res),
-    error: (err) => console.error(err),
-  });
-  alert('Account details updated successfully!');
-  this.loadAccountDetails();
-}
+  passwordMatchValidator(group: AbstractControl) {
+    const password = group.get('password')?.value;
+    const confirmPassword = group.get('confirmPassword')?.value;
+    return password === confirmPassword ? null : { notMatching: true };
+  }
 
 
   onPasswordSubmit() {
     this.submittedPassword = true;
-    if (this.passwordForm.valid) {
-      const payload = {
-        newPassword: this.passwordForm.get('password')?.value,
-      };
 
-      this.http.post('/api/account/change-password', payload).subscribe({
-        next: (res) => console.log('Password changed:', res),
-        error: (err) => console.error(err),
+    const payload = {
+      currentPassword: this.passwordForm.get('currentPassword')?.value,
+      newPassword: this.passwordForm.get('password')?.value,
+      driverId: this.driverId
+    };
+
+    console.log('Submitting password change:', payload);
+    if (this.passwordForm.valid) {
+
+
+      this.http.patch(`${this.baseUrl}/update-password`, payload).subscribe({
+        next: (res) => {
+          console.log('Password changed:', res);
+          // Optional: Reset the form or show success
+          this.passwordForm.reset();
+          this.submittedPassword = false;
+        },
+        error: (err) => {
+          console.error('Error changing password:', err);
+        }
       });
     } else {
       console.log('Password form invalid');
     }
   }
+
 
   onImageSelected(event: any) {
     const file = event.target.files[0];
