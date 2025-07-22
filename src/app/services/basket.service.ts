@@ -1,29 +1,44 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { AddToBasketDTO, BasketItemDTO, TemporaryOrderSummary, ConfirmOrderDTO } from '../models/basket.model';
+import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BasketService {
   private apiUrl = `${environment.apiUrl}/api/TemporaryOrder`;
-  private readonly temporaryCustomerId = '8afcc2dc-80cf-4247-b372-aca6371a5da7';
 
-  constructor(private http: HttpClient) { }
+  // private readonly temporaryCustomerId = '8afcc2dc-80cf-4247-b372-aca6371a5da7';
 
-  //Gets the hardcoded customer ID (temporary solution)
-  //@returns The temporary customer ID
-  getCustomerId(): string {
-    return this.temporaryCustomerId;
+  // constructor(private http: HttpClient) { }
+
+  // //Gets the hardcoded customer ID (temporary solution)
+  // //@returns The temporary customer ID
+  // getCustomerId(): string {
+  //   return this.temporaryCustomerId;
+  // }
+  
+  constructor(private http: HttpClient, private userService: UserService) { }
+
+  // Gets the customer ID from localStorage or returns null if not logged in
+  getCustomerId(): string | null {
+    return localStorage.getItem('userId');
   }
 
-  //Adds an item to the basket
-  //@returns An observable with the temporary order ID
+  // Adds an item to the basket
+  // @returns An observable with the temporary order ID
   addToBasket(laundryId: string, items: BasketItemDTO[]): Observable<{temporaryOrderId: string}> {
+    const customerId = this.getCustomerId();
+    
+    if (!customerId) {
+      return throwError(() => new Error('User not authenticated. Please log in first.'));
+    }
+    
     const dto: AddToBasketDTO = {
-      customerId: this.temporaryCustomerId,
+      customerId,
       laundryId,
       items
     };
@@ -53,7 +68,13 @@ export class BasketService {
    * @returns An observable with the order summaries
    */
   getCustomerOrderSummaries(): Observable<TemporaryOrderSummary[]> {
-    return this.http.get<TemporaryOrderSummary[]>(`${this.apiUrl}/customer/${this.temporaryCustomerId}/summaries`);
+    const customerId = this.getCustomerId();
+    
+    if (!customerId) {
+      return throwError(() => new Error('User not authenticated. Please log in first.'));
+    }
+    
+    return this.http.get<TemporaryOrderSummary[]>(`${this.apiUrl}/customer/${customerId}/summaries`);
   }
 
   /**

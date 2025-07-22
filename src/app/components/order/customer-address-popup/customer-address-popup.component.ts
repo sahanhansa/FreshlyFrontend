@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { CustomerAddress } from 'src/app/models/order-models/customerAddress.model';
 import { CustomerService } from '../../../services/order-services/customer.service';
 import { CommonModule } from '@angular/common';
+import { BasketService } from '../../../services/basket.service';
 
 @Component({
   selector: 'app-customer-address-popup',
@@ -12,7 +13,7 @@ import { CommonModule } from '@angular/common';
   styleUrl: './customer-address-popup.component.css',
 })
 export class CustomerAddressPopupComponent implements OnInit {
-  @Input() customerId!: string;
+  @Input() customerId: string = '';
   @Input() address: CustomerAddress = {} as CustomerAddress;
   @Input() loading = false;
   @Input() error: string | null = null;
@@ -21,11 +22,17 @@ export class CustomerAddressPopupComponent implements OnInit {
   @Output() cancel = new EventEmitter<void>();
   @Output() back = new EventEmitter<void>();
 
-  constructor(private customerService: CustomerService) {}
+  constructor(
+    private customerService: CustomerService,
+    private basketService: BasketService
+  ) {}
 
   ngOnInit() {
-    if (this.customerId) {
-      this.customerService.getCustomerAddress(this.customerId).subscribe({
+    this.loading = true;
+    const customerId = this.basketService.getCustomerId();
+    
+    if (customerId) {
+      this.customerService.getCustomerAddress(customerId).subscribe({
         next: (addr) => {
           this.address = addr;
           this.loading = false;
@@ -35,6 +42,9 @@ export class CustomerAddressPopupComponent implements OnInit {
           this.loading = false;
         }
       });
+    } else {
+      this.error = 'Please log in to continue.';
+      this.loading = false;
     }
   }
 

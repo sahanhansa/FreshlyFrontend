@@ -50,6 +50,7 @@ import { LogoutPageComponent } from './pages/Driver/logout-page/logout-page.comp
 import {AdminLoginComponent} from './components/admin/login/admin-login.component';
 import { NewOrderDetailsComponent } from './components/laundry/new-order-details/new-order-details.component';
 import {MultiStepFormComponent} from './components/laundry/lau-sign/multi-step-form.component';
+import { AuthHelperService } from './services/auth-helper.service';
 
 
 
@@ -137,7 +138,7 @@ export const routes: Routes = [
       { path: 'home', component: CusHomeComponent }, 
       {path: 'how-it-works', component:HowItWorksComponent},
       { path: 'order', component: LaundryPageComponent },      // Laundry list page
-      { path: 'basket', component: BasketComponent },
+      { path: 'basket', component: BasketComponent, canActivate: [() => AuthHelperService.prototype.isLoggedIn()] },
       {path: 'laundry/:id', component: ItemPageComponent},
       // Replace with actual profile component if needed
       { path: 'profile', loadComponent: () => import('./components/customer/profile/profile.component').then(m => m.ProfileComponent) },

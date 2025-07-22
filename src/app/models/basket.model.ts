@@ -50,13 +50,26 @@ export interface TemporaryOrderItem {
 export interface ConfirmOrderDTO {
   temporaryOrderId: string;
   pickupAt: string; // ISO string
-  address?: AddressDTO;
+  address: {
+    addressId?: string;
+    houseNo: string;
+    street: string;
+    city: string;
+    postalCode: string;
+  };
+  customerId: string; // Add this property
+  items: {
+    itemId: string;
+    serviceId: string;
+    quantity: number;
+  }[]; // Add this property
 }
 
+// Update the AddressDTO if needed to match the structure used in your component
 export interface AddressDTO {
-  addressId: string;
-  houseNo?: string;
-  street?: string;
-  city?: string;
-  postalCode?: string;
+  addressId?: string;
+  houseNo: string;
+  street: string;
+  city: string;
+  postalCode: string;
 }

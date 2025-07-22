@@ -4,6 +4,8 @@ import { ToPayOrderCardComponent } from '../to-pay-order-card/to-pay-order-card.
 import { OrderDetailService } from '../../../services/order-services/order-detail.service';
 import { OrderDetailsDTO, OrderItemDTO } from '../../../models/order-models/order-detail.model';
 import { ToastService } from '../../../services/toast.service';
+import { Router } from '@angular/router';
+import { BasketService } from '../../../services/basket.service';
 
 interface SimplifiedItem {
   name: string;
@@ -18,9 +20,6 @@ interface SimplifiedItem {
   styleUrl: './to-pay-order-list.component.css'
 })
 export class ToPayOrderListComponent implements OnInit {
-  // This would normally come from auth service
-  customerId = '8afcc2dc-80cf-4247-b372-aca6371a5da7';
-  
   toPayOrders: OrderDetailsDTO[] = [];
   displayOrders: {
     orderId: string;
@@ -35,7 +34,9 @@ export class ToPayOrderListComponent implements OnInit {
 
   constructor(
     private orderDetailService: OrderDetailService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private router: Router,
+    private basketService: BasketService
   ) {}
 
   ngOnInit(): void {
@@ -46,7 +47,17 @@ export class ToPayOrderListComponent implements OnInit {
     this.isLoading = true;
     this.error = null;
 
-    this.orderDetailService.getOutForDeliveryOrders(this.customerId).subscribe({
+    // Get customer ID from BasketService
+    const customerId = this.basketService.getCustomerId();
+    if (!customerId) {
+      this.error = 'You need to be logged in to view your orders';
+      this.isLoading = false;
+      this.toastService.show('Error', 'Please log in to view your orders', 'error');
+      this.router.navigate(['/cus-login']);
+      return;
+    }
+
+    this.orderDetailService.getOutForDeliveryOrders(customerId).subscribe({
       next: (orders) => {
         this.toPayOrders = orders;
         // Transform the orders for display

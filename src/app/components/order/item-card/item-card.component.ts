@@ -4,7 +4,7 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Item } from '../../../models/item.model';
 import { FabricTypeService } from '../../../services/fabric-type.service';
 import { BasketService } from '../../../services/basket.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ToastService } from '../../../services/toast.service';
 import { UserService } from '../../../services/user.service';
 
@@ -47,6 +47,7 @@ export class ItemCardComponent implements OnInit {
     private fabricTypeService: FabricTypeService,
     private basketService: BasketService,
     private route: ActivatedRoute,
+    private router: Router,
     private toastService: ToastService,
     private userService: UserService
   ) {}
@@ -104,6 +105,17 @@ export class ItemCardComponent implements OnInit {
     this.isAddingToBasket = true;
     this.addToBasketSuccess = false;
     this.addToBasketError = '';
+    
+    // Check if user is logged in
+    const customerId = this.basketService.getCustomerId();
+    if (!customerId) {
+      this.isAddingToBasket = false;
+      this.toastService.show('Error', 'Please log in to add items to basket', 'error');
+      this.router.navigate(['/cus-login'], { 
+        queryParams: { returnUrl: this.router.url } 
+      });
+      return;
+    }
     
     if (!this.laundryId) {
       this.addToBasketError = 'No laundry selected';

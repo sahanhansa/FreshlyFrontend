@@ -5,6 +5,8 @@ import { FeedbackComponent } from '../feedback/feedback.component';
 import { OrderDetailService } from '../../../services/order-services/order-detail.service';
 import { OrderDetailsDTO } from '../../../models/order-models/order-detail.model';
 import { ToastService } from '../../../services/toast.service';
+import { Router } from '@angular/router';
+import { BasketService } from '../../../services/basket.service';
 
 interface SimplifiedItem {
   name: string;
@@ -19,8 +21,7 @@ interface SimplifiedItem {
   styleUrl: './completed-order-list.component.css'
 })
 export class CompletedOrderListComponent implements OnInit {
-  // This would normally come from auth service
-  customerId = '8afcc2dc-80cf-4247-b372-aca6371a5da7';
+  // Remove hardcoded customerId
   
   // Default laundry ID - use this when the order doesn't have a laundryId
   private readonly DEFAULT_LAUNDRY_ID = '6b57925c-eb6c-45c6-b9fd-f92db2c66a8e';
@@ -29,7 +30,7 @@ export class CompletedOrderListComponent implements OnInit {
   displayOrders: {
     orderId: string;
     orderIdFormatted: string;
-    laundryId: string; // <-- Add this line!
+    laundryId: string;
     laundryName: string;
     date: string;
     totalAmount: number;
@@ -45,7 +46,9 @@ export class CompletedOrderListComponent implements OnInit {
 
   constructor(
     private orderDetailService: OrderDetailService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private router: Router,
+    private basketService: BasketService
   ) {}
 
   ngOnInit(): void {
@@ -56,14 +59,24 @@ export class CompletedOrderListComponent implements OnInit {
     this.isLoading = true;
     this.error = null;
 
-    this.orderDetailService.getCompletedOrders(this.customerId).subscribe({
+    // Get customer ID from BasketService
+    const customerId = this.basketService.getCustomerId();
+    if (!customerId) {
+      this.error = 'You need to be logged in to view your orders';
+      this.isLoading = false;
+      this.toastService.show('Error', 'Please log in to view your orders', 'error');
+      this.router.navigate(['/cus-login']);
+      return;
+    }
+
+    this.orderDetailService.getCompletedOrders(customerId).subscribe({
       next: (orders) => {
         this.completedOrders = orders;
         // Transform the orders for display
         this.displayOrders = orders.map(order => ({
           orderId: order.orderId,
           orderIdFormatted: order.orderIdFormatted,
-          laundryId: order.laundryId, // <-- Add this line!
+          laundryId: order.laundryId,
           laundryName: order.laundryName,
           date: order.orderDateFormatted,
           totalAmount: order.totalAmount,
