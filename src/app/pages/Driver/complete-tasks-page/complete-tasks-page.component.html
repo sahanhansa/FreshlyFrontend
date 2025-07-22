@@ -1,24 +1,47 @@
-<app-driver-navbar></app-driver-navbar>
+<!-- ✅ NAVBAR -->
+<div class="w-full">
+  <app-driver-navbar></app-driver-navbar>
+</div>
 
-<app-complete-task-header></app-complete-task-header>
+<!-- ✅ MAIN CONTENT AREA -->
+<main class="flex flex-col items-center justify-start w-full min-h-screen px-4 sm:px-6 md:px-12 lg:px-20 bg-white">
 
-<app-search-bar
-  [initialValue]="searchQuery"
-  (searchChanged)="onSearchChanged($event)">
-</app-search-bar>
+  <!-- ✅ PAGE HEADER -->
+  <div class="w-full max-w-7xl mt-6">
+    <app-complete-task-header></app-complete-task-header>
+  </div>
 
-<app-complete-order-list
-  [searchQuery]="searchQuery"
-  [currentPage]="currentPage"
-  [itemsPerPage]="itemsPerPage"
-  (totalItemChange)="onTotalItemChange($event)">
-</app-complete-order-list>
+  <!-- ✅ SEARCH BAR -->
+  <div class="w-full max-w-4xl mt-6">
+    <app-search-bar
+      [initialValue]="searchQuery"
+      (searchChanged)="onSearchChanged($event)">
+    </app-search-bar>
+  </div>
 
-<app-pagination
-  [currentPage]="currentPage"
-  [totalItems]="totalItems"
-  [itemsPerPage]="itemsPerPage"
-  (pageChange)="onPageChanged($event)">
-</app-pagination>
+  <!-- ✅ ORDER LIST -->
+  <div class="w-full max-w-7xl mt-8">
+    <app-complete-order-list
+      [searchQuery]="searchQuery"
+      [currentPage]="currentPage"
+      [itemsPerPage]="itemsPerPage"
+      (totalItemChange)="onTotalItemChange($event)">
+    </app-complete-order-list>
+  </div>
 
-<app-footer></app-footer>
+  <!-- ✅ PAGINATION -->
+  <div class="w-full max-w-4xl mt-8">
+    <app-pagination
+      [currentPage]="currentPage"
+      [totalItems]="totalItems"
+      [itemsPerPage]="itemsPerPage"
+      (pageChange)="onPageChanged($event)">
+    </app-pagination>
+  </div>
+
+</main>
+
+<!-- ✅ FOOTER -->
+<div class="w-full mt-12">
+  <app-footer></app-footer>
+</div>

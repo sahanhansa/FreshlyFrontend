@@ -1,52 +1,66 @@
+<!-- ✅ NAVBAR -->
 <app-driver-navbar></app-driver-navbar>
 
-<div> <app-pickup-tasks-header></app-pickup-tasks-header>  
-</div>
-<br>
-<div class="flex flex-col sm:flex-row w-full sm:flex-1 ml-5 gap-4 sm:items-center">
-        <div class="w-full sm:max-w-4xl">
-                <app-search-bar [initialValue]="searchQuery" (searchChanged)="onSearchChanged($event)">
-                </app-search-bar>
-        </div>
+<!-- ✅ MAIN CONTENT WRAPPER -->
+<main class="w-full min-h-screen flex flex-col px-4 sm:px-6 lg:px-8 bg-white">
 
-   <!-- <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:ml-4 w-full sm:w-auto">
-    <button (click)="onGlobalSearch()"
-            class="flex items-center justify-center w-full sm:w-auto px-7 py-3 bg-blue-600 text-white text-lg font-medium rounded-xl shadow-lg hover:bg-blue-700 hover:scale-105 transition transform duration-300 ease-out focus:outline-none focus:ring-5 focus:ring-blue-400 focus:ring-opacity-60">
+  <!-- ✅ HEADER -->
+  <section class="w-full max-w-7xl mx-auto mt-6">
+    <app-pickup-tasks-header></app-pickup-tasks-header>
+  </section>
+
+  <!-- ✅ SEARCH + BUTTONS ROW -->
+  <section class="w-full max-w-7xl mx-auto flex flex-col sm:flex-row gap-4 my-6 sm:items-center">
+    <!-- Search -->
+    <div class="w-full sm:flex-1">
+      <app-search-bar
+        [initialValue]="searchQuery"
+        (searchChanged)="onSearchChanged($event)">
+      </app-search-bar>
+    </div>
+
+    <!-- Buttons -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full sm:w-auto">
+      <button
+        (click)="selectMode('global')"
+        [class]="globalBtnClass"
+        class="flex items-center justify-center w-full px-6 py-3 bg-blue-600 text-white text-base sm:text-lg font-semibold rounded-xl shadow-md hover:bg-blue-700 hover:scale-105 transition-transform duration-300 ease-out focus:outline-none focus:ring-4 focus:ring-blue-400 focus:ring-opacity-50">
         Global Pickups
-    </button>
-    <button (click)="onOwnSearch()"
-            class="flex items-center justify-center w-full sm:w-auto px-7 py-3 bg-blue-600 text-white text-lg font-medium rounded-xl shadow-lg hover:bg-blue-700 hover:scale-105 transition transform duration-300 ease-out focus:outline-none focus:ring-5 focus:ring-blue-400 focus:ring-opacity-60">
-        Own Pickups
-    </button>
-</div> -->
+      </button>
 
-<div class="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:ml-4 w-full sm:w-auto">
-  <button
-    (click)="selectMode('global')"
-    [class]="globalBtnClass"
-  >
-    Global Pickups
-  </button>
+      <button
+        (click)="selectMode('own')"
+        [class]="ownBtnClass"
+        class="flex items-center justify-center w-full px-6 py-3 bg-blue-600 text-white text-base sm:text-lg font-semibold rounded-xl shadow-md hover:bg-blue-700 hover:scale-105 transition-transform duration-300 ease-out focus:outline-none focus:ring-4 focus:ring-blue-400 focus:ring-opacity-50">
+        My Pickups
+      </button>
+    </div>
+  </section>
 
-  <button
-    (click)="selectMode('own')"
-    [class]="ownBtnClass"
-  >
-    My Pickups
-  </button>
+  <!-- ✅ PICKUP ORDER CARDS -->
+  <section class="w-full max-w-7xl mx-auto">
+    <app-pickup-order-card
+      [searchQuery]="searchQuery"
+      [currentPage]="currentPage"
+      [itemsPerPage]="itemsPerPage"
+      (totalItemChange)="onTotalItemChange($event)"
+      [isOwnSearch]="isOwnSearch">
+    </app-pickup-order-card>
+  </section>
+
+  <!-- ✅ PAGINATION -->
+  <section class="w-full max-w-7xl mx-auto my-6">
+    <app-pagination
+      [currentPage]="currentPage"
+      [totalItems]="totalItems"
+      [itemsPerPage]="itemsPerPage"
+      (pageChange)="onPageChanged($event)">
+    </app-pagination>
+  </section>
+
+</main>
+
+<!-- ✅ FOOTER -->
+<div class="w-full mt-12">
+  <app-footer></app-footer>
 </div>
-
-
-
-
-
-
-</div>
-
-<div><app-pickup-order-card [searchQuery]="searchQuery" [currentPage]="currentPage" [itemsPerPage]="itemsPerPage"
-                (totalItemChange)="onTotalItemChange($event)" [isOwnSearch]="isOwnSearch"></app-pickup-order-card></div>
-
-<div><app-pagination [currentPage]="currentPage" [totalItems]="totalItems" [itemsPerPage]="itemsPerPage"
-                (pageChange)="onPageChanged($event)"></app-pagination> </div>
-
-<div><app-footer></app-footer> </div>

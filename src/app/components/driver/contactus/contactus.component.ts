@@ -10,7 +10,7 @@ export interface DriverContactUs {
   firstName: string;
   lastName: string;
   email: string;
-  phoneNumber: string[];
+  phoneNumber: string;
 }
 
 @Component({
@@ -63,14 +63,14 @@ export class ContactusComponent implements OnInit {
       firstName: this.firstName,
       lastName: this.lastName,
       email: this.email,
-      phoneNumber: Array.isArray(this.phoneNumber) ? this.phoneNumber : [this.phoneNumber],
+      phoneNumber: this.phoneNumber,
       selectedSubject: this.selectedSubject?.trim() ? this.selectedSubject : 'General Inquiry',
       message: this.message
     };
 
     console.log('API REQUEST:', formData);
 
-    const url = `${this.baseUrl}/AddMessage`;
+    const url = `${this.baseUrl}/add-message`;
 
     this.http.post<any>(url, formData)
       .pipe(
@@ -83,11 +83,7 @@ export class ContactusComponent implements OnInit {
           this.errorMessage = '';
 
           // ✅ Reset the form fields to null
-          this.firstName = "";
-          this.lastName = "";
-          this.email = "";
-          this.phoneNumber = "";
-          this.selectedSubject = "";
+          this.selectedSubject = "General Inquiry";
           this.message = "";
 
 
@@ -147,7 +143,7 @@ export class ContactusComponent implements OnInit {
         this.firstName = contact.firstName;
         this.lastName = contact.lastName;
         this.email = contact.email;
-        this.phoneNumber = contact.phoneNumber.join(', ');
+        this.phoneNumber = contact.phoneNumber;
       }
     });
   }
