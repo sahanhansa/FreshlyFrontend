@@ -119,7 +119,6 @@ export const routes: Routes = [
       { path: 'customers', loadComponent: () => import('./components/admin/customers/customers.component').then(m => m.CustomersComponent) },
       { path: 'laundries', loadComponent: () => import('./components/admin/laundries/laundries.component').then(m => m.LaundriesComponent) },
       { path: 'orders', loadComponent: () => import('./components/admin/orders/orders.component').then(m => m.OrdersComponent) },
-      { path: 'vehicles', loadComponent: () => import('./components/admin/vehicles/vehicles.component').then(m => m.VehiclesComponent) },
       { path: 'complaints', loadComponent: () => import('./components/admin/complaints/complaints.component').then(m => m.ComplaintsComponent) },
       { path: 'reports', loadComponent: () => import('./components/admin/reports/reports.component').then(m => m.ReportsComponent) }
     ]
