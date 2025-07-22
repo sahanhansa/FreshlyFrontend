@@ -50,7 +50,8 @@ import { LogoutPageComponent } from './pages/Driver/logout-page/logout-page.comp
 import {AdminLoginComponent} from './components/admin/login/admin-login.component';
 import { NewOrderDetailsComponent } from './components/laundry/new-order-details/new-order-details.component';
 import {MultiStepFormComponent} from './components/laundry/lau-sign/multi-step-form.component';
-
+import { RequestResetComponent } from './pages/request-reset/request-reset.component';
+import { VerifyResetComponent } from './pages/verify-reset/verify-reset.component';
 
 
 // Define the application's routes
@@ -65,6 +66,9 @@ export const routes: Routes = [
     { path: 'about', component: AboutPageComponent },
     { path: 'laundries', component: LaundriesPageComponent },
     { path: 'contact', component: ContactPageComponent },
+
+    { path: 'request-reset', component: RequestResetComponent },
+  { path: 'verify-reset', component: VerifyResetComponent },
 
     // Route to identify the user type
     { path: 'whoareyou', component: WhoAreYouComponent }, 
@@ -103,6 +107,9 @@ export const routes: Routes = [
   {path: 'complete-tasks-page',component: CompleteTasksPageComponent} ,
   {path: 'edit-details-form', component: EditDetailsFormComponent},
   {path: 'logout-page', component: LogoutPageComponent},
+  { path: 'payment', loadComponent: () => import('./components/payment/payment.component').then(m => m.PaymentComponent) },
+  { path: 'payment-success', loadComponent: () => import('./components/payment-success/payment-success.component').then(m => m.PaymentSuccessComponent) },
+  { path: 'payment-cancel', loadComponent: () => import('./components/payment-cancel/payment-cancel.component').then(m => m.PaymentCancelComponent) },
   
   
   
@@ -146,6 +153,7 @@ export const routes: Routes = [
     ]
   },
   
+   
   
  // Route for laundry home
    {path: 'laundry-home', component: HomeComponent},

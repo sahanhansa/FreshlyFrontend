@@ -29,6 +29,10 @@ export class LoginComponent implements OnInit {
     });
   }
 
+  goToReset() {
+    this.router.navigate(['/request-reset'], { queryParams: { userType: 'Customer' } });
+  }
+
   ngOnInit(): void {
     // Component initialization logic
   }

@@ -30,6 +30,10 @@ export class AdminLoginComponent implements OnInit {
     });
   }
 
+  goToReset() {
+    this.router.navigate(['/request-reset'], { queryParams: { userType: 'Admin' } });
+  }
+
 
   ngOnInit(): void {
     // Component initialization logic

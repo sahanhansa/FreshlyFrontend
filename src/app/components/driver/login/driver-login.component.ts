@@ -29,6 +29,10 @@ export class DriverLoginComponent implements OnInit {
     });
   }
 
+  goToReset() {
+    this.router.navigate(['/request-reset'], { queryParams: { userType: 'Driver' } });
+  }
+
   ngOnInit(): void {
     // Component initialization logic
   }

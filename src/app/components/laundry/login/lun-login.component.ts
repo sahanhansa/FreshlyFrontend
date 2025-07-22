@@ -27,12 +27,16 @@ export class LunLoginComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
-     private authService: AuthService
+    private authService: AuthService
   ) {
     this.loginForm = this.formBuilder.group({
       username: ['', [Validators.required]],
       password: ['', [Validators.required]]
     });
+  }
+
+  goToReset() {
+    this.router.navigate(['/request-reset'], { queryParams: { userType: 'Laundry' } });
   }
 
   ngOnInit(): void {
