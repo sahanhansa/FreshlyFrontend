@@ -12,6 +12,7 @@ export interface Item {
   categoryName: string | null; 
   description?: string;
   image?: string;
+  imageUrl?: string;
   services: ServiceWithPrice[];
 }
 

@@ -7,6 +7,7 @@ import { BasketService } from '../../../services/basket.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastService } from '../../../services/toast.service';
 import { UserService } from '../../../services/user.service';
+import { ItemService } from '@app/services/item.service';
 
 // Interface to support legacy properties
 interface ExtendedItem extends Item {
@@ -27,14 +28,16 @@ export class ItemCardComponent implements OnInit {
   // Input property to receive item data from parent component
   @Input() item!: ExtendedItem; 
 
+    // Array to store available fabric types
+  fabricTypes: { garmentTypeId: string; garmentTypeName: string }[] = []; 
+  serviceTypes: { serviceId: string; serviceName: string}[] = [];
+
   // Form controls for each selectable field
-  selectedGarment = new FormControl('Cotton');
-  selectedService = new FormControl('');
+  selectedGarment = new FormControl();
+  selectedService = new FormControl();
   selectedWashMethod = new FormControl('');
   quantity = new FormControl(1);
   
-  // Array to store available fabric types
-  fabricTypes: string[] = []; 
   // Store the calculated price based on service and quantity
   currentPrice: number = 0;
   
@@ -49,7 +52,8 @@ export class ItemCardComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private toastService: ToastService,
-    private userService: UserService
+    private userService: UserService,
+    private itemService: ItemService
   ) {}
   
   ngOnInit(): void {
@@ -60,18 +64,23 @@ export class ItemCardComponent implements OnInit {
         this.laundryId = id;
       }
     });
+
+    this.selectedGarment.valueChanges.subscribe((value) => {
+    this.onGarmentChange(value);
+    this.updatePrice();
+  });
     
     // Get fabric types from the service
-    this.fabricTypes = this.fabricTypeService.getFabricTypes();
+    this.fabricTypes = this.getFabricTypes(this.item.services)
     
     // Set default values
     if (this.fabricTypes.length > 0) {
-      this.selectedGarment.setValue(this.fabricTypes[0]);
+      this.selectedGarment.setValue(this.fabricTypes[0].garmentTypeId);
     }
     
     // Set default service if the item has services
-    if (this.item.services && this.item.services.length > 0) {
-      this.selectedService.setValue(this.item.services[0].serviceId);
+    if (this.serviceTypes && this.serviceTypes.length > 0) {
+      this.selectedService.setValue(this.serviceTypes[0].serviceId);
       this.updatePrice();
     }
     
@@ -88,6 +97,45 @@ export class ItemCardComponent implements OnInit {
     // Check what properties are actually available
     console.log('Item data:', this.item);
   }
+
+onGarmentChange(garmentId: any) {
+  this.itemService.getItemsByLaundryIdAndGarmentId(this.laundryId, garmentId).subscribe({
+    next: (res: any) => {
+      console.log(res);
+      // Clear existing serviceTypes to avoid duplicates
+      this.serviceTypes = [];
+
+      // Add new service types
+      res[0].services.forEach((service: any) => {
+        this.serviceTypes.push({
+          serviceId: service.serviceId,
+          serviceName: service.serviceName
+        });
+      });
+    },
+    error: (err: any) => {
+      console.error(err);
+    }
+  });
+}
+
+
+
+ getFabricTypes(data: any) {
+  const uniqueMap = new Map();
+
+  data.forEach((item: any) => {
+    if (!uniqueMap.has(item.garmentTypeId)) {
+      uniqueMap.set(item.garmentTypeId, {
+        garmentTypeId: item.garmentTypeId,
+        garmentTypeName: item.garmentTypeName
+      });
+    }
+  });
+
+  return Array.from(uniqueMap.values());
+}
+
   
   // Update the price based on selected service
   updatePrice(): void {
