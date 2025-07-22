@@ -20,8 +20,8 @@ import { environment } from '@environments/environment';
 export class EditDetailsFormComponent implements OnInit {
 
   private baseUrl = `${environment.apiUrl}/api/Driver`;
-  
-    driverId: string = localStorage.getItem('userId') || '';
+
+  driverId: string = localStorage.getItem('userId') || '';
 
 
   accountForm: FormGroup;
@@ -31,6 +31,7 @@ export class EditDetailsFormComponent implements OnInit {
 
   selectedImage: File | null = null;
   imagePreview: string | ArrayBuffer | null = null;
+  profilePhoto: string = '';
 
   constructor(private fb: FormBuilder, private http: HttpClient) {
     this.accountForm = this.fb.group({
@@ -73,11 +74,12 @@ export class EditDetailsFormComponent implements OnInit {
           postalCode: data.postalCode,
           email: data.email,
           contactNumber: data.contactNumber,
+          profilePhoto: data.profilePhoto
         });
 
         // Set existing image as preview
-        if (data.profileImageUrl) {
-          this.imagePreview = data.profileImageUrl;
+        if (data.profilePhoto) {
+          this.profilePhoto = data.profilePhoto;
         }
       },
       error: (err) => {
@@ -101,23 +103,47 @@ export class EditDetailsFormComponent implements OnInit {
         formData.append(key, this.accountForm.get(key)?.value);
       });
 
-      if (this.selectedImage) {
-        formData.append('profileImage', this.selectedImage);
-      }
+      formData.append('driverId', this.driverId);
 
       console.log('--- FormData Preview ---');
       formData.forEach((value, key) => {
         console.log(`${key}:`, value);
       });
 
-      this.http.post('/api/account/update', formData).subscribe({
+      this.http.patch(`${this.baseUrl}/update-profile`, formData).subscribe({
         next: (res) => console.log('Account updated:', res),
         error: (err) => console.error(err),
       });
+      alert('Account details updated successfully!');
+      this.loadAccountDetails();
     } else {
       console.log('Account form invalid');
     }
   }
+
+updateImage() {
+  if (!this.selectedImage) {
+    console.warn('No image selected.');
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append('file', this.selectedImage);
+  formData.append('driverID', this.driverId);
+
+  console.log('--- FormData Preview ---');
+  formData.forEach((value, key) => {
+    console.log(`${key}:`, value);
+  });
+
+  this.http.patch(`${this.baseUrl}/update-profile`, formData).subscribe({
+    next: (res) => console.log('Image updated:', res),
+    error: (err) => console.error(err),
+  });
+  alert('Account details updated successfully!');
+  this.loadAccountDetails();
+}
+
 
   onPasswordSubmit() {
     this.submittedPassword = true;

@@ -5,7 +5,7 @@
     <div class="flex flex-col items-center text-center space-y-4">
       <div class="relative w-32 h-32">
         <img
-          [src]="imagePreview || 'https://via.placeholder.com/150'"
+          [src]="imagePreview || profilePhoto"
           alt="Profile"
           class="w-32 h-32 rounded-full object-cover border-4 border-white shadow-md"
         />
@@ -23,6 +23,9 @@
           </svg>
         </label>
         <input id="profileImage" type="file" hidden (change)="onImageSelected($event)" accept="image/*" />
+        <button (click)="updateImage()" class="my-2 bg-blue-600 w-xl text-white py-2 px-7 rounded-lg hover:bg-blue-700 transition duration-200">
+          Save Image
+        </button>
       </div>
       <h2 class="text-2xl font-bold text-gray-800">Edit Profile</h2>
       <p class="text-gray-500">Update your personal information and profile photo.</p>
