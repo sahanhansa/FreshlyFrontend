@@ -15,7 +15,7 @@ import { ToastService } from '../../../services/toast.service';
 })
 export class OngoingOrderListComponent implements OnInit {
   // This would normally come from auth service
-  customerId = 'a4dca9b3-5f58-11f0-8064-0022481a06a0';
+  customerId = '8afcc2dc-80cf-4247-b372-aca6371a5da7';
   
   ongoingOrders: OrderDetailsDTO[] = [];
   isLoading = true;

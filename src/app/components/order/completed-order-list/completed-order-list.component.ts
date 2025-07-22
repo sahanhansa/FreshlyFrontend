@@ -20,10 +20,10 @@ interface SimplifiedItem {
 })
 export class CompletedOrderListComponent implements OnInit {
   // This would normally come from auth service
-  customerId = 'a4dca9b3-5f58-11f0-8064-0022481a06a0';
+  customerId = '8afcc2dc-80cf-4247-b372-aca6371a5da7';
   
   // Default laundry ID - use this when the order doesn't have a laundryId
-  private readonly DEFAULT_LAUNDRY_ID = '689a1389-5f5b-11f0-8064-0022481a06a0';
+  private readonly DEFAULT_LAUNDRY_ID = '6b57925c-eb6c-45c6-b9fd-f92db2c66a8e';
   
   completedOrders: OrderDetailsDTO[] = [];
   displayOrders: {

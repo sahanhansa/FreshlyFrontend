@@ -35,7 +35,7 @@ export class OrderSummaryComponent implements OnInit {
   showAddressPopup: boolean = false;
   showOrderConfirmPopup: boolean = false;
   showOrderConfirmedPopup: boolean = false;
-  customerId = 'a4dca9b3-5f58-11f0-8064-0022481a06a0'; // get this from auth/session
+  customerId = '8afcc2dc-80cf-4247-b372-aca6371a5da7'; // get this from auth/session
 
   pickupDateTime!: Date;
   address!: CustomerAddress;
