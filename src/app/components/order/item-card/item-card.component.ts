@@ -151,63 +151,61 @@ onGarmentChange(garmentId: any, fromInit = false): void {
   
   // Updated method to handle adding to basket without login requirement
   onAddToBasket(): void {
-    this.isAddingToBasket = true;
-    this.addToBasketSuccess = false;
-    this.addToBasketError = '';
-    
-    // Check if user is logged in
-    const customerId = this.basketService.getCustomerId();
-    if (!customerId) {
-      this.isAddingToBasket = false;
-      this.toastService.show('Error', 'Please log in to add items to basket', 'error');
-      this.router.navigate(['/cus-login'], { 
-        queryParams: { returnUrl: this.router.url } 
-      });
-      return;
-    }
-    
-    if (!this.laundryId) {
-      this.addToBasketError = 'No laundry selected';
-      this.isAddingToBasket = false;
-      this.toastService.show('Error', 'No laundry selected', 'error');
-      return;
-    }
-    
-    const itemId = this.item.itemId?.toString() || this.item.id?.toString() || '';
-    const selectedServiceId = this.selectedService.value || '';
-    const quantity = this.quantity.value || 1;
-    
-    if (!itemId || !selectedServiceId) {
-      this.addToBasketError = 'Please select a service';
-      this.isAddingToBasket = false;
-      this.toastService.show('Error', 'Please select a service', 'error');
-      return;
-    }
+  this.isAddingToBasket = true;
+  this.addToBasketSuccess = false;
+  this.addToBasketError = '';
 
-    // Simplified call without passing customerId
-    this.basketService.addItemToBasket(
-      this.laundryId,
-      itemId,
-      selectedServiceId,
-      quantity
-    ).subscribe({
-      next: (response) => {
-        this.isAddingToBasket = false;
-        this.addToBasketSuccess = true;
-        this.toastService.show('Success', 'Item added to basket', 'success');
-        setTimeout(() => {
-          this.addToBasketSuccess = false;
-        }, 3000);
-      },
-      error: (error) => {
-        this.isAddingToBasket = false;
-        this.addToBasketError = 'Failed to add to basket';
-        console.error('Add to basket error:', error);
-        this.toastService.show('Error', 'Failed to add to basket', 'error');
-      }
-    });
+  const customerId = this.basketService.getCustomerId();
+  if (!customerId) {
+    this.isAddingToBasket = false;
+    this.toastService.show('Error', 'Please log in to add items to basket', 'error');
+    this.router.navigate(['/cus-login'], { queryParams: { returnUrl: this.router.url } });
+    return;
   }
-  
+
+  if (!this.laundryId) {
+    this.addToBasketError = 'No laundry selected';
+    this.isAddingToBasket = false;
+    this.toastService.show('Error', 'No laundry selected', 'error');
+    return;
+  }
+
+  const itemId = this.item.itemId?.toString() || this.item.id?.toString() || '';
+  const selectedServiceId = this.selectedService.value || '';
+  const selectedGarmentId = this.selectedGarment.value || '';
+  const quantity = this.quantity.value || 1;
+
+  if (!itemId || !selectedServiceId || !selectedGarmentId) {
+    this.addToBasketError = 'Please select all options';
+    this.isAddingToBasket = false;
+    this.toastService.show('Error', 'Please select fabric type and service', 'error');
+    return;
+  }
+
+  this.basketService.addItemToBasket(
+    this.laundryId,
+    itemId,
+    selectedServiceId,
+    quantity,
+    selectedGarmentId
+  ).subscribe({
+    next: (response) => {
+      this.isAddingToBasket = false;
+      this.addToBasketSuccess = true;
+      this.toastService.show('Success', 'Item added to basket', 'success');
+      setTimeout(() => {
+        this.addToBasketSuccess = false;
+      }, 3000);
+    },
+    error: (error) => {
+      this.isAddingToBasket = false;
+      this.addToBasketError = 'Failed to add to basket';
+      console.error('Add to basket error:', error);
+      this.toastService.show('Error', 'Failed to add to basket', 'error');
+    }
+  });
+}
+
   // Helper method to get service name from service ID
   getSelectedServiceName(): string {
     const selectedServiceId = this.selectedService.value;

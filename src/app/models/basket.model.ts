@@ -14,6 +14,7 @@ export interface BasketItemDTO {
   itemId: string;
   serviceId: string;
   quantity: number;
+  garmentTypeId: string;
 }
 
 /**

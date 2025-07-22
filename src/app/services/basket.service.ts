@@ -51,12 +51,14 @@ export class BasketService {
    * Adds a single item to the basket
    * @returns An observable with the temporary order ID
    */
-  addItemToBasket(laundryId: string, itemId: string, serviceId: string, quantity: number): Observable<{temporaryOrderId: string}> {
+  addItemToBasket(laundryId: string, itemId: string, serviceId: string, quantity: number,garmentTypeId: string): Observable<{temporaryOrderId: string}> {
     const items: BasketItemDTO[] = [
       {
+        //laundryId,
         itemId,
         serviceId,
-        quantity
+        quantity,
+        garmentTypeId
       }
     ];
     
