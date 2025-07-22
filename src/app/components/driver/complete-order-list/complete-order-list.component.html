@@ -1,5 +1,3 @@
-
-
 <!-- Center Wrapper -->
 <div class="flex justify-center">
   <!-- Orders Table -->
@@ -25,10 +23,10 @@
           <td class="p-4 text-gray-700 border-b border-gray-100 justify-center" >Cash on Delivery</td>
           <td class="p-4 border-b border-gray-100 justify-center">
             <span class="px-3 py-1.5 rounded-full text-sm font-medium"
-                  [class.bg-green-100]="order.status === 'Delivery Complete'"
-                  [class.text-green-800]="order.status === 'Delivery Complete'"
-                  [class.bg-orange-100]="order.status === 'Pickup Complete'"
-                  [class.text-orange-800]="order.status === 'Pickup Complete'">
+                  [class.bg-green-100]="order.status === 'order placed'"
+                  [class.text-green-800]="order.status === 'order placed'"
+                  [class.bg-orange-100]="order.status === 'delivered'"
+                  [class.text-orange-800]="order.status === 'delivered'">
               {{ order.status }}
             </span>
           </td>

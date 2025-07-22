@@ -23,12 +23,13 @@ export class CompletedOrderListComponent implements OnInit {
   customerId = 'a4dca9b3-5f58-11f0-8064-0022481a06a0';
   
   // Default laundry ID - use this when the order doesn't have a laundryId
-  private readonly DEFAULT_LAUNDRY_ID = 'efaa5020-331b-11f0-a791-c138d5830fc3';
+  private readonly DEFAULT_LAUNDRY_ID = '689a1389-5f5b-11f0-8064-0022481a06a0';
   
   completedOrders: OrderDetailsDTO[] = [];
   displayOrders: {
     orderId: string;
     orderIdFormatted: string;
+    laundryId: string; // <-- Add this line!
     laundryName: string;
     date: string;
     totalAmount: number;
@@ -62,6 +63,7 @@ export class CompletedOrderListComponent implements OnInit {
         this.displayOrders = orders.map(order => ({
           orderId: order.orderId,
           orderIdFormatted: order.orderIdFormatted,
+          laundryId: order.laundryId, // <-- Add this line!
           laundryName: order.laundryName,
           date: order.orderDateFormatted,
           totalAmount: order.totalAmount,

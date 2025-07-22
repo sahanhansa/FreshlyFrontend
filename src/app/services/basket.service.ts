@@ -13,20 +13,14 @@ export class BasketService {
 
   constructor(private http: HttpClient) { }
 
-  /**
-   * Gets the hardcoded customer ID (temporary solution)
-   * @returns The temporary customer ID
-   */
+  //Gets the hardcoded customer ID (temporary solution)
+  //@returns The temporary customer ID
   getCustomerId(): string {
     return this.temporaryCustomerId;
   }
 
-  /**
-   * Adds an item to the basket
-   * @param laundryId The ID of the selected laundry
-   * @param items The items to add to the basket
-   * @returns An observable with the temporary order ID
-   */
+  //Adds an item to the basket
+  //@returns An observable with the temporary order ID
   addToBasket(laundryId: string, items: BasketItemDTO[]): Observable<{temporaryOrderId: string}> {
     const dto: AddToBasketDTO = {
       customerId: this.temporaryCustomerId,
@@ -40,10 +34,6 @@ export class BasketService {
   
   /**
    * Adds a single item to the basket
-   * @param laundryId The ID of the selected laundry
-   * @param itemId The ID of the item
-   * @param serviceId The ID of the selected service
-   * @param quantity The quantity of the item
    * @returns An observable with the temporary order ID
    */
   addItemToBasket(laundryId: string, itemId: string, serviceId: string, quantity: number): Observable<{temporaryOrderId: string}> {
