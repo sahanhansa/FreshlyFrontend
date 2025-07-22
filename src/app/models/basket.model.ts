@@ -32,7 +32,7 @@ export interface TemporaryOrderSummary {
   laundryName: string;
   laundryAddress: string;
   items: TemporaryOrderItem[];
-  totalAmount: number;
+  totalCost: number;
 }
 
 export interface TemporaryOrderItem {

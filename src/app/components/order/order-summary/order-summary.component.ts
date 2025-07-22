@@ -73,10 +73,11 @@ export class OrderSummaryComponent implements OnInit {
 
   get total(): number {
     if (this.orderSummary) {
-      return this.orderSummary.totalAmount;
+      return this.orderSummary.totalCost;
     }
     return 0;
   }
+  
 
   deleteOrder() {
     this.showDeleteConfirmation = true;
@@ -184,7 +185,7 @@ export class OrderSummaryComponent implements OnInit {
         this.orderItems = this.orderItems.filter(i => !(i.itemId === itemId && i.serviceId === serviceId));
         if (this.orderSummary) {
           this.orderSummary.items = this.orderSummary.items.filter(i => !(i.itemId === itemId && i.serviceId === serviceId));
-          this.orderSummary.totalAmount = this.orderItems.reduce((sum, i) => sum + i.price * i.quantity, 0);
+          this.orderSummary.totalCost = this.orderItems.reduce((sum, i) => sum + i.price * i.quantity, 0);
         }
         this.toastService.show('Success', 'Item removed from order', 'success');
       },
