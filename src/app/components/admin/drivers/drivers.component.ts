@@ -15,6 +15,8 @@ export interface DisplayDriver {
   email: string;
   licenseNo: string;
   addressId: string;
+  fullAddress?: string;
+  address?: any;
   accountStatus: string;
   profileImageUrl: string;
   profileImage?: string;
@@ -31,6 +33,7 @@ export interface DisplayDriver {
   styleUrl: './drivers.component.css'
 })
 export class DriversComponent implements OnInit {
+  searchType: string = 'all';
   imageLoading: boolean = true;
   profileImageFile: File | null = null;
   onProfileImageSelected(event: Event): void {
@@ -59,6 +62,7 @@ export class DriversComponent implements OnInit {
     this.driverToConfirm = null;
   }
   drivers: DisplayDriver[] = [];
+  filteredDrivers: DisplayDriver[] = [];
   selectedDriver: DisplayDriver | null = null;
   searchQuery: string = '';
   entriesPerPage: number = 10;
@@ -141,6 +145,8 @@ export class DriversComponent implements OnInit {
           email: driver.email || '',
           licenseNo: driver.licenseNo || driver.licenseNumber || driver.licensNo || '',
           addressId: driver.addressId || (driver.address?.addressId ?? ''),
+          fullAddress: driver.address?.fullAddress || '',
+          address: driver.address,
           accountStatus: driver.accountStatus === null || driver.accountStatus === '' ? 'Inactive' : driver.accountStatus || 'Inactive',
           profileImageUrl: driver.profileImageUrl || 'assets/images/driver.png',
           profileImage: driver.profileImage || '',
@@ -148,9 +154,10 @@ export class DriversComponent implements OnInit {
           isActive: typeof driver.isActive === 'boolean' ? driver.isActive : (driver.accountStatus === 'Active'),
           recentOrders: driver.recentOrders || []
         }));
+        this.filteredDrivers = [...this.drivers];
         this.isLoading = false;
-        if (this.drivers.length > 0) {
-          this.selectDriver(this.drivers[0]);
+        if (this.filteredDrivers.length > 0) {
+          this.selectDriver(this.filteredDrivers[0]);
         } else {
           this.selectedDriver = null;
         }
@@ -166,7 +173,7 @@ export class DriversComponent implements OnInit {
   // Helper to get address as string
   getAddress(driver: DisplayDriver | null): string {
     if (!driver) return 'No address provided';
-    return driver.addressId ? `Address ID: ${driver.addressId}` : 'No address provided';
+    return driver.fullAddress || 'No address provided';
   }
 
   selectDriver(driver: DisplayDriver | null): void {
@@ -207,29 +214,30 @@ export class DriversComponent implements OnInit {
   }
 
   searchDrivers(): void {
-    if (!this.searchQuery.trim()) {
-      this.loadDrivers();
-      return;
-    }
-    this.isLoading = true;
     const query = this.searchQuery.trim().toLowerCase();
-    setTimeout(() => {
-      this.drivers = this.drivers.filter(driver =>
-        (driver.driverId || '').toLowerCase().includes(query) ||
-        (driver.firstName || '').toLowerCase().includes(query) ||
-        (driver.lastName || '').toLowerCase().includes(query) ||
-        (driver.email || '').toLowerCase().includes(query) ||
-        (driver.licenseNo || '').toLowerCase().includes(query) ||
-        (driver.addressId || '').toLowerCase().includes(query) ||
-        (driver.accountStatus || '').toLowerCase().includes(query)
-      );
-      this.isLoading = false;
-      if (this.drivers.length > 0) {
-        this.selectDriver(this.drivers[0]);
+    if (!query) {
+      this.filteredDrivers = [...this.drivers];
+      if (this.filteredDrivers.length > 0) {
+        this.selectDriver(this.filteredDrivers[0]);
       } else {
         this.selectedDriver = null;
       }
-    }, 300);
+      return;
+    }
+    this.filteredDrivers = this.drivers.filter(driver =>
+      (driver.driverId || '').toLowerCase().includes(query) ||
+      (driver.firstName || '').toLowerCase().includes(query) ||
+      (driver.lastName || '').toLowerCase().includes(query) ||
+      (driver.email || '').toLowerCase().includes(query) ||
+      (driver.licenseNo || '').toLowerCase().includes(query) ||
+      (driver.addressId || '').toLowerCase().includes(query) ||
+      (driver.accountStatus || '').toLowerCase().includes(query)
+    );
+    if (this.filteredDrivers.length > 0) {
+      this.selectDriver(this.filteredDrivers[0]);
+    } else {
+      this.selectedDriver = null;
+    }
   }
 
   onPageChange(page: number): void {
