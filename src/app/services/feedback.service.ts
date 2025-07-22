@@ -91,7 +91,7 @@ getFeedbacks(laundryId: string): Observable<Feedback[]> {
 
   // Submit feedback for an order
   submitFeedback(feedback: FeedbackRequest): Observable<FeedbackDTO> {
-    return this.http.post<FeedbackDTO>(this.apiUrl, feedback);
+    return this.http.post<FeedbackDTO>(`${this.apiUrl}/order`, feedback);
   }
 
   // Get feedback for a specific order
