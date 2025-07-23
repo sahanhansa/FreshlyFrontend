@@ -8,6 +8,7 @@ import { PickupSchedulerComponent } from '../pickup-scheduler/pickup-scheduler.c
 import { CustomerAddress } from '../../../models/order-models/customerAddress.model';
 import { CustomerAddressPopupComponent } from '../customer-address-popup/customer-address-popup.component';
 import { OrderConfirmPopupComponent } from '../order-confirm-popup/order-confirm-popup.component';
+import { Item } from '../../../models/item.model';
 
 @Component({
   selector: 'app-order-summary',
@@ -64,7 +65,7 @@ export class OrderSummaryComponent implements OnInit {
         washMethod: item.serviceName,
         price: item.price,
         quantity: item.quantity,
-        image: item.itemImageUrl || 'assets/default.png',
+        imageUrl: item.itemImageUrl || 'assets/default.png',
         garmentTypeId: item.garmentTypeId,               // add garmentTypeId
         garmentTypeName: item.garmentTypeName || ''     // add garmentTypeName
       }));
