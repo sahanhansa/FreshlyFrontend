@@ -1,0 +1,130 @@
+<app-driver-navbar></app-driver-navbar>
+<div class="min-h-screen bg-gradient-to-b from-gray-50 to-white p-8">
+  <div class="max-w-7xl mx-auto">
+
+    <!-- Header -->
+    <div class="mb-10">
+      <h1 class="text-4xl font-extrabold text-gray-900 mb-2">Driver Reports Dashboard</h1>
+      <p class="text-gray-500">Track and manage laundry delivery driver performance</p>
+    </div>
+
+    <!-- Filters -->
+    <div class="bg-white rounded-xl shadow-sm border p-6 mb-10">
+      <div class="flex flex-wrap gap-4 items-center">
+        <span class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+          <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+          Filters:
+        </span>
+
+        <select class="border border-gray-300 rounded-md px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+          <option>All Drivers</option>
+          <option>John Smith</option>
+          <option>Priya Fernando</option>
+          <option>Kumar Perera</option>
+          <option>Saman Silva</option>
+        </select>
+
+        <select class="border border-gray-300 rounded-md px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+          <option>Today</option>
+          <option selected>This Week</option>
+          <option>This Month</option>
+          <option>This Quarter</option>
+        </select>
+
+        <button class="bg-blue-600 text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-blue-700 shadow transition">
+          Export Report
+        </button>
+      </div>
+    </div>
+
+    <!-- Stats Overview -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+      <div class="bg-white rounded-xl shadow-md border p-6">
+        <p class="text-sm font-semibold text-gray-500">Total Pickups</p>
+        <p class="text-3xl font-bold text-green-600 mt-1">164</p>
+        <p class="text-xs text-gray-400 mt-1">156 completed</p>
+      </div>
+      <div class="bg-white rounded-xl shadow-md border p-6">
+        <p class="text-sm font-semibold text-gray-500">Total Deliveries</p>
+        <p class="text-3xl font-bold text-blue-600 mt-1">164</p>
+        <p class="text-xs text-gray-400 mt-1">156 completed</p>
+      </div>
+      <div class="bg-white rounded-xl shadow-md border p-6">
+        <p class="text-sm font-semibold text-gray-500">Total Revenue</p>
+        <p class="text-3xl font-bold text-purple-600 mt-1">Rs. 57,700</p>
+        <p class="text-xs text-gray-400 mt-1">This period</p>
+      </div>
+      <div class="bg-white rounded-xl shadow-md border p-6">
+        <p class="text-sm font-semibold text-gray-500">Pending Orders</p>
+        <p class="text-3xl font-bold text-orange-600 mt-1">8</p>
+        <p class="text-xs text-gray-400 mt-1">Awaiting delivery</p>
+      </div>
+    </div>
+
+    <!-- Driver Performance Table & Recent Pickups and Deliveries -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+  <!-- Recent Pickups -->
+  <div class="bg-white rounded-xl shadow-md border">
+    <div class="p-6 border-b">
+      <h3 class="text-lg font-semibold text-gray-900">Recent Pickups</h3>
+    </div>
+    <div class="divide-y divide-gray-200 max-h-96 overflow-y-auto">
+      <!-- Example Pickup -->
+      <div class="p-6 hover:bg-gray-50">
+        <div class="flex items-center justify-between">
+          <div class="flex-1">
+            <div class="flex items-center gap-2 mb-1">
+              <span class="font-medium text-gray-900">#LD001</span>
+              <span class="px-2 py-1 text-xs rounded-full text-green-600 bg-green-50">Completed</span>
+            </div>
+            <p class="text-sm text-gray-600">Customer: A. Wickramasinghe</p>
+            <p class="text-xs text-gray-400">Driver: John Smith</p>
+          </div>
+          <div class="text-right">
+            <p class="font-medium text-gray-900">Rs. 450</p>
+            <p class="text-xs text-gray-400">9:30 AM</p>
+          </div>
+        </div>
+      </div>
+      <!-- Add more pickup items as needed -->
+    </div>
+  </div>
+
+  <!-- Recent Deliveries -->
+  <div class="bg-white rounded-xl shadow-md border">
+    <div class="p-6 border-b">
+      <h3 class="text-lg font-semibold text-gray-900">Recent Deliveries</h3>
+    </div>
+    <div class="divide-y divide-gray-200 max-h-96 overflow-y-auto">
+      <!-- Example Delivery -->
+      <div class="p-6 hover:bg-gray-50">
+        <div class="flex items-center justify-between">
+          <div class="flex-1">
+            <div class="flex items-center gap-2 mb-1">
+              <span class="font-medium text-gray-900">#LD001</span>
+              <span class="px-2 py-1 text-xs rounded-full text-green-600 bg-green-50">Delivered</span>
+            </div>
+            <p class="text-sm text-gray-600">Customer: A. Wickramasinghe</p>
+            <p class="text-xs text-gray-400">Driver: John Smith</p>
+          </div>
+          <div class="text-right">
+            <p class="font-medium text-gray-900">Rs. 450</p>
+            <p class="text-xs text-gray-400">9:30 AM</p>
+          </div>
+        </div>
+      </div>
+      <!-- Add more delivery items as needed -->
+    </div>
+  </div>
+
+</div>
+
+
+  </div>
+</div>
+<app-footer></app-footer>

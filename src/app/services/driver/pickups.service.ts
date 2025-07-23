@@ -91,12 +91,12 @@ MarksToTake(orderId: string): Observable<any> {
 
 MarksToDelivered(orderId: string, note:any): Observable<any> {
   const url = `${this.baseUrl}/MarksToDeliver`; // PATCH endpoint URL
-const driverId = localStorage.getItem('userId') || '';
+  const driverId = localStorage.getItem('userId') || '';
   const body = {
     orderId: orderId,
     driverId:driverId,
     note: note
-  };
+  }; // Debugging log
 console.log('MarksToDelivered body:', body); // Debugging log
   return this.http.patch<any>(url, body).pipe(
     catchError(error => {
