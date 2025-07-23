@@ -25,7 +25,7 @@ export class WhoAreYouComponentSign {
     console.log('Action input:', this.action);
     localStorage.setItem("Role", role); // Save the role (e.g., customer, laundry, admin, driver)
 
-    // Navigate based on the action prop and role
+    // Navigate based on the action prop and role bcjh
     const routeSuffix = this.action === 'signup' ? '-signup' : '-login';
     const route = (() => {
       switch(role) {
