@@ -27,6 +27,20 @@ export class ItemService {
         })
       );
   }
+
+  getItemsByLaundryIdAndGarmentId(laundryId: string, garmentId: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/GetItemsByLaundryId/${laundryId}/${garmentId}`)
+      .pipe(
+        map(items => {
+          console.log('Raw API response for laundryId + garmentId:', items);
+          return items; // Return the raw API response as it matches our interface
+        }),
+        catchError(error => {
+          console.error('Error fetching items:', error);
+          return throwError(() => new Error('Failed to load items. Please try again.'));
+        })
+      );
+  }
   
   // Helper method to transform DTO to Item model
   private mapDtoToItem(dto: any): Item {

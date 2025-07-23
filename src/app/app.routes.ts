@@ -53,6 +53,7 @@ import {  RejectedItemDetailsComponent } from './components/laundry/rejected-ite
 import { RejectedItemsComponent}  from './pages/Laundry/rejected-items/rejected-items.component';
 import { ContactUsComponent } from './pages/Laundry/contact-us/contact-us.component';
 import {MultiStepFormComponent} from './components/laundry/lau-sign/multi-step-form.component';
+import { AuthHelperService } from './services/auth-helper.service';
 
 
 
@@ -123,7 +124,6 @@ export const routes: Routes = [
       { path: 'customers', loadComponent: () => import('./components/admin/customers/customers.component').then(m => m.CustomersComponent) },
       { path: 'laundries', loadComponent: () => import('./components/admin/laundries/laundries.component').then(m => m.LaundriesComponent) },
       { path: 'orders', loadComponent: () => import('./components/admin/orders/orders.component').then(m => m.OrdersComponent) },
-      { path: 'vehicles', loadComponent: () => import('./components/admin/vehicles/vehicles.component').then(m => m.VehiclesComponent) },
       { path: 'complaints', loadComponent: () => import('./components/admin/complaints/complaints.component').then(m => m.ComplaintsComponent) },
       { path: 'reports', loadComponent: () => import('./components/admin/reports/reports.component').then(m => m.ReportsComponent) }
     ]
@@ -141,7 +141,7 @@ export const routes: Routes = [
       { path: 'home', component: CusHomeComponent }, 
       {path: 'how-it-works', component:HowItWorksComponent},
       { path: 'order', component: LaundryPageComponent },      // Laundry list page
-      { path: 'basket', component: BasketComponent },
+      { path: 'basket', component: BasketComponent, canActivate: [() => AuthHelperService.prototype.isLoggedIn()] },
       {path: 'laundry/:id', component: ItemPageComponent},
       // Replace with actual profile component if needed
       { path: 'profile', loadComponent: () => import('./components/customer/profile/profile.component').then(m => m.ProfileComponent) },

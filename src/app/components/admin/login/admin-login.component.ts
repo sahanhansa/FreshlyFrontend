@@ -46,11 +46,13 @@ export class AdminLoginComponent implements OnInit {
       const loginData = { username, password };
       this.authService.adminLogin(loginData).subscribe({
         next: (res: any) => {
-          // Save token, username, userId to localStorage
+          // Save token, username, userId, and role to localStorage
           localStorage.setItem('token', res.token);
           localStorage.setItem('adminUsername', res.username);
           localStorage.setItem('adminId', res.userId);
-          localStorage.setItem('role', "role");
+          if (res.role) {
+            localStorage.setItem('adminRole', res.role);
+          }
           // Redirect to admin dashboard
           this.router.navigate(['/admin/dashboard']);
         },

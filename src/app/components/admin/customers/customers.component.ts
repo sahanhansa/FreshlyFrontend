@@ -14,6 +14,7 @@ import { CustomerService } from '../../../services/customer.service';
   styleUrls: ['./customers.component.css']
 })
 export class CustomersComponent implements OnInit {
+  searchType: string = 'all';
   showConfirmStatus = false;
   confirmStatusAction: 'activate' | 'deactivate' = 'activate';
 
@@ -45,12 +46,7 @@ export class CustomersComponent implements OnInit {
       }
     });
   }
-  customerAddresses: { [addressId: string]: CustomerAddress } = {};
-  getAddressDetails(addressId: string | null | undefined): string {
-    if (!addressId || !this.customerAddresses[addressId]) return 'No address provided';
-    const addr = this.customerAddresses[addressId];
-    return `${addr.houseNo}, ${addr.street}, ${addr.city}, ${addr.postalCode}`;
-  }
+  // customerAddresses and getAddressDetails removed; using customer.address directly
   // Data collections
   customers = signal<Customer[]>([]);
   filteredCustomers = signal<Customer[]>([]);
@@ -126,17 +122,34 @@ export class CustomersComponent implements OnInit {
 
     const searchTermLower = searchText.toLowerCase();
     const filtered = this.customers().filter(customer => {
-      const firstName = (customer.firstName || '').toLowerCase();
-      const lastName = (customer.lastName || '').toLowerCase();
-      const email = (customer.email || '').toLowerCase();
-      const username = (customer.username || '').toLowerCase();
-      const address = (customer.address || '').toLowerCase();
-
-      return firstName.includes(searchTermLower) ||
-             lastName.includes(searchTermLower) ||
-             email.includes(searchTermLower) ||
-             username.includes(searchTermLower) ||
-             address.includes(searchTermLower);
+      switch (this.searchType) {
+        case 'name':
+          return (
+            (customer.firstName || '').toLowerCase().includes(searchTermLower) ||
+            (customer.lastName || '').toLowerCase().includes(searchTermLower)
+          );
+        case 'email':
+          return (customer.email || '').toLowerCase().includes(searchTermLower);
+        case 'username':
+          return (customer.username || '').toLowerCase().includes(searchTermLower);
+        case 'accountStatus':
+          return (customer.accountStatus || '').toLowerCase().includes(searchTermLower);
+        case 'address':
+          return (customer.address || '').toLowerCase().includes(searchTermLower);
+        case 'customerId':
+          return (customer.customerId || '').toLowerCase().includes(searchTermLower);
+        case 'all':
+        default:
+          return (
+            (customer.firstName || '').toLowerCase().includes(searchTermLower) ||
+            (customer.lastName || '').toLowerCase().includes(searchTermLower) ||
+            (customer.email || '').toLowerCase().includes(searchTermLower) ||
+            (customer.username || '').toLowerCase().includes(searchTermLower) ||
+            (customer.accountStatus || '').toLowerCase().includes(searchTermLower) ||
+            (customer.address || '').toLowerCase().includes(searchTermLower) ||
+            (customer.customerId || '').toLowerCase().includes(searchTermLower)
+          );
+      }
     });
 
     this.filteredCustomers.set(filtered);
