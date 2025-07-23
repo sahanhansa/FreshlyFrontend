@@ -64,7 +64,9 @@ export class OrderSummaryComponent implements OnInit {
         washMethod: item.serviceName,
         price: item.price,
         quantity: item.quantity,
-        image: item.itemImageUrl || 'assets/default.png'
+        image: item.itemImageUrl || 'assets/default.png',
+        garmentTypeId: item.garmentTypeId,               // add garmentTypeId
+        garmentTypeName: item.garmentTypeName || ''     // add garmentTypeName
       }));
       this.orderId = this.orderSummary.temporaryOrderId;
       this.laundryName = this.orderSummary.laundryName;
@@ -153,6 +155,7 @@ export class OrderSummaryComponent implements OnInit {
       items: this.orderItems.map(item => ({
         itemId: item.itemId,
         serviceId: item.serviceId,
+        garmentTypeId: item.garmentTypeId , // Ensure garmentTypeId is included
         quantity: item.quantity
       }))
     };
@@ -194,15 +197,17 @@ export class OrderSummaryComponent implements OnInit {
     this.showOrderConfirmPopup = false;
   }
 
-  deleteItem(itemId: string, serviceId: string) {
+  deleteItem(itemId: string, serviceId: string, garmentTypeId: string) {
     const temporaryOrderId = this.orderSummary?.temporaryOrderId;
     if (!temporaryOrderId) return;
 
-    this.basketService.deleteItemFromOrder(temporaryOrderId, itemId, serviceId).subscribe({
+    this.basketService.deleteItemFromOrder(temporaryOrderId, itemId, serviceId, garmentTypeId).subscribe({
       next: () => {
-        this.orderItems = this.orderItems.filter(i => !(i.itemId === itemId && i.serviceId === serviceId));
+        // this.orderItems = this.orderItems.filter(i => !(i.itemId === itemId && i.serviceId === serviceId));
+        this.orderItems = this.orderItems.filter(i => !(i.itemId === itemId && i.serviceId === serviceId && i.garmentTypeId === garmentTypeId));
         if (this.orderSummary) {
-          this.orderSummary.items = this.orderSummary.items.filter(i => !(i.itemId === itemId && i.serviceId === serviceId));
+          // this.orderSummary.items = this.orderSummary.items.filter(i => !(i.itemId === itemId && i.serviceId === serviceId));
+          this.orderSummary.items = this.orderSummary.items.filter(i => !(i.itemId === itemId && i.serviceId === serviceId && i.garmentTypeId === garmentTypeId));
           this.orderSummary.totalCost = this.orderItems.reduce((sum, i) => sum + i.price * i.quantity, 0);
         }
         this.toastService.show('Success', 'Item removed from order', 'success');

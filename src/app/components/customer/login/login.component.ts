@@ -4,13 +4,15 @@ import { Router } from '@angular/router';
 import { CommonModule, NgClass, NgIf } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
+import {HeaderComponent} from '../../landing-page/header.component'
+import {FooterComponent} from '../../shared/footer/footer.component'
 
 @Component({
   selector: 'app-login',
   standalone: true,
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
-  imports: [CommonModule, ReactiveFormsModule, NgClass, NgIf]
+  imports: [CommonModule, ReactiveFormsModule, NgClass, NgIf,HeaderComponent,FooterComponent]
 })
 export class LoginComponent implements OnInit {
   loginForm: FormGroup;
@@ -27,6 +29,10 @@ export class LoginComponent implements OnInit {
       username: ['', [Validators.required]],
       password: ['', [Validators.required]]
     });
+  }
+
+  goToReset() {
+    this.router.navigate(['/request-reset'], { queryParams: { userType: 'Customer' } });
   }
 
   ngOnInit(): void {

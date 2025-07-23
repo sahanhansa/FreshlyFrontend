@@ -24,7 +24,7 @@ export class DeliveryTasksMainpageComponent {
   searchQuery: string = '';
   totalItems: number = 0;
   currentPage: number = 1;
-  itemsPerPage: number = 2;
+  itemsPerPage: number = 8;
   isOwnSearch: boolean = false;
 
   onSearchChanged(query: string): void {

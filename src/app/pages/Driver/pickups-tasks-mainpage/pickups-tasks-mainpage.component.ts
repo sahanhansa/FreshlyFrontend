@@ -26,7 +26,7 @@ export class PickupsTasksMainpageComponent {
   isOwnSearch: boolean = false;
   totalItems = 0; 
   currentPage = 1;
-  itemsPerPage = 4;
+  itemsPerPage = 8;
 
   // Handler for search component events
   onSearchChanged(query: string): void {

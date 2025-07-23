@@ -1,0 +1,5 @@
+.active-nav-link {
+  font-weight: bold;    /* make text bold */
+  border-bottom: 2px solid black;  /* visible underline */
+  color: black;         /* ensure text stays black */
+}
