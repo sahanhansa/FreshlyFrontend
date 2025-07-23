@@ -1,6 +1,6 @@
-<div class="min-h-screen flex flex-col">
-  <div class="flex-grow">
-    <div class="text-center mt-8 sm:mt-10 mb-4 sm:mb-6 max-w-full sm:max-w-3xl md:max-w-4xl lg:max-w-5xl mx-auto px-2">
+<div class="flex flex-col min-h-screen">
+  <div class="flex-grow px-2 sm:px-4 md:px-6 lg:px-10 pt-4">
+    <div class="text-center mt-2 sm:mt-4 mb-4 sm:mb-6 max-w-full sm:max-w-3xl md:max-w-4xl lg:max-w-5xl mx-auto px-2">
       <h1 class="font-bold drop-shadow-md text-1xl sm:text-2xl md:text-3xl lg:text-4xl">
         Rejected Items
       </h1>
@@ -9,43 +9,46 @@
       </p>
     </div>
 
-    <div *ngIf="rejectedItems.length > 0; else noRejectedItems">
-<!-- Table -->
-<table class="min-w-full table-auto border-collapse mt-3 mb-6">
+    <!-- Loading State -->
+    <div *ngIf="loading" class="text-center py-4">
+      <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      <p class="mt-2 text-gray-600">Loading rejected items...</p>
+    </div>
+
+    <div *ngIf="!loading && rejectedItems.length > 0; else noRejectedItems" class="overflow-x-auto mt-2 max-w-full sm:max-w-3xl md:max-w-4xl lg:max-w-6xl mx-auto px-2 sm:px-0">
+      <table class="min-w-full table-auto border-collapse mt-2 mb-6">
   <thead>
-    <tr class="bg-[#D0F6FF] text-left text-gray-700 font-semibold text-sm sm:text-base">
+          <tr class="bg-[#D0F6FF] text-left text-gray-700 font-semibold">
+            <th class="px-4 sm:px-6 py-2 sm:py-3">Tracking ID</th>
       <th class="px-4 sm:px-6 py-2 sm:py-3">Item</th>
       <th class="px-4 sm:px-6 py-2 sm:py-3">Quantity</th>
       <th class="px-4 sm:px-6 py-2 sm:py-3">Reason</th>
-      <th class="px-4 sm:px-6 py-2 sm:py-3">Actions</th>
+            <th class="px-4 sm:px-6 py-2 sm:py-3 text-center">Actions</th>
     </tr>
   </thead>
   <tbody>
     <tr *ngFor="let item of rejectedItems; let i = index"
         [ngClass]="{ 'bg-white': i % 2 === 0, 'bg-[#D0F6FF]': i % 2 === 1 }"
         class="h-14 text-sm sm:text-base text-black">
-      <td class="px-4 sm:px-6 py-3 font-semibold">{{ item.itemName }}</td>
+            <td class="px-4 sm:px-6 py-3 font-semibold">
+              #{{ item.orderId }}
+            </td>
+            <td class="px-4 sm:px-6 py-3">{{ item.itemName }}</td>
       <td class="px-4 sm:px-6 py-3">{{ item.quantity }}</td>
       <td class="px-4 sm:px-6 py-3">{{ item.reason }}</td>
       <td class="px-4 sm:px-6 py-3 flex justify-center items-center gap-2 flex-wrap">
-     
-        <button [routerLink]="['/rejected-items-details']"
+              <button [routerLink]="['/rejected-items-details', item.laundryId, item.orderId, item.statusId]"
         class="flex items-center gap-1 border border-black text-black rounded-full px-3 py-1 text-xs sm:text-sm hover:bg-gray-500 hover:text-white transition">
           View Order
-          </button>
-
-        <!-- <button (click)="trackOrder(item.orderId)"  -->
-         <button
-                class="flex items-center gap-1 border border-blue-600 text-blue-600 rounded-full px-3 py-1 text-xs sm:text-sm hover:bg-blue-600 hover:text-white transition">
-          Track
         </button>
       </td>
     </tr>
   </tbody>
 </table>
+      <app-pagination *ngIf="!loading && rejectedItems.length > 0" class="mt-4 max-w-full sm:max-w-3xl md:max-w-4xl lg:max-w-6xl mx-auto px-2 sm:px-0"></app-pagination>
     </div>
     <ng-template #noRejectedItems>
-      <div class="text-center text-gray-500 py-8">
+      <div *ngIf="!loading && rejectedItems.length === 0" class="text-center text-gray-500 py-8">
         No rejected items found.
       </div>
     </ng-template>
