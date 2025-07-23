@@ -50,7 +50,6 @@ interface Service {
             <ul class="feature-list">
               <li *ngFor="let feature of service.features">{{ feature }}</li>
             </ul>
-            <button class="select-btn">Select Service</button>
           </div>
         </div>
       </section>
@@ -66,6 +65,7 @@ interface Service {
       padding: 50px;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
       border: 1px solid #e9ecef;
+      background: linear-gradient(to bottom right, #f8fafc, #e2e8f0);
     }
 
     .header-section {
@@ -103,7 +103,7 @@ interface Service {
       transform: translateX(-50%);
       width: 60px;
       height: 4px;
-      background: #667eea;
+      background: #0A84FF;
       border-radius: 2px;
     }
 
@@ -139,13 +139,20 @@ interface Service {
       padding: 20px;
       background: #f8f9fa;
       border-radius: 8px;
-      border-left: 4px solid #667eea;
+      border-left: 4px solid #0A84FF;
       text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .service-item:hover {
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      transform: translateY(-5px);
     }
 
     .service-icon {
       font-size: 3rem;
       margin-bottom: 15px;
+      color: #0A84FF;
     }
 
     .service-item h4 {
@@ -169,7 +176,7 @@ interface Service {
     .price {
       font-size: 1.5rem;
       font-weight: bold;
-      color: #667eea;
+      color: #0A84FF;
     }
 
     .turnaround {
@@ -196,12 +203,12 @@ interface Service {
       content: '✓';
       position: absolute;
       left: 0;
-      color: #667eea;
+      color: #0A84FF;
     }
 
     .select-btn {
       width: 100%;
-      background: #667eea;
+      background: #0A84FF;
       color: white;
       padding: 10px;
       border: none;
@@ -213,7 +220,15 @@ interface Service {
     }
 
     .select-btn:hover {
-      background: #5a6ed6;
+      background: #0073e6;
+    }
+
+    .bg-primary {
+      background: #0A84FF;
+    }
+
+    .bg-primary-dark {
+      background: #0073e6;
     }
 
     @media (max-width: 768px) {
@@ -244,7 +259,7 @@ export class ServicesPageComponent {
     {
       name: 'Wash & Fold',
       description: 'Professional washing, drying, and folding service for your everyday clothes.',
-      price: '$2.50/lb',
+      price: 'Rs.200/item',
       turnaround: '24-48 hours',
       features: [
         'Pre-treatment of stains',
@@ -257,7 +272,7 @@ export class ServicesPageComponent {
     {
       name: 'Dry Cleaning',
       description: 'Expert dry cleaning for delicate fabrics and formal wear.',
-      price: '$8.99/item',
+      price: 'Rs.400/item',
       turnaround: '2-3 days',
       features: [
         'Delicate fabric care',
@@ -270,7 +285,7 @@ export class ServicesPageComponent {
     {
       name: 'Express Service',
       description: 'Same-day laundry service for urgent cleaning needs.',
-      price: '$4.00/lb',
+      price: 'Rs.200/lb',
       turnaround: '4-6 hours',
       features: [
         'Same-day pickup & delivery',

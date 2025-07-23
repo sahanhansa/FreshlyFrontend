@@ -18,6 +18,7 @@ import {ContactPromptComponent} from './contact-prompt.component';
 ]
 })
 export class CusHomeComponent {
+
   customerName: string = '';
 
   constructor(private router: Router) {
@@ -26,7 +27,10 @@ export class CusHomeComponent {
     this.customerName = storedName ? storedName : 'Customer';
   }
 
-  goToHowItWorks() {
-    this.router.navigate(['/how-it-works']);
+ goToHowItWorks() {
+    this.router.navigate(['/cus-home/how-it-works']);
+  }
+  goTo(path: string) {
+    this.router.navigate([path]);
   }
 }
