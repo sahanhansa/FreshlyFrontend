@@ -11,6 +11,7 @@ export interface Feedback {
   customerLName: string;
   submittedByType?: 'c' | 'd' | 'l' | string;
   userId?: string; // For driver tab
+  driverId?: string; // <-- add this
 }
 
 export interface FeedbackDTO {

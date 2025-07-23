@@ -111,6 +111,9 @@ export class ReportsComponent implements OnInit {
 
   orders: Array<any> = [];
 
+  laundryLoading = false;
+  laundryError = false;
+
   downloadReport() {
     // Wait a short time to ensure the chart is fully rendered before capturing the image
     setTimeout(() => {
@@ -177,25 +180,6 @@ export class ReportsComponent implements OnInit {
       });
       y = (doc as any).lastAutoTable.finalY + 8;
 
-      // Order Details Table
-      const ordersBody = data.map(order => [
-        order.orderId.slice(0, 8),
-        `${order.customer.firstName} ${order.customer.lastName}`,
-        order.laundry.laundryName,
-        order.placedDate,
-        order.status.statusDisplayName,
-        `LKR ${order.totalCost.toFixed(2)}`
-      ]);
-      autoTable(doc, {
-        startY: y,
-        head: [['Order ID', 'Customer Name', 'Laundry', 'Date', 'Status', 'Amount (LKR)']],
-        body: ordersBody,
-        styles: { fontSize: 9 },
-        theme: 'striped',
-        headStyles: { fillColor: [60, 141, 188], textColor: 255 }
-      });
-      y = (doc as any).lastAutoTable.finalY + 8;
-
       // Insert charts
       if (this.revenuePerMonthComp && this.revenuePerMonthComp.getChartImage) {
         const chartImg = this.revenuePerMonthComp.getChartImage();
@@ -218,13 +202,33 @@ export class ReportsComponent implements OnInit {
         }
       }
 
-      // Footer with page numbers
-      const pageCount = doc.getNumberOfPages();
-      for (let i = 1; i <= pageCount; i++) {
-        doc.setPage(i);
-        doc.setFontSize(9);
-        doc.text(`Page ${i} of ${pageCount}`, 105, 290, { align: 'center' });
-      }
+      // Order Details Table (move to end, allow to break across pages)
+      const ordersBody = data.map(order => [
+        order.orderId.slice(0, 8),
+        `${order.customer.firstName} ${order.customer.lastName}`,
+        order.laundry.laundryName,
+        order.placedDate,
+        order.status.statusDisplayName,
+        `LKR ${order.totalCost.toFixed(2)}`
+      ]);
+      autoTable(doc, {
+        startY: y,
+        head: [['Order ID', 'Customer Name', 'Laundry', 'Date', 'Status', 'Amount (LKR)']],
+        body: ordersBody,
+        styles: { fontSize: 9 },
+        theme: 'striped',
+        headStyles: { fillColor: [60, 141, 188], textColor: 255 },
+        pageBreak: 'auto', // allow table to break across pages
+        didDrawPage: function (data) {
+          // Footer with page numbers
+          const pageCount = doc.getNumberOfPages();
+          const pageSize = doc.internal.pageSize;
+          const pageHeight = pageSize.height ? pageSize.height : pageSize.getHeight();
+          doc.setFontSize(9);
+          // Use data.pageNumber for current page
+          doc.text(`Page ${data.pageNumber} of ${pageCount}`, 105, pageHeight - 10, { align: 'center' });
+        }
+      });
 
       // Save the PDF
       const name = this.selectedLaundryId && this.laundryNames[this.selectedLaundryId]

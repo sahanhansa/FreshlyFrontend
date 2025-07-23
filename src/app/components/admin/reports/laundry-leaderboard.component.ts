@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
@@ -21,8 +21,11 @@ interface LaundryLeaderboardItem {
         <svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg>
         Loading leaderboard...
       </div>
-      <ng-container *ngIf="!isLoading">
-        <table class="min-w-full table-auto rounded-lg overflow-hidden">
+      <div *ngIf="error" class="text-red-500 text-center py-6 font-semibold">
+        Failed to load leaderboard. Please try again later.
+      </div>
+      <ng-container *ngIf="!isLoading && !error">
+        <table *ngIf="leaderboard.length > 0" class="min-w-full table-auto rounded-lg overflow-hidden">
           <thead>
             <tr class="bg-gradient-to-r from-blue-400 via-cyan-400 to-teal-400 text-white">
               <th class="px-4 py-2 text-left">#</th>
@@ -80,13 +83,17 @@ interface LaundryLeaderboardItem {
 export class LaundryLeaderboardComponent implements OnInit {
   leaderboard: LaundryLeaderboardItem[] = [];
   isLoading = false;
+  error = false;
+  @Output() loadingChange = new EventEmitter<boolean>();
+  @Output() errorChange = new EventEmitter<boolean>();
   constructor(private http: HttpClient) {}
   ngOnInit(): void {
     this.isLoading = true;
+    this.error = false;
+    this.loadingChange.emit(true);
+    this.errorChange.emit(false);
     this.http.get<LaundryLeaderboardItem[]>(`${environment.apiUrl}/api/Laundry/laundry-list-for-customer`).subscribe({
       next: (data: any) => {
-        console.log('Laundry leaderboard data:', data);
-        // Defensive mapping in case some fields are missing
         this.leaderboard = (data || []).map((item: any) => ({
           laundryId: item.laundryId,
           laundryName: item.laundryName,
@@ -94,11 +101,16 @@ export class LaundryLeaderboardComponent implements OnInit {
           averageRating: item.averageRating ?? 0
         })).sort((a: LaundryLeaderboardItem, b: LaundryLeaderboardItem) => b.averageRating - a.averageRating);
         this.isLoading = false;
+        this.error = false;
+        this.loadingChange.emit(false);
+        this.errorChange.emit(false);
       },
       error: (err) => {
-        console.error('Laundry leaderboard error:', err);
         this.leaderboard = [];
         this.isLoading = false;
+        this.error = true;
+        this.loadingChange.emit(false);
+        this.errorChange.emit(true);
       }
     });
   }

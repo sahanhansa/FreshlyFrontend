@@ -95,7 +95,16 @@ filterByCategory(category: string): void {
     
     this.feedbackService.getAllFeedback().subscribe({
       next: (data) => {
-        this.feedbacks.set(data);
+        // Patch: Ensure driverId is set for driver feedbacks
+        const patched = (data || []).map((f: any) => {
+          const type = (f.submittedByType || '').toLowerCase();
+          if ((type === 'driver' || type === 'd') && !f.driverId && f.submittedById) {
+            // If driverId is missing but submittedById is present, set driverId
+            return { ...f, driverId: f.submittedById };
+          }
+          return f;
+        });
+        this.feedbacks.set(patched);
         // Filter by selected category on load
         this.filterByCategory(this.selectedCategory());
         this.calculateTotalPages();
@@ -195,13 +204,8 @@ filterByCategory(category: string): void {
   }
 
   openReplyModal(feedback: Feedback): void {
-    // Pick the correct userId field based on submittedByType
-    let userId = '';
-    const type = (feedback.submittedByType || '').toLowerCase();
-    if (type === 'customer' || type === 'c') userId = feedback.customerId || '';
-    else if (type === 'laundry' || type === 'l') userId = feedback.laundryId || '';
-    else if (type === 'driver' || type === 'd') userId = (feedback as any).driverId || feedback.customerId || '';
-    this.replyTargetUserId.set(userId);
+    // Use userId directly from feedback as provided by the API
+    this.replyTargetUserId.set((feedback as any).userId || '');
     this.replyTargetUserType.set(feedback.submittedByType || '');
     this.replySubject.set('');
     this.replyBody.set('');
@@ -223,13 +227,14 @@ filterByCategory(category: string): void {
     this.replyLoading.set(true);
     this.replyError.set(null);
     this.replySuccess.set(null);
+    const userId = this.replyTargetUserId();
     const payload = {
-      userId: this.replyTargetUserId(),
+      userId,
       userType: this.replyTargetUserType(),
       subject: this.replySubject(),
       body: this.replyBody(),
     };
-    // Use fetch for demo; replace with HttpClient if you want Angular DI
+    // Send payload as a flat object (no 'request' wrapper)
     fetch(`${environment.apiUrl}/api/Feedback/SendReplyEmail`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

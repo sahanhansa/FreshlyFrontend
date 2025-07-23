@@ -49,6 +49,7 @@ Chart.register(
   styleUrl: './admin-dashboard.component.css'
 })
 export class AdminDashboardComponent implements OnInit, AfterViewInit {
+  addAdminError: string | null = null;
   // Loading spinner flags
   isLoadingAdmins: boolean = false;
   isLoadingStatuses: boolean = false;
@@ -463,6 +464,7 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit {
     if (this.profileImageFile) {
       formData.append('profileImage', this.profileImageFile);
     }
+    this.addAdminError = null;
     this.http.post(
       `${environment.apiUrl}/api/Admin`,
       formData,
@@ -470,11 +472,20 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit {
     ).subscribe({
       next: (res) => {
         this.showAddAdminForm = false;
+        this.addAdminError = null;
         // Optionally show a success message or refresh admin list
       },
       error: (err) => {
+        let msg = 'Failed to add admin.';
+        if (err?.error && typeof err.error === 'string') {
+          if (err.error.toLowerCase().includes('duplicate') || err.error.toLowerCase().includes('username')) {
+            msg = 'Username already exists. Please choose a different username.';
+          } else {
+            msg = err.error;
+          }
+        }
+        this.addAdminError = msg;
         console.error('Failed to add admin:', err);
-        // Optionally show an error message
       }
     });
   }
