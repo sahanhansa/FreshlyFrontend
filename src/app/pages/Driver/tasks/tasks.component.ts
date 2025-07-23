@@ -22,15 +22,15 @@ interface Order {
   selector: 'app-completed-tasks',
   templateUrl: './tasks.component.html',
   styleUrls: ['./tasks.component.css'],
-  imports: [FooterComponent, DriverNavbarComponent,CommonModule, FormsModule, ]
-  
+  imports: [FooterComponent, DriverNavbarComponent, CommonModule, FormsModule,]
+
 })
 export class TasksComponent implements OnInit {
   orders: Order[] = [];
   filteredOrders: Order[] = [];
   searchText: string = '';
-
-  constructor(private http: HttpClient) {}
+  loading: boolean = true;
+  constructor(private http: HttpClient) { }
 
   ngOnInit() {
     this.loadOrders();
@@ -38,11 +38,11 @@ export class TasksComponent implements OnInit {
 
   loadOrders() {
     const apiUrl = 'http://localhost:5027/api/order/GetAllCompleteTasks/92063843-b295-49a8-905e-9ae73bf4682a';
-
     this.http.get<Order[]>(apiUrl).subscribe({
       next: (data) => {
         this.orders = data;
         this.filteredOrders = data;
+        this.loading = false;
       },
       error: (err) => {
         console.error('Failed to load orders', err);
