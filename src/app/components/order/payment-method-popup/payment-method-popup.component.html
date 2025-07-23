@@ -1,0 +1,89 @@
+<div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+  <div class="bg-white rounded-lg shadow-xl max-w-sm w-full mx-4 transform transition-all animate-fadeIn">
+    <!-- Header - reduced padding -->
+    <div class="px-5 pt-4 pb-3 border-b border-gray-100">
+      <div class="flex justify-between items-center">
+        <h3 class="text-base font-semibold text-gray-800">Select Payment Method</h3>
+        <button (click)="onCancel()" class="text-gray-400 hover:text-gray-600 focus:outline-none">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      
+      <p class="text-xs text-gray-500 mt-1">Order #{{ orderId }}</p>
+      <h3 class="text-sm font-semibold text-gray-800">Rs. {{ totalAmount }}</h3>
+    </div>
+    
+    <!-- Payment Options - reduced padding and spacing -->
+    <div class="px-5 py-3">
+      <!-- Cash on Delivery Option -->
+      <label 
+        class="block p-3 rounded-md mb-2 cursor-pointer transition-all duration-200"
+        [ngClass]="{'bg-blue-50 border border-blue-200': selectedPaymentMethod === 'cash', 'hover:bg-gray-50 border border-gray-100': selectedPaymentMethod !== 'cash'}"
+      >
+        <div class="flex items-center justify-between">
+          <div class="flex items-center">
+            <input
+              type="radio"
+              name="paymentMethod"
+              value="cash"
+              [(ngModel)]="selectedPaymentMethod"
+              class="h-3 w-3 text-blue-600 focus:ring-blue-500 border-gray-300"
+            />
+            <div class="ml-2">
+              <span class="font-medium text-gray-800 text-sm">Cash on Delivery</span>
+              <p class="text-xs text-gray-500">Pay when your order is delivered</p>
+            </div>
+          </div>
+          <div class="text-gray-500">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2z" />
+            </svg>
+          </div>
+        </div>
+      </label>
+      
+      <!-- Online Payment Option -->
+      <label 
+        class="block p-3 rounded-md cursor-pointer transition-all duration-200" 
+        [ngClass]="{'bg-blue-50 border border-blue-200': selectedPaymentMethod === 'online', 'hover:bg-gray-50 border border-gray-100': selectedPaymentMethod !== 'online'}"
+      >
+        <div class="flex items-center justify-between">
+          <div class="flex items-center">
+            <input
+              type="radio"
+              name="paymentMethod"
+              value="online"
+              [(ngModel)]="selectedPaymentMethod"
+              class="h-3 w-3 text-blue-600 focus:ring-blue-500 border-gray-300"
+            />
+            <div class="ml-2">
+              <span class="font-medium text-gray-800 text-sm">Online Payment</span>
+              <p class="text-xs text-gray-500">Pay now with credit/debit card</p>
+            </div>
+          </div>
+          <div class="text-gray-500">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+            </svg>
+          </div>
+        </div>
+      </label>
+    </div>
+    
+    <!-- Footer - smaller buttons and padding -->
+    <div class="px-5 py-3 bg-gray-50 rounded-b-lg flex justify-end">
+      <button 
+        (click)="onCancel()" 
+        class="px-3 py-1.5 mr-2 text-xs font-medium text-gray-700 hover:bg-gray-100 rounded transition-colors">
+        Cancel
+      </button>
+      <button 
+        (click)="onConfirm()"
+        class="px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded text-xs font-medium transition-colors shadow-sm">
+        {{ confirmButtonText }}
+      </button>
+    </div>
+  </div>
+</div>
