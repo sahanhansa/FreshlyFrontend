@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment.development';
 
 export interface LaundryRegistrationRequest {
   laundryName: string;
@@ -32,11 +33,11 @@ export interface LaundryRegistrationResponse {
   providedIn: 'root'
 })
 export class LaundryRegistrationService {
-  private apiUrl = 'http://localhost:5027/api/Auth/laundry-owner/register';
+  private apiUrl = `${environment.apiUrl}/api/Auth/laundry-owner/register`;
 
   constructor(private http: HttpClient) {}
 
-  registerLaundry(data: LaundryRegistrationRequest): Observable<LaundryRegistrationResponse> {
+  registerLaundry(data: FormData): Observable<LaundryRegistrationResponse> {
     return this.http.post<LaundryRegistrationResponse>(this.apiUrl, data);
   }
 }

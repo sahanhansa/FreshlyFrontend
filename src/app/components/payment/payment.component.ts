@@ -1,92 +1,68 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
-import { PaymentService, PaymentRequest } from '../../services/payment.service';
-import { Router } from '@angular/router';
+import { Component } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment.development';
+import e from 'express';
 
+
+declare var payhere: any;
 @Component({
-  selector: 'app-payment',
-  templateUrl: './payment.component.html',
-  styleUrls: ['./payment.component.scss'],
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule]
+  selector: 'app-payment-request',
+  templateUrl: './payment.component.html'
 })
-export class PaymentComponent implements OnInit {
-  paymentForm: FormGroup;
-  loading = false;
-  error = '';
+export class PaymentComponent {
+  constructor(private http: HttpClient) {}
 
-  constructor(
-    private fb: FormBuilder,
-    private paymentService: PaymentService,
-    private router: Router
-  ) {
-    this.paymentForm = this.fb.group({
-      merchantId: ['1231259', Validators.required],
-      itemNumber: ['ITEM001', Validators.required],
-      amount: [100.00, [Validators.required, Validators.min(0.01)]],
-      currency: ['LKR', Validators.required],
-      firstName: ['', Validators.required],
-      lastName: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      phone: ['', Validators.required],
-      address: ['', Validators.required],
-      city: ['', Validators.required],
-      country: ['Sri Lanka', Validators.required],
-      orderId: ['ORDER12345', Validators.required],
-      cancelUrl: ['https://localhost:7276/api/payment/cancel', Validators.required],
-      notifyUrl: ['https://localhost:7276/api/payment/notify', Validators.required],
-      returnUrl: ['https://d106-45-121-88-32.ngrok-free.app/api/sessions/payment-webhook', Validators.required]
-    });
-  }
+  pay() {
+    const orderId = 'ORDER123';  // Replace dynamically if needed
+    const amount = 1000.00;
 
-  ngOnInit(): void {
-    this.loadPayHereScript();
-  }
+    // Call backend to get hash + merchant_id
+    this.http.post<any>(`${environment.apiUrl}/api/Payment/generate-hash`, {
+      orderId: orderId,
+      amount: amount,
+      description:"Test Payment",
+      firstName: 'John',
+      lastName: 'Doe',
+      email:'test@gmail.com',
+      phone: '0712345678',
+      address: '123 Street',
+      city: 'Colombo'
+    }).subscribe(res => {
+      const payment = {
+        sandbox: true,
+        merchant_id: res.merchantId,
+        return_url: 'http://localhost:4200/payment-success',
+        cancel_url: 'http://localhost:4200/payment-cancel',
+        notify_url: 'https://your-backend.com/api/payment/payhere/notify',
+        order_id: orderId,
+        items: 'Test Item',
+        amount: res.amount,
+        currency: res.currency,
+        hash: res.hash,
+        first_name: 'John',
+        last_name: 'Doe',
+        email: 'john@example.com',
+        phone: '0712345678',
+        address: '123 Street',
+        city: 'Colombo',
+        country: 'Sri Lanka'
+      };
 
-  private loadPayHereScript(): void {
-    const scriptId = 'payhere-script';
-    if (!document.getElementById(scriptId)) {
-      const script = document.createElement('script');
-      script.id = scriptId;
-      script.type = 'text/javascript';
-      script.src = 'https://www.payhere.lk/lib/payhere.js';
-      document.body.appendChild(script);
-    }
-  }
+      // Setup PayHere event handlers
+      payhere.onCompleted = function(orderId: string) {
+        console.log('Payment completed. OrderID:' + orderId);
+        // Redirect or show success message
+      };
 
-  onSubmit(): void {
-    if (this.paymentForm.valid) {
-      this.loading = true;
-      this.error = '';
+      payhere.onDismissed = function() {
+        console.log('Payment dismissed');
+      };
 
-      const paymentData: PaymentRequest = this.paymentForm.value;
+      payhere.onError = function(error: string) {
+        console.error('Error:' + error);
+      };
 
-      this.paymentService.initiatePayment(paymentData).subscribe({
-        next: (response) => {
-          this.loading = false;
-          if (response.success) {
-            // Redirect to PayHere
-            this.paymentService.redirectToPayHere(response.paymentData, response.paymentUrl);
-          } else {
-            this.error = response.message;
-          }
-        },
-        error: (error) => {
-          this.loading = false;
-          this.error = 'Failed to initiate payment. Please try again.';
-          console.error('Payment error:', error);
-        }
-      });
-    } else {
-      this.markFormGroupTouched();
-    }
-  }
-
-  private markFormGroupTouched(): void {
-    Object.keys(this.paymentForm.controls).forEach(field => {
-      const control = this.paymentForm.get(field);
-      control?.markAsTouched({ onlySelf: true });
+      payhere.startPayment(payment);
     });
   }
 }

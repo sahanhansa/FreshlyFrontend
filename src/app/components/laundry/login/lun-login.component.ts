@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 import { AuthHelperService } from '../../../services/auth-helper.service';
+import {FooterComponent} from '../../shared/footer/footer.component';
+import {HeaderComponent} from '../../landing-page/header.component'
 
 import { CommonModule, NgClass, NgIf } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -12,7 +14,7 @@ import { ReactiveFormsModule } from '@angular/forms';
   standalone: true,
   templateUrl: './lun-login.component.html',
   styleUrls: ['./lun-login.component.css'],
-  imports: [CommonModule, ReactiveFormsModule, NgClass, NgIf]
+  imports: [CommonModule, ReactiveFormsModule, NgClass, NgIf,FooterComponent,HeaderComponent]
 })
 export class LunLoginComponent implements OnInit {
   successMessage: string = '';
@@ -27,12 +29,16 @@ export class LunLoginComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
-     private authService: AuthService
+    private authService: AuthService
   ) {
     this.loginForm = this.formBuilder.group({
       username: ['', [Validators.required]],
       password: ['', [Validators.required]]
     });
+  }
+
+  goToReset() {
+    this.router.navigate(['/request-reset'], { queryParams: { userType: 'Laundry' } });
   }
 
   ngOnInit(): void {

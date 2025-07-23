@@ -10,45 +10,44 @@ import { environment } from '../../environments/environment';
   providedIn: 'root',// Makes the service available application-wide
 })
 export class AuthService {
-   private baseUrl = environment.apiUrl;
+  private baseUrl = environment.apiUrl;
 
- // Injecting HttpClient to make HTTP requests
-  constructor(private http:HttpClient) { }
+  // Injecting HttpClient to make HTTP requests
+  constructor(private http: HttpClient) { }
 
- customerLogin(data:any) {
-    console.log("data in service-> Customer",data)// Debug log
+  customerLogin(data: any) {
+    console.log("data in service-> Customer", data)// Debug log
 
-    
+
     return this.http.post(`${this.baseUrl}/api/Auth/customer/login`, data);
-   
+
   }
-   adminLogin(data:any) {
-    console.log("data in service -> Admin",data)// Debug log
+  adminLogin(data: any) {
+    console.log("data in service -> Admin", data)// Debug log
     return this.http.post(`${this.baseUrl}/api/Auth/admin/login`, data, {
-    headers: { 'Content-Type': 'application/json' }
-  });
-   
-  }
-   laundryLogin(data:any) {
-    console.log("data in service -> Laundry",data,{
-    headers: { 'Content-Type': 'application/json' }
-  })// Debug log
+      headers: { 'Content-Type': 'application/json' }
+    });
 
-    
+  }
+  laundryLogin(data: any) {
+    console.log("data in service -> Laundry", data, {
+      headers: { 'Content-Type': 'application/json' }
+    })// Debug log
+
+
     return this.http.post(`${this.baseUrl}/api/Auth/laundry/login`, data);
-   
-  }
-   driverLogin(data:any) {
-    console.log("data in service",data)// Debug log
 
-    
+  }
+  driverLogin(data: any) {
+    console.log("data in service", data)// Debug log
+
+
     return this.http.post(`${this.baseUrl}/api/Auth/driver/login`, data);
-   
+
   }
   customerRegister(data: any) {
     console.log("data in service (customerRegister)", data); // Debug log
-    return this.http.post(`${this.baseUrl}/api/Auth/customer/register`, data, {
-      headers: { 'Content-Type': 'application/json' }
-    });
+    return this.http.post(`${this.baseUrl}/api/Auth/customer/register`, data);
   }
+
 }
