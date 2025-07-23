@@ -8,22 +8,21 @@ import { environment } from '../../environments/environment';
 @Injectable({
   providedIn: 'root'
 })
+
 export class OrderService {
-  private apiUrl = `${environment.apiUrl}/api/Order`;
+
+  private apiUrl = `${environment.apiUrl}/api/Order`; 
   private laundryApiUrl = `${environment.apiUrl}/api/Laundry`;
-  private cache = new Map<string, any>();
-
-
+  private cache = new Map<string, Observable<any>>();
+  private readonly CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+ 
   constructor(private http: HttpClient) {}
 
   getNewOrders(laundryId: string): Observable<Order[]> {
     return this.http.get<Order[]>(`${this.apiUrl}/${laundryId}/new-orders`).pipe(
-
-    
       catchError(this.handleError)
     );
   }
-
 
   getProcessingOrders(laundryId: string): Observable<Order[]> {
     return this.http.get<Order[]>(`${this.apiUrl}/${laundryId}/processing-orders`).pipe(
@@ -31,13 +30,11 @@ export class OrderService {
     );
   }
 
-
   getCompletedOrders(laundryId: string): Observable<Order[]> {
     return this.http.get<Order[]>(`${this.apiUrl}/${laundryId}/completed-orders`).pipe(
       catchError(this.handleError)
     );
   }
-
 
   getAllOrders(laundryId: string): Observable<Order[]> {
     return this.http.get<Order[]>(`${this.apiUrl}/${laundryId}/all-orders`).pipe(

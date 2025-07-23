@@ -42,4 +42,8 @@ testem.log
 Thumbs.db
 # System files
 .DS_Store
+
+._*.DS_Store
 ._*
+
+**/_sample.txt

@@ -1,0 +1,13 @@
+<div *ngIf="rejectedItem" class="p-6 bg-white rounded shadow-md max-w-xl mx-auto mt-8">
+  <h2 class="text-2xl font-bold mb-4">Rejected Item Details</h2>
+  <div class="mb-2"><strong>Item Name:</strong> {{ rejectedItem.itemName }}</div>
+  <div class="mb-2"><strong>Quantity:</strong> {{ rejectedItem.quantity }}</div>
+  <div class="mb-2"><strong>Reason:</strong> {{ rejectedItem.reason }}</div>
+  <div class="mb-2"><strong>Rejected By:</strong> {{ rejectedItem.rejectedBy }}</div>
+  <div class="mb-2"><strong>Rejected At:</strong> {{ rejectedItem.rejectedAt | date:'medium' }}</div>
+  <div class="mb-2"><strong>Order ID:</strong> {{ rejectedItem.orderId }}</div>
+  <div class="mb-2"><strong>Item ID:</strong> {{ rejectedItem.itemId }}</div>
+  <div class="mb-2"><strong>Service ID:</strong> {{ rejectedItem.serviceId }}</div>
+  <div class="mb-2"><strong>Laundry ID:</strong> {{ rejectedItem.laundryId }}</div>
+</div>
+<div *ngIf="!rejectedItem" class="text-center mt-8">Loading...</div> 

@@ -4,9 +4,10 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Item } from '../../../models/item.model';
 import { FabricTypeService } from '../../../services/fabric-type.service';
 import { BasketService } from '../../../services/basket.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ToastService } from '../../../services/toast.service';
 import { UserService } from '../../../services/user.service';
+import { ItemService } from '@app/services/item.service';
 
 // Interface to support legacy properties
 interface ExtendedItem extends Item {
@@ -27,14 +28,16 @@ export class ItemCardComponent implements OnInit {
   // Input property to receive item data from parent component
   @Input() item!: ExtendedItem; 
 
+    // Array to store available fabric types
+  fabricTypes: { garmentTypeId: string; garmentTypeName: string }[] = []; 
+  serviceTypes: { serviceId: string; serviceName: string}[] = [];
+
   // Form controls for each selectable field
-  selectedGarment = new FormControl('Cotton');
-  selectedService = new FormControl('');
+  selectedGarment = new FormControl();
+  selectedService = new FormControl();
   selectedWashMethod = new FormControl('');
   quantity = new FormControl(1);
   
-  // Array to store available fabric types
-  fabricTypes: string[] = []; 
   // Store the calculated price based on service and quantity
   currentPrice: number = 0;
   
@@ -47,46 +50,93 @@ export class ItemCardComponent implements OnInit {
     private fabricTypeService: FabricTypeService,
     private basketService: BasketService,
     private route: ActivatedRoute,
+    private router: Router,
     private toastService: ToastService,
-    private userService: UserService
+    private userService: UserService,
+    private itemService: ItemService
   ) {}
   
   ngOnInit(): void {
-    // Get the laundry ID from the route
-    this.route.paramMap.subscribe(params => {
-      const id = params.get('id');
-      if (id) {
-        this.laundryId = id;
-      }
-    });
-    
-    // Get fabric types from the service
-    this.fabricTypes = this.fabricTypeService.getFabricTypes();
-    
-    // Set default values
-    if (this.fabricTypes.length > 0) {
-      this.selectedGarment.setValue(this.fabricTypes[0]);
+  this.route.paramMap.subscribe(params => {
+    const id = params.get('id');
+    if (id) {
+      this.laundryId = id;
     }
-    
-    // Set default service if the item has services
-    if (this.item.services && this.item.services.length > 0) {
-      this.selectedService.setValue(this.item.services[0].serviceId);
-      this.updatePrice();
-    }
-    
-    // Listen for service selection changes to update price
-    this.selectedService.valueChanges.subscribe(() => {
-      this.updatePrice();
-    });
+  });
 
-    // Listen for quantity changes to update price
-    this.quantity.valueChanges.subscribe(() => {
-      this.updatePrice();
-    });
+  // Populate fabric types from item.services
+  this.fabricTypes = this.getFabricTypes(this.item.services);
 
-    // Check what properties are actually available
-    console.log('Item data:', this.item);
+  if (this.fabricTypes.length > 0) {
+    const defaultGarmentId = this.fabricTypes[0].garmentTypeId;
+    this.selectedGarment.setValue(defaultGarmentId);
+
+    // Manually trigger onGarmentChange to populate serviceTypes first
+    this.onGarmentChange(defaultGarmentId, true); // true = indicate it's from init
   }
+
+  // Watchers
+  this.selectedGarment.valueChanges.subscribe((value) => {
+    this.onGarmentChange(value);
+  });
+
+  this.selectedService.valueChanges.subscribe(() => {
+    this.updatePrice();
+  });
+
+  this.quantity.valueChanges.subscribe(() => {
+    this.updatePrice();
+  });
+
+  console.log('Item data:', this.item);
+}
+
+
+onGarmentChange(garmentId: any, fromInit = false): void {
+  this.itemService.getItemsByLaundryIdAndGarmentId(this.laundryId, garmentId).subscribe({
+    next: (res: any) => {
+      if (!res || res.length === 0) return;
+
+      this.serviceTypes = [];
+
+      res[0].services.forEach((service: any) => {
+        this.serviceTypes.push({
+          serviceId: service.serviceId,
+          serviceName: service.serviceName
+        });
+      });
+
+      // If this was triggered from ngOnInit, set first service and update price
+      if (fromInit && this.serviceTypes.length > 0) {
+        const defaultServiceId = this.serviceTypes[0].serviceId;
+        this.selectedService.setValue(defaultServiceId);
+        this.updatePrice(); // now fabricType, serviceType and quantity are all available
+      }
+    },
+    error: (err: any) => {
+      console.error(err);
+    }
+  });
+}
+
+
+
+
+ getFabricTypes(data: any) {
+  const uniqueMap = new Map();
+
+  data.forEach((item: any) => {
+    if (!uniqueMap.has(item.garmentTypeId)) {
+      uniqueMap.set(item.garmentTypeId, {
+        garmentTypeId: item.garmentTypeId,
+        garmentTypeName: item.garmentTypeName
+      });
+    }
+  });
+
+  return Array.from(uniqueMap.values());
+}
+
   
   // Update the price based on selected service
   updatePrice(): void {
@@ -101,52 +151,61 @@ export class ItemCardComponent implements OnInit {
   
   // Updated method to handle adding to basket without login requirement
   onAddToBasket(): void {
-    this.isAddingToBasket = true;
-    this.addToBasketSuccess = false;
-    this.addToBasketError = '';
-    
-    if (!this.laundryId) {
-      this.addToBasketError = 'No laundry selected';
-      this.isAddingToBasket = false;
-      this.toastService.show('Error', 'No laundry selected', 'error');
-      return;
-    }
-    
-    const itemId = this.item.itemId?.toString() || this.item.id?.toString() || '';
-    const selectedServiceId = this.selectedService.value || '';
-    const quantity = this.quantity.value || 1;
-    
-    if (!itemId || !selectedServiceId) {
-      this.addToBasketError = 'Please select a service';
-      this.isAddingToBasket = false;
-      this.toastService.show('Error', 'Please select a service', 'error');
-      return;
-    }
+  this.isAddingToBasket = true;
+  this.addToBasketSuccess = false;
+  this.addToBasketError = '';
 
-    // Simplified call without passing customerId
-    this.basketService.addItemToBasket(
-      this.laundryId,
-      itemId,
-      selectedServiceId,
-      quantity
-    ).subscribe({
-      next: (response) => {
-        this.isAddingToBasket = false;
-        this.addToBasketSuccess = true;
-        this.toastService.show('Success', 'Item added to basket', 'success');
-        setTimeout(() => {
-          this.addToBasketSuccess = false;
-        }, 3000);
-      },
-      error: (error) => {
-        this.isAddingToBasket = false;
-        this.addToBasketError = 'Failed to add to basket';
-        console.error('Add to basket error:', error);
-        this.toastService.show('Error', 'Failed to add to basket', 'error');
-      }
-    });
+  const customerId = this.basketService.getCustomerId();
+  if (!customerId) {
+    this.isAddingToBasket = false;
+    this.toastService.show('Error', 'Please log in to add items to basket', 'error');
+    this.router.navigate(['/cus-login'], { queryParams: { returnUrl: this.router.url } });
+    return;
   }
-  
+
+  if (!this.laundryId) {
+    this.addToBasketError = 'No laundry selected';
+    this.isAddingToBasket = false;
+    this.toastService.show('Error', 'No laundry selected', 'error');
+    return;
+  }
+
+  const itemId = this.item.itemId?.toString() || this.item.id?.toString() || '';
+  const selectedServiceId = this.selectedService.value || '';
+  const selectedGarmentId = this.selectedGarment.value || '';
+  const quantity = this.quantity.value || 1;
+
+  if (!itemId || !selectedServiceId || !selectedGarmentId) {
+    this.addToBasketError = 'Please select all options';
+    this.isAddingToBasket = false;
+    this.toastService.show('Error', 'Please select fabric type and service', 'error');
+    return;
+  }
+
+  this.basketService.addItemToBasket(
+    this.laundryId,
+    itemId,
+    selectedServiceId,
+    quantity,
+    selectedGarmentId
+  ).subscribe({
+    next: (response) => {
+      this.isAddingToBasket = false;
+      this.addToBasketSuccess = true;
+      this.toastService.show('Success', 'Item added to basket', 'success');
+      setTimeout(() => {
+        this.addToBasketSuccess = false;
+      }, 3000);
+    },
+    error: (error) => {
+      this.isAddingToBasket = false;
+      this.addToBasketError = 'Failed to add to basket';
+      console.error('Add to basket error:', error);
+      this.toastService.show('Error', 'Failed to add to basket', 'error');
+    }
+  });
+}
+
   // Helper method to get service name from service ID
   getSelectedServiceName(): string {
     const selectedServiceId = this.selectedService.value;

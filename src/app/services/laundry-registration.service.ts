@@ -32,7 +32,7 @@ export interface LaundryRegistrationResponse {
   providedIn: 'root'
 })
 export class LaundryRegistrationService {
-  private apiUrl = 'https://localhost:7276/api/Auth/laundry-owner/register';
+  private apiUrl = 'http://localhost:5027/api/Auth/laundry-owner/register';
 
   constructor(private http: HttpClient) {}
 

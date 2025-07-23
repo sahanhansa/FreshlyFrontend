@@ -35,6 +35,6 @@ export class HomeComponent implements OnInit {
   }
 
   goToRejectedItems() {
-    this.router.navigate(['/processing-orders']);
+    this.router.navigate(['/rejected-items']);
   }
 }

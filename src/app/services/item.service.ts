@@ -27,6 +27,20 @@ export class ItemService {
         })
       );
   }
+
+  getItemsByLaundryIdAndGarmentId(laundryId: string, garmentId: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/GetItemsByLaundryId/${laundryId}/${garmentId}`)
+      .pipe(
+        map(items => {
+          console.log('Raw API response for laundryId + garmentId:', items);
+          return items; // Return the raw API response as it matches our interface
+        }),
+        catchError(error => {
+          console.error('Error fetching items:', error);
+          return throwError(() => new Error('Failed to load items. Please try again.'));
+        })
+      );
+  }
   
   // Helper method to transform DTO to Item model
   private mapDtoToItem(dto: any): Item {
@@ -109,14 +123,14 @@ export class ItemService {
       );
   }
 
-  // Update item method using PATCH
-  updateItem(itemId: string, item: AddItemDTO): Observable<any> {
+  // Update item method using PUT
+  updateItem(itemId: string, item: any): Observable<any> {
     const laundryId = localStorage.getItem('laundryId');
     if (!laundryId) {
       return throwError(() => new Error('Laundry ID not found. Please login again.'));
     }
 
-    return this.http.patch(`${this.apiUrl}/update-item/${itemId}/${laundryId}`, item, {
+    return this.http.put(`${this.apiUrl}/update-item/${itemId}/${laundryId}`, item, {
       responseType: 'text' as 'json',
       observe: 'response'
     }).pipe(

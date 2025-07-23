@@ -5,6 +5,8 @@ import { OrderStatusComponent, OrderDetails, OrderStatusStep } from '../order-st
 import { OrderDetailService } from '../../../services/order-services/order-detail.service';
 import { OrderDetailsDTO } from '../../../models/order-models/order-detail.model';
 import { ToastService } from '../../../services/toast.service';
+import { Router } from '@angular/router';
+import { BasketService } from '../../../services/basket.service';
 
 @Component({
   selector: 'app-ongoing-order-list',
@@ -14,9 +16,7 @@ import { ToastService } from '../../../services/toast.service';
   styleUrl: './ongoing-order-list.component.css'
 })
 export class OngoingOrderListComponent implements OnInit {
-  // This would normally come from auth service
-  customerId = 'a4dca9b3-5f58-11f0-8064-0022481a06a0';
-  
+  // Remove hardcoded customer ID
   ongoingOrders: OrderDetailsDTO[] = [];
   isLoading = true;
   error: string | null = null;
@@ -27,7 +27,9 @@ export class OngoingOrderListComponent implements OnInit {
 
   constructor(
     private orderDetailService: OrderDetailService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private router: Router,
+    private basketService: BasketService
   ) {}
 
   ngOnInit(): void {
@@ -38,7 +40,17 @@ export class OngoingOrderListComponent implements OnInit {
     this.isLoading = true;
     this.error = null;
 
-    this.orderDetailService.getOngoingOrders(this.customerId).subscribe({
+    // Get customer ID from BasketService
+    const customerId = this.basketService.getCustomerId();
+    if (!customerId) {
+      this.error = 'You need to be logged in to view your orders';
+      this.isLoading = false;
+      this.toastService.show('Error', 'Please log in to view your orders', 'error');
+      this.router.navigate(['/cus-login']);
+      return;
+    }
+
+    this.orderDetailService.getOngoingOrders(customerId).subscribe({
       next: (orders) => {
         this.ongoingOrders = orders;
         this.isLoading = false;
@@ -97,6 +109,7 @@ export class OngoingOrderListComponent implements OnInit {
     switch (statusLower) {
       case 'order placed': return 'Order placed';
       case 'order pickup scheduled': return 'Order pickup scheduled';
+      case 'order picked up': return 'Order picked up'; // add this
       case 'picked up': return 'Order picked up';
       case 'processing in laundry': return 'Processing in laundry';
       case 'finished processing': return 'Finished processing';

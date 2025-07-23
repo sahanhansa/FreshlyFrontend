@@ -32,6 +32,14 @@ export class ItemGridComponent implements OnInit {
   currentPage = 1;
   pageSize = 16;
 
+  categories: string[] = ['Ladies', 'Gents', 'Kids', 'Other'];
+  selectedCategory: string = 'All';
+
+  get filteredItems(): ItemResponse[] {
+    if (this.selectedCategory === 'All') return this.allItems;
+    return this.allItems.filter(item => item.categoryName?.toLowerCase() === this.selectedCategory.toLowerCase());
+  }
+
   constructor(private itemService: ItemService) {}
 
   ngOnInit() {
@@ -64,12 +72,12 @@ export class ItemGridComponent implements OnInit {
   }
 
   get totalPages() {
-    return Math.ceil(this.allItems.length / this.pageSize);
+    return Math.ceil(this.filteredItems.length / this.pageSize);
   }
 
   get paginatedItems() {
     const start = (this.currentPage - 1) * this.pageSize;
-    return this.allItems.slice(start, start + this.pageSize);
+    return this.filteredItems.slice(start, start + this.pageSize);
   }
 
   setPage(page: number) {
@@ -82,5 +90,10 @@ export class ItemGridComponent implements OnInit {
 
   nextPage() {
     if (this.currentPage < this.totalPages) this.currentPage++;
+  }
+
+  setCategory(category: string) {
+    this.selectedCategory = category;
+    this.currentPage = 1;
   }
 }

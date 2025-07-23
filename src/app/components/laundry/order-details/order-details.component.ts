@@ -1,15 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { OrderService } from '../../services/order.service';
-import { OrderDetails } from '../../models/order-details.model';
+import { OrderService } from '../../../services/order.service';
+import { OrderDetail } from '../../../models/order.model';
 
 @Component({
   selector: 'app-order-details',
-  templateUrl: './order-details.component.html',
-  styleUrls: ['./order-details.component.scss']
+  templateUrl: './order-details.component.html'
 })
 export class OrderDetailsComponent implements OnInit {
-  orderDetails: OrderDetails | null = null;
+  orderDetails: OrderDetail | null = null;
   error: string | null = null;
   processing: boolean = false;
 
