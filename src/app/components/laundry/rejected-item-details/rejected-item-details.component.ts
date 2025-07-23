@@ -14,9 +14,10 @@ export class RejectedItemDetailsComponent implements OnInit {
   constructor(private route: ActivatedRoute, private rejectedItemService: RejectedItemService) {}
 
   ngOnInit(): void {
-    const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
-      this.rejectedItemService.getRejectedItemById(id).subscribe(item => {
+    const laundryId = localStorage.getItem('laundryId');
+    const rejectedItemId = this.route.snapshot.paramMap.get('id');
+    if (laundryId && rejectedItemId) {
+      this.rejectedItemService.getRejectedItemByLaundryAndId(laundryId, rejectedItemId).subscribe((item: any) => {
         this.rejectedItem = item;
       });
     }

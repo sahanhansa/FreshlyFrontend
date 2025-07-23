@@ -17,8 +17,11 @@ export class RejectedItemsComponent implements OnInit {
   constructor(private rejectedItemService: RejectedItemService) {}
 
   ngOnInit(): void {
-    this.rejectedItemService.getRejectedItems().subscribe(items => {
-      this.rejectedItems = items;
-    });
+    const laundryId = localStorage.getItem('laundryId');
+    if (laundryId) {
+      this.rejectedItemService.getRejectedItemsByLaundryId(laundryId).subscribe(items => {
+        this.rejectedItems = items;
+      });
+    }
   }
 }

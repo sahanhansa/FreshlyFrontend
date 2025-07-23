@@ -247,6 +247,7 @@ export class AddItemComponent implements OnInit {
         // Now build the final payload
         const garmentTypesPayload = garmentTypesWithNames.map(gt => ({
           garmentTypeId: gt.garmentTypeId,
+          garmentTypeName: gt.name, // <-- Add this line to match backend expectation
           services: gt.services.map(s => ({
             serviceId: s.serviceId,
             serviceName: s.serviceName,

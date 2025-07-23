@@ -5,6 +5,7 @@ import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { ItemService } from '../../../services/item.service';
 import { DataService } from '../../../services/data.services';
 import { ServiceWithPrice } from '@app/models/item.model';
+import { catchError } from 'rxjs/operators';
 
 // Interface matching the API response
 interface ItemResponse {
@@ -48,6 +49,9 @@ export class EditItemComponent implements OnInit {
   materials: string[] = [];
   materialServices: { [garmentTypeId: string]: ServiceWithPrice[] } = {};
   materialNames: { [garmentTypeId: string]: string } = {};
+  newMaterialInput: string = '';
+  newServiceInput: { [garmentTypeId: string]: string } = {};
+  serviceIdLoading: { [garmentTypeId: string]: boolean[] } = {};
 
   item = {
     name: '',
@@ -190,6 +194,7 @@ export class EditItemComponent implements OnInit {
     // Build garmentTypes array for the payload
     const garmentTypesPayload = this.materials.map(mat => ({
       garmentTypeId: mat,
+      garmentTypeName: this.materialNames[mat],
       services: (this.materialServices[mat] || []).map(s => ({
         serviceId: s.serviceId,
         serviceName: s.serviceName,
@@ -240,19 +245,29 @@ export class EditItemComponent implements OnInit {
 
   // Add a service to a garment type
   addServiceToGarment(garmentTypeId: string, serviceName: string) {
+    if (!serviceName || this.materialServices[garmentTypeId]?.some(s => s.serviceName?.toLowerCase() === serviceName.toLowerCase())) {
+      this.newServiceInput[garmentTypeId] = '';
+      return;
+    }
+    if (!this.serviceIdLoading) this.serviceIdLoading = {};
+    if (!this.serviceIdLoading[garmentTypeId]) this.serviceIdLoading[garmentTypeId] = [];
+    const idx = this.materialServices[garmentTypeId]?.length || 0;
+    this.serviceIdLoading[garmentTypeId][idx] = true;
+
     this.dataService.getServiceIdByName(serviceName).subscribe({
       next: (response) => {
-        if (!this.materialServices[garmentTypeId]) {
-          this.materialServices[garmentTypeId] = [];
-        }
+        if (!this.materialServices[garmentTypeId]) this.materialServices[garmentTypeId] = [];
         this.materialServices[garmentTypeId].push({
           serviceId: response.serviceId,
           serviceName: serviceName,
           price: 0
         });
+        this.serviceIdLoading[garmentTypeId][idx] = false;
+        this.newServiceInput[garmentTypeId] = '';
       },
-      error: (error) => {
-        alert('Failed to fetch service ID.');
+      error: () => {
+        this.serviceIdLoading[garmentTypeId][idx] = false;
+        this.newServiceInput[garmentTypeId] = '';
       }
     });
   }
@@ -262,6 +277,46 @@ export class EditItemComponent implements OnInit {
     if (this.materialServices[garmentTypeId]) {
       this.materialServices[garmentTypeId].splice(index, 1);
     }
+  }
+
+  addMaterial() {
+    const matName = this.newMaterialInput.trim().toLowerCase();
+    if (!matName || Object.values(this.materialNames).includes(matName)) {
+      this.newMaterialInput = '';
+      return;
+    }
+    this.dataService.getGarmentTypeIdByName(matName).pipe(
+      catchError(() => this.dataService.addGarmentType(matName))
+    ).subscribe({
+      next: (res: any) => {
+        const garmentTypeId = res.garmentTypeId;
+        this.materials.push(garmentTypeId);
+        this.materialNames[garmentTypeId] = matName;
+        this.materialServices[garmentTypeId] = this.availableServices.map(s => ({
+          serviceId: '',
+          serviceName: s,
+          price: 0
+        }));
+        this.newMaterialInput = '';
+      }
+    });
+  }
+
+  removeMaterial(mat: string) {
+    this.materials = this.materials.filter(m => m !== mat);
+    delete this.materialNames[mat];
+    delete this.materialServices[mat];
+  }
+
+  getAvailableServicesForMaterial(mat: string): string[] {
+    return this.availableServices.filter(
+      svc => !(this.materialServices[mat]?.some(service => service.serviceName === svc))
+    );
+  }
+
+  onAddService(mat: string, serviceSelect: HTMLSelectElement) {
+    this.addServiceToGarment(mat, serviceSelect.value);
+    serviceSelect.value = '';
   }
 
 }

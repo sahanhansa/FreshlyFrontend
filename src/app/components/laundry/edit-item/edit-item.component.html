@@ -52,13 +52,25 @@
         </select>
       </div>
 
+      <!-- Add New Material -->
+      <div class="mt-6">
+        <label class="block text-gray-600">Add Material</label>
+        <div class="flex gap-2 mt-1">
+          <input type="text" [(ngModel)]="newMaterialInput" name="newMaterialInput" placeholder="Enter material type..." class="flex-1 p-2 border rounded-md" (keyup.enter)="addMaterial()" />
+          <button type="button" (click)="addMaterial()" class="bg-gray-200 px-4 py-2 rounded-md text-gray-700">Add</button>
+        </div>
+      </div>
+
       <!-- Garment Types & Services -->
       <div *ngIf="materials.length > 0" class="mt-8 space-y-8">
         <div *ngFor="let mat of materials" class="bg-white rounded-xl shadow p-6">
-          <div class="flex items-center mb-2">
+          <div class="flex items-center mb-2 gap-2">
             <span class="inline-block bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-base font-semibold mr-2">
-              {{ materialNames[mat] || mat }}
+              {{ materialNames[mat] }}
             </span>
+            <button type="button" (click)="removeMaterial(mat)" class="text-red-500 hover:text-red-700 px-2" title="Delete Material">
+              <svg xmlns='http://www.w3.org/2000/svg' class='h-5 w-5' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M6 18L18 6M6 6l12 12'/></svg>
+            </button>
             <span class="text-gray-500 text-sm">Configure services for this material</span>
           </div>
           <div class="space-y-3 mt-4">
@@ -70,11 +82,21 @@
               </button>
             </div>
             <!-- Add Service Row -->
-            <div class="flex gap-2 items-center mt-2">
-              <select #serviceSelect class="flex-1 p-2 border rounded-md bg-white cursor-pointer">
-                <option *ngFor="let s of availableServices" [value]="s">{{ s }}</option>
+            <div class="flex gap-2 items-center mt-2" *ngIf="materialServices[mat].length < 4">
+              <select #serviceSelect class="flex-1 p-2 rounded-md bg-white shadow focus:outline-none" style="box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                <option value="">Select service...</option>
+                <option
+                  *ngFor="let s of getAvailableServicesForMaterial(mat)"
+                  [value]="s">
+                  {{ s }}
+                </option>
               </select>
-              <button type="button" (click)="addServiceToGarment(mat, serviceSelect.value)" class="text-blue-600 underline text-sm">+ Add Service</button>
+              <button type="button"
+                      (click)="onAddService(mat, serviceSelect)"
+                      class="bg-gray-200 px-4 py-2 rounded-md text-gray-700"
+                      [disabled]="!serviceSelect.value">
+                Add
+              </button>
             </div>
           </div>
         </div>
