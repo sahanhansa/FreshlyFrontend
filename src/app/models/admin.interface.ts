@@ -27,6 +27,7 @@ export interface Driver {
   photo: string;
   rating: number;
   location: string;
+  email: string;
 }
 
 export interface PendingAction {

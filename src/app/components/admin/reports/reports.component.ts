@@ -67,12 +67,18 @@ export class ReportsComponent implements OnInit {
   
   complaintsAnswered = 3298;
   avgSessionLength = '2m 34s';
-  
+
   knowledge = {
     starting: 64,
     current: 86,
     gain: 34
   };
+
+  isLoadingRevenue = false;
+  isLoadingCustomers = false;
+  isLoadingDownload = false;
+  revenueLoaded = false;
+  customersLoaded = false;
 
   // Revenue data for the chart
   revenueData: RevenueData[] = [
@@ -108,18 +114,23 @@ export class ReportsComponent implements OnInit {
   }
 
   fetchActiveCustomers(): void {
+    this.isLoadingCustomers = true;
     this.http.get<any[]>(`${environment.apiUrl}/api/Customer`).subscribe({
       next: (customers: any[]) => {
         this.totalCustomers = customers.length;
         this.activeCustomers = customers.filter(c => (c.AccountStatus || '').toLowerCase() === 'active').length;
+        this.customersLoaded = true;
+        this.isLoadingCustomers = false;
       },
       error: (err: any) => {
         console.error('Failed to fetch customers:', err);
+        this.isLoadingCustomers = false;
       }
     });
   }
 
   fetchRevenueData(): void {
+    this.isLoadingRevenue = true;
     this.http.get<any[]>(`${environment.apiUrl}/api/Order`).subscribe({
       next: (orders: any[]) => {
         // Reset monthly totals
@@ -133,9 +144,12 @@ export class ReportsComponent implements OnInit {
           monthlyTotals[month] += Number(total);
         });
         this.revenueData = this.revenueData.map((row, idx) => ({ month: row.month, amount: monthlyTotals[idx] }));
+        this.revenueLoaded = true;
+        this.isLoadingRevenue = false;
       },
       error: (err: any) => {
         console.error('Failed to fetch orders:', err);
+        this.isLoadingRevenue = false;
       }
     });
   }
@@ -145,6 +159,11 @@ export class ReportsComponent implements OnInit {
   }
 
   downloadReport(): void {
+    if (this.isLoadingRevenue || this.isLoadingCustomers) {
+      alert('Please wait for all data to load before downloading the report.');
+      return;
+    }
+    this.isLoadingDownload = true;
     // Fetch backend data and generate a well-organized admin report PDF with tables
     this.http.get<any[]>(`${environment.apiUrl}/api/Order`).subscribe({
       next: (orders: any[]) => {
@@ -241,9 +260,11 @@ export class ReportsComponent implements OnInit {
           styles: { font: 'helvetica', fontSize: 12 },
         });
         doc.save('admin-dashboard-report.pdf');
+        this.isLoadingDownload = false;
       },
       error: (err: any) => {
         console.error('Failed to fetch orders for report:', err);
+        this.isLoadingDownload = false;
       }
     });
   }

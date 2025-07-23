@@ -1,3 +1,7 @@
+/* Make driver profile images round and centered */
+.rounded-full {
+  border-radius: 9999px !important;
+}
 /* Zoom out admin dashboard for better layout */
 :host {
   display: block;

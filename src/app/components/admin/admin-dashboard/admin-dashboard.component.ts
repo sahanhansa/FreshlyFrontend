@@ -208,11 +208,12 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit {
       next: (drivers: any[]) => {
         this.drivers = drivers.map((driver: any) => ({
           id: driver.driverId || '',
-          name: driver.name || driver.fullName || 'Unnamed Driver',
-          location: driver.address?.city || 'Location not available',
+          name: (driver.firstName ? driver.firstName : '') + (driver.lastName ? ' ' + driver.lastName : ''),
+          email: driver.email || '',
+          photo: driver.profileImage || 'assets/images/driver.png',
+          accountStatus: driver.accountStatus || driver.status || '',
           rating: driver.rating || 0,
-          photo: driver.profileImageUrl || 'assets/images/driver.png',
-          accountStatus: driver.accountStatus || driver.status || ''
+          location: driver.address?.city || driver.city || ''
         }));
         this.updateActiveUsers();
         this.isLoadingDrivers = false;

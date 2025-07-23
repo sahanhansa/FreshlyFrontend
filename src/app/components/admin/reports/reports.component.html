@@ -40,21 +40,35 @@
           </select>
         </div>
       </div>
-      <button class="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors" (click)="downloadReport()">
+      <button class="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+        (click)="downloadReport()"
+        [disabled]="isLoadingRevenue || isLoadingCustomers || isLoadingDownload">
         <i class="fas fa-download"></i>
-        Download
+        <span *ngIf="!isLoadingDownload">Download</span>
+        <span *ngIf="isLoadingDownload" class="flex items-center gap-2">
+          <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg>
+          Generating...
+        </span>
       </button>
     </div>
 
     <div class="bg-white rounded-lg shadow p-6 mb-6">
       <div style="color: green; font-weight: bold;">TEST MARKER - REVENUE CHART SECTION</div>
-      <app-revenue-per-month></app-revenue-per-month>
+      <div *ngIf="isLoadingRevenue" class="flex items-center gap-2 text-blue-500 font-semibold py-4">
+        <svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg>
+        Loading revenue data...
+      </div>
+      <app-revenue-per-month *ngIf="!isLoadingRevenue"></app-revenue-per-month>
     </div>
 
     <div class="grid grid-cols-3 gap-6 mb-6">
       <div class="bg-white rounded-lg shadow p-6">
         <h4 class="text-gray-600 mb-2">Active Users</h4>
-        <div class="text-2xl font-bold">
+        <div *ngIf="isLoadingCustomers" class="flex items-center gap-2 text-blue-500 font-semibold py-2">
+          <svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg>
+          Loading users...
+        </div>
+        <div class="text-2xl font-bold" *ngIf="!isLoadingCustomers">
           <!-- Active users display removed: property no longer exists -->
         </div>
       </div>
@@ -90,28 +104,8 @@
     </div>
 
     <div class="bg-white rounded-lg shadow p-6">
-      <h3 class="text-xl font-semibold mb-4">Driver Leaderboard</h3>
-      <div class="space-y-4">
-        <div class="flex items-center justify-between p-4 hover:bg-gray-50 rounded-lg" *ngFor="let driver of driverLeaderboard">
-          <div class="flex items-center gap-4">
-            <div class="w-8 h-8 flex items-center justify-center bg-gray-100 rounded-full font-semibold">{{ driver.rank }}</div>
-            <div class="flex items-center gap-3">
-              <img [src]="driver.image || 'assets/images/default-avatar.png'" alt="User avatar" class="w-10 h-10 rounded-full">
-              <span class="font-medium">{{ driver.name }}</span>
-            </div>
-          </div>
-          <div class="flex items-center gap-6">
-            <div class="text-gray-600">{{ driver.points }} Points</div>
-            <div class="text-gray-600" *ngIf="driver.correctPercentage">{{ driver.correctPercentage }} Correct</div>
-            <div class="text-green-500" *ngIf="driver.trend === 'up'">
-              <i class="fas fa-arrow-up"></i>
-            </div>
-            <div class="text-red-500" *ngIf="driver.trend === 'down'">
-              <i class="fas fa-arrow-down"></i>
-            </div>
-          </div>
-        </div>
-      </div>
+      <h3 class="text-xl font-semibold mb-4">Laundry Leaderboard</h3>
+      <app-laundry-leaderboard></app-laundry-leaderboard>
     </div>
   </div>
 </div>
