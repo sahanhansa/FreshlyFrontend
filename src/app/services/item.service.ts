@@ -9,7 +9,7 @@ import { AddItemDTO } from '../models/item.model';
 })
 export class ItemService {
   // Backend API endpoint URL
-  private apiUrl = 'http://localhost:5027/api/Item'; 
+  private apiUrl = 'https://localhost:5027/api/Item'; 
 
   constructor(private http: HttpClient) { }
 

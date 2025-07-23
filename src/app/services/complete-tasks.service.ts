@@ -16,7 +16,7 @@ export interface CompleteTasksDetailsDto {
   providedIn: 'root'
 })
 export class CompleteTasksService {
-  private apiUrl = 'http://localhost:5027/api/Order';
+  private apiUrl = 'https://localhost:5027/api/Order';
   driverId = localStorage.getItem('driverId');
 
   constructor(private http: HttpClient) {}

@@ -24,7 +24,7 @@ export interface ImageUploadResponse {
 
 @Injectable({ providedIn: 'root' })
 export class DataService {
-  private baseUrl = 'http://localhost:5027/api'; 
+  private baseUrl = 'https://localhost:5027/api'; 
 
   constructor(private http: HttpClient) {}
 

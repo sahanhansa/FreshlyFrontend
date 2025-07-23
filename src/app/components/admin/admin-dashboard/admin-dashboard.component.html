@@ -11,6 +11,12 @@
         <p class="text-gray-600 text-[24px] mb-6">Manage Your Pickups And Delivery Tasks Efficiently</p>
         
         <!-- Stats Cards in 2x2 Grid -->
+        <ng-container *ngIf="isLoadingOrders || isLoadingAdmins || isLoadingDrivers || isLoadingLaundries || isLoadingCustomers || isLoadingStatuses; else dashboardStats">
+          <div class="flex justify-center items-center py-8 w-full">
+            <div class="animate-spin rounded-full h-12 w-12 border-t-4 border-blue-500 border-solid"></div>
+          </div>
+        </ng-container>
+        <ng-template #dashboardStats>
         <div class="grid grid-cols-2 gap-6">
            <!-- Total Pickups Card -->
           <div class="bg-white rounded-xl shadow-sm flex items-center gap-4 transition-transform hover:-translate-y-1" style="width: 340px; height: 170px;">
@@ -53,6 +59,7 @@
             </div>
           </div>
         </div>
+        </ng-template>
       </div>
       <!-- Right: Dashboard illustration image -->
       <div class="relative w-[40%]">
@@ -64,10 +71,17 @@
   <!-- Revenue Chart Section -->
   <div class="bg-white rounded-xl p-8 mb-8 shadow-sm opacity-100 visible flex flex-col items-center">
     <h2 class="text-2xl font-semibold text-gray-800 mb-6">Total Revenue</h2>
-    <!-- Chart.js canvas for revenue graph -->
-    <div class="flex justify-center" style="width: 970px; height: 430px;">
-      <canvas #revenueChart class="w-full h-full"></canvas>
-    </div>
+    <ng-container *ngIf="isLoadingOrders; else revenueChartBlock">
+      <div class="flex justify-center items-center py-8 w-full">
+        <div class="animate-spin rounded-full h-12 w-12 border-t-4 border-blue-500 border-solid"></div>
+      </div>
+    </ng-container>
+    <ng-template #revenueChartBlock>
+      <!-- Chart.js canvas for revenue graph -->
+      <div class="flex justify-center" style="width: 970px; height: 430px;">
+        <canvas #revenueChart class="w-full h-full"></canvas>
+      </div>
+    </ng-template>
   </div>
   <!-- Hidden total revenue chart for PDF export -->
   <div style="display: none;">
@@ -77,6 +91,12 @@
   <!-- Admin Panel Section -->
   <div class="bg-white rounded-xl p-8 mb-8 shadow-sm">
     <h2 class="text-2xl font-semibold text-gray-800 mb-6">Admin Panel Members</h2>
+    <ng-container *ngIf="isLoadingAdmins; else adminPanelBlock">
+      <div class="flex justify-center items-center py-8 w-full">
+        <div class="animate-spin rounded-full h-12 w-12 border-t-4 border-blue-500 border-solid"></div>
+      </div>
+    </ng-container>
+    <ng-template #adminPanelBlock>
     <!-- Add Admin button for SuperAdmin -->
     <div *ngIf="adminRole === 'SuperAdmin'" class="mb-6">
       <button (click)="onAddAdmin()" class="px-5 py-2 rounded-lg bg-green-500 text-white font-semibold shadow hover:bg-green-600 transition-all">
@@ -174,11 +194,18 @@
         </div>
       </div>
     </div>
+    </ng-template>
   </div>
 
   <!-- Laundries Section -->
   <div class="bg-white rounded-xl p-8 mb-8 shadow-sm">
     <h2 class="text-2xl font-semibold text-gray-800 mb-6">Registered Laundries</h2>
+    <ng-container *ngIf="isLoadingLaundries; else laundriesBlock">
+      <div class="flex justify-center items-center py-8 w-full">
+        <div class="animate-spin rounded-full h-12 w-12 border-t-4 border-blue-500 border-solid"></div>
+      </div>
+    </ng-container>
+    <ng-template #laundriesBlock>
     <div class="overflow-x-auto" style="scrollbar-width: thin;">
       <div class="flex gap-6 p-4 min-w-max">
         <!-- Card for each laundry -->
@@ -198,11 +225,18 @@
         </div>
       </div>
     </div>
+    </ng-template>
   </div>
 
   <!-- Drivers Section -->
   <div class="bg-white rounded-xl p-8 mb-8 shadow-sm">
     <h2 class="text-2xl font-semibold text-gray-800 mb-6">Active Drivers</h2>
+    <ng-container *ngIf="isLoadingDrivers; else driversBlock">
+      <div class="flex justify-center items-center py-8 w-full">
+        <div class="animate-spin rounded-full h-12 w-12 border-t-4 border-blue-500 border-solid"></div>
+      </div>
+    </ng-container>
+    <ng-template #driversBlock>
     <div class="overflow-x-auto" style="scrollbar-width: thin;">
       <div class="flex gap-6 p-4 min-w-max">
         <!-- Card for each driver -->
@@ -222,5 +256,6 @@
         </div>
       </div>
     </div>
+    </ng-template>
   </div>
 </div>

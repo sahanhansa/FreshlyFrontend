@@ -1,3 +1,4 @@
+  // ...existing code...
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { RevenuePerMonthComponent } from '../reports/revenue-per-month.component';
@@ -48,8 +49,16 @@ Chart.register(
   styleUrl: './admin-dashboard.component.css'
 })
 export class AdminDashboardComponent implements OnInit, AfterViewInit {
+  // Loading spinner flags
+  isLoadingAdmins: boolean = false;
+  isLoadingStatuses: boolean = false;
+  isLoadingLaundries: boolean = false;
+  isLoadingDrivers: boolean = false;
+  isLoadingCustomers: boolean = false;
+  isLoadingOrders: boolean = false;
   @ViewChild('revenuePerMonthComp', { static: false }) revenuePerMonthComp?: RevenuePerMonthComponent;
-  private chartReady = false;
+  private viewReady = false;
+  private dataReady = false;
   downloadReport() {
     setTimeout(() => {
       const doc = new jsPDF('p', 'mm', 'a4');
@@ -132,33 +141,38 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    console.log('AdminDashboardComponent: ngOnInit');
     // Fetch all admins from backend
     const token = localStorage.getItem('token');
+    this.isLoadingAdmins = true;
     this.http.get<any[]>(`${environment.apiUrl}/api/Admin`, {
       headers: { Authorization: `Bearer ${token}` }
     }).subscribe({
       next: (admins: any[]) => {
-        // Map backend data to AdminPanelMember interface if needed
         this.adminPanel = admins.map((admin: any) => ({
           id: admin.id || admin.adminId || '',
           name: admin.name || admin.username || '',
           role: admin.role || '',
-          image: admin.image || 'assets/images/admin.jpg'
+          image: admin.laundryImageLink || admin.image || 'assets/images/admin.jpg'
         }));
+        this.isLoadingAdmins = false;
       },
       error: (err) => {
         console.error('Failed to fetch admins:', err);
+        this.isLoadingAdmins = false;
       }
     });
+
     // Fetch statuses first
+    this.isLoadingStatuses = true;
     this.http.get<any[]>(`${environment.apiUrl}/api/Status`).subscribe({
       next: (statuses: any[]) => {
         this.statusMap = {};
         statuses.forEach((status: any) => {
           this.statusMap[status.StatusID || status.statusId] = status.StatusName || status.statusName;
         });
+        this.isLoadingStatuses = false;
         // Fetch laundries after statuses
+        this.isLoadingLaundries = true;
         this.laundryService.getLaundries().subscribe({
           next: (laundries: any[]) => {
             this.laundries = laundries.map((laundry: any) => ({
@@ -173,19 +187,23 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit {
               this.laundryNames[laundry.id] = laundry.name;
             });
             this.updateActiveUsers();
+            this.isLoadingLaundries = false;
             // Fetch orders after laundries
             this.fetchOrdersAndProcessRevenue();
           },
           error: (err: any) => {
             console.error('Failed to fetch laundries:', err);
+            this.isLoadingLaundries = false;
           }
         });
       },
       error: (err: any) => {
         console.error('Failed to fetch statuses:', err);
+        this.isLoadingStatuses = false;
       }
     });
 
+    this.isLoadingDrivers = true;
     this.driverService.getDrivers().subscribe({
       next: (drivers: any[]) => {
         this.drivers = drivers.map((driver: any) => ({
@@ -197,13 +215,16 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit {
           accountStatus: driver.accountStatus || driver.status || ''
         }));
         this.updateActiveUsers();
+        this.isLoadingDrivers = false;
       },
       error: (err: any) => {
         console.error('Failed to fetch drivers:', err);
+        this.isLoadingDrivers = false;
       }
     });
 
     // Fetch customers for active users
+    this.isLoadingCustomers = true;
     this.http.get<any[]>(`${environment.apiUrl}/api/Customer`).subscribe({
       next: (customers: any[]) => {
         this.customers = customers.map((customer: any) => ({
@@ -211,19 +232,32 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit {
           accountStatus: customer.accountStatus || customer.status || ''
         }));
         this.updateActiveUsers();
+        this.isLoadingCustomers = false;
       },
       error: (err: any) => {
         console.error('Failed to fetch customers:', err);
+        this.isLoadingCustomers = false;
       }
     });
   }
 
   ngAfterViewInit(): void {
-    // Wait for the hidden chart to render
-    setTimeout(() => {
-      this.chartReady = true;
-      this.cdr.detectChanges();
-    }, 500);
+    // Mark view as ready and try to render chart
+    this.viewReady = true;
+    this.tryRenderChart();
+  }
+
+  private tryRenderChart(): void {
+    // Only render chart if both view and data are ready and orders are loaded
+    if (this.viewReady && this.dataReady && this.orders && this.orders.length > 0) {
+      // If the ViewChild is not yet available, retry after a short delay
+      if (!this.revenueChart || !this.revenueChart.nativeElement) {
+        console.warn('revenueChart ViewChild not available, retrying in 100ms');
+        setTimeout(() => this.tryRenderChart(), 100);
+        return;
+      }
+      this.initializeChart();
+    }
   }
 
   private updateActiveUsers(): void {
@@ -235,9 +269,20 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit {
   }
 
   private initializeChart(): void {
-    if (!this.revenueChart) return;
+    if (!this.revenueChart || !this.revenueChart.nativeElement) {
+      console.warn('revenueChart ViewChild not available');
+      return;
+    }
     const ctx = this.revenueChart.nativeElement.getContext('2d');
-    if (!ctx) return;
+    if (!ctx) {
+      console.warn('2D context not available on revenueChart');
+      return;
+    }
+    // Destroy previous chart instance if exists
+    if (this.chartInstance) {
+      this.chartInstance.destroy();
+      this.chartInstance = null;
+    }
     // Vibrant color palette for unique, consistent curve colors
     const colorPalette = [
       '#1f77b4', // blue
@@ -265,7 +310,20 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit {
         pointHoverRadius: 6
       };
     });
-    console.log('Chart datasets:', datasets);
+    // Debug: log datasets and laundryRevenueData
+    console.log('Chart datasets:', datasets, 'laundryRevenueData:', this.laundryRevenueData);
+    if (!datasets.length || datasets.every(ds => !ds.data || ds.data.every((v: any) => !v))) {
+      // Show a message in the chart area if no data
+      const ctx = this.revenueChart.nativeElement.getContext('2d');
+      if (ctx) {
+        ctx.clearRect(0, 0, this.revenueChart.nativeElement.width, this.revenueChart.nativeElement.height);
+        ctx.font = '20px Arial';
+        ctx.fillStyle = '#888';
+        ctx.textAlign = 'center';
+        ctx.fillText('No revenue data to display', this.revenueChart.nativeElement.width / 2, this.revenueChart.nativeElement.height / 2);
+      }
+      return;
+    }
     const chartConfig: ChartConfiguration = {
       type: 'line',
       data: {
@@ -304,19 +362,27 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit {
     };
     try {
       this.chartInstance = new Chart(ctx, chartConfig);
+      console.log('Chart.js chart created successfully');
     } catch (error) {
       console.error('Error creating Chart.js chart:', error);
     }
   }
 
   private fetchOrdersAndProcessRevenue(): void {
+    // Debug: log laundries and orders after both are loaded
+    if (this.laundries?.length) {
+      console.log('Laundries loaded:', this.laundries);
+    }
+    this.isLoadingOrders = true;
     this.http.get<any[]>(`${environment.apiUrl}/api/Order`).subscribe({
       next: (orders: any[]) => {
-        console.log('Fetched orders:', orders);
+        // ...existing code for processing orders, stats, revenue...
         this.orders = orders;
         this.processMonthlyRevenue();
-        this.initializeChart();
-        // Count pickups and deliveries using order.status.statusDisplayName or statusName (trimmed)
+        // Set dataReady and try to render chart
+        this.dataReady = true;
+        this.tryRenderChart();
+        // ...existing code for stats...
         let pickupCount = 0;
         let deliveryCount = 0;
         orders.forEach(order => {
@@ -331,9 +397,7 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit {
         });
         this.stats.totalPickups = pickupCount;
         this.stats.totalDeliveries = deliveryCount;
-        // Calculate total revenue
         this.stats.totalRevenue = orders.reduce((sum, order) => sum + Number(order.totalCost || 0), 0);
-        // Calculate total hours (difference between placedDateTime and pickupDateTime for all orders)
         let totalHours = 0;
         orders.forEach(order => {
           const placed = order.placedDateTime ? new Date(order.placedDateTime) : null;
@@ -344,9 +408,11 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit {
           }
         });
         this.stats.totalHours = Math.round(totalHours);
+        this.isLoadingOrders = false;
       },
       error: (err: any) => {
         console.error('Failed to fetch orders:', err);
+        this.isLoadingOrders = false;
       }
     });
   }
@@ -371,6 +437,8 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit {
         this.laundryRevenueData[laundryId][month] += Number(total);
       }
     });
+    // Debug: log laundryRevenueData after processing
+    console.log('laundryRevenueData after processing:', this.laundryRevenueData);
   }
 
   onAddAdmin(): void {
