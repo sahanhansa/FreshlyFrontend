@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { RejectedItemsComponent } from './pages/Laundry/rejected-items/rejected-items.component';
+import { RejectedItemDetailsComponent } from './components/laundry/rejected-item-details/rejected-item-details.component';
 
 const routes: Routes = [  
   { path: '', redirectTo: 'admin', pathMatch: 'full' },
@@ -59,6 +61,8 @@ const routes: Routes = [
         (m) => m.ReportsComponent
       ),
   },
+  { path: 'laundry/rejected-items', component: RejectedItemsComponent },
+  { path: 'laundry/rejected-items/:id', component: RejectedItemDetailsComponent },
 ];
 
 @NgModule({

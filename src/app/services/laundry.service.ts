@@ -49,6 +49,11 @@ export class LaundryService {
       );
   }
 
+  // Method to fetch a specific laundry by its string ID (raw response)
+  getLaundryByIdString(id: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/${id}`);
+  }
+
   getLaundryDetails(id: string = this.TEST_LAUNDRY_ID): Observable<LaundryDetails[]> {
     const url = `${this.apiUrl}/get-laundry-details/${id}`;
     console.log('Fetching laundry details from:', url);
@@ -61,6 +66,11 @@ export class LaundryService {
         return throwError(() => new Error('Failed to load laundry details. Please try again later.'));
       })
     );
+  }
+
+  // Add message for contact us
+  addMessage(payload: { laundryID: string, selectedSubject: string, message: string }) {
+    return this.http.post(`${this.apiUrl}/add-message`, payload);
   }
 
 
