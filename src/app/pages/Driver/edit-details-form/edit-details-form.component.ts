@@ -24,6 +24,7 @@ export class EditDetailsFormComponent implements OnInit {
 
   driverId: string = localStorage.getItem('userId') || '';
 
+  error: string = '';
 
   accountForm: FormGroup;
   passwordForm: FormGroup;
@@ -172,13 +173,21 @@ export class EditDetailsFormComponent implements OnInit {
           // Optional: Reset the form or show success
           this.passwordForm.reset();
           this.submittedPassword = false;
+          this.error = ''; // clear error if any
         },
         error: (err) => {
           console.error('Error changing password:', err);
+          if (err.status === 409) {
+            this.error = 'Current password is wrong';
+          } else {
+            this.error = 'An unexpected error occurred. Please try again.';
+          }
         }
       });
+
     } else {
       console.log('Password form invalid');
+      this.error = 'password is mismatching';
     }
   }
 
