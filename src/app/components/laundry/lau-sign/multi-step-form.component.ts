@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { trigger, state, style, animate, transition } from '@angular/animations';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { LaundryRegistrationService, LaundryRegistrationRequest } from '../../../services/laundry-registration.service';
@@ -10,7 +11,20 @@ import {HeaderComponent} from '../../landing-page/header.component';
   templateUrl: './multi-step-form.component.html',
   styleUrls: ['./multi-step-form.component.css'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule,FooterComponent,HeaderComponent]
+  imports: [CommonModule, ReactiveFormsModule,FooterComponent,HeaderComponent],
+  animations: [
+    trigger('slideInOut', [
+      state('void', style({ transform: 'translateX(100%)', opacity: 0 })),
+      state('*', style({ transform: 'translateX(0)', opacity: 1 })),
+      transition(':enter', [
+        style({ transform: 'translateX(100%)', opacity: 0 }),
+        animate('300ms ease-out', style({ transform: 'translateX(0)', opacity: 1 }))
+      ]),
+      transition(':leave', [
+        animate('300ms ease-in', style({ transform: 'translateX(100%)', opacity: 0 }))
+      ])
+    ])
+  ]
 })
 export class MultiStepFormComponent implements OnInit {
   accountStateMessage: string = '';

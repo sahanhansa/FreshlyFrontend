@@ -11,6 +11,7 @@ export interface AdminPanelMember {
   name: string;
   role: string;
   image: string;
+  email: string;
 }
 
 export interface Laundry {

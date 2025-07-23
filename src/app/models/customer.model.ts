@@ -8,4 +8,5 @@ export interface Customer {
   address: string | null;
   contacts: string[];
   accountStatus?: string | null;
+  profilePic?: string | null;
 }

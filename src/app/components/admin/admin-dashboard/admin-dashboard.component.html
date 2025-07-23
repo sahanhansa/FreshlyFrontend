@@ -179,14 +179,10 @@
             </div>
             <!-- Action buttons for admin member -->
             <div class="flex gap-3 mt-auto justify-center">
-              <!-- Show Add Admin button only for SuperAdmin -->
-              <button *ngIf="adminRole === 'SuperAdmin'" class="flex items-center justify-center w-9 h-9 rounded-lg bg-red-50 text-red-500 hover:bg-red-100 transition-all" (click)="onAddAdmin()">
-                <i class="fas fa-user-plus"></i>
-              </button>
-              <button class="flex items-center justify-center w-9 h-9 rounded-lg bg-blue-50 text-blue-500 hover:bg-blue-100 transition-all">
+              <button class="flex items-center justify-center w-9 h-9 rounded-lg bg-blue-50 text-blue-500 hover:bg-blue-100 transition-all" (click)="showAdminEmail(member)">
                 <i class="fas fa-envelope"></i>
               </button>
-              <button class="flex items-center justify-center w-9 h-9 rounded-lg bg-green-50 text-green-500 hover:bg-green-100 transition-all">
+              <button class="flex items-center justify-center w-9 h-9 rounded-lg bg-red-50 text-red-500 hover:bg-red-100 transition-all" (click)="deleteAdmin(member)">
                 <i class="fas fa-user"></i>
               </button>
             </div>

@@ -1,4 +1,4 @@
-  // ...existing code...
+// ...existing code...
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { RevenuePerMonthComponent } from '../reports/revenue-per-month.component';
@@ -14,6 +14,7 @@ import { NgForm } from '@angular/forms';
 import { AdminStats, AdminPanelMember, Laundry, Driver, PendingAction } from '../../../models/admin.interface';
 import { AdminDriverService } from '../../../services/admin/admin-driver.service';
 import { LaundryService } from '../../../services/laundry.service';
+import { LaundryAdminService } from '../../../services/laundry-admin.service';
 import {
   Chart,
   CategoryScale,
@@ -49,6 +50,35 @@ Chart.register(
   styleUrl: './admin-dashboard.component.css'
 })
 export class AdminDashboardComponent implements OnInit, AfterViewInit {
+  deleteAdmin(member: AdminPanelMember): void {
+    if (!member.id) {
+      alert('Invalid admin ID.');
+      return;
+    }
+    if (!confirm('Are you sure you want to delete this admin?')) {
+      return;
+    }
+    const token = localStorage.getItem('token');
+    this.http.delete(`${environment.apiUrl}/api/Admin/delete-if-not-superadmin/${member.id}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    }).subscribe({
+      next: () => {
+        this.adminPanel = this.adminPanel.filter(a => a.id !== member.id);
+        alert('Admin deleted successfully.');
+      },
+      error: (err) => {
+        let msg = 'Failed to delete admin.';
+        if (err?.error && typeof err.error === 'string') {
+          msg = err.error;
+        }
+        alert(msg);
+        console.error('Failed to delete admin:', err);
+      }
+    });
+  }
+  showAdminEmail(member: AdminPanelMember): void {
+    alert(member.email ? member.email : 'No email available for this admin.');
+  }
   addAdminError: string | null = null;
   // Loading spinner flags
   isLoadingAdmins: boolean = false;
@@ -120,6 +150,7 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit {
   constructor(
     private router: Router,
     private laundryService: LaundryService,
+    private laundryAdminService: LaundryAdminService,
     private driverService: AdminDriverService,
     private http: HttpClient,
     private cdr: ChangeDetectorRef
@@ -153,7 +184,8 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit {
           id: admin.id || admin.adminId || '',
           name: admin.name || admin.username || '',
           role: admin.role || '',
-          image: admin.laundryImageLink || admin.image || 'assets/images/admin.jpg'
+          image: admin.laundryImageLink || admin.image || 'assets/images/admin.jpg',
+          email: admin.email || ''
         }));
         this.isLoadingAdmins = false;
       },
@@ -174,15 +206,15 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit {
         this.isLoadingStatuses = false;
         // Fetch laundries after statuses
         this.isLoadingLaundries = true;
-        this.laundryService.getLaundries().subscribe({
+        this.laundryAdminService.getLaundries().subscribe({
           next: (laundries: any[]) => {
             this.laundries = laundries.map((laundry: any) => ({
-              id: laundry.id || laundry.laundryId || '',
-              name: laundry.name || laundry.laundryName || 'Unnamed Laundry',
-              location: laundry.location || laundry.city || 'Location not available',
-              rating: laundry.rating || laundry.averageRating || 0,
-              logo: 'assets/images/laundry.png',
-              accountStatus: laundry.accountStatus || laundry.status || ''
+              id: laundry.laundryId || '',
+              name: laundry.laundryName || 'Unnamed Laundry',
+              location: laundry.fullAddress || 'Location not available',
+              rating: laundry.averageRating || 0,
+              logo: laundry.profilePic || 'assets/images/laundry.png',
+              accountStatus: laundry.accountStatus || ''
             }));
             this.laundries.forEach((laundry: any) => {
               this.laundryNames[laundry.id] = laundry.name;

@@ -33,6 +33,7 @@ export interface DisplayDriver {
   styleUrl: './drivers.component.css'
 })
 export class DriversComponent implements OnInit {
+  profileImageTouched: boolean = false;
   searchType: string = 'all';
   imageLoading: boolean = true;
   profileImageFile: File | null = null;
@@ -124,6 +125,7 @@ export class DriversComponent implements OnInit {
       }
     ]
   };
+  retypePassword: string = '';
 
   constructor(public driverService: AdminDriverService) {}
 
@@ -326,6 +328,7 @@ export class DriversComponent implements OnInit {
         }
       ]
     };
+    this.retypePassword = '';
   }
 
   nextAddDriverStep(): void {
@@ -348,15 +351,17 @@ export class DriversComponent implements OnInit {
     formData.append('username', this.newDriver.username);
     formData.append('password', this.newDriver.password);
     formData.append('email', this.newDriver.email);
-    formData.append('licenseNo', this.newDriver.licenseNo);
-    formData.append('accountStatus', 'active');
-    formData.append('vehicleNo', this.newDriver.vehicleNo); // <-- Added vehicleNo
-    // Address fields
-    formData.append('houseNo', this.newDriver.address.houseNo);
+    formData.append('licenseNumber', this.newDriver.licenseNo); // backend expects licenseNumber
+    formData.append('accountStatus', this.newDriver.accountStatus || 'Active');
+    formData.append('VehicleNo', this.newDriver.vehicleNo); // backend expects VehicleNo (case-sensitive)
+    // Address fields (backend expects street, city, postalCode, country, state)
     formData.append('street', this.newDriver.address.street);
     formData.append('city', this.newDriver.address.city);
     formData.append('postalCode', this.newDriver.address.postalCode);
-    // Profile image
+    // Add dummy values for required fields if not present (adjust as needed)
+    formData.append('country', '');
+    formData.append('state', '');
+    // Profile image (optional)
     if (this.profileImageFile) {
       formData.append('profileImage', this.profileImageFile);
     }
@@ -370,5 +375,10 @@ export class DriversComponent implements OnInit {
         alert('Failed to add driver.');
       }
     });
+  }
+
+  isEmailValid(email: string | undefined): boolean {
+    if (!email) return false;
+    return /^\S+@\S+\.\S+$/.test(email);
   }
 }

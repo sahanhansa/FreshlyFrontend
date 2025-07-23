@@ -106,9 +106,6 @@
         </div>
       </div>
       <div class="w-52 p-8 flex flex-col gap-4 bg-white rounded-r-[20px]">
-        <button class="px-4 py-3 rounded-lg bg-blue-50 text-blue-500 font-medium hover:bg-blue-100 transition-colors">Picked Orders</button>
-        <button class="px-4 py-3 rounded-lg bg-blue-50 text-blue-500 font-medium hover:bg-blue-100 transition-colors">Reserved Orders</button>
-        <button class="px-4 py-3 rounded-lg bg-blue-50 text-blue-500 font-medium hover:bg-blue-100 transition-colors">Complaints</button>
         <button *ngIf="selectedDriver.accountStatus !== 'Deleted'" class="px-4 py-3 rounded-lg bg-red-500 text-white font-medium hover:bg-red-600 transition-colors mt-auto" (click)="confirmRemoveDriver(selectedDriver)">Deactivate Account</button>
         <button *ngIf="selectedDriver.accountStatus === 'Deleted'" class="px-4 py-3 rounded-lg bg-green-500 text-white font-medium hover:bg-green-600 transition-colors mt-auto" (click)="confirmRestoreDriver(selectedDriver)">Activate Account</button>
   <!-- Confirmation Modal for Remove/Restore Driver -->
@@ -197,40 +194,84 @@
         <ng-container *ngIf="addDriverStep === 1">
           <div class="grid grid-cols-2 gap-4">
             <div class="mb-4 col-span-2">
-              <label class="block font-medium mb-1">Profile Image</label>
+              <label class="block font-medium mb-1">Profile Image (optional)</label>
               <input type="file" (change)="onProfileImageSelected($event)" accept="image/*" class="w-full px-3 py-2 border rounded" />
             </div>
             <div class="mb-4">
               <label class="block font-medium mb-1">First Name</label>
-              <input [(ngModel)]="newDriver.firstName" name="firstName" required class="w-full px-3 py-2 border rounded" />
+              <input [(ngModel)]="newDriver.firstName" name="firstName" required class="w-full px-3 py-2 border rounded"
+                [ngClass]="{'border-red-500': (!newDriver.firstName && (addDriverForm.submitted || firstNameInput.touched))}"
+                #firstNameInput="ngModel" (blur)="firstNameInput.control.markAsTouched()" />
+              <div *ngIf="(addDriverForm.submitted || firstNameInput.touched) && !newDriver.firstName" class="text-red-500 text-sm mt-1">First name is required.</div>
             </div>
             <div class="mb-4">
               <label class="block font-medium mb-1">Last Name</label>
-              <input [(ngModel)]="newDriver.lastName" name="lastName" required class="w-full px-3 py-2 border rounded" />
+              <input [(ngModel)]="newDriver.lastName" name="lastName" required class="w-full px-3 py-2 border rounded"
+                [ngClass]="{'border-red-500': (!newDriver.lastName && (addDriverForm.submitted || lastNameInput.touched))}"
+                #lastNameInput="ngModel" (blur)="lastNameInput.control.markAsTouched()" />
+              <div *ngIf="(addDriverForm.submitted || lastNameInput.touched) && !newDriver.lastName" class="text-red-500 text-sm mt-1">Last name is required.</div>
             </div>
             <div class="mb-4">
               <label class="block font-medium mb-1">Username</label>
-              <input [(ngModel)]="newDriver.username" name="username" required class="w-full px-3 py-2 border rounded" />
+              <input [(ngModel)]="newDriver.username" name="username" required class="w-full px-3 py-2 border rounded"
+                [ngClass]="{'border-red-500': (!newDriver.username && (addDriverForm.submitted || usernameInput.touched))}"
+                #usernameInput="ngModel" (blur)="usernameInput.control.markAsTouched()" />
+              <div *ngIf="(addDriverForm.submitted || usernameInput.touched) && !newDriver.username" class="text-red-500 text-sm mt-1">Username is required.</div>
             </div>
             <div class="mb-4">
               <label class="block font-medium mb-1">Password</label>
-              <input [(ngModel)]="newDriver.password" name="password" type="password" required class="w-full px-3 py-2 border rounded" />
+              <input [(ngModel)]="newDriver.password" name="password" type="password" required 
+                [ngClass]="{'border-red-500': (!newDriver.password && (addDriverForm.submitted || passwordInput.touched))}"
+                #passwordInput="ngModel" (blur)="passwordInput.control.markAsTouched()"
+                class="w-full px-3 py-2 border rounded" />
+              <div *ngIf="(addDriverForm.submitted || passwordInput.touched) && !newDriver.password" class="text-red-500 text-sm mt-1">Password is required.</div>
+            </div>
+            <div class="mb-4">
+              <label class="block font-medium mb-1">Retype Password</label>
+              <input [(ngModel)]="retypePassword" name="retypePassword" type="password" required 
+                [ngClass]="{'border-red-500': ((addDriverForm.submitted || retypePasswordInput.touched) && newDriver.password !== retypePassword)}"
+                #retypePasswordInput="ngModel" (blur)="retypePasswordInput.control.markAsTouched()"
+                class="w-full px-3 py-2 border rounded" />
+              <div *ngIf="(addDriverForm.submitted || retypePasswordInput.touched) && newDriver.password !== retypePassword" class="text-red-500 text-sm mt-1">Passwords do not match.</div>
             </div>
             <div class="mb-4">
               <label class="block font-medium mb-1">Email</label>
-              <input [(ngModel)]="newDriver.email" name="email" type="email" required class="w-full px-3 py-2 border rounded" />
+              <input [(ngModel)]="newDriver.email" name="email" type="email" required class="w-full px-3 py-2 border rounded"
+                [ngClass]="{'border-red-500': ((addDriverForm.submitted || emailInput.touched) && (!newDriver.email || (newDriver.email && !isEmailValid(newDriver.email))))}"
+                #emailInput="ngModel" (blur)="emailInput.control.markAsTouched()" />
+              <div *ngIf="(addDriverForm.submitted || emailInput.touched) && !newDriver.email" class="text-red-500 text-sm mt-1">Email is required.</div>
+              <div *ngIf="(addDriverForm.submitted || emailInput.touched) && newDriver.email && !isEmailValid(newDriver.email)" class="text-red-500 text-sm mt-1">Email invalid</div>
             </div>
             <div class="mb-4">
               <label class="block font-medium mb-1">License No</label>
-              <input [(ngModel)]="newDriver.licenseNo" name="licenseNo" required class="w-full px-3 py-2 border rounded" />
+              <input [(ngModel)]="newDriver.licenseNo" name="licenseNo" required class="w-full px-3 py-2 border rounded"
+                [ngClass]="{'border-red-500': (!newDriver.licenseNo && (addDriverForm.submitted || licenseNoInput.touched))}"
+                #licenseNoInput="ngModel" (blur)="licenseNoInput.control.markAsTouched()" />
+              <div *ngIf="(addDriverForm.submitted || licenseNoInput.touched) && !newDriver.licenseNo" class="text-red-500 text-sm mt-1">License number is required.</div>
             </div>
             <div class="mb-4">
               <label class="block text-gray-700 font-medium mb-2">Vehicle No</label>
-              <input [(ngModel)]="newDriver.vehicleNo" name="vehicleNo" required class="w-full px-3 py-2 border rounded" />
+              <input [(ngModel)]="newDriver.vehicleNo" name="vehicleNo" required class="w-full px-3 py-2 border rounded"
+                [ngClass]="{'border-red-500': (!newDriver.vehicleNo && (addDriverForm.submitted || vehicleNoInput.touched))}"
+                #vehicleNoInput="ngModel" (blur)="vehicleNoInput.control.markAsTouched()" />
+              <div *ngIf="(addDriverForm.submitted || vehicleNoInput.touched) && !newDriver.vehicleNo" class="text-red-500 text-sm mt-1">Vehicle number is required.</div>
             </div>
           </div>
           <div class="flex justify-end mt-6">
-            <button type="button" class="px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 font-semibold" (click)="nextAddDriverStep()">Next</button>
+            <button type="button" class="px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 font-semibold"
+              [disabled]="!newDriver.firstName || !newDriver.lastName || !newDriver.username || !newDriver.password || !isEmailValid(newDriver.email) || !newDriver.licenseNo || !newDriver.vehicleNo || newDriver.password !== retypePassword"
+              (click)="nextAddDriverStep()">Next</button>
+            <div *ngIf="!newDriver.firstName || !newDriver.lastName || !newDriver.username || !newDriver.password || !isEmailValid(newDriver.email) || !newDriver.licenseNo || !newDriver.vehicleNo || newDriver.password !== retypePassword" class="text-red-500 text-xs mt-2 text-right w-full">
+              <ng-container *ngIf="!newDriver.firstName">First name is required.</ng-container>
+              <ng-container *ngIf="newDriver.firstName && !newDriver.lastName">Last name is required.</ng-container>
+              <ng-container *ngIf="newDriver.firstName && newDriver.lastName && !newDriver.username">Username is required.</ng-container>
+              <ng-container *ngIf="newDriver.firstName && newDriver.lastName && newDriver.username && !newDriver.password">Password is required.</ng-container>
+              <ng-container *ngIf="newDriver.firstName && newDriver.lastName && newDriver.username && newDriver.password && newDriver.password !== retypePassword">Passwords do not match.</ng-container>
+              <ng-container *ngIf="newDriver.firstName && newDriver.lastName && newDriver.username && newDriver.password && newDriver.password === retypePassword && !newDriver.email">Email is required.</ng-container>
+              <ng-container *ngIf="newDriver.firstName && newDriver.lastName && newDriver.username && newDriver.password && newDriver.password === retypePassword && newDriver.email && !isEmailValid(newDriver.email)">Email invalid.</ng-container>
+              <ng-container *ngIf="newDriver.firstName && newDriver.lastName && newDriver.username && newDriver.password && newDriver.password === retypePassword && newDriver.email && isEmailValid(newDriver.email) && !newDriver.licenseNo">License number is required.</ng-container>
+              <ng-container *ngIf="newDriver.firstName && newDriver.lastName && newDriver.username && newDriver.password && newDriver.password === retypePassword && newDriver.email && isEmailValid(newDriver.email) && newDriver.licenseNo && !newDriver.vehicleNo">Vehicle number is required.</ng-container>
+            </div>
           </div>
         </ng-container>
         <!-- Step 2: Address Info -->
@@ -239,14 +280,19 @@
             <label class="block font-medium mb-1">Address</label>
             <div class="grid grid-cols-2 gap-2">
               <input [(ngModel)]="newDriver.address.houseNo" name="houseNo" placeholder="House No" class="px-3 py-2 border rounded" />
+              <div *ngIf="addDriverForm.submitted && !newDriver.address.houseNo" class="text-red-500 text-sm col-span-2">House No is required.</div>
               <input [(ngModel)]="newDriver.address.street" name="street" placeholder="Street" class="px-3 py-2 border rounded" />
+              <div *ngIf="addDriverForm.submitted && !newDriver.address.street" class="text-red-500 text-sm col-span-2">Street is required.</div>
               <input [(ngModel)]="newDriver.address.city" name="city" placeholder="City" class="px-3 py-2 border rounded" />
+              <div *ngIf="addDriverForm.submitted && !newDriver.address.city" class="text-red-500 text-sm col-span-2">City is required.</div>
               <input [(ngModel)]="newDriver.address.postalCode" name="postalCode" placeholder="Postal Code" class="px-3 py-2 border rounded" />
+              <div *ngIf="addDriverForm.submitted && !newDriver.address.postalCode" class="text-red-500 text-sm col-span-2">Postal Code is required.</div>
             </div>
           </div>
           <div class="flex justify-between mt-6">
             <button type="button" class="px-6 py-2 bg-gray-400 text-white rounded hover:bg-gray-500 font-semibold" (click)="prevAddDriverStep()">Back</button>
-            <button type="submit" class="px-6 py-2 bg-green-500 text-white rounded hover:bg-green-600 font-semibold">Add Driver</button>
+            <button type="submit" class="px-6 py-2 bg-green-500 text-white rounded hover:bg-green-600 font-semibold"
+              [disabled]="!newDriver.address.houseNo || !newDriver.address.street || !newDriver.address.city || !newDriver.address.postalCode">Add Driver</button>
           </div>
         </ng-container>
         <!-- Ensure proper closing of form and modal divs -->

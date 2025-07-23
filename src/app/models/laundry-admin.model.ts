@@ -26,4 +26,6 @@ export interface LaundryAdminDTO {
 
   // Account status
   accountStatus?: string | null;
+  // Profile picture URL
+  profilePic?: string | null;
 }
