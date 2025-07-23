@@ -14,7 +14,7 @@
 
       <!-- Item Image -->
       <div class="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0 shadow-sm transform transition-transform hover:scale-105">
-        <img [src]="item.image" alt="{{ item.name }}" class="w-full h-full object-cover">
+        <img [src]="item.imageUrl" alt="{{ item.name }}" class="w-full h-full object-cover">
       </div>
 
       <!-- Item Details -->
@@ -30,10 +30,15 @@
               </svg>
             </button>
           </div>
-          <p class="text-sm text-gray-600">
-            <!-- <span *ngIf="item.categoryName">{{ item.categoryName }},</span>  -->
+          <!-- <p class="text-sm text-gray-600">
+            <span *ngIf="item.categoryName">{{ item.categoryName }},</span> 
             <span class="text-blue-600">{{ item.washMethod }}</span>
+          </p> -->
+          <p class="text-sm text-gray-600">
+            <span class="text-blue-600">{{ item.washMethod }}</span>
+            <span *ngIf="item.garmentTypeName"> • {{ item.garmentTypeName }}</span>
           </p>
+
           <div class="flex justify-between items-center mt-1.5">
             <p class="text-xs font-bold text-gray-500">Rs.{{ item.price }} x {{ item.quantity }}</p>
             <p class="text-l font-bold text-gray-800">Rs. {{ item.price * item.quantity }}</p>

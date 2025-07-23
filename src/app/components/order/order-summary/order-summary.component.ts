@@ -64,7 +64,9 @@ export class OrderSummaryComponent implements OnInit {
         washMethod: item.serviceName,
         price: item.price,
         quantity: item.quantity,
-        image: item.itemImageUrl || 'assets/default.png'
+        image: item.itemImageUrl || 'assets/default.png',
+        garmentTypeId: item.garmentTypeId,               // add garmentTypeId
+        garmentTypeName: item.garmentTypeName || ''     // add garmentTypeName
       }));
       this.orderId = this.orderSummary.temporaryOrderId;
       this.laundryName = this.orderSummary.laundryName;
@@ -153,6 +155,7 @@ export class OrderSummaryComponent implements OnInit {
       items: this.orderItems.map(item => ({
         itemId: item.itemId,
         serviceId: item.serviceId,
+        garmentTypeId: item.garmentTypeId , // Ensure garmentTypeId is included
         quantity: item.quantity
       }))
     };
