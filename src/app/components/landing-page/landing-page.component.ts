@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { NgClass, NgFor, NgIf } from '@angular/common';
 import { FooterComponent } from '../shared/footer/footer.component';
+import {HeaderComponent} from './header.component'
 import { RouterModule } from '@angular/router';
 import { Router } from '@angular/router';
 
@@ -9,7 +10,7 @@ import { Router } from '@angular/router';
     templateUrl: './landing-page.component.html',
     styleUrls: ['./landing-page.component.css'],
     standalone: true,
-    imports: [NgClass, NgFor, NgIf, FooterComponent, RouterModule]
+    imports: [NgClass, NgFor, NgIf, FooterComponent, RouterModule,HeaderComponent]
 })
 export class LandingPageComponent {
     // For animated bubbles in hero image
@@ -34,7 +35,7 @@ export class LandingPageComponent {
                 }
                 break;
             default:
-                console.error('Invalid link:', link);
+                this.router.navigate(['/whoareyousign']);
         }
     }
 

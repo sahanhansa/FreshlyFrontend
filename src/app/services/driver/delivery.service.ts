@@ -20,9 +20,11 @@ export interface DeliveryOrder {
   laundryName: string;
   detailsLink: string;
   orderItems: string[];       // Array of item names (can be extended to use OrderItems[])
-  paymentMethod: string;
+  paymenthMethod: string;
   deliverDriver?: string;
   note?:string;
+  isPaid?: boolean;
+  totalAmount?: number;
 }
 
 @Injectable({
@@ -82,11 +84,14 @@ export class DeliveryService {
       laundryName: order.laundryName,
       // Ensure orderItems is an array; fallback to empty array if not
       orderItems: Array.isArray(order.orderItems) ? order.orderItems : [],
-      paymentMethod: order.paymentMethod,
+      paymenthMethod: order.paymenthMethod,
       // Link to the frontend delivery order details page
       detailsLink: `/deliveries-pending-order-details/${order.orderId}`,
       deliverDriver: order.deliverDriver,
-      note: order.note || '' 
+      note: order.note || '' ,
+      isPaid: order.isPaid || false, 
+      totalAmount: order.totalAmount || 0 
+
     };
   }
 
