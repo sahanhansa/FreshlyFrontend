@@ -16,7 +16,7 @@ export class PickupOrderCardComponent implements OnInit, OnChanges {
 
   @Input() searchQuery: string = ''; // default to empty
   @Input() currentPage: number = 1;
-  @Input() itemsPerPage: number = 5;
+  @Input() itemsPerPage: number = 8;
   @Input() isOwnSearch: boolean = false;
   @Output() totalItemChange = new EventEmitter<number>();
 
@@ -94,7 +94,7 @@ filterOrderCard(): void {
   const query = this.searchQuery?.toLowerCase() || '';
 
   this.filteredPickUps = this.pickups.filter(pickup => {
-    const matchesQuery = pickup.customerName.toLowerCase().includes(query);
+    const matchesQuery = pickup.address.toLowerCase().includes(query);
 
     if (this.isOwnSearch) {
       // Own search: show only this driver’s orders
