@@ -19,6 +19,16 @@ export class LaundryOrdersComponent implements OnInit {
   orderDetails: Order[] = [];
   loading = false;
   error: string | null = null;
+  statusFilter: string = 'All';
+  availableStatuses: string[] = [];
+
+  get filteredOrders(): Order[] {
+    if (this.statusFilter === 'All') return this.orders;
+    return this.orders.filter(order => {
+      const status = order.status.statusName === 'order picked up' ? 'New' : order.status.statusName;
+      return status === this.statusFilter;
+    });
+  }
 
   constructor(private orderService: OrderService, private router: Router) {}
 
@@ -41,10 +51,17 @@ export class LaundryOrdersComponent implements OnInit {
     }
     
 
-    // Call the service method to fetch regular orders for today
-    this.orderService.getAllOrders(laundryId).subscribe({
+    // Call the service method to fetch filtered orders
+    this.orderService.getFilteredOrders(laundryId).subscribe({
       next: (data: Order[]) => {
         this.orders = data; // Assign the fetched orders to the orders array
+        // Compute available statuses
+        const statusSet = new Set<string>();
+        for (const order of data) {
+          const status = order.status.statusName === 'order picked up' ? 'New' : order.status.statusName;
+          statusSet.add(status);
+        }
+        this.availableStatuses = Array.from(statusSet);
         this.loading = false; // Set loading to false when data has been successfully fetched
       },
       error: (err: any) => {
@@ -153,5 +170,9 @@ export class LaundryOrdersComponent implements OnInit {
   goToOrderDetails(order: Order): void {
     const route = this.getOrderDetailsRoute(order);
     this.router.navigate(route);
+  }
+
+  setStatusFilter(status: string) {
+    this.statusFilter = status;
   }
 }

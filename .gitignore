@@ -6,6 +6,7 @@
 /out-tsc
 /bazel-out
 
+# Lock files
 package-lock.json
 
 # Node
@@ -33,17 +34,18 @@ yarn-error.log
 # Miscellaneous
 /.angular/cache
 .sass-cache/
-/connect.lock
+.connect.lock
 /coverage
 /libpeerconnection.log
 testem.log
 /typings
 
+# OS-generated files
 Thumbs.db
-# System files
 .DS_Store
 
-._*.DS_Store
-._*
+# Apple metadata files (macOS)
+**/._*
 
-**/_sample.txt
+# Binary AppleDouble files already in subfolders
+._*.DS_Store

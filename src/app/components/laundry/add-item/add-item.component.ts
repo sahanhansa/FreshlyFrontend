@@ -123,17 +123,22 @@ export class AddItemComponent implements OnInit {
       this.materialInput = '';
       return;
     }
-    // Add to UI immediately, then ensure it exists in DB
-    this.materials.push(mat);
-    this.materialServices[mat] = this.availableServices.map(s => ({
-      serviceId: '',
-      serviceName: s,
-      price: null
-    }));
-    this.materialInput = '';
-    // Check if garmentType exists in DB, if not, create it
+    // Check if garmentType exists in DB, if not, create it, then add to UI
     this.dataService.getGarmentTypeIdByName(mat).pipe(
-      catchError(() => this.dataService.addGarmentType(mat))
+      catchError(() => this.dataService.addGarmentType(mat)),
+      switchMap(res => {
+        if (res && res.garmentTypeId) {
+          // Only add to UI if DB operation is successful
+          this.materials.push(mat);
+          this.materialServices[mat] = this.availableServices.map(s => ({
+            serviceId: '',
+            serviceName: s,
+            price: null
+          }));
+        }
+        this.materialInput = '';
+        return of(null);
+      })
     ).subscribe();
   }
 

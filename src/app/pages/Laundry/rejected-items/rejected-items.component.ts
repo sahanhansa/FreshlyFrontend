@@ -20,8 +20,8 @@ export class RejectedItemsComponent implements OnInit {
     const laundryId = localStorage.getItem('laundryId');
     if (laundryId) {
       this.rejectedItemService.getRejectedItemsByLaundryId(laundryId).subscribe(items => {
-        this.rejectedItems = items;
-      });
+      this.rejectedItems = items;
+    });
     }
   }
 }

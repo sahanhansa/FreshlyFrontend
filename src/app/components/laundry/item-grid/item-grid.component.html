@@ -1,20 +1,36 @@
 
    
 <div class="flex flex-col items-center px-4">
-  <!-- Mini Navbar for Category Selection -->
-  <div class="flex space-x-2 mt-4 mb-4"> <!-- mb-4 for more space below navbar -->
-    <button 
-      class="px-4 py-2 rounded-full border transition-all text-sm font-medium"
-      [ngClass]="{'bg-[#0A84FF] text-white': selectedCategory === 'All', 'bg-gray-200 text-gray-700': selectedCategory !== 'All'}"
-      (click)="setCategory('All')"
-    >All</button>
-    <button 
-      *ngFor="let category of categories"
-      class="px-4 py-2 rounded-full border transition-all text-sm font-medium"
-      [ngClass]="{'bg-[#0A84FF] text-white': selectedCategory === category, 'bg-gray-200 text-gray-700': selectedCategory !== category}"
-      (click)="setCategory(category)"
-    >{{ category }}</button>
+  <!-- Top Bar: Categories (left) and Filters (right) -->
+  <div class="w-full flex flex-wrap items-center justify-between mt-4 mb-4">
+    <!-- Categories on the left -->
+    <div class="flex space-x-2 items-center">
+      <button 
+        class="px-4 py-2 rounded-full border transition-all text-sm font-medium"
+        [ngClass]="{'bg-[#0A84FF] text-white': selectedCategory === 'All', 'bg-gray-200 text-gray-700': selectedCategory !== 'All'}"
+        (click)="setCategory('All')"
+      >All</button>
+      <button 
+        *ngFor="let category of categories"
+        class="px-4 py-2 rounded-full border transition-all text-sm font-medium"
+        [ngClass]="{'bg-[#0A84FF] text-white': selectedCategory === category, 'bg-gray-200 text-gray-700': selectedCategory !== category}"
+        (click)="setCategory(category)"
+      >{{ category }}</button>
+    </div>
+    <!-- Filters on the right -->
+    <div class="flex flex-wrap gap-4 items-center">
+      <!-- A-Z Sort -->
+      <button (click)="setSortAZ(!sortAZ)" [ngClass]="sortAZ ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'" class="px-4 py-2 rounded-md font-medium shadow">
+        Sort A-Z
+      </button>
+      <!-- Service Filter -->
+      <select [(ngModel)]="selectedService" (change)="setService(selectedService)" class="p-2 rounded-md bg-white shadow">
+        <option value="All">All Services</option>
+        <option *ngFor="let s of availableServices" [value]="s">{{ s }}</option>
+      </select>
+    </div>
   </div>
+  <hr class="w-full mb-4" />
   <!-- Loading State -->
   <div *ngIf="loading" class="flex-1 flex items-center justify-center mb-8 mt-6"> <!-- mb-8 for space below spinner -->
     <div class="text-center">

@@ -8,5 +8,5 @@ export interface RejectedItem {
   quantity: number;
   reason: string;
   rejectedBy: string;
-  rejectedAt: string; // ISO date string
+  rejectedAt: string; 
 } 
