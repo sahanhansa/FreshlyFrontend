@@ -102,6 +102,15 @@
           </div>
         </div>
       </div>
+
+      <!-- Payment Method Popup -->
+      <app-payment-method-popup
+        *ngIf="showPaymentMethodPopup"
+        [orderId]="orderId"
+        [totalAmount]="totalAmount"
+        (close)="closePaymentPopup()"
+        (paymentSelected)="onPaymentMethodSelected($event)">
+      </app-payment-method-popup>
     </div>
   </div>
 </div>
