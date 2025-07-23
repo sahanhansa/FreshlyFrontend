@@ -46,6 +46,8 @@ export interface TemporaryOrderItem {
   price: number;
   quantity: number;
   subTotal: number;
+  garmentTypeId?: string;      // add this
+  garmentTypeName?: string;    // add this for display convenience
 }
 
 export interface ConfirmOrderDTO {
@@ -62,6 +64,7 @@ export interface ConfirmOrderDTO {
   items: {
     itemId: string;
     serviceId: string;
+    garmentTypeId?: string;
     quantity: number;
   }[]; // Add this property
 }

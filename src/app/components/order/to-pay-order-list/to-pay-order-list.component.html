@@ -37,7 +37,7 @@
   <div *ngIf="!isLoading && displayOrders.length > 0" class="space-y-8 py-4">
     <app-to-pay-order-card
       *ngFor="let order of displayOrders"
-      [orderId]="order.orderIdFormatted"
+      [orderId]="order.orderId"
       [laundryName]="order.laundryName"
       [date]="order.date"
       [totalAmount]="order.totalAmount"
@@ -46,3 +46,4 @@
     ></app-to-pay-order-card>
   </div>
 </div>
+<!-- [orderId]="order.orderIdFormatted" -->
