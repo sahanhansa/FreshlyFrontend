@@ -16,6 +16,8 @@ interface OrderItem {
   itemId: string;
   serviceId: string;
   serviceName: string;
+  garmentTypeId?: string;
+  garmentTypeName?: string;
   status?: 'processing' | 'finished';
 }
 
@@ -57,6 +59,8 @@ interface AdjustmentForm {
 
 export class ProcessingOrderDetailsComponent implements OnInit, OnDestroy {
   orderDetails: OrderDetails | null = null;
+  customerName: string | null = null;
+  customerContactNumbers: string[] = [];
   loading = false;
   error: string | null = null;
   processing = false;
@@ -66,6 +70,8 @@ export class ProcessingOrderDetailsComponent implements OnInit, OnDestroy {
   selectedItem: OrderItem | null = null;
   sendingInvoice = false;
   submittingRejection = false;
+  showNoteModal = false;
+  noteForm: FormGroup;
   private destroy$ = new Subject<void>();
   private itemsByServiceCache: { [key: string]: OrderItem[] } = {};
 
@@ -85,6 +91,9 @@ export class ProcessingOrderDetailsComponent implements OnInit, OnDestroy {
       reason: ['', Validators.required],
       date: ['', Validators.required],
       time: ['', Validators.required]
+    });
+    this.noteForm = this.fb.group({
+      note: ['', Validators.required]
     });
   }
 
@@ -138,7 +147,15 @@ export class ProcessingOrderDetailsComponent implements OnInit, OnDestroy {
       )
       .subscribe(data => {
         if (data) {
-          this.orderDetails = data;
+          if (data.orderDetails) {
+            this.orderDetails = data.orderDetails;
+            this.customerName = data.customerName || null;
+            this.customerContactNumbers = data.customerContactNumbers || [];
+          } else {
+            this.orderDetails = data;
+            this.customerName = null;
+            this.customerContactNumbers = [];
+          }
           // Initialize status for each item
           if (this.orderDetails?.items) {
             // Try to load saved statuses from localStorage
@@ -378,5 +395,40 @@ export class ProcessingOrderDetailsComponent implements OnInit, OnDestroy {
 
   goBack(): void {
     this.router.navigate(['/laundry/orders']);
+  }
+
+  get noteKey(): string | null {
+    return this.orderDetails ? `orderId: ${this.orderDetails.orderId}` : null;
+  }
+
+  get hasNote(): boolean {
+    if (!this.noteKey) return false;
+    return !!localStorage.getItem(this.noteKey);
+  }
+
+  openNoteModal(): void {
+    this.showNoteModal = true;
+    this.noteForm.reset();
+    // Prefill note if exists
+    if (this.noteKey) {
+      const existingNote = localStorage.getItem(this.noteKey);
+      if (existingNote) {
+        this.noteForm.patchValue({ note: existingNote });
+      }
+    }
+  }
+
+  closeNoteModal(): void {
+    this.showNoteModal = false;
+    this.noteForm.reset();
+  }
+
+  submitNote(): void {
+    if (this.noteForm.valid && this.orderDetails) {
+      const note = this.noteForm.value.note;
+      const orderId = this.orderDetails.orderId;
+      localStorage.setItem(`orderId: ${orderId}`, note);
+      this.closeNoteModal();
+    }
   }
 } 

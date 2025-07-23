@@ -21,29 +21,28 @@
         <div class="space-y-3">
           <div>
             <span class="text-gray-600 font-medium">Order ID:</span>
-            <span class="ml-2 text-lg font-semibold text-blue-600">{{ orderDetails.orderIdFormatted || orderDetails.orderId }}</span>
+            <span class="ml-2  text-blue-600">{{ orderDetails.orderId }}</span>
           </div>
           <div>
             <span class="text-gray-600 font-medium">Order Date:</span>
-            <span class="ml-2">{{ orderDetails.orderDateFormatted || orderDetails.orderDate }}</span>
+            <span class="ml-2 text-blue-600">{{ orderDetails.orderDateFormatted || orderDetails.orderDate }}</span>
           </div>
-          <div *ngIf="orderDetails.customer">
-            <span class="text-gray-600 font-medium">Customer:</span>
-            <span class="ml-2">{{ orderDetails.customer.customerFName }} {{ orderDetails.customer.customerLName }}</span>
+          <div *ngIf="customerName">
+            <span class="text-gray-600 font-medium">Customer Name:</span>
+            <span class="ml-2 text-blue-600">{{ customerName }}</span>
           </div>
           <div>
             <span class="text-gray-600 font-medium">Status:</span>
-            <span class="ml-2 px-3 py-1 rounded-full text-sm font-semibold"
-                  [ngClass]="{
-                    'bg-green-100 text-green-800': orderDetails.status === 'delivered',
-                    'bg-yellow-100 text-yellow-800': orderDetails.status === 'Processing in Laundry' || orderDetails.status === 'processing',
-                    'bg-blue-200 text-blue-800': orderDetails.status === 'Finished Processing' || orderDetails.status === 'finished',
-                    'bg-orange-100 text-orange-800': orderDetails.status === 'order picked up' || orderDetails.status === 'picked up',
-                    'bg-purple-100 text-purple-800': orderDetails.status === 'out for delivery' || orderDetails.status === 'delivery',
-                    'bg-gray-100 text-gray-800': orderDetails.status === 'order placed' || orderDetails.status === 'placed'
-                  }">
-              {{ orderDetails.status }}
-            </span>
+            <span class="ml-2 text-blue-600">{{ orderDetails.status }}</span>
+          </div>
+        </div>
+        <div *ngIf="customerContactNumbers && customerContactNumbers.length > 0" class="mt-6">
+          <h2 class="text-xl font-semibold text-gray-900 mb-4">Contact Information</h2>
+          <div class="space-y-2">
+            <div *ngFor="let number of customerContactNumbers">
+              <span class="text-gray-600 font-medium ">Contact Number:</span>
+              <span class="ml-2 text-blue-600">{{ number }}</span>
+            </div>
           </div>
         </div>
       </div>
@@ -57,7 +56,9 @@
             <div class="grid grid-cols-1 lg:grid-cols-5 gap-4 items-center">
               <div>
                 <span class="text-gray-600 font-medium">Item Name:</span>
-                <p class="font-semibold">{{ item.itemName }}</p>
+                <p class="font-semibold">
+                  {{ item.itemName }}<span *ngIf="item.garmentTypeName"> ({{ item.garmentTypeName }})</span>
+                </p>
               </div>
               <div>
                 <span class="text-gray-600 font-medium">Quantity:</span>
@@ -85,7 +86,9 @@
                 <div class="grid grid-cols-1 lg:grid-cols-5 gap-4 items-center">
                   <div>
                     <span class="text-gray-600 font-medium">Item Name:</span>
-                    <p class="font-semibold">{{ mItem.itemName }}</p>
+                    <p class="font-semibold">
+                      {{ mItem.itemName }}<span *ngIf="mItem.garmentTypeName"> ({{ mItem.garmentTypeName }})</span>
+                    </p>
                   </div>
                   <div>
                     <span class="text-gray-600 font-medium">Quantity:</span>

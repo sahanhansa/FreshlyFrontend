@@ -13,6 +13,8 @@ interface OrderItem {
   itemId: string;
   serviceId: string;
   serviceName: string;
+  garmentTypeId?: string;
+  garmentTypeName?: string;
 }
 
 interface OrderDetails {
@@ -45,6 +47,8 @@ interface OrderDetails {
 })
 export class NewOrderDetailsComponent implements OnInit {
   orderDetails: OrderDetails | null = null;
+  customerName: string | null = null;
+  customerContactNumbers: string[] = [];
   loading = false;
   error: string | null = null;
   processing = false;
@@ -74,8 +78,17 @@ export class NewOrderDetailsComponent implements OnInit {
     }
 
     this.orderService.getOrderDetailsById(laundryId, orderId, statusId).subscribe({
-      next: (data: OrderDetails) => {
-        this.orderDetails = data;
+      next: (data: any) => {
+        // Support new API response structure
+        if (data.orderDetails) {
+          this.orderDetails = data.orderDetails;
+          this.customerName = data.customerName || null;
+          this.customerContactNumbers = data.customerContactNumbers || [];
+        } else {
+          this.orderDetails = data;
+          this.customerName = null;
+          this.customerContactNumbers = [];
+        }
         this.loading = false;
       },
       error: (err) => {
