@@ -123,14 +123,14 @@ export class ItemService {
       );
   }
 
-  // Update item method using PATCH
-  updateItem(itemId: string, item: AddItemDTO): Observable<any> {
+  // Update item method using PUT
+  updateItem(itemId: string, item: any): Observable<any> {
     const laundryId = localStorage.getItem('laundryId');
     if (!laundryId) {
       return throwError(() => new Error('Laundry ID not found. Please login again.'));
     }
 
-    return this.http.patch(`${this.apiUrl}/update-item/${itemId}/${laundryId}`, item, {
+    return this.http.put(`${this.apiUrl}/update-item/${itemId}/${laundryId}`, item, {
       responseType: 'text' as 'json',
       observe: 'response'
     }).pipe(

@@ -1,33 +1,41 @@
+<div class="min-h-screen flex flex-col">
+  <div class="flex-grow">
+    <div class="text-center mt-8 sm:mt-10 mb-4 sm:mb-6 max-w-full sm:max-w-3xl md:max-w-4xl lg:max-w-5xl mx-auto px-2">
+      <h1 class="font-bold drop-shadow-md text-1xl sm:text-2xl md:text-3xl lg:text-4xl">
+        Rejected Items
+      </h1>
+      <p class="text-gray-700 text-base sm:text-md md:text-lg lg:text-xl mt-1 sm:mt-2">
+        Here are the items that were not accepted
+      </p>
+    </div>
+
+    <div *ngIf="rejectedItems.length > 0; else noRejectedItems">
 <!-- Table -->
 <table class="min-w-full table-auto border-collapse mt-3 mb-6">
   <thead>
     <tr class="bg-[#D0F6FF] text-left text-gray-700 font-semibold text-sm sm:text-base">
-      <th class="px-4 sm:px-6 py-2 sm:py-3">Order ID</th>
       <th class="px-4 sm:px-6 py-2 sm:py-3">Item</th>
       <th class="px-4 sm:px-6 py-2 sm:py-3">Quantity</th>
-      <th class="px-4 sm:px-6 py-2 sm:py-3">Services</th>
-      <th class="px-4 sm:px-6 py-2 sm:py-3">Reason for Rejection</th>
+      <th class="px-4 sm:px-6 py-2 sm:py-3">Reason</th>
+      <th class="px-4 sm:px-6 py-2 sm:py-3">Actions</th>
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let order of orders; let i = index"
+    <tr *ngFor="let item of rejectedItems; let i = index"
         [ngClass]="{ 'bg-white': i % 2 === 0, 'bg-[#D0F6FF]': i % 2 === 1 }"
         class="h-14 text-sm sm:text-base text-black">
-      <td class="px-4 sm:px-6 py-3 font-semibold">#{{ order.orderId }}</td>
-      <td class="px-4 sm:px-6 py-3">{{ order.itemName }}</td>
-      <td class="px-4 sm:px-6 py-3">{{ order.quantity }}</td>
-      <td class="px-4 sm:px-6 py-3">
-        <ul class="list-disc pl-4">
-          <li *ngFor="let service of order.services">{{ service }}</li>
-        </ul>
-      </td>
-      <td class="px-4 sm:px-6 py-3">{{ order.rejectionReason }}</td>
+      <td class="px-4 sm:px-6 py-3 font-semibold">{{ item.itemName }}</td>
+      <td class="px-4 sm:px-6 py-3">{{ item.quantity }}</td>
+      <td class="px-4 sm:px-6 py-3">{{ item.reason }}</td>
       <td class="px-4 sm:px-6 py-3 flex justify-center items-center gap-2 flex-wrap">
-        <button [routerLink]="['/orders', order.orderId]" 
-                class="flex items-center gap-1 border border-black text-black rounded-full px-3 py-1 text-xs sm:text-sm hover:bg-gray-500 hover:text-white transition">
+     
+        <button [routerLink]="['/rejected-items-details']"
+        class="flex items-center gap-1 border border-black text-black rounded-full px-3 py-1 text-xs sm:text-sm hover:bg-gray-500 hover:text-white transition">
           View Order
-        </button>
-        <button [routerLink]="['/track', order.orderId]" 
+          </button>
+
+        <!-- <button (click)="trackOrder(item.orderId)"  -->
+         <button
                 class="flex items-center gap-1 border border-blue-600 text-blue-600 rounded-full px-3 py-1 text-xs sm:text-sm hover:bg-blue-600 hover:text-white transition">
           Track
         </button>
@@ -35,3 +43,12 @@
     </tr>
   </tbody>
 </table>
+    </div>
+    <ng-template #noRejectedItems>
+      <div class="text-center text-gray-500 py-8">
+        No rejected items found.
+      </div>
+    </ng-template>
+  </div>
+  <app-footer class="w-full mt-auto"></app-footer>
+</div>

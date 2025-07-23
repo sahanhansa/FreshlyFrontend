@@ -7,13 +7,12 @@ import { Order } from '../../../models/order.model'; // Import Order model to ty
 import { SearchBarComponent } from '../../../components/shared/search-bar/search-bar.component';
 import { PaginationComponent } from '../../../components/shared/pagination/pagination.component'; 
 import { FooterComponent } from '../../../components/shared/footer/footer.component'; 
-import { NavbarComponent } from '../../../components/shared/navbar/navbar.component';
 import { RouterModule } from '@angular/router'; 
 
 @Component({
   selector: 'app-new-orders', 
   standalone: true, 
-  imports: [CommonModule, RouterModule, HttpClientModule, PaginationComponent, SearchBarComponent, FooterComponent, NavbarComponent], 
+  imports: [CommonModule, RouterModule, HttpClientModule, PaginationComponent, SearchBarComponent, FooterComponent], 
   templateUrl: './new-orders.component.html'
 })
 export class NewOrdersComponent implements OnInit { // The component class that implements OnInit lifecycle hook

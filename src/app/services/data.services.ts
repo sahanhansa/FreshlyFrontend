@@ -45,4 +45,12 @@ export class DataService {
     formData.append('file', file);
     return this.http.post<ImageUploadResponse>(`${this.baseUrl}/Image/upload`, formData);
   }
+
+  getGarmentTypeIdByName(name: string): Observable<{ garmentTypeId: string }> {
+    return this.http.get<{ garmentTypeId: string }>(`${this.baseUrl}/Item/garment-type-id-by-name/${encodeURIComponent(name)}`);
+  }
+
+  addGarmentType(name: string): Observable<{ garmentTypeId: string }> {
+    return this.http.post<{ garmentTypeId: string }>(`${this.baseUrl}/Item/add-garment-type`, { name });
+  }
 }

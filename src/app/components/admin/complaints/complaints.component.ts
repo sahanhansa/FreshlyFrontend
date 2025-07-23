@@ -1,5 +1,6 @@
 // ...existing code...
 import { Component, OnInit, signal, computed } from '@angular/core';
+import { environment } from '../../../../environments/environment.development';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { SharedImports } from '../../../shared/shared-imports';
@@ -18,35 +19,34 @@ export class ComplaintsComponent implements OnInit {
 // Data and pagination properties using signals
   selectedCategory = signal<'customer' | 'driver' | 'laundry'>('customer');
 
-  filterByCategory(category: 'customer' | 'driver' | 'laundry'): void {
-    this.selectedCategory.set(category);
-    let filtered: Feedback[] = [];
-    switch (category) {
-      case 'customer':
-        filtered = this.feedbacks().filter(f => {
-          const type = (f.submittedByType || '').toLowerCase();
-          return type === 'c';
-        });
-        break;
-      case 'driver':
-        filtered = this.feedbacks().filter(f => {
-          const type = (f.submittedByType || '').toLowerCase();
-          return type === 'd';
-        });
-        break;
-      case 'laundry':
-        filtered = this.feedbacks().filter(f => {
-          const type = (f.submittedByType || '').toLowerCase();
-          return type === 'l';
-        });
-        break;
-    }
-    this.filteredFeedbacks.set(filtered);
-    this.currentPage.set(1);
-    this.calculateTotalPages();
-    this.updatePageNumbers();
-    this.updatePaginatedComplaints();
-  }
+  // Reply modal state
+  showReplyModal = signal<boolean>(false);
+  replySubject = signal<string>('');
+  replyBody = signal<string>('');
+  replyTargetUserId = signal<string>('');
+  replyTargetUserType = signal<string>('');
+  replyLoading = signal<boolean>(false);
+  replyError = signal<string | null>(null);
+  replySuccess = signal<string | null>(null);
+
+filterByCategory(category: string): void {
+  // Accepts customer, customers, driver, drivers, laundry, laundries (any case)
+  const normalized = (category || '').toLowerCase();
+  let acceptedTypes: string[] = [];
+  if (["customer", "customers"].includes(normalized)) acceptedTypes = ["customer", "customers", "c"];
+  else if (["driver", "drivers"].includes(normalized)) acceptedTypes = ["driver", "drivers", "d"];
+  else if (["laundry", "laundries"].includes(normalized)) acceptedTypes = ["laundry", "laundries", "l"];
+  this.selectedCategory.set(category as any);
+  const filtered = this.feedbacks().filter(f => {
+    const type = (f.submittedByType || '').toLowerCase();
+    return acceptedTypes.includes(type);
+  });
+  this.filteredFeedbacks.set(filtered);
+  this.currentPage.set(1);
+  this.calculateTotalPages();
+  this.updatePageNumbers();
+  this.updatePaginatedComplaints();
+}
   feedbacks = signal<Feedback[]>([]);
   filteredFeedbacks = signal<Feedback[]>([]);
   paginatedComplaints = signal<Feedback[]>([]);
@@ -175,6 +175,62 @@ export class ComplaintsComponent implements OnInit {
 
   closeModal(): void {
     this.selectedFeedback.set(null);
+    this.closeReplyModal();
+  }
+
+  openReplyModal(feedback: Feedback): void {
+    // Pick the correct userId field based on submittedByType
+    let userId = '';
+    const type = (feedback.submittedByType || '').toLowerCase();
+    if (type === 'customer' || type === 'c') userId = feedback.customerId || '';
+    else if (type === 'laundry' || type === 'l') userId = feedback.laundryId || '';
+    else if (type === 'driver' || type === 'd') userId = (feedback as any).driverId || feedback.customerId || '';
+    this.replyTargetUserId.set(userId);
+    this.replyTargetUserType.set(feedback.submittedByType || '');
+    this.replySubject.set('');
+    this.replyBody.set('');
+    this.replyError.set(null);
+    this.replySuccess.set(null);
+    this.showReplyModal.set(true);
+  }
+
+  closeReplyModal(): void {
+    this.showReplyModal.set(false);
+    this.replySubject.set('');
+    this.replyBody.set('');
+    this.replyError.set(null);
+    this.replySuccess.set(null);
+    this.replyLoading.set(false);
+  }
+
+  sendReplyEmail(): void {
+    this.replyLoading.set(true);
+    this.replyError.set(null);
+    this.replySuccess.set(null);
+    const payload = {
+      userId: this.replyTargetUserId(),
+      userType: this.replyTargetUserType(),
+      subject: this.replySubject(),
+      body: this.replyBody(),
+    };
+    // Use fetch for demo; replace with HttpClient if you want Angular DI
+    fetch(`${environment.apiUrl}/api/Feedback/SendReplyEmail`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    })
+      .then(async (res) => {
+        if (!res.ok) throw new Error(await res.text());
+        return res.json();
+      })
+      .then(() => {
+        this.replySuccess.set('Reply sent successfully.');
+        this.replyLoading.set(false);
+      })
+      .catch((err) => {
+        this.replyError.set('Failed to send reply: ' + (err.message || err));
+        this.replyLoading.set(false);
+      });
   }
 
   deleteFeedbackAndClose(id: string): void {

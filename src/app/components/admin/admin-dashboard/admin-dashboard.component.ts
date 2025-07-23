@@ -61,13 +61,7 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit {
     totalRevenue: 0,
     activeUsers: 0
   };
-  adminPanel: AdminPanelMember[] = [
-    { id: 1, name: 'Lahiru Gayantha', role: 'Chief Executive Officer', image: 'assets/images/admin1.jpg' },
-    { id: 2, name: 'Chamal Silva', role: 'Chief Technical Officer', image: 'assets/images/admin2.jpg' },
-    { id: 3, name: 'Upeksha Udayaratne', role: 'Chief Financial Officer', image: 'assets/images/admin3.jpg' },
-    { id: 4, name: 'Chamini Lakeesha', role: 'Human Resources', image: 'assets/images/admin4.jpg' },
-    { id: 5, name: 'Vidura Wijesekara', role: 'Chief Marketing Officer', image: 'assets/images/admin5.jpg' }
-  ];
+  adminPanel: AdminPanelMember[] = [];
   drivers: Driver[] = [];
   pendingActions: PendingAction[] = [
     { type: 'pickup', count: 5 },
@@ -95,6 +89,24 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     console.log('AdminDashboardComponent: ngOnInit');
+    // Fetch all admins from backend
+    const token = localStorage.getItem('token');
+    this.http.get<any[]>(`${environment.apiUrl}/api/Admin`, {
+      headers: { Authorization: `Bearer ${token}` }
+    }).subscribe({
+      next: (admins: any[]) => {
+        // Map backend data to AdminPanelMember interface if needed
+        this.adminPanel = admins.map((admin: any) => ({
+          id: admin.id || admin.adminId || '',
+          name: admin.name || admin.username || '',
+          role: admin.role || '',
+          image: admin.image || 'assets/images/admin.jpg'
+        }));
+      },
+      error: (err) => {
+        console.error('Failed to fetch admins:', err);
+      }
+    });
     // Fetch statuses first
     this.http.get<any[]>(`${environment.apiUrl}/api/Status`).subscribe({
       next: (statuses: any[]) => {
