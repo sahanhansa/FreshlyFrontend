@@ -55,7 +55,7 @@ import { ContactUsComponent } from './pages/Laundry/contact-us/contact-us.compon
 import {MultiStepFormComponent} from './components/laundry/lau-sign/multi-step-form.component';
 import { ReportsComponent } from './pages/Driver/reports/reports.component';
 import { AuthHelperService } from './services/auth-helper.service';
-
+import { TasksComponent } from './pages/Driver/tasks/tasks.component';
 
 
 
@@ -110,6 +110,7 @@ export const routes: Routes = [
   {path: 'complete-tasks-page',component: CompleteTasksPageComponent} ,
   {path: 'edit-details-form', component: EditDetailsFormComponent},
   {path: 'reports', component: ReportsComponent},
+  {path: 'tasks', component: TasksComponent}, // Redirect to tasks page
   {path: 'logout-page', component: LogoutPageComponent},
   
   
