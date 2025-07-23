@@ -40,7 +40,7 @@ interface OrderDetails {
 @Component({
   selector: 'app-new-order-details',
   standalone: true,
-  imports: [CommonModule, HttpClientModule, NavbarComponent, FooterComponent],
+  imports: [CommonModule, HttpClientModule, NavbarComponent,FooterComponent],
   templateUrl: './new-order-details.component.html'
 })
 export class NewOrderDetailsComponent implements OnInit {
@@ -92,7 +92,7 @@ export class NewOrderDetailsComponent implements OnInit {
     this.processing = true;
     const laundryId = localStorage.getItem('laundryId');
     const orderId = this.orderDetails.orderId;
-    // Use the provided statusId for 'processing'
+    // Use the provided statusId for 'Processing in laundry'
     const newStatusId = 'b8dfb69f-5f5e-11f0-8064-0022481a06a0';
 
     if (!laundryId) {

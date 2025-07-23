@@ -50,7 +50,7 @@
               {{ order.status.statusName }}
             </span>
     </td>
-          <td class="px-6 py-4 text-black">Rs. {{ getOrderAmount(order.orderId) }}</td>
+          <td class="px-6 py-4 text-black">Rs. {{ order.totalCost }}</td>
           <td class="px-6 py-4 flex flex-col gap-2">
     <!-- PDF icon for navigation -->
     <button (click)="goToOrderDetails(order)" class="cursor-pointer" title="Order Details">
