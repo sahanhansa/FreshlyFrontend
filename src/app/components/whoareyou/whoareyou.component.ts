@@ -30,9 +30,9 @@ export class WhoAreYouComponentSign {
     const route = (() => {
       switch(role) {
         case 'customer':
-          return `/cus${routeSuffix}`;
+          return `/cus-signup`;
         case 'laundry':
-          return `/lun${routeSuffix}`;
+          return `/lun-signup`;
        
         default:
           console.error('Invalid role selected:', role);
