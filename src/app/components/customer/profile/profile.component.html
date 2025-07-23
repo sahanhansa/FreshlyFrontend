@@ -1,13 +1,13 @@
 <div class="max-w-6xl min-h-screen p-6 mx-auto bg-gray-50">
   <!-- Profile Header -->
-  <div class="flex items-center p-6 mb-8 text-white shadow-xl bg-gradient-to-br bg-[#0A84FF] rounded-2xl">
+  <div class="flex items-center p-6 mb-8 text-black shadow-xl bg-gradient-to-br bg-[#e5e5e6] rounded-2xl">
     <div class="flex items-center justify-center w-20 h-20 mr-6 border-2 bg-white/20 backdrop-blur-sm rounded-xl border-white/30">
-      <span class="text-3xl opacity-90">👤</span>
+      <img *ngIf="image" [src]="image" alt="Profile Image" class="w-24 h-24 rounded-full object-cover" />
     </div>
     <div>
-      <h2 class="mb-2 text-3xl font-bold">Customer Profile</h2>
+      <h2 class="mb-2 text-3xl font-bold">Profile</h2>
       <p class="text-lg font-medium opacity-90">
-        <span *ngIf="!isEditing">Account Information & Order Management</span>
+        <span *ngIf="!isEditing">Account Information & Order </span>
         <span *ngIf="isEditing">Edit Your Profile Information</span>
       </p>
     </div>

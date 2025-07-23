@@ -29,6 +29,7 @@ export class ProfileComponent implements OnInit {
   email: string = '';
   contactNumbers: string[] = [];
   address: string = '';
+  image:string = '';
 
   // Edit mode properties
   isEditing: boolean = false;
@@ -59,6 +60,7 @@ export class ProfileComponent implements OnInit {
       street: [''],
       city: [''],
       postalCode: ['']
+
     });
   }
 
@@ -80,6 +82,7 @@ export class ProfileComponent implements OnInit {
     const lastName = localStorage.getItem('lastName') || '';
     this.name = firstName + (lastName ? ' ' + lastName : '');
     this.email = localStorage.getItem('email') || '';
+    this.image = localStorage.getItem('profileImage') || '';
     
     // Handle contact numbers
     const contactNumbersRaw = localStorage.getItem('contactNumbers');

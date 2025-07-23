@@ -302,6 +302,20 @@
                         </div>
                     </div>
 
+                    <!-- Profile Image Upload -->
+                    <div class="form-field">
+                        <label class="block mb-2 text-sm font-medium text-gray-700">Profile Image (optional)</label>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            (change)="onProfileImageChange($event)"
+                            class="w-full px-4 py-2 text-gray-700 bg-gray-50 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        />
+                        <div *ngIf="profileImageFile" class="mt-1 text-xs text-gray-500">
+                            Selected: {{ profileImageFile.name }}
+                        </div>
+                    </div>
+
                     <!-- Password Field -->
                     <div class="form-field">
                         <input
