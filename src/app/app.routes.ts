@@ -63,6 +63,7 @@ export const routes: Routes = [
 
    // Landing page at root
     { path: '', component: LandingPageComponent, pathMatch: 'full' },
+        { path: 'landing-page', component: LandingPageComponent },
 
     // Landing page navigation routes
     { path: 'home', component: HomePageComponent },
