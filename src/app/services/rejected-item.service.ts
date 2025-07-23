@@ -14,13 +14,13 @@ import { ToastService } from './toast.service';
 @Injectable({ providedIn: 'root' })
 export class RejectedItemService {
   private apiUrl = '/api/RejectedItem';
-  //private apiUrl = `${environment.apiUrl}/api/rejecteditem`;
+  private apiUrl2 = `${environment.apiUrl}/api/rejecteditem`;
 
   constructor(private http: HttpClient, private toastService: ToastService) {}
 
   //lasini
   getRejectedItemsByOrderId(orderId: string): Observable<RejectedItem[]> {
-    return this.http.get<RejectedItem[]>(`${this.apiUrl}/order/${orderId}/rejected-items`)
+    return this.http.get<RejectedItem[]>(`${this.apiUrl2}/order/${orderId}/rejected-items`)
     //return this.http.get<RejectedItem[]>(`${this.apiUrl}/order/02df4c49-131e-40e4-aed0-8ae6c45cebf5/rejected-items`)
       .pipe(
         catchError((error: HttpErrorResponse) => {
