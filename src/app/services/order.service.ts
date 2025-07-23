@@ -101,6 +101,15 @@ export class OrderService {
     );
   }
 
+  /**
+   * Get the count of orders for a given laundry and status
+   */
+  getOrderCountByStatus(laundryId: string, statusId: string): Observable<number> {
+    return this.http.get<number>(`${this.apiUrl}/count-by-status/${laundryId}/${statusId}`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
   private handleError(error: HttpErrorResponse) {
     console.error('OrderService Error:', error);
     
