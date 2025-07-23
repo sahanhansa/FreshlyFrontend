@@ -35,13 +35,15 @@ export class OrderSummaryComponent implements OnInit {
   showAddressPopup: boolean = false;
   showOrderConfirmPopup: boolean = false;
   showOrderConfirmedPopup: boolean = false;
-  customerId = 'a4dca9b3-5f58-11f0-8064-0022481a06a0'; // get this from auth/session
+  
+  // Remove hardcoded customerId - we'll get it from basketService when needed
 
   pickupDateTime!: Date;
   address!: CustomerAddress;
   orderId: string = '';
   laundryName: string = '';
   laundryId: string = '';
+  customerId: string = '';
 
   constructor(
     private basketService: BasketService,
@@ -50,6 +52,9 @@ export class OrderSummaryComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    // Example: get customerId from localStorage (replace with your auth logic if needed)
+    this.customerId = localStorage.getItem('userId') || '';
+
     // Use only the orderSummary input
     if (this.orderSummary) {
       this.orderItems = this.orderSummary.items.map(item => ({
@@ -127,6 +132,13 @@ export class OrderSummaryComponent implements OnInit {
   onOrderConfirm() {
     if (!this.orderSummary) return;
 
+    const customerId = this.basketService.getCustomerId();
+    if (!customerId) {
+      this.toastService.show('Error', 'Please log in to complete your order', 'error');
+      this.router.navigate(['/cus-login']);
+      return;
+    }
+
     const dto: ConfirmOrderDTO = {
       temporaryOrderId: this.orderSummary.temporaryOrderId,
       pickupAt: this.pickupDateTime.toISOString(),
@@ -136,7 +148,13 @@ export class OrderSummaryComponent implements OnInit {
         street: this.address.street,
         city: this.address.city,
         postalCode: this.address.postalCode
-      }
+      },
+      customerId: customerId, // Using authenticated user ID
+      items: this.orderItems.map(item => ({
+        itemId: item.itemId,
+        serviceId: item.serviceId,
+        quantity: item.quantity
+      }))
     };
 
     this.basketService.confirmOrder(dto).subscribe({
