@@ -14,6 +14,7 @@ export interface DriverProfile {
   address: string;
   vehicleNo: string | null;
   location: string;
+  postalCode: string;
   profilePhoto?: string; // optional if not in your JSON yet
 }
 
@@ -39,6 +40,7 @@ export class DriverProfileComponent {
   address: string = '';
   vehicleNo: string | null = '';
   location: string = '';
+  postalCode: string = '';
   profilePhoto: string = '';
 
   isLoading: boolean = false;
@@ -69,6 +71,7 @@ export class DriverProfileComponent {
       address: data.homeAddress,
       vehicleNo: data.vehicleNumber,
       location: data.location,
+      postalCode: data.postalCode || '',
       profilePhoto: data.profilePhoto
     };
   }
@@ -85,6 +88,7 @@ export class DriverProfileComponent {
         this.address = profile.address;
         this.vehicleNo = profile.vehicleNo;
         this.location = profile.location;
+        this.postalCode = profile.postalCode || '';
         this.profilePhoto = profile.profilePhoto || '';
 
         console.log('Driver Profile Loaded:', { ...profile });

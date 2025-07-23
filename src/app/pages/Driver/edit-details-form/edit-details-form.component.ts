@@ -10,12 +10,13 @@ import {
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { environment } from '@environments/environment';
-
+import { DriverNavbarComponent } from "@app/components/driver/driver-navbar/driver-navbar.component";
+import { FooterComponent } from '@app/components/shared/footer/footer.component'; // Assuming you have a footer component
 @Component({
   selector: 'app-edit-details-form',
   templateUrl: './edit-details-form.component.html',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, DriverNavbarComponent, FooterComponent],
 })
 export class EditDetailsFormComponent implements OnInit {
 
