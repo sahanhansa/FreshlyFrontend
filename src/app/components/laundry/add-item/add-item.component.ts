@@ -129,14 +129,14 @@ export class AddItemComponent implements OnInit {
       switchMap(res => {
         if (res && res.garmentTypeId) {
           // Only add to UI if DB operation is successful
-          this.materials.push(mat);
-          this.materialServices[mat] = this.availableServices.map(s => ({
-            serviceId: '',
-            serviceName: s,
-            price: null
-          }));
+    this.materials.push(mat);
+    this.materialServices[mat] = this.availableServices.map(s => ({
+      serviceId: '',
+      serviceName: s,
+      price: null
+    }));
         }
-        this.materialInput = '';
+    this.materialInput = '';
         return of(null);
       })
     ).subscribe();

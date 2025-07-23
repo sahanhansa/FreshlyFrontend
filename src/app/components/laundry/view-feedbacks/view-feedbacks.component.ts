@@ -69,8 +69,8 @@ export class ViewFeedbacksComponent implements OnInit {
 
   viewOrder(feedback: any): void {
     // Navigate to delivered/completed order details
-    if (feedback.orderId && feedback.status?.statusID) {
-      this.router.navigate(['/completed-order-details', feedback.orderId, feedback.status.statusID]);
+    if (feedback.orderId && feedback.statusId) {
+      this.router.navigate(['/completed-order-details', feedback.orderId, feedback.statusId]);
     } else {
       alert('Order details not available for this feedback.');
     }

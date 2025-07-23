@@ -4,7 +4,7 @@
     class="border rounded-xl p-4 bg-white shadow-sm"
   >
     <h3 class="font-semibold text-lg text-black">
-      {{ feedback.customerFName }} {{ feedback.customerLName }}
+      {{ feedback.customerName || (feedback.customerFName + ' ' + feedback.customerLName) }}
     </h3>
 
     <p class="text-black mt-1 mb-3">{{ feedback.description }}</p>

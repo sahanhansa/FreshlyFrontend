@@ -33,7 +33,7 @@ export class EditItemComponent implements OnInit {
   @Output() itemUpdated = new EventEmitter<void>();
   @Input() itemId: string = '';
   
-  imageUrl: string = 'assets/shirt.jpg';
+  imageUrl: string = 'assets/default.png';
   loading: boolean = false;
   isSubmitting: boolean = false;
   
@@ -98,7 +98,7 @@ export class EditItemComponent implements OnInit {
         // Set categoryName based on loaded categoryId
         const foundCat = this.categories.find(cat => cat.id === this.item.categoryId);
         if (foundCat) this.item.categoryName = foundCat.name;
-        this.imageUrl = item.imageUrl || 'assets/shirt.jpg';
+        this.imageUrl = item.imageUrl || 'assets/default.png';
         // Populate garment types state
         this.materials = [];
         this.materialServices = {};

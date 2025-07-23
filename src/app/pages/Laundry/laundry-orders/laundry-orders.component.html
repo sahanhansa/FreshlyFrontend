@@ -55,7 +55,7 @@
           <th class="px-4 sm:px-6 py-2 sm:py-3 text-center">Order Summary</th>
         </tr>
       </thead>
-      <tbody>
+     <tbody>
         <tr *ngFor="let order of filteredOrders; let i = index"
             [ngClass]="{ 'bg-white': i % 2 === 0, 'bg-[#D0F6FF]': i % 2 === 1 }"
             class="h-12">
@@ -72,21 +72,21 @@
             <span class="px-3 py-1 rounded-full text-sm font-semibold" [ngClass]="getStatusBadgeClass(order)">
               {{ order.status.statusName === 'order picked up' ? 'New' : order.status.statusName }}
             </span>
-          </td>
+    </td>
           <td class="px-4 sm:px-6 py-2 sm:py-3 text-black text-sm sm:text-base">
             Rs. {{ order.totalCost }}
-          </td>
+  </td>
           <td class="px-4 sm:px-6 py-2 sm:py-3 text-center">
             <button (click)="goToOrderDetails(order)"
                     class="flex items-center justify-center px-3 sm:px-4 py-1 hover:bg-gray-100 transition mx-auto focus:outline-none">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
                 <path d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.828a2 2 0 00-.586-1.414l-4.828-4.828A2 2 0 0011.172 2H6zm7 1.414L18.586 9H14a1 1 0 01-1-1V3.414z" />
                 <text x="7" y="15" font-size="6" fill="#2563eb" font-family="Arial, Helvetica, sans-serif">PDF</text>
-              </svg>
-            </button>
-          </td>
-        </tr>
-      </tbody>
+      </svg>
+    </button>
+  </td>
+  </tr>
+</tbody>
     </table>
   </div>
 </div>
