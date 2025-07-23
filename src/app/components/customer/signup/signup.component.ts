@@ -4,13 +4,15 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { NgIf, CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
+import {FooterComponent} from '../../shared/footer/footer.component';
+import {HeaderComponent} from '../../landing-page/header.component'
 
 @Component({
   selector: 'app-signup',
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.css'],
   standalone: true,
-  imports: [ReactiveFormsModule, NgIf, CommonModule]
+  imports: [ReactiveFormsModule, NgIf, CommonModule,FooterComponent,HeaderComponent]
 })
 export class SignupComponent implements OnInit {
   signupForm: FormGroup;

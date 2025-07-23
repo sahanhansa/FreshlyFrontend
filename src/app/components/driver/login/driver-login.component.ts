@@ -4,13 +4,15 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 import { CommonModule, NgClass, NgIf } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
+import {FooterComponent} from '../../shared/footer/footer.component';
+import {HeaderComponent} from '../../landing-page/header.component';
 
 @Component({
   selector: 'app-login',
   standalone: true,
   templateUrl: './driver-login.component.html',
   styleUrls: ['./driver-login.component.css'],
-  imports: [CommonModule, ReactiveFormsModule, NgClass, NgIf]
+  imports: [CommonModule, ReactiveFormsModule, NgClass, NgIf,HeaderComponent,FooterComponent]
 })
 export class DriverLoginComponent implements OnInit {
   loginForm: FormGroup;

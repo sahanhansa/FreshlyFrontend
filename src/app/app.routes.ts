@@ -52,7 +52,7 @@ import { NewOrderDetailsComponent } from './components/laundry/new-order-details
 import {MultiStepFormComponent} from './components/laundry/lau-sign/multi-step-form.component';
 import { RequestResetComponent } from './pages/request-reset/request-reset.component';
 import { VerifyResetComponent } from './pages/verify-reset/verify-reset.component';
-
+import {WhoAreYouComponentSign} from './components/whoareyou/whoareyou.component'
 
 // Define the application's routes
 export const routes: Routes = [
@@ -72,6 +72,7 @@ export const routes: Routes = [
 
     // Route to identify the user type
     { path: 'whoareyou', component: WhoAreYouComponent }, 
+    { path: 'whoareyousign', component: WhoAreYouComponentSign }, 
 
     // Route for user login
     {path:'cus-login', component: LoginComponent},    // Route for general user signup

@@ -1,5 +1,6 @@
+   <app-header></app-header>
 <!-- Full screen container with gradient background -->
-<div class="flex items-center justify-center min-h-screen ">
+<div class="flex items-center justify-center min-h-screen pt-[18vh]">
   <div class="container px-4 mx-auto">
     <div class="flex items-center justify-center mx-auto lg:justify-between max-w-7xl">
       
@@ -11,7 +12,6 @@
           <!-- Card header -->
           <div class="p-8 pb-6 text-center">
             <h1 class="mb-2 text-3xl font-bold text-gray-800">LOGIN</h1>
-            <p class="text-sm text-gray-500">How to I get started lorem ipsum dolor sit?</p>
           </div>
 
           <!-- Card body -->
@@ -117,16 +117,7 @@
               </button>
 
               <!-- Signup Navigation -->
-              <div class="mt-6 text-sm text-center text-gray-600">
-                Don't have an account?
-                <button 
-                  type="button" 
-                  (click)="goToSignup()" 
-                  class="ml-1 font-bold text-blue-600 transition-colors duration-200 hover:text-blue-800 hover:underline focus:outline-none"
-                >
-                  Register Now
-                </button>
-              </div>
+             
 
               <!-- Test Login Buttons (Development Only) -->
               
@@ -153,3 +144,4 @@
     </div>
   </div>
 </div>
+ <app-footer></app-footer>

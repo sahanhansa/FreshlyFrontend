@@ -1,53 +1,6 @@
 <div class="landing-container">
     <!-- Header -->
-    <header class="header">
-        <nav class="navbar">
-            <div class="nav-brand">
-                <div class="logo">
-                    <img src="assets/images/freshly-logo.png" alt="Freshly Logo" class="logo-img"
-                        style="height:60px;width:auto;object-fit:contain;" />
-
-                </div>
-            </div>
-            <ul class="nav-menu">
-                <li>
-                  <a 
-                    routerLink="/" 
-                    routerLinkActive="font-semibold text-blue-500" 
-                    [ngClass]="'  px-3 py-2 transition-colors duration-200'"
-                  >Home</a>
-                </li>
-                <li>
-                  <a 
-                    routerLink="/services" 
-                    routerLinkActive="font-semibold text-black" 
-                    [ngClass]="'text-gray-700 hover:text-blue-500 px-3 py-2 transition-colors duration-200'"
-                  >Services</a>
-                </li>
-                <li>
-                  <a 
-                    routerLink="/about" 
-                    routerLinkActive="font-semibold text-black" 
-                    [ngClass]="'text-gray-700 hover:text-blue-500 px-3 py-2 transition-colors duration-200'"
-                  >About Us</a>
-                </li>
-                <li>
-                  <a 
-                    routerLink="/laundries" 
-                    routerLinkActive="font-semibold text-black" 
-                    [ngClass]="'text-gray-700 hover:text-blue-500 px-3 py-2 transition-colors duration-200'"
-                  >Laundries</a>
-                </li>
-                <li>
-                  <a 
-                    routerLink="/contact" 
-                    routerLinkActive="font-semibold text-black" 
-                    [ngClass]="'text-gray-700 hover:text-blue-500 px-3 py-2 transition-colors duration-200'"
-                  >Contact us</a>
-                </li>
-            </ul>
-        </nav>
-    </header>
+    <app-header></app-header>
 
     <!-- Hero Section -->
     <section class="hero">
@@ -65,7 +18,7 @@
                 </p>
                 <div class="hero-buttons">
                     <button class="btn btn-primary" (click)="goTo('whoareyou', 'login')">Login</button>
-                    <button class="btn btn-secondary" (click)="goTo('whoareyou', 'signup')">Sign Up</button>
+                    <button class="btn btn-secondary" (click)="goTo('whoareyousign', 'signup')">Sign Up</button>
                 </div>
             </div>
             <div class="hero-image">

@@ -37,7 +37,7 @@ export class LaundryRegistrationService {
 
   constructor(private http: HttpClient) {}
 
-  registerLaundry(data: LaundryRegistrationRequest): Observable<LaundryRegistrationResponse> {
+  registerLaundry(data: FormData): Observable<LaundryRegistrationResponse> {
     return this.http.post<LaundryRegistrationResponse>(this.apiUrl, data);
   }
 }

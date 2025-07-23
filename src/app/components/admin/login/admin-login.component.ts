@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { Router } from '@angular/router';
 import { CommonModule, NgClass, NgIf } from '@angular/common';
 import { AuthService } from '../../../services/auth.service';
+import {FooterComponent} from '../../shared/footer/footer.component';
+import {HeaderComponent} from '../../landing-page/header.component'
 import { AuthHelperService } from '../../../services/auth-helper.service';
 
 @Component({
@@ -10,7 +12,7 @@ import { AuthHelperService } from '../../../services/auth-helper.service';
   standalone: true,
   templateUrl: './admin-login.component.html',
   styleUrls: ['./admin-login.component.css'],
-  imports: [CommonModule, ReactiveFormsModule, NgClass, NgIf]
+  imports: [CommonModule, ReactiveFormsModule, NgClass, NgIf,FooterComponent,HeaderComponent]
 })
 export class AdminLoginComponent implements OnInit {
   loginForm: FormGroup;
