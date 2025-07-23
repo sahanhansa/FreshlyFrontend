@@ -12,6 +12,7 @@ export interface Item {
   categoryName: string | null; 
   description?: string;
   image?: string;
+  imageUrl?: string;
   services: ServiceWithPrice[];
 }
 
@@ -20,9 +21,13 @@ export interface AddItemDTO {
   description?: string;
   categoryId: string;
   imageUrl?: string;
-  services: {
-    serviceId: string;
-    price?: number;
+  garmentTypes: {
+    garmentTypeId: string;
+    services: {
+      serviceId: string;
+      serviceName: string | null;
+      price: number;
+    }[];
   }[];
 }
 

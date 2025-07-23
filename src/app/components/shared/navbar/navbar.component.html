@@ -3,16 +3,17 @@
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex justify-between items-center h-16">
       
-      <!-- Logo Section -->
+      <!-- Logo Section with routerLink -->
       <div class="flex-shrink-0">
-        <img src="assets/logo.png" class="h-12" alt="Logo" />
+        <a routerLink="/landing-page">
+          <img src="assets/logo.png" class="h-12 cursor-pointer" alt="Logo" />
+        </a>
       </div>
 
       <!-- Mobile Menu Button (hamburger icon) -->
       <div class="md:hidden">
         <button (click)="toggleMenu()" type="button"
           class="text-gray-800 hover:text-blue-500 focus:outline-none focus:text-blue-500">
-          <!-- Switch between hamburger and close icons based on menuOpen -->
           <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
             xmlns="http://www.w3.org/2000/svg">
             <path [attr.d]="menuOpen ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'" stroke-linecap="round"
@@ -23,91 +24,90 @@
 
       <!-- Desktop Menu -->
       <ul class="hidden md:flex items-center gap-10 ml-6">
-        <!-- Show this section only for Laundry user -->
         <ng-container *ngIf="currentPage === 'laundry'">
-          <li><a routerLink="/laundry-home" class="nav-link">Home</a></li>
-          <li><a routerLink="/laundry-orders" class="nav-link">Orders</a></li>
-          <li><a routerLink="/laundry-items" class="nav-link">Items</a></li>
-          <li><a routerLink="/laundry-feedbacks" class="nav-link">Feedback</a></li>
-          <li><a routerLink="/laundry-profile" class="nav-link">Profile</a></li>
+          <li><a routerLink="/laundry-home" routerLinkActive="active-tab" class="nav-link">Home</a></li>
+          <li><a routerLink="/laundry-orders" routerLinkActive="active-tab" class="nav-link">Orders</a></li>
+          <li><a routerLink="/laundry-items" routerLinkActive="active-tab" class="nav-link">Items</a></li>
+          <li><a routerLink="/laundry-feedbacks" routerLinkActive="active-tab" class="nav-link">Feedback</a></li>
+          <li><a routerLink="/laundry-contactus" routerLinkActive="active-tab" class="nav-link">Contact Us</a></li>
+          <li><a routerLink="/laundry-profile" routerLinkActive="active-tab" class="nav-link">Profile</a></li>
         </ng-container>
 
-        <!-- Customer user links -->
         <ng-container *ngIf="currentPage === 'customer'">
-          <li><a routerLink="/cus-home/home" class="nav-link">Home</a></li>
-          <li><a routerLink="/cus-home/how-it-works" class="nav-link">How it works</a></li>
-          <li><a routerLink="/cus-home/order" class="nav-link">Order</a></li>
-          <li><a routerLink="/cus-home/basket" class="nav-link">Basket</a></li>
-          <li><a routerLink="/cus-home/contact-us" class="nav-link">Contact Us</a></li>
-          <li><a routerLink="/cus-home/profile" class="nav-link">Profile</a></li>
+          <li><a routerLink="/cus-home/home" routerLinkActive="active-tab" class="nav-link">Home</a></li>
+          <li><a routerLink="/cus-home/how-it-works" routerLinkActive="active-tab" class="nav-link">How it works</a></li>
+          <li><a routerLink="/cus-home/order" routerLinkActive="active-tab" class="nav-link">Order</a></li>
+          <li><a routerLink="/cus-home/basket" routerLinkActive="active-tab" class="nav-link">Basket</a></li>
+          <li><a routerLink="/cus-home/contact-us" routerLinkActive="active-tab" class="nav-link">Contact Us</a></li>
+          <li><a routerLink="/cus-home/profile" routerLinkActive="active-tab" class="nav-link">Profile</a></li>
         </ng-container>
 
-        <!-- Driver user links -->
         <ng-container *ngIf="currentPage === 'driver'">
-          <li><a routerLink="/driver-home-page" class="nav-link">Home</a></li>
-          <li><a routerLink="/pickups-tasks-mainpage" class="nav-link">Pickups</a></li>
-          <li><a routerLink="/delivery-tasks-mainpage" class="nav-link">Deliveries</a></li>
-          <li><a routerLink="/driver-contactus-page" class="nav-link">Contact Us</a></li>
-          <li><a routerLink="/driver-profile-page" class="nav-link">Profile</a></li>
+          <li><a routerLink="/driver-home-page" routerLinkActive="active-tab" class="nav-link">Home</a></li>
+          <li><a routerLink="/pickups-tasks-mainpage" routerLinkActive="active-tab" class="nav-link">Pickups</a></li>
+          <li><a routerLink="/delivery-tasks-mainpage" routerLinkActive="active-tab" class="nav-link">Deliveries</a></li>
+          <li><a routerLink="/driver-contactus-page" routerLinkActive="active-tab" class="nav-link">Contact Us</a></li>
+          <li><a routerLink="/driver-profile-page" routerLinkActive="active-tab" class="nav-link">Profile</a></li>
         </ng-container>
 
-        <!-- Admin user links -->
         <ng-container *ngIf="currentPage === 'admin'">
-          <li><a routerLink="/admin" class="nav-link">Home</a></li>
-          <li><a routerLink="/drivers" class="nav-link">Drivers</a></li>
-          <li><a routerLink="/customers" class="nav-link">Customers</a></li>
-          <li><a routerLink="/laundries" class="nav-link">Laundries</a></li>
-          <li><a routerLink="/orders" class="nav-link">Orders</a></li>
-          <li><a routerLink="/vehicles" class="nav-link">Vehicles</a></li>
-          <li><a routerLink="/complaints" class="nav-link">Complaints</a></li>
-          <li><a routerLink="/reports" class="nav-link">Reports</a></li>
+          <li><a routerLink="/admin" routerLinkActive="active-tab" class="nav-link">Home</a></li>
+          <li><a routerLink="/drivers" routerLinkActive="active-tab" class="nav-link">Drivers</a></li>
+          <li><a routerLink="/customers" routerLinkActive="active-tab" class="nav-link">Customers</a></li>
+          <li><a routerLink="/laundries" routerLinkActive="active-tab" class="nav-link">Laundries</a></li>
+          <li><a routerLink="/orders" routerLinkActive="active-tab" class="nav-link">Orders</a></li>
+          <li><a routerLink="/complaints" routerLinkActive="active-tab" class="nav-link">Complaints</a></li>
+          <li><a routerLink="/reports" routerLinkActive="active-tab" class="nav-link">Reports</a></li>
         </ng-container>
       </ul>
     </div>
   </div>
 
-  <!-- Mobile Menu: only shown when menuOpen is true -->
+  <!-- Mobile Menu -->
   <div *ngIf="menuOpen" class="md:hidden px-4 pb-4">
     <ul class="flex flex-col gap-3">
-      <!-- Laundry mobile links -->
       <ng-container *ngIf="currentPage === 'laundry'">
-        <li><a routerLink="/laundry-home" class="nav-link">Home</a></li>
-        <li><a routerLink="/laundry-orders" class="nav-link">Orders</a></li>
-        <li><a routerLink="/laundry-items" class="nav-link">Items</a></li>
-        <li><a routerLink="/laundry-feedbacks" class="nav-link">Feedback</a></li>
-        <li><a routerLink="/laundry-profile" class="nav-link">Profile</a></li>
+        <li><a routerLink="/laundry-home" routerLinkActive="active-tab" class="nav-link">Home</a></li>
+        <li><a routerLink="/laundry-orders" routerLinkActive="active-tab" class="nav-link">Orders</a></li>
+        <li><a routerLink="/laundry-items" routerLinkActive="active-tab" class="nav-link">Items</a></li>
+        <li><a routerLink="/laundry-feedbacks" routerLinkActive="active-tab" class="nav-link">Feedback</a></li>
+        <li><a routerLink="/laundry-profile" routerLinkActive="active-tab" class="nav-link">Profile</a></li>
       </ng-container>
 
-      <!-- Customer mobile links -->
       <ng-container *ngIf="currentPage === 'customer'">
-        <li><a routerLink="/cus-home/home" class="nav-link">Home</a></li>
-        <li><a routerLink="/cus-home/how-it-works" class="nav-link">How it works</a></li>
-        <li><a routerLink="/cus-home/order" class="nav-link">Order</a></li>
-        <li><a routerLink="/cus-home/basket" class="nav-link">Basket</a></li>
-        <li><a routerLink="/cus-home/contact-us" class="nav-link">Contact Us</a></li>
-        <li><a routerLink="/cus-home/profile" class="nav-link">Profile</a></li>
+        <li><a routerLink="/cus-home/home" routerLinkActive="active-tab" class="nav-link">Home</a></li>
+        <li><a routerLink="/cus-home/how-it-works" routerLinkActive="active-tab" class="nav-link">How it works</a></li>
+        <li><a routerLink="/cus-home/order" routerLinkActive="active-tab" class="nav-link">Order</a></li>
+        <li><a routerLink="/cus-home/basket" routerLinkActive="active-tab" class="nav-link">Basket</a></li>
+        <li><a routerLink="/cus-home/contact-us" routerLinkActive="active-tab" class="nav-link">Contact Us</a></li>
+        <li><a routerLink="/cus-home/profile" routerLinkActive="active-tab" class="nav-link">Profile</a></li>
       </ng-container>
 
-      <!-- Driver mobile links -->
       <ng-container *ngIf="currentPage === 'driver'">
-        <li><a routerLink="/driver-home-page" class="nav-link">Home</a></li>
-        <li><a routerLink="/pickups-tasks-mainpage" class="nav-link">Pickups</a></li>
-        <li><a routerLink="/delivery-tasks-mainpage" class="nav-link">Deliveries</a></li>
-        <li><a routerLink="/driver-contactus-page" class="nav-link">Contact Us</a></li>
-        <li><a routerLink="/driver-profile-page" class="nav-link">Profile</a></li>
+        <li><a routerLink="/driver-home-page" routerLinkActive="active-tab" class="nav-link">Home</a></li>
+        <li><a routerLink="/pickups-tasks-mainpage" routerLinkActive="active-tab" class="nav-link">Pickups</a></li>
+        <li><a routerLink="/delivery-tasks-mainpage" routerLinkActive="active-tab" class="nav-link">Deliveries</a></li>
+        <li><a routerLink="/driver-contactus-page" routerLinkActive="active-tab" class="nav-link">Contact Us</a></li>
+        <li><a routerLink="/driver-profile-page" routerLinkActive="active-tab" class="nav-link">Profile</a></li>
       </ng-container>
 
-      <!-- Admin mobile links -->
       <ng-container *ngIf="currentPage === 'admin'">
-        <li><a routerLink="/admin" class="nav-link">Home</a></li>
-        <li><a routerLink="/drivers" class="nav-link">Drivers</a></li>
-        <li><a routerLink="/customers" class="nav-link">Customers</a></li>
-        <li><a routerLink="/laundries" class="nav-link">Laundries</a></li>
-        <li><a routerLink="/orders" class="nav-link">Orders</a></li>
-        <li><a routerLink="/vehicles" class="nav-link">Vehicles</a></li>
-        <li><a routerLink="/complaints" class="nav-link">Complaints</a></li>
-        <li><a routerLink="/reports" class="nav-link">Reports</a></li>
+        <li><a routerLink="/admin" routerLinkActive="active-tab" class="nav-link">Home</a></li>
+        <li><a routerLink="/drivers" routerLinkActive="active-tab" class="nav-link">Drivers</a></li>
+        <li><a routerLink="/customers" routerLinkActive="active-tab" class="nav-link">Customers</a></li>
+        <li><a routerLink="/laundries" routerLinkActive="active-tab" class="nav-link">Laundries</a></li>
+        <li><a routerLink="/orders" routerLinkActive="active-tab" class="nav-link">Orders</a></li>
+        <li><a routerLink="/complaints" routerLinkActive="active-tab" class="nav-link">Complaints</a></li>
+        <li><a routerLink="/reports" routerLinkActive="active-tab" class="nav-link">Reports</a></li>
       </ng-container>
     </ul>
   </div>
 </nav>
+
+<style>
+  .active-tab {
+    font-weight: bold;
+    transform: scale(1.1);
+    transition: all 0.2s ease-in-out;
+  }
+</style>

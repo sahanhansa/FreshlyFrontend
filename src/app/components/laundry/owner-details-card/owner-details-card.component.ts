@@ -22,6 +22,7 @@ interface OwnerDetails {
   imports: [CommonModule],
  templateUrl: './owner-details-card.component.html',
 })
+
 export class OwnerDetailsCardComponent implements OnInit {
   @Input() laundryId: string = '';
   

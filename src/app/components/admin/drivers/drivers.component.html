@@ -14,7 +14,16 @@
       </select>
       <span>entries</span>
     </div>
-    <div>
+    <div class="flex items-center gap-2">
+      <select [(ngModel)]="searchType" (change)="searchDrivers()" class="px-2 py-2 border border-gray-200 rounded outline-none focus:border-blue-500">
+        <option value="all">All</option>
+        <option value="name">Name</option>
+        <option value="email">Email</option>
+        <option value="licenseNo">License No</option>
+        <option value="accountStatus">Account Status</option>
+        <option value="addressId">Address ID</option>
+        <option value="driverId">Driver ID</option>
+      </select>
       <input type="text" [(ngModel)]="searchQuery" placeholder="Search..." (input)="searchDrivers()"
              class="px-4 py-2 border border-gray-200 rounded outline-none w-60 focus:border-blue-500">
     </div>
@@ -38,7 +47,7 @@
   </div>
 
   <!-- Empty State -->
-  <div *ngIf="!isLoading && !error && drivers.length === 0" class="bg-white p-8 rounded-lg text-center">
+  <div *ngIf="!isLoading && !error && filteredDrivers.length === 0" class="bg-white p-8 rounded-lg text-center">
     <i class="fas fa-user-slash text-4xl text-gray-400 mb-4"></i>
     <h3 class="text-xl font-medium text-gray-700 mb-2">No Drivers Found</h3>
     <p class="text-gray-500">There are no drivers matching your criteria or no drivers are registered in the system.</p>
@@ -87,8 +96,8 @@
             <span>: {{ selectedDriver.licenseNo }}</span>
           </div>
           <div class="flex items-center">
-            <span class="w-32 font-semibold">Address ID</span>
-            <span>: {{ selectedDriver.addressId }}</span>
+            <span class="w-32 font-semibold">Address</span>
+            <span>: {{ getAddress(selectedDriver) }}</span>
           </div>
           <div class="flex items-center">
             <span class="w-32 font-semibold">Account Status</span>
@@ -131,18 +140,18 @@
             <th class="p-4 text-left font-medium text-gray-700 whitespace-nowrap border-b border-gray-100">Name</th>
             <th class="p-4 text-left font-medium text-gray-700 whitespace-nowrap border-b border-gray-100">Email</th>
             <th class="p-4 text-left font-medium text-gray-700 whitespace-nowrap border-b border-gray-100">License No</th>
-            <th class="p-4 text-left font-medium text-gray-700 whitespace-nowrap border-b border-gray-100">Address ID</th>
+            <th class="p-4 text-left font-medium text-gray-700 whitespace-nowrap border-b border-gray-100">Address</th>
             <th class="p-4 text-left font-medium text-gray-700 whitespace-nowrap border-b border-gray-100">Account Status</th>
             <th class="p-4 text-left font-medium text-gray-700 whitespace-nowrap border-b border-gray-100">Details</th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngIf="drivers.length === 0">
+          <tr *ngIf="filteredDrivers.length === 0">
             <td colspan="7" class="p-4 text-gray-500 text-center">
               No drivers found. {{ searchQuery ? 'Try a different search term.' : '' }}
             </td>
           </tr>
-          <tr *ngFor="let driver of drivers; let i = index"
+          <tr *ngFor="let driver of filteredDrivers; let i = index"
               (click)="selectDriver(driver)"
               [class]="'whitespace-nowrap hover:bg-gray-100 transition-colors duration-150'"
               [ngClass]="{'bg-[#D0F6FF]': i % 2 === 1, 'bg-blue-100': driver === selectedDriver}">
@@ -150,7 +159,7 @@
             <td class="p-4 text-gray-700 border-b border-gray-100">{{ (driver?.firstName || '-') + ' ' + (driver?.lastName || '-') }}</td>
             <td class="p-4 text-gray-700 border-b border-gray-100">{{ driver?.email || '-' }}</td>
             <td class="p-4 text-gray-700 border-b border-gray-100">{{ driver?.licenseNo || '-' }}</td>
-            <td class="p-4 text-gray-700 border-b border-gray-100">{{ driver?.addressId || '-' }}</td>
+            <td class="p-4 text-gray-700 border-b border-gray-100">{{ driver?.fullAddress || '-' }}</td>
             <td class="p-4 text-gray-700 border-b border-gray-100">{{ driver?.accountStatus || '-' }}</td>
             <td class="p-4 border-b border-gray-100">
               <button class="px-3 py-2 rounded bg-blue-500 text-white font-medium hover:bg-blue-600 transition-colors" (click)="$event.stopPropagation(); selectDriver(driver)">Details</button>

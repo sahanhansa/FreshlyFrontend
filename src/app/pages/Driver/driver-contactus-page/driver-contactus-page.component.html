@@ -1,12 +1,24 @@
-<div><app-driver-navbar></app-driver-navbar></div>
+<!-- ✅ DRIVER NAVBAR -->
+<div class="w-full">
+  <app-driver-navbar></app-driver-navbar>
+</div>
 
-<div><app-contactus-header></app-contactus-header></div>
-<br>
+<!-- ✅ MAIN CONTENT WRAPPER -->
+<main class="flex flex-col items-center justify-start w-full min-h-screen px-4 sm:px-6 lg:px-8 bg-white">
+  
+  <!-- ✅ HEADER -->
+  <div class="w-full max-w-7xl mt-6">
+    <app-contactus-header></app-contactus-header>
+  </div>
 
-<br>
-<div><app-contactus></app-contactus></div>
-<br>
-<br>
-<br><br>
-<div><app-footer></app-footer></div>
+  <!-- ✅ CONTACT US SECTION -->
+  <div class="w-full max-w-4xl mt-8">
+    <app-contactus></app-contactus>
+  </div>
 
+</main>
+
+<!-- ✅ FOOTER -->
+<div class="w-full mt-12">
+  <app-footer></app-footer>
+</div>

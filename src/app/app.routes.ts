@@ -47,18 +47,23 @@ import { LaundryDeleteConfirmationComponent } from './pages/Laundry/laundry-dele
 import { ProcessingOrderDetailsComponent} from './components/laundry/processing-order-details/processing-order-details.component';
 import { CompletedOrderDetailsComponent } from './components/Laundry/completed-order-details/completed-order-details.component';
 import { LogoutPageComponent } from './pages/Driver/logout-page/logout-page.component';
-import {AdminLoginComponent} from './components/admin/login/admin-login.component';
+import { AdminLoginComponent} from './components/admin/login/admin-login.component';
 import { NewOrderDetailsComponent } from './components/laundry/new-order-details/new-order-details.component';
+import {  RejectedItemDetailsComponent } from './components/laundry/rejected-item-details/rejected-item-details.component';
+import { RejectedItemsComponent}  from './pages/Laundry/rejected-items/rejected-items.component';
+import { ContactUsComponent } from './pages/Laundry/contact-us/contact-us.component';
 import {MultiStepFormComponent} from './components/laundry/lau-sign/multi-step-form.component';
 import { RequestResetComponent } from './pages/request-reset/request-reset.component';
 import { VerifyResetComponent } from './pages/verify-reset/verify-reset.component';
-import {WhoAreYouComponentSign} from './components/whoareyou/whoareyou.component'
+import {WhoAreYouComponentSign} from './components/whoareyou/whoareyou.component';
+import { AuthHelperService } from './services/auth-helper.service';
 
 // Define the application's routes
 export const routes: Routes = [
 
    // Landing page at root
     { path: '', component: LandingPageComponent, pathMatch: 'full' },
+        { path: 'landing-page', component: LandingPageComponent },
 
     // Landing page navigation routes
     { path: 'home', component: HomePageComponent },
@@ -127,7 +132,6 @@ export const routes: Routes = [
       { path: 'customers', loadComponent: () => import('./components/admin/customers/customers.component').then(m => m.CustomersComponent) },
       { path: 'laundries', loadComponent: () => import('./components/admin/laundries/laundries.component').then(m => m.LaundriesComponent) },
       { path: 'orders', loadComponent: () => import('./components/admin/orders/orders.component').then(m => m.OrdersComponent) },
-      { path: 'vehicles', loadComponent: () => import('./components/admin/vehicles/vehicles.component').then(m => m.VehiclesComponent) },
       { path: 'complaints', loadComponent: () => import('./components/admin/complaints/complaints.component').then(m => m.ComplaintsComponent) },
       { path: 'reports', loadComponent: () => import('./components/admin/reports/reports.component').then(m => m.ReportsComponent) }
     ]
@@ -145,7 +149,7 @@ export const routes: Routes = [
       { path: 'home', component: CusHomeComponent }, 
       {path: 'how-it-works', component:HowItWorksComponent},
       { path: 'order', component: LaundryPageComponent },      // Laundry list page
-      { path: 'basket', component: BasketComponent },
+      { path: 'basket', component: BasketComponent, canActivate: [() => AuthHelperService.prototype.isLoggedIn()] },
       {path: 'laundry/:id', component: ItemPageComponent},
       // Replace with actual profile component if needed
       { path: 'profile', loadComponent: () => import('./components/customer/profile/profile.component').then(m => m.ProfileComponent) },
@@ -166,12 +170,6 @@ export const routes: Routes = [
   
      // Route for new orders page
   {path: 'new-orders', component:NewOrdersComponent},
-
-  // Route for new order details
-  {
-    path: 'new-order-details/:orderId/:statusId',
-    loadComponent: () => import('./components/laundry/new-order-details/new-order-details.component').then(m => m.NewOrderDetailsComponent)
-  },
 
     // Route for processingorders page
   {path: 'processing-orders', component:processingOrdersComponent},
@@ -211,8 +209,14 @@ export const routes: Routes = [
 
      {path: 'completed-order-details/:orderId/:statusId', component:CompletedOrderDetailsComponent },
 
-     {path: 'new-order-details/:orderId/:statusId', component:NewOrderDetailsComponent }
+     {path: 'new-order-details/:orderId/:statusId', component:NewOrderDetailsComponent },
+
+     {path: 'rejected-item-details' , component: RejectedItemDetailsComponent },
+
+      {path: 'rejected-items', component:RejectedItemsComponent },
+   
     
+      {path: 'laundry-contactus', component:ContactUsComponent },
     ]
 
 

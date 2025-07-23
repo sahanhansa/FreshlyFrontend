@@ -1,11 +1,9 @@
-
 <div class="min-h-screen flex flex-col">
-
+  <div class="flex-grow">
    <app-navbar></app-navbar>
-    <app-item-category></app-item-category>
-
-    <!-- Add New Item Button -->
-   <div class="flex justify-end mt-6 mr-14">
+ 
+ <!-- Add New Item Button -->
+    <div class="flex justify-end mt-2 mr-14">
   <a
     routerLink="/laundry-add-item"
     class="flex items-center space-x-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md shadow transition duration-200"
@@ -17,8 +15,8 @@
   </a>
 </div>
 
+
   <app-item-grid></app-item-grid>
-
-  <app-footer></app-footer>
-
+  </div>
+  <app-footer class="w-full mt-auto"></app-footer>
 </div>

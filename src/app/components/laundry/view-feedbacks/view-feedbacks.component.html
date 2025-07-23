@@ -1,4 +1,4 @@
-<div class="max-w-4xl mx-auto px-4 py-8 space-y-6" *ngIf="feedbacks.length">
+<div class="max-w-4xl mx-auto px-4 py-2 space-y-6" *ngIf="feedbacks.length">
   <div
     *ngFor="let feedback of feedbacks; let i = index"
     class="border rounded-xl p-4 bg-white shadow-sm"
@@ -18,39 +18,27 @@
           >★</span>
         </ng-container>
       </div>
-
+      <div class="flex gap-2">
       <button
         class="text-white text-sm px-4 py-1.5 rounded-md hover:opacity-90"
         style="background-color: #0A84FF;"
-        (click)="toggleReply(i)"
+          (click)="viewOrder(feedback)"
       >
-        Reply
+          View Order
       </button>
-    </div>
-
-    <!-- Reply form section -->
-    <div *ngIf="feedback.showReply" class="mt-3 space-y-2">
-      <textarea
-        [(ngModel)]="feedback.replyText"
-        name="replyText{{ i }}"
-        rows="3"
-        class="w-full border rounded-md p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
-        placeholder="Write your reply..."
-      ></textarea>
-
-      <div class="flex justify-end gap-2">
         <button
-          class="text-sm px-3 py-1.5 bg-gray-200 rounded-md hover:bg-gray-300"
-          (click)="toggleReply(i)"
+          *ngIf="!feedback.read"
+          class="text-white text-sm px-4 py-1.5 rounded-md hover:opacity-90 bg-gray-600"
+          (click)="markAsReadAndMove(feedback, i)"
         >
-          Cancel
+          Mark as Read
         </button>
         <button
-          class="text-white text-sm px-4 py-1.5 rounded-md hover:opacity-90"
-          style="background-color: black;"
-          (click)="submitReply(i)"
+          *ngIf="feedback.read"
+          class="text-white text-sm px-4 py-1.5 rounded-md bg-green-500 cursor-default"
+          disabled
         >
-          Send
+          Read
         </button>
       </div>
     </div>
