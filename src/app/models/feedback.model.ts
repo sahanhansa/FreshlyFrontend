@@ -9,7 +9,8 @@ export interface Feedback {
   isExpanded?: boolean; // For UI expansion state
   customerFName: string;
   customerLName: string;
-  submittedByType?: 'c' | 'd' | 'l';
+  submittedByType?: 'c' | 'd' | 'l' | string;
+  userId?: string; // For driver tab
 }
 
 export interface FeedbackDTO {

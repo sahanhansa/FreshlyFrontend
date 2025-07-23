@@ -15,7 +15,14 @@
       <span>entries</span>
     </div>
     <!-- Search input for filtering complaints -->
-    <div>
+    <div class="flex items-center gap-2">
+      <select [ngModel]="searchType()" (ngModelChange)="onSearch(searchQuery())" class="px-3 py-2 border border-gray-200 rounded outline-none focus:border-blue-500">
+        <option value="all">All</option>
+        <option value="id">ID</option>
+        <option value="customerName">Customer Name</option>
+        <option value="laundryName">Laundry Name</option>
+        <option value="description">Description</option>
+      </select>
       <input type="text" [ngModel]="searchQuery()" (ngModelChange)="onSearch($event)" 
              placeholder="Search..."
              class="px-4 py-2 border border-gray-200 rounded outline-none w-60 focus:border-blue-500">
@@ -41,35 +48,63 @@
 
   <!-- Complaints Table Section -->
   <div *ngIf="!loading() && !error() && paginatedComplaints().length > 0">
-    <!-- Table Structure -->
     <div class="bg-white rounded-lg shadow-sm overflow-hidden">
       <table class="min-w-full table-auto">
         <thead class="bg-gray-50">
-          <tr>
+          <tr *ngIf="selectedCategory() === 'driver'; else defaultHeader">
             <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900">ID</th>
-            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900">Customer</th>
-            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900">Laundry</th>
             <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900">Description</th>
+            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900">Submitted By</th>
+            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900">User ID</th>
             <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900">Actions</th>
           </tr>
+          <ng-template #defaultHeader>
+            <tr>
+              <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900">ID</th>
+              <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900">Customer</th>
+              <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900">Laundry</th>
+              <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900">Description</th>
+              <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900">Actions</th>
+            </tr>
+          </ng-template>
         </thead>
         <tbody class="divide-y divide-gray-200">
-          <tr *ngFor="let complaint of paginatedComplaints()" class="hover:bg-gray-50">
-            <td class="px-6 py-4 text-sm text-gray-900">{{ complaint.feedbackId }}</td>
-            <td class="px-6 py-4 text-sm text-gray-900">{{ complaint.customerName }}</td>
-            <td class="px-6 py-4 text-sm text-gray-900">{{ complaint.laundryName }}</td>
-            <td class="px-6 py-4 text-sm text-gray-500">{{ complaint.description }}</td>
-            <td class="px-6 py-4 text-sm text-right space-x-3">
-              <button (click)="viewFeedbackDetails(complaint)"
-                      class="text-blue-600 hover:text-blue-900">
-                View
-              </button>
-              <button (click)="openReplyModal(complaint)"
-                      class="text-green-600 hover:text-green-900">
-                Reply
-              </button>
-            </td>
-          </tr>
+          <ng-container *ngIf="selectedCategory() === 'driver'; else defaultRows">
+            <tr *ngFor="let complaint of paginatedComplaints()" class="hover:bg-gray-50">
+              <td class="px-6 py-4 text-sm text-gray-900">{{ complaint.feedbackId }}</td>
+              <td class="px-6 py-4 text-sm text-gray-500">{{ complaint.description }}</td>
+              <td class="px-6 py-4 text-sm text-gray-900">{{ complaint.submittedByType }}</td>
+              <td class="px-6 py-4 text-sm text-gray-900">{{ complaint.userId }}</td>
+              <td class="px-6 py-4 text-sm text-left space-x-3">
+                <button (click)="viewFeedbackDetails(complaint)"
+                        class="text-blue-600 hover:text-blue-900">
+                  View
+                </button>
+                <button (click)="openReplyModal(complaint)"
+                        class="text-green-600 hover:text-green-900">
+                  Reply
+                </button>
+              </td>
+            </tr>
+          </ng-container>
+          <ng-template #defaultRows>
+            <tr *ngFor="let complaint of paginatedComplaints()" class="hover:bg-gray-50">
+              <td class="px-6 py-4 text-sm text-gray-900">{{ complaint.feedbackId }}</td>
+              <td class="px-6 py-4 text-sm text-gray-900">{{ complaint.customerName }}</td>
+              <td class="px-6 py-4 text-sm text-gray-900">{{ complaint.laundryName }}</td>
+              <td class="px-6 py-4 text-sm text-gray-500">{{ complaint.description }}</td>
+              <td class="px-6 py-4 text-sm text-left space-x-3">
+                <button (click)="viewFeedbackDetails(complaint)"
+                        class="text-blue-600 hover:text-blue-900">
+                  View
+                </button>
+                <button (click)="openReplyModal(complaint)"
+                        class="text-green-600 hover:text-green-900">
+                  Reply
+                </button>
+              </td>
+            </tr>
+          </ng-template>
         </tbody>
       </table>
     </div>
@@ -116,24 +151,35 @@
           </svg>
         </button>
       </div>
-
-      <!-- Customer Info -->
-      <div class="mb-6">
-        <h4 class="text-sm font-semibold text-gray-500 mb-2">Customer Information</h4>
-        <div class="bg-gray-50 p-4 rounded">
-          <p class="font-medium mb-2">{{ getSelectedFeedbackProp('customerName', 'Unknown Customer') }}</p>
-          <p class="font-medium text-xs break-all">{{ getSelectedFeedbackProp('customerId', 'N/A') }}</p>
-        </div>
+      <div *ngIf="selectedCategory() === 'driver'; else defaultDetails">
+        <div class="mb-2"><span class="font-semibold">ID:</span> {{ selectedFeedback()?.feedbackId }}</div>
+        <div class="mb-2"><span class="font-semibold">Description:</span> {{ selectedFeedback()?.description }}</div>
+        <div class="mb-2"><span class="font-semibold">Submitted By:</span> {{ selectedFeedback()?.submittedByType }}</div>
+        <div class="mb-2"><span class="font-semibold">User ID:</span> {{ selectedFeedback()?.userId }}</div>
       </div>
-
-      <!-- Laundry Info -->
-      <div class="mb-6">
-        <h4 class="text-sm font-semibold text-gray-500 mb-2">Laundry Information</h4>
-        <div class="bg-gray-50 p-4 rounded">
-          <p class="font-medium mb-2">{{ getSelectedFeedbackProp('laundryName', 'Unknown Laundry') }}</p>
-          <p class="font-medium text-xs break-all">{{ getSelectedFeedbackProp('laundryId', 'N/A') }}</p>
+      <ng-template #defaultDetails>
+        <!-- Customer Info -->
+        <div class="mb-2"><span class="font-semibold">ID:</span> {{ selectedFeedback()?.feedbackId }}</div>
+        <div class="mb-2"><span class="font-semibold">Customer:</span> {{ selectedFeedback()?.customerName }}</div>
+        <div class="mb-2"><span class="font-semibold">Laundry:</span> {{ selectedFeedback()?.laundryName }}</div>
+        <div class="mb-2"><span class="font-semibold">Description:</span> {{ selectedFeedback()?.description }}</div>
+        <div class="mb-6">
+          <h4 class="text-sm font-semibold text-gray-500 mb-2">Customer Information</h4>
+          <div class="bg-gray-50 p-4 rounded">
+            <p class="font-medium mb-2">{{ getSelectedFeedbackProp('customerName', 'Unknown Customer') }}</p>
+            <p class="font-medium text-xs break-all">{{ getSelectedFeedbackProp('customerId', 'N/A') }}</p>
+          </div>
         </div>
-      </div>
+        <div class="mb-6">
+          <h4 class="text-sm font-semibold text-gray-500 mb-2">Laundry Information</h4>
+          <div class="bg-gray-50 p-4 rounded">
+            <p class="font-medium mb-2">{{ getSelectedFeedbackProp('laundryName', 'Unknown Laundry') }}</p>
+            <p class="font-medium text-xs break-all">{{ getSelectedFeedbackProp('laundryId', 'N/A') }}</p>
+          </div>
+        </div>
+      </ng-template>
+      <div class="mb-6">
+    <!-- Only show Customer and Laundry Info for non-driver categories -->
 
       <!-- Feedback Content -->
       <div class="mb-6">
@@ -144,9 +190,7 @@
       </div>
 
       <!-- Additional Details -->
-      <div class="mt-4">
-        <p class="text-xs text-gray-700 break-all">ID: {{ getSelectedFeedbackProp('feedbackId', '') }}</p>
-      </div>
+      <!-- Removed repeated feedback ID -->
 
       <!-- Actions -->
       <div class="mt-6 flex justify-end space-x-4">

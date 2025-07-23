@@ -159,7 +159,11 @@
             <td class="p-4 text-gray-700 border-b border-gray-100">{{ (driver?.firstName || '-') + ' ' + (driver?.lastName || '-') }}</td>
             <td class="p-4 text-gray-700 border-b border-gray-100">{{ driver?.email || '-' }}</td>
             <td class="p-4 text-gray-700 border-b border-gray-100">{{ driver?.licenseNo || '-' }}</td>
-            <td class="p-4 text-gray-700 border-b border-gray-100">{{ driver?.fullAddress || '-' }}</td>
+            <td class="p-4 text-gray-700 border-b border-gray-100">
+              <span [title]="driver?.fullAddress">
+                {{ getTruncatedAddress(driver?.fullAddress) }}
+              </span>
+            </td>
             <td class="p-4 text-gray-700 border-b border-gray-100">{{ driver?.accountStatus || '-' }}</td>
             <td class="p-4 border-b border-gray-100">
               <button class="px-3 py-2 rounded bg-blue-500 text-white font-medium hover:bg-blue-600 transition-colors" (click)="$event.stopPropagation(); selectDriver(driver)">Details</button>

@@ -42,6 +42,12 @@ export class DriversComponent implements OnInit {
       this.profileImageFile = input.files[0];
     }
   }
+
+  // Utility to safely truncate address for table display
+  getTruncatedAddress(address: string | undefined | null): string {
+    if (!address) return '-';
+    return address.length > 25 ? address.slice(0, 25) + '...' : address;
+  }
   showConfirmDriverModal: boolean = false;
   confirmDriverAction: 'remove' | 'restore' = 'remove';
   driverToConfirm: DisplayDriver | null = null;

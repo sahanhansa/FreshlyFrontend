@@ -13,14 +13,27 @@ Chart.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, B
   template: `
     <div class="bg-white rounded-xl p-8 mb-8 shadow-sm flex flex-col items-center">
       <h2 class="text-2xl font-semibold text-gray-800 mb-6">Revenue Per Month</h2>
-      <div class="flex justify-center" style="width: 970px; height: 430px;">
-        <canvas #revenueBarChart class="w-full h-full"></canvas>
+      <div *ngIf="loading" class="flex items-center justify-center h-96 w-full">
+        <span class="text-gray-500 text-lg">Loading chart...</span>
+      </div>
+      <div *ngIf="error" class="flex items-center justify-center h-96 w-full">
+        <span class="text-red-500 text-lg">Failed to load data. Please try again later.</span>
+      </div>
+      <div *ngIf="!loading && !error && noData" class="flex items-center justify-center h-96 w-full">
+        <span class="text-gray-500 text-lg">No revenue data available for this period.</span>
+      </div>
+      <div class="flex justify-center" style="width: 970px; height: 430px;" *ngIf="!loading && !error && !noData">
+        <canvas #revenueBarChart width="970" height="430" class="w-full h-full"></canvas>
       </div>
     </div>
   `,
   styleUrls: []
 })
 export class RevenuePerMonthComponent implements OnInit {
+  loading = true;
+  error = false;
+  noData = false;
+  apiUrlDebug = environment.apiUrl;
   /** Returns the chart as a PNG data URL */
   getChartImage(): string | null {
     const canvas = this.revenueBarChart?.nativeElement;
@@ -33,39 +46,68 @@ export class RevenuePerMonthComponent implements OnInit {
 
   constructor(private http: HttpClient) {}
 
-  ngOnInit(): void {
-    // No chart rendering here
-  }
+  private monthlyTotals: number[] = [];
+  private dataLoaded = false;
 
-  ngAfterViewInit(): void {
-    this.http.get<any[]>(`${environment.apiUrl}/api/Order`).subscribe({
+  ngOnInit(): void {
+    this.loading = true;
+    this.error = false;
+    this.noData = false;
+    const apiUrl = `${environment.apiUrl}/api/Order`;
+    this.http.get<any[]>(apiUrl).subscribe({
       next: (orders: any[]) => {
-        const monthlyTotals = Array(12).fill(0);
+        this.monthlyTotals = Array(12).fill(0);
+        let hasData = false;
         orders.forEach(order => {
           const total = order.totalCost;
           const dateStr = order.placedDate || order.placedDateTime;
           if (total == null || !dateStr) return;
           const date = new Date(dateStr);
           const month = date.getMonth();
-          monthlyTotals[month] += Number(total);
+          this.monthlyTotals[month] += Number(total);
+          hasData = true;
         });
-        this.renderChart(monthlyTotals);
+        this.loading = false;
+        this.dataLoaded = true;
+        if (!hasData) {
+          this.noData = true;
+        } else {
+          this.noData = false;
+        }
       },
       error: (err: any) => {
-        console.error('Failed to fetch orders:', err);
+        this.loading = false;
+        this.error = true;
+        this.dataLoaded = false;
       }
     });
+  }
+
+  ngAfterViewInit(): void {
+    // Try to render the chart after view init if data is already loaded
+    this.tryRenderChart();
+  }
+
+  ngAfterViewChecked(): void {
+    // Try to render the chart after every view check if data is loaded and chart not yet rendered
+    this.tryRenderChart();
+  }
+
+  private tryRenderChart(): void {
+    if (!this.loading && !this.error && !this.noData && this.dataLoaded && this.revenueBarChart?.nativeElement) {
+      this.renderChart(this.monthlyTotals);
+      // Only render once
+      this.dataLoaded = false;
+    }
   }
 
   private renderChart(monthlyTotals: number[]): void {
     const canvas = this.revenueBarChart?.nativeElement;
     if (!canvas) {
-      console.error('Canvas element not found!');
       return;
     }
     const ctx = canvas.getContext('2d');
     if (!ctx) {
-      console.error('Could not get 2D context from canvas element');
       return;
     }
     const chartConfig: ChartConfiguration = {

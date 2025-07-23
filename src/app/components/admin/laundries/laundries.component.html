@@ -55,7 +55,15 @@
       </select>
       <span>entries</span>
     </div>
-    <div>
+    <div class="flex items-center gap-2 ml-auto">
+      <select [ngModel]="searchType()" (ngModelChange)="searchType.set($event); filterLaundries(searchText())" class="px-3 py-2 border border-gray-200 rounded outline-none focus:border-blue-500">
+        <option value="all">All</option>
+        <option value="name">Name</option>
+        <option value="email">Email</option>
+        <option value="username">Username</option>
+        <option value="owner">Owner</option>
+        <option value="laundryId">Laundry ID</option>
+      </select>
       <input 
         type="text" 
         [ngModel]="searchText()" 

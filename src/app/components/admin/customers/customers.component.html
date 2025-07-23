@@ -154,7 +154,7 @@
           <td class="p-4 text-gray-700 border-b border-gray-100">{{ customer.firstName }} {{ customer.lastName }}</td>
           <td class="p-4 text-gray-700 border-b border-gray-100">{{ customer.email }}</td>
           <td class="p-4 text-gray-700 border-b border-gray-100">{{ customer.username }}</td>
-          <td class="p-4 text-gray-700 border-b border-gray-100">{{ customer.address }}</td>
+          <td class="p-4 text-gray-700 border-b border-gray-100 max-w-xs truncate" title="{{ customer.address }}">{{ customer.address ? (customer.address | slice:0:30) : '' }}<span *ngIf="customer.address && customer.address.length > 30">...</span></td>
           <td class="p-4 text-gray-700 border-b border-gray-100">{{ customer.contacts.join(', ') }}</td>
           <td class="p-4 text-gray-700 border-b border-gray-100">{{ customer.accountStatus }}</td>
           <td class="p-4 border-b border-gray-100">

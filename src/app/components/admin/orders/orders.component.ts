@@ -58,6 +58,21 @@ interface DisplayOrder {
   styleUrl: './orders.component.css'
 })
 export class OrdersComponent implements OnInit {
+  // Helper: get statusName if object, else string
+  getStatusName(status: string | { statusName?: string }): string {
+    if (status && typeof status === 'object' && 'statusName' in status && status.statusName) {
+      return status.statusName;
+    }
+    return status as string;
+  }
+
+  // Helper: check if status matches a value
+  isStatus(status: string | { statusName?: string }, value: string): boolean {
+    if (status && typeof status === 'object' && 'statusName' in status && status.statusName) {
+      return status.statusName === value;
+    }
+    return status === value;
+  }
   getStatusField(status: string | { statusID?: string; statusName?: string; statusDisplayName?: string }, field: 'statusID' | 'statusName' | 'statusDisplayName'): string {
     if (typeof status === 'object' && status && field in status) {
       return (status as any)[field] || '';
@@ -75,6 +90,7 @@ export class OrdersComponent implements OnInit {
   itemsPerPage = 9;
   currentPage = 1;
   searchQuery = '';
+  searchType: string = 'all';
   loading = false;
   error: string | null = null;
   // Add Math reference to use in template
@@ -84,11 +100,15 @@ export class OrdersComponent implements OnInit {
 
   ngOnInit(): void {
     this.fetchOrders();
+    this.onSearch(this.searchQuery);
   }
 
   onSearch(query: string): void {
     this.searchQuery = query;
     this.currentPage = 1;
+    // Touch filteredOrders and paginatedOrders to ensure UI updates
+    void this.filteredOrders;
+    void this.paginatedOrders;
   }
 
   toggleOrderDetails(order: DisplayOrder): void {
@@ -156,14 +176,34 @@ export class OrdersComponent implements OnInit {
   }
 
   get filteredOrders(): DisplayOrder[] {
-    return this.orders.filter(order => 
-      this.searchQuery ? 
-        order.id.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-        order.customerName.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-        (typeof order.status === 'string' ? order.status.toLowerCase().includes(this.searchQuery.toLowerCase()) : (order.status.statusDisplayName || '').toLowerCase().includes(this.searchQuery.toLowerCase())) ||
-        order.totalCost.toString().includes(this.searchQuery)
-      : true
-    );
+    if (!this.searchQuery) return this.orders;
+    const query = this.searchQuery.toLowerCase();
+    switch (this.searchType) {
+      case 'orderId':
+        return this.orders.filter(order => order.id.toLowerCase().includes(query));
+      case 'customerName':
+        return this.orders.filter(order => order.customerName.toLowerCase().includes(query));
+      case 'status':
+        return this.orders.filter(order => {
+          if (typeof order.status === 'string') {
+            return order.status.toLowerCase().includes(query);
+          } else if (order.status && order.status.statusDisplayName) {
+            return order.status.statusDisplayName.toLowerCase().includes(query);
+          }
+          return false;
+        });
+      case 'date':
+        return this.orders.filter(order => order.date.toLowerCase().includes(query));
+      case 'all':
+      default:
+        return this.orders.filter(order =>
+          order.id.toLowerCase().includes(query) ||
+          order.customerName.toLowerCase().includes(query) ||
+          (typeof order.status === 'string' ? order.status.toLowerCase().includes(query) : (order.status.statusDisplayName || '').toLowerCase().includes(query)) ||
+          order.date.toLowerCase().includes(query) ||
+          order.totalCost.toString().includes(query)
+        );
+    }
   }
 
   get paginatedOrders(): DisplayOrder[] {

@@ -1,5 +1,9 @@
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+import { RevenuePerMonthComponent } from '../reports/revenue-per-month.component';
+
 // Angular core imports for component, lifecycle hooks, and DOM access
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
@@ -18,9 +22,9 @@ import {
   LineController,
   Title,
   Tooltip,
-  Legend,
-  ChartConfiguration
+  Legend
 } from 'chart.js';
+import type { ChartConfiguration } from 'chart.js';
 import { environment } from 'src/environments/environment';
 import { NavbarComponent } from "@app/components/shared/navbar/navbar.component";
 
@@ -39,11 +43,37 @@ Chart.register(
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule, HttpClientModule, FormsModule],
+  imports: [CommonModule, RouterModule, HttpClientModule, FormsModule, RevenuePerMonthComponent],
   templateUrl: './admin-dashboard.component.html',
   styleUrl: './admin-dashboard.component.css'
 })
 export class AdminDashboardComponent implements OnInit, AfterViewInit {
+  @ViewChild('revenuePerMonthComp', { static: false }) revenuePerMonthComp?: RevenuePerMonthComponent;
+  private chartReady = false;
+  downloadReport() {
+    setTimeout(() => {
+      const doc = new jsPDF('p', 'mm', 'a4');
+      let y = 10;
+      doc.setFontSize(18);
+      doc.text('Total Revenue Report', 14, y);
+      y += 10;
+
+      // Only add total revenue chart from RevenuePerMonthComponent
+      if (this.revenuePerMonthComp?.getChartImage) {
+        const totalRevenueImg = this.revenuePerMonthComp.getChartImage();
+        if (totalRevenueImg) {
+          doc.setFontSize(16);
+          doc.text('Total Revenue Per Month', 14, y);
+          y += 6;
+          doc.addImage(totalRevenueImg, 'PNG', 14, y, 180, 60);
+          y += 65;
+        }
+      }
+
+      // Save the PDF
+      doc.save(`TotalRevenueReport_${new Date().toISOString().slice(0, 10)}.pdf`);
+    }, 500);
+  }
   adminRole: string = '';
   orders: any[] = [];
   laundryRevenueData: { [laundryId: string]: number[] } = {};
@@ -74,17 +104,31 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit {
   statusMap: { [id: string]: string } = {};
   showAddAdminForm: boolean = false;
 
+  // Property to hold the selected profile image file
+  profileImageFile: File | null = null;
+
   constructor(
     private router: Router,
     private laundryService: LaundryService,
     private driverService: AdminDriverService,
-    private http: HttpClient
+    private http: HttpClient,
+    private cdr: ChangeDetectorRef
   ) {
     const storedName = localStorage.getItem('adminUsername');
     this.adminName = storedName ? storedName : 'Customer';
     // Get role from localStorage if available
     const storedRole = localStorage.getItem('adminRole');
     this.adminRole = storedRole ? storedRole : '';
+  }
+
+  // Handler for file input change event
+  onProfileImageChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.profileImageFile = input.files[0];
+    } else {
+      this.profileImageFile = null;
+    }
   }
 
   ngOnInit(): void {
@@ -175,7 +219,11 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    // Required by AfterViewInit interface. Chart is initialized after data loads.
+    // Wait for the hidden chart to render
+    setTimeout(() => {
+      this.chartReady = true;
+      this.cdr.detectChanges();
+    }, 500);
   }
 
   private updateActiveUsers(): void {
@@ -190,10 +238,22 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit {
     if (!this.revenueChart) return;
     const ctx = this.revenueChart.nativeElement.getContext('2d');
     if (!ctx) return;
-    // Prepare datasets for Chart.js
+    // Vibrant color palette for unique, consistent curve colors
+    const colorPalette = [
+      '#1f77b4', // blue
+      '#ff7f0e', // orange
+      '#2ca02c', // green
+      '#d62728', // red
+      '#9467bd', // purple
+      '#8c564b', // brown
+      '#e377c2', // pink
+      '#7f7f7f', // gray
+      '#bcbd22', // yellow-green
+      '#17becf'  // cyan
+    ];
     const datasets = Object.keys(this.laundryRevenueData).map((laundryId, idx) => {
-      const color = idx % 2 === 0 ? 'rgba(54, 162, 235, 1)' : 'rgba(255, 99, 132, 1)';
-      const bgColor = idx % 2 === 0 ? 'rgba(54, 162, 235, 0.2)' : 'rgba(255, 99, 132, 0.2)';
+      const color = colorPalette[idx % colorPalette.length];
+      const bgColor = color + '33'; // 20% opacity for background
       return {
         label: this.laundryNames[laundryId] || `Laundry ${laundryId}`,
         data: this.laundryRevenueData[laundryId],
@@ -320,21 +380,23 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit {
   submitAddAdmin(form: any): void {
     const token = localStorage.getItem('token');
     const now = new Date().toISOString();
-    const adminData = {
-      username: form.value.username,
-      password: form.value.password,
-      firstName: form.value.firstName || '',
-      lastName: form.value.lastName || '',
-      email: form.value.email,
-      role: form.value.role,
-      createdAt: now,
-      lastLogin: now,
-      passwordResetToken: '',
-      passwordResetExpiry: now
-    };
+    const formData = new FormData();
+    formData.append('username', form.value.username);
+    formData.append('password', form.value.password);
+    formData.append('firstName', form.value.firstName || '');
+    formData.append('lastName', form.value.lastName || '');
+    formData.append('email', form.value.email);
+    formData.append('role', form.value.role);
+    formData.append('createdAt', now);
+    formData.append('lastLogin', now);
+    formData.append('passwordResetToken', '');
+    formData.append('passwordResetExpiry', now);
+    if (this.profileImageFile) {
+      formData.append('profileImage', this.profileImageFile);
+    }
     this.http.post(
       `${environment.apiUrl}/api/Admin`,
-      adminData,
+      formData,
       { headers: { Authorization: `Bearer ${token}` } }
     ).subscribe({
       next: (res) => {

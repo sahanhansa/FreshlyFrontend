@@ -120,7 +120,7 @@ export const routes: Routes = [
       { path: 'laundries', loadComponent: () => import('./components/admin/laundries/laundries.component').then(m => m.LaundriesComponent) },
       { path: 'orders', loadComponent: () => import('./components/admin/orders/orders.component').then(m => m.OrdersComponent) },
       { path: 'complaints', loadComponent: () => import('./components/admin/complaints/complaints.component').then(m => m.ComplaintsComponent) },
-      { path: 'reports', loadComponent: () => import('./components/admin/reports/reports.component').then(m => m.ReportsComponent) }
+      { path: 'reports', loadComponent: () => import('./pages/Admin/reports/reports.component').then(m => m.ReportsComponent) }
     ]
   },
 

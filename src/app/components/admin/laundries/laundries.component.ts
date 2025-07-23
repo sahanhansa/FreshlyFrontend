@@ -14,6 +14,23 @@ import { SharedImports } from '../../../shared/shared-imports';
   styleUrl: './laundries.component.css'
 })
 export class LaundriesComponent implements OnInit {
+  // Data collections
+  laundries = signal<LaundryAdminDTO[]>([]);
+  filteredLaundries = signal<LaundryAdminDTO[]>([]);
+  // UI state
+  showTable = signal<boolean>(true);
+  loading = signal<boolean>(false);
+  error = signal<string | null>(null);
+  searchText = signal<string>('');
+  entriesPerPage = signal<number>(10);
+  selectedLaundry = signal<LaundryAdminDTO | null>(null);
+  showDeleteConfirmation = signal<boolean>(false);
+  deleteInProgress = signal<boolean>(false);
+  deleteSuccess = signal<boolean>(false);
+  deleteError = signal<string | null>(null);
+  currentPage = signal<number>(1);
+  // Search type for filtering
+  searchType = signal<string>('all');
   showAddLaundryModal = false;
   newLaundry: any = {
     ownerFirstName: '',
@@ -180,19 +197,7 @@ export class LaundriesComponent implements OnInit {
       }
     });
   }
-  // Data collections
-  laundries = signal<LaundryAdminDTO[]>([]);
-  filteredLaundries = signal<LaundryAdminDTO[]>([]);
-  
-  // UI state
-  showTable = signal<boolean>(true);
-  loading = signal<boolean>(false);
-  error = signal<string | null>(null);
-  searchText = signal<string>('');
-  entriesPerPage = signal<number>(10);
-  selectedLaundry = signal<LaundryAdminDTO | null>(null);
   // ...existing code...
-  currentPage = signal<number>(1);
 
   constructor(private laundryService: LaundryAdminService) {}
 
@@ -239,17 +244,27 @@ export class LaundriesComponent implements OnInit {
 
     const searchTermLower = searchText.toLowerCase();
     const filtered = this.laundries().filter(laundry => {
-      const laundryName = (laundry.laundryName || '').toLowerCase();
-      const username = (laundry.username || '').toLowerCase();
-      const email = (laundry.email || '').toLowerCase();
-      const ownerName = (laundry.ownerName || '').toLowerCase();
-      const address = (laundry.fullAddress || '').toLowerCase();
-
-      return laundryName.includes(searchTermLower) ||
-             username.includes(searchTermLower) ||
-             email.includes(searchTermLower) ||
-             ownerName.includes(searchTermLower) ||
-             address.includes(searchTermLower);
+      switch (this.searchType()) {
+        case 'name':
+          return (laundry.laundryName || '').toLowerCase().includes(searchTermLower);
+        case 'email':
+          return (laundry.email || '').toLowerCase().includes(searchTermLower);
+        case 'username':
+          return (laundry.username || '').toLowerCase().includes(searchTermLower);
+        case 'owner':
+          return (laundry.ownerName || '').toLowerCase().includes(searchTermLower);
+        case 'laundryId':
+          return (laundry.laundryId || '').toLowerCase().includes(searchTermLower);
+        case 'all':
+        default:
+          return (
+            (laundry.laundryName || '').toLowerCase().includes(searchTermLower) ||
+            (laundry.username || '').toLowerCase().includes(searchTermLower) ||
+            (laundry.email || '').toLowerCase().includes(searchTermLower) ||
+            (laundry.ownerName || '').toLowerCase().includes(searchTermLower) ||
+            (laundry.laundryId || '').toLowerCase().includes(searchTermLower)
+          );
+      }
     });
 
     this.filteredLaundries.set(filtered);

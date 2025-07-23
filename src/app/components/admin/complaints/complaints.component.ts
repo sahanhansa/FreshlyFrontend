@@ -16,6 +16,7 @@ import { FeedbackService } from '../../../services/feedback.service';
   styleUrls: ['./complaints.component.css']
 })
 export class ComplaintsComponent implements OnInit {
+  searchType = signal<string>('all');
 // Data and pagination properties using signals
   selectedCategory = signal<'customer' | 'driver' | 'laundry'>('customer');
 
@@ -111,21 +112,36 @@ filterByCategory(category: string): void {
 
   onSearch(query: string): void {
     this.searchQuery.set(query);
+    const type = this.searchType();
     if (!query) {
       this.filteredFeedbacks.set([...this.feedbacks()]);
     } else {
       const lowerQuery = query.toLowerCase();
-      const filtered = this.feedbacks().filter(feedback => 
-        feedback.customerName?.toLowerCase().includes(lowerQuery) || 
-        feedback.laundryName?.toLowerCase().includes(lowerQuery) || 
-        feedback.description?.toLowerCase().includes(lowerQuery) ||
-        feedback.feedbackId.toLowerCase().includes(lowerQuery) ||
-        feedback.customerId?.toLowerCase().includes(lowerQuery) ||
-        feedback.laundryId?.toLowerCase().includes(lowerQuery)
-      );
+      let filtered;
+      switch (type) {
+        case 'id':
+          filtered = this.feedbacks().filter(f => f.feedbackId.toLowerCase().includes(lowerQuery));
+          break;
+        case 'customerName':
+          filtered = this.feedbacks().filter(f => f.customerName?.toLowerCase().includes(lowerQuery));
+          break;
+        case 'laundryName':
+          filtered = this.feedbacks().filter(f => f.laundryName?.toLowerCase().includes(lowerQuery));
+          break;
+        case 'description':
+          filtered = this.feedbacks().filter(f => f.description?.toLowerCase().includes(lowerQuery));
+          break;
+        case 'all':
+        default:
+          filtered = this.feedbacks().filter(f =>
+            f.feedbackId.toLowerCase().includes(lowerQuery) ||
+            f.customerName?.toLowerCase().includes(lowerQuery) ||
+            f.laundryName?.toLowerCase().includes(lowerQuery) ||
+            f.description?.toLowerCase().includes(lowerQuery)
+          );
+      }
       this.filteredFeedbacks.set(filtered);
     }
-    
     this.currentPage.set(1);
     this.calculateTotalPages();
     this.updatePageNumbers();
