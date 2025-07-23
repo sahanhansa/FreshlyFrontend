@@ -50,7 +50,11 @@ export class DataService {
     return this.http.get<{ garmentTypeId: string }>(`${this.baseUrl}/Item/garment-type-id-by-name/${encodeURIComponent(name)}`);
   }
 
-  addGarmentType(name: string): Observable<{ garmentTypeId: string }> {
-    return this.http.post<{ garmentTypeId: string }>(`${this.baseUrl}/Item/add-garment-type`, { name });
+  addGarmentType(name: string): Observable<any> {
+    return this.http.post(
+      `${this.baseUrl}/Item/add-garment-type`,
+      { name },
+      { responseType: 'text' as 'json' }
+    );
   }
 }

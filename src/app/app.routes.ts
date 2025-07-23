@@ -219,7 +219,8 @@ export const routes: Routes = [
      {path: 'rejected-item-details' , component: RejectedItemDetailsComponent },
 
       {path: 'rejected-items', component:RejectedItemsComponent },
-   
+
+     {path: 'rejected-items-details/:laundryId/:orderId/:statusId', component: RejectedItemDetailsComponent },
     
       {path: 'laundry-contactus', component:ContactUsComponent },
     ]

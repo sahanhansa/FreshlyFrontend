@@ -6,6 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { OrderService } from '../../../services/order.service';
 import { FooterComponent } from '../../../components/shared/footer/footer.component';
 import { Subject, takeUntil, catchError, of } from 'rxjs';
+import { RejectedItemService } from '../../../services/rejected-item.service';
 
 
 interface OrderItem {
@@ -42,7 +43,6 @@ interface OrderDetails {
 
 interface AdjustmentForm {
   name: string;
-  mobileNumber: string;
   reason: string;
   date: string;
   time: string;
@@ -65,6 +65,7 @@ export class ProcessingOrderDetailsComponent implements OnInit, OnDestroy {
   adjustmentType: 'add' | 'remove' = 'add';
   selectedItem: OrderItem | null = null;
   sendingInvoice = false;
+  submittingRejection = false;
   private destroy$ = new Subject<void>();
   private itemsByServiceCache: { [key: string]: OrderItem[] } = {};
 
@@ -76,11 +77,11 @@ export class ProcessingOrderDetailsComponent implements OnInit, OnDestroy {
     private router: Router,
     private orderService: OrderService,
     private fb: FormBuilder,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private rejectedItemService: RejectedItemService // Injected
   ) {
     this.adjustmentForm = this.fb.group({
       name: ['', Validators.required],
-      mobileNumber: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
       reason: ['', Validators.required],
       date: ['', Validators.required],
       time: ['', Validators.required]
@@ -140,8 +141,19 @@ export class ProcessingOrderDetailsComponent implements OnInit, OnDestroy {
           this.orderDetails = data;
           // Initialize status for each item
           if (this.orderDetails?.items) {
+            // Try to load saved statuses from localStorage
+            const savedStatuses = this.getSavedStatuses(orderId);
             this.orderDetails.items.forEach(item => {
+              if (savedStatuses && savedStatuses[item.itemId]) {
+                const savedStatus = savedStatuses[item.itemId];
+                if (savedStatus === 'processing' || savedStatus === 'finished') {
+                  item.status = savedStatus;
+                } else {
+                  item.status = 'processing';
+                }
+              } else {
               item.status = 'processing';
+              }
             });
           }
           // Clear cache when new data is loaded
@@ -173,33 +185,96 @@ export class ProcessingOrderDetailsComponent implements OnInit, OnDestroy {
   submitAdjustment(): void {
     if (this.adjustmentForm.valid && this.selectedItem) {
       const formData: AdjustmentForm = this.adjustmentForm.value;
-      
-      // Here you would typically send this data to your backend
-      console.log('Adjustment submitted:', {
-        item: this.selectedItem,
-        type: this.adjustmentType,
-        formData: formData
-      });
-
-      // Update quantity locally
       if (this.adjustmentType === 'add') {
         this.selectedItem.quantity += 1;
+        this.itemsByServiceCache = {};
+        this.calculateTotalAmount();
+        this.closeAdjustmentModal();
+        this.cdr.markForCheck();
       } else if (this.adjustmentType === 'remove' && this.selectedItem.quantity > 0) {
-        this.selectedItem.quantity -= 1;
+        // Prepare rejection payload
+        const laundryId = localStorage.getItem('laundryId');
+        const orderId = this.orderDetails?.orderId;
+        const itemId = this.selectedItem?.itemId;
+        const serviceId = this.selectedItem?.serviceId;
+        const rejectedBy = formData.name || localStorage.getItem('laundryName') || 'Laundry';
+        const rejectedAt = new Date().toISOString();
+        // Debug logging
+        console.log('Rejection debug:', { laundryId, orderId, itemId, serviceId });
+        if (!laundryId) {
+          this.error = 'Laundry ID not found.';
+          console.error('Laundry ID not found.');
+          this.submittingRejection = false;
+          return;
       }
-
-      // Clear cache and recalculate
+        if (!orderId || !itemId || !serviceId) {
+          this.error = 'Missing order or item information.';
+          console.error('Missing order or item information:', { orderId, itemId, serviceId });
+          this.submittingRejection = false;
+          return;
+        }
+        const payload = {
+          orderId: orderId,
+          itemId: itemId,
+          serviceId: serviceId,
+          itemName: this.selectedItem.itemName,
+          quantity: 1, // Always 1 for a single reduction
+          reason: formData.reason,
+          rejectedBy: rejectedBy,
+          rejectedAt: rejectedAt
+        };
+        console.log('Rejection payload:', payload);
+        this.submittingRejection = true;
+        this.rejectedItemService.postRejectedItemByLaundry(laundryId, payload).subscribe({
+          next: () => {
+            this.selectedItem!.quantity -= 1;
       this.itemsByServiceCache = {};
       this.calculateTotalAmount();
-      
       this.closeAdjustmentModal();
+            this.submittingRejection = false;
+            this.cdr.markForCheck();
+          },
+          error: (err) => {
+            this.error = 'Failed to reject item. Please try again.';
+            console.error('Rejection API error:', err);
+            this.submittingRejection = false;
       this.cdr.markForCheck();
+          }
+        });
+      }
+    } else {
+      this.submittingRejection = false;
     }
   }
 
   updateItemStatus(item: OrderItem, status: 'processing' | 'finished'): void {
     item.status = status;
+    this.saveStatusesToLocalStorage();
     this.cdr.markForCheck();
+  }
+
+  saveStatusesToLocalStorage(): void {
+    if (!this.orderDetails) return;
+    const orderId = this.orderDetails.orderId;
+    const statuses: { [itemId: string]: string } = {};
+    this.orderDetails.items.forEach(item => {
+      const status = item.status;
+      statuses[item.itemId] = (status === 'processing' || status === 'finished') ? status : 'processing';
+    });
+    localStorage.setItem(`processingOrderStatus-${orderId}`, JSON.stringify(statuses));
+  }
+
+  getSavedStatuses(orderId: string | null): { [itemId: string]: string } | null {
+    if (!orderId) return null;
+    const data = localStorage.getItem(`processingOrderStatus-${orderId}`);
+    if (data) {
+      try {
+        return JSON.parse(data);
+      } catch {
+        return null;
+      }
+    }
+    return null;
   }
 
   canFinishOrder(): boolean {
@@ -241,6 +316,8 @@ export class ProcessingOrderDetailsComponent implements OnInit, OnDestroy {
           if (this.orderDetails) {
             this.orderDetails.status = 'Finished Processing';
           }
+          // Clear saved statuses from localStorage
+          localStorage.removeItem(`processingOrderStatus-${orderId}`);
           this.processing = false;
           this.cdr.markForCheck();
           // Navigate back to processing orders after successful update

@@ -42,6 +42,16 @@ export class OrderService {
     );
   }
 
+  getFilteredOrders(laundryId: string): Observable<Order[]> {
+    return this.http.get<Order[]>(`${this.apiUrl}/${laundryId}/filtered-orders`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  getModifiedOrderDetailsById(laundryId: string, orderId: string, statusId: string): Observable<any> {
+    return this.http.get<any>(`${this.laundryApiUrl}/modified-order-details/${laundryId}/${orderId}/${statusId}`);
+  }
+  
   getOrderDetails(): Observable<Order[]> {
     return this.http.get<Order[]>(`${this.apiUrl}/details`).pipe(
       catchError(this.handleError)
