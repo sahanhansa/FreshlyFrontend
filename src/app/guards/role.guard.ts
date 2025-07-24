@@ -1,17 +1,20 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { CanActivate, Router, UrlTree } from '@angular/router';
 
-@Injectable({ providedIn: 'root' })
-export class RoleGuard implements CanActivate {
+@Injectable({
+  providedIn: 'root'
+})
+export class AuthGuard implements CanActivate {
+
   constructor(private router: Router) {}
 
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | UrlTree {
-    const expectedRole = route.data['role'];
-    const userRole = localStorage.getItem('role');
-    if (userRole === expectedRole) {
-      return true;
+  canActivate(): boolean | UrlTree {
+    const token = localStorage.getItem('token'); // or sessionStorage if you store it there
+    if (token) {
+      return true; // allow access
+    } else {
+      // redirect to login page
+      return this.router.createUrlTree(['/whoareyou']);
     }
-    // Redirect to landing page if not authorized
-    return this.router.parseUrl('/');
   }
 }

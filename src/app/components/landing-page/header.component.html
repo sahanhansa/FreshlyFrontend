@@ -10,36 +10,37 @@
       <li>
         <a 
           routerLink="/" 
-          routerLinkActive="font-semibold text-blue-500" 
-          [ngClass]="'px-3 py-2 transition-colors duration-200'"
+          routerLinkActive="active-link" 
+          [routerLinkActiveOptions]="{ exact: true }" 
+          class="nav-link"
         >Home</a>
       </li>
       <li>
         <a 
           routerLink="/services" 
-          routerLinkActive="font-semibold text-black" 
-          [ngClass]="'text-gray-700 hover:text-blue-500 px-3 py-2 transition-colors duration-200'"
+          routerLinkActive="active-link" 
+          class="nav-link"
         >Services</a>
       </li>
       <li>
         <a 
           routerLink="/about" 
-          routerLinkActive="font-semibold text-black" 
-          [ngClass]="'text-gray-700 hover:text-blue-500 px-3 py-2 transition-colors duration-200'"
+          routerLinkActive="active-link" 
+          class="nav-link"
         >About Us</a>
       </li>
       <li>
         <a 
           routerLink="/laundries" 
-          routerLinkActive="font-semibold text-black" 
-          [ngClass]="'text-gray-700 hover:text-blue-500 px-3 py-2 transition-colors duration-200'"
+          routerLinkActive="active-link" 
+          class="nav-link"
         >Laundries</a>
       </li>
       <li>
         <a 
           routerLink="/contact" 
-          routerLinkActive="font-semibold text-black" 
-          [ngClass]="'text-gray-700 hover:text-blue-500 px-3 py-2 transition-colors duration-200'"
+          routerLinkActive="active-link" 
+          class="nav-link"
         >Contact us</a>
       </li>
     </ul>

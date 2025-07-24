@@ -72,7 +72,6 @@
 
             <!-- Process Grid -->
             <div class="flex justify-center w-full">
-
                 <div class="grid grid-cols-1 gap-8 mt-8 md:grid-cols-2 lg:grid-cols-4 w-[80vw] m-0 mx-auto">
                     <div *ngFor="let step of processSteps; let i = index"
                         class="p-8 text-center transition-all duration-300 bg-white step-card rounded-3xl hover:scale-105 hover:-translate-y-2">
@@ -82,7 +81,6 @@
                             </span>
                             <h3 class="mb-4 text-2xl font-bold text-gray-800">{{ step.title }}</h3>
                             <div class="flex justify-center w-full">
-
                                 <div
                                     class="flex !items-center !justify-center w-24 h-24 mx-auto mb-4 overflow-hidden bg-gray-100 rounded-2xl">
                                     <img [src]="step.imagePath" [alt]="step.title + ' illustration'"
@@ -101,6 +99,9 @@
         <div class="container">
             <h5 class="text-center text-[#0099FF]">ABOUT US</h5>
             <h2 class="section-title">Get to know about us</h2>
+            <div *ngIf="error" class="text-red-500 text-center mb-4">
+                {{ error }}
+            </div>
             <div class="stats-grid">
                 <div class="stat-card" *ngFor="let stat of stats">
                     <div class="stat-number">{{ stat.number }}</div>
@@ -111,31 +112,7 @@
     </section>
 
     <!-- Laundries Section -->
-    <section class="laundries">
-        <div class="container">
-            <h5 class="text-center text-[#0099FF]">LAUNDRIES</h5>
-            <h2 class="section-title">From all around the country</h2>
-            <div class="laundry-grid">
-                <div class="laundry-card" *ngFor="let laundry of laundries; let i = index"
-                    [ngClass]="{'featured': i === 1}">
-                    <div class="laundry-header">
-                        <h3 class="laundry-name">{{ laundry.name }}</h3>
-                        <div class="laundry-location">{{ laundry.location }}</div>
-                    </div>
-                    <div class="laundry-features">
-                        <div class="feature" *ngFor="let feature of laundry.features">
-                            <span class="feature-icon">✓</span>
-                            <span class="feature-text">{{ feature }}</span>
-                        </div>
-                    </div>
-                    <button class="btn" [ngClass]="i === 1 ? 'btn-primary' : 'btn-outline'">
-                        {{ i === 1 ? 'Choose' : 'Details' }}
-                    </button>
-                </div>
-            </div>
-        </div>
-    </section>
-
+    
     <!-- CTA Section -->
     <section class="cta">
         <div class="container">
@@ -150,7 +127,7 @@
                 </div>
                 <div class="cta-text">
                     <h2 class="cta-title">Hard time deciding<br>how to get started?</h2>
-                    <button class="btn btn-white">Contact us</button>
+                    <button class="btn btn-white" (click)="goTo('contact', '')">Contact us</button>
                 </div>
             </div>
         </div>
@@ -168,7 +145,7 @@
                     <div class="benefit-text">{{ benefit.text }}</div>
                 </div>
             </div>
-            <button class="btn btn-primary">Register Now</button>
+            <button class="btn btn-primary" (click)="goTo('lun-signup', '')">Register Now</button>
         </div>
     </section>
 

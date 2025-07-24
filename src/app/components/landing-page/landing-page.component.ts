@@ -1,99 +1,101 @@
-import { Component } from '@angular/core';
-import { NgClass, NgFor, NgIf } from '@angular/common';
-import { FooterComponent } from '../shared/footer/footer.component';
-import {HeaderComponent} from './header.component'
-import { RouterModule } from '@angular/router';
+
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import {environment} from '../../../environments/environment'
+import {HeaderComponent} from './header.component'
+import {FooterComponent} from '../shared/footer/footer.component'
+
+interface TableCounts {
+  customerCount: number;
+  laundryCount: number;
+  orderCount: number;
+}
 
 @Component({
-    selector: 'app-landing-page',
-    templateUrl: './landing-page.component.html',
-    styleUrls: ['./landing-page.component.css'],
-    standalone: true,
-    imports: [NgClass, NgFor, NgIf, FooterComponent, RouterModule,HeaderComponent]
+  selector: 'app-landing-page',
+  standalone: true,
+  imports: [CommonModule, HeaderComponent, FooterComponent],
+  templateUrl: './landing-page.component.html',
+  styleUrls: ['./landing-page.component.css'],
 })
-export class LandingPageComponent {
-    // For animated bubbles in hero image
-    bubbles = Array(4);
-    
-    constructor(private router: Router) { }
-    
-    // Enhanced goTo method to handle both login and signup
-    goTo(link: string, action?: 'login' | 'signup') {
-        localStorage.setItem("Link", link);
-        
-        switch (link) {
-            case 'whoareyou':
-                if (action) {
-                    // Navigate with query parameter to specify action
-                    this.router.navigate(['/whoareyou'], { 
-                        queryParams: { action: action } 
-                    });
-                } else {
-                    // Default navigation (login)
-                    this.router.navigate(['/whoareyou']);
-                }
-                break;
-            default:
-                this.router.navigate(['/whoareyousign']);
-        }
-    }
+export class LandingPageComponent implements OnInit {
+  bubbles = Array(10).fill(0); // For soap bubbles animation
+  processSteps = [
+    {
+      stepLabel: 'STEP 01',
+      title: 'Schedule a Pickup',
+      imagePath: 'assets/images/landing/Address.png',
+    },
+    {
+      stepLabel: 'STEP 02',
+      title: 'We Collect',
+      imagePath: 'assets/images/landing/2.png',
+    },
+    {
+      stepLabel: 'STEP 03',
+      title: 'Wash & Dry',
+      imagePath: 'assets/images/landing/3.png',
+    },
+    {
+      stepLabel: 'STEP 04',
+      title: 'Delivered',
+      imagePath: 'assets/images/landing/4.png',
+    },
+  ];
+  stats = [
+    { number: '0', label: 'Happy Customers' },
+    { number: '0', label: 'Laundry Partners' },
+    { number: '0', label: 'Orders Completed' },
+  ];
+  laundries = [
+    {
+      name: 'CleanWave Laundry',
+      location: 'Colombo',
+      features: ['Express Wash', 'Eco-Friendly', 'Free Pickup'],
+    },
+    {
+      name: 'FreshSpin Cleaners',
+      location: 'Kandy',
+      features: ['Dry Cleaning', 'Ironing', '24/7 Service'],
+    },
+    {
+      name: 'PureWash Solutions',
+      location: 'Galle',
+      features: ['Delicate Care', 'Bulk Orders', 'Same-Day Delivery'],
+    },
+  ];
+  businessBenefits = [
+    { text: 'Reach more customers', iconClass: 'icon-reach' },
+    { text: 'Streamlined operations', iconClass: 'icon-streamline' },
+    { text: 'Grow your business', iconClass: 'icon-grow' },
+  ];
+  error: string | null = null;
 
-    // Separate methods for cleaner template usage
-    navigateToLogin() {
-        this.goTo('whoareyou', 'login');
-    }
+  constructor(private router: Router, private http: HttpClient) {}
 
-    navigateToSignup() {
-        this.goTo('whoareyou', 'signup');
-    }
+  ngOnInit(): void {
+    this.loadTableCounts();
+  }
 
-    // Steps for the process section
-    processSteps = [
-        {
-            stepNumber: 1,
-            title: 'Pickup',
-            imagePath: 'assets/images/landing/Address.png',
-            stepLabel: 'STEP 1'
-        },
-        {
-            stepNumber: 2,
-            title: 'Wash & Dry',
-            imagePath: 'assets/images/landing/2.png',
-            stepLabel: 'STEP 2'
-        },
-        {
-            stepNumber: 3,
-            title: 'Fold',
-            imagePath: 'assets/images/landing/3.png',
-            stepLabel: 'STEP 3'
-        },
-        {
-            stepNumber: 4,
-            title: 'Delivery',
-            imagePath: 'assets/images/landing/4.png',
-            stepLabel: 'STEP 4'
-        }
-    ];
+  loadTableCounts(): void {
+    this.http.get<TableCounts>(`${environment.apiUrl}/api/Basic/counts`).subscribe({
+      next: (data) => {
+        this.stats = [
+          { number: data.customerCount.toString(), label: 'Happy Customers' },
+          { number: data.laundryCount.toString(), label: 'Laundry Partners' },
+          { number: data.orderCount.toString(), label: 'Orders Completed' },
+        ];
+      },
+      error: (err) => {
+        this.error = 'Failed to load statistics';
+        console.error('Error fetching table counts:', err);
+      },
+    });
+  }
 
-    // Stats for about section
-    stats = [
-        { number: '10K+', label: 'Happy Customers' },
-        { number: '50+', label: 'Partner Laundries' },
-        { number: '100K+', label: 'Orders Completed' }
-    ];
-
-    // Laundries for laundries section
-    laundries = [
-        { name: 'Sparkle Cleaners', location: 'New York, NY', features: ['Eco-friendly', 'Express Service', 'Affordable'] },
-        { name: 'Quick Wash', location: 'Los Angeles, CA', features: ['24/7 Service', 'Premium Care', 'Pickup & Delivery'] },
-        { name: 'Fresh Start Laundry', location: 'Chicago, IL', features: ['Family Owned', 'Modern Machines', 'Great Reviews'] }
-    ];
-
-    // Business benefits
-    businessBenefits = [
-        { iconClass: 'pickup', text: 'Grow your customer base' },
-        { iconClass: 'wash', text: 'Easy order management' },
-        { iconClass: 'delivery', text: 'Increase your revenue' }
-    ];
+  goTo(route: string, queryParam: string): void {
+    this.router.navigate([route], { queryParams: { type: queryParam } });
+  }
 }

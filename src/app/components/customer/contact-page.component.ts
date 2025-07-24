@@ -1,17 +1,16 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HeaderComponent } from './header.component';
+import {NavbarComponent} from '../shared/navbar/navbar.component'
 import { FooterComponent } from '../shared/footer/footer.component';
 import emailjs from '@emailjs/browser';
 
 @Component({
   selector: 'app-contact-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, HeaderComponent, FooterComponent],
+  imports: [CommonModule, FormsModule, NavbarComponent, FooterComponent],
   template: `
     <div class="contact-container">
-      <app-header></app-header>
 
       <div class="header-section pt-[15vh]">
         <div class="logo">
@@ -239,7 +238,7 @@ import emailjs from '@emailjs/browser';
     }
   `]
 })
-export class ContactPageComponent {
+export class ContactPageComponent2 {
   formData = {
     name: '',
     email: '',
