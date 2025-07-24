@@ -74,6 +74,7 @@ export class ProcessingOrderDetailsComponent implements OnInit, OnDestroy {
   noteForm: FormGroup;
   private destroy$ = new Subject<void>();
   private itemsByServiceCache: { [key: string]: OrderItem[] } = {};
+  emailDetails: any = null; // Store fetched email details
 
   // Set this to the actual statusId for 'Finished Processing' from your backend
   private readonly finishedProcessingStatusId = 'b8dfb70c-5f5e-11f0-8064-0022481a06a0';
@@ -335,25 +336,154 @@ export class ProcessingOrderDetailsComponent implements OnInit, OnDestroy {
           }
           // Clear saved statuses from localStorage
           localStorage.removeItem(`processingOrderStatus-${orderId}`);
-          this.processing = false;
-          this.cdr.markForCheck();
-          // Navigate back to processing orders after successful update
-          this.router.navigate(['/processing-orders']);
+          // Fetch email details for invoice
+          this.orderService.getEmailDetails(laundryId, orderId).subscribe({
+            next: (details) => {
+              this.emailDetails = details;
+              this.processing = false;
+              this.cdr.markForCheck();
+              // Optionally show a success message
+            },
+            error: (err) => {
+              this.error = 'Order status updated, but failed to fetch email details.';
+              this.processing = false;
+              this.cdr.markForCheck();
+            }
+          });
         }
       });
   }
 
   sendInvoice(): void {
+    if (!this.emailDetails) {
+      this.error = 'Email details not loaded. Please finish processing first.';
+      this.cdr.markForCheck();
+      return;
+    }
     this.sendingInvoice = true;
     this.cdr.markForCheck();
-    
-    // Simulate invoice sending
-    setTimeout(() => {
-      this.sendingInvoice = false;
-      this.cdr.markForCheck();
-      // Here you would typically call your invoice API
-      console.log('Invoice sent for order:', this.orderDetails?.orderId);
-    }, 2000);
+
+    // Build the items table HTML
+    const itemsRows = this.emailDetails.items.map((item: any) => `
+      <tr>
+        <td>${item.itemName}</td>
+        <td>${item.garmentTypeName || ''}</td>
+        <td>${item.quantity}</td>
+        <td>Rs. ${item.price}</td>
+        <td>Rs. ${item.price * item.quantity}</td>
+      </tr>
+    `).join('');
+    const itemsTable = `
+      <table>
+        <thead>
+          <tr>
+            <th>Item Name</th>
+            <th>Garment Type</th>
+            <th>Quantity</th>
+            <th>Unit Price</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${itemsRows}
+        </tbody>
+      </table>
+    `;
+
+    // Email HTML template with placeholders replaced
+    const htmlBody = `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Order Details</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #333; padding: 20px; min-height: 100vh; }
+        .container { background: #fff; padding: 40px; border-radius: 16px; max-width: 700px; margin: 0 auto; box-shadow: 0 20px 40px rgba(0,0,0,0.1); position: relative; overflow: hidden; }
+        .container::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, #667eea, #764ba2); }
+        .header { text-align: center; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 2px solid #f0f0f0; }
+        h2 { color: #667eea; font-size: 32px; font-weight: 600; margin-bottom: 8px; }
+        .subtitle { color: #888; font-size: 16px; }
+        .order-info { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 40px; }
+        .info-card { background: #f8f9ff; padding: 20px; border-radius: 12px; border-left: 4px solid #667eea; transition: transform 0.2s ease; }
+        .info-card:hover { transform: translateY(-2px); }
+        .info-label { font-weight: 600; color: #555; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+        .info-value { font-size: 18px; color: #333; font-weight: 500; }
+        .total-amount { background: linear-gradient(135deg, #667eea, #764ba2); color: white; border-left: none; }
+        .total-amount .info-label { color: rgba(255,255,255,0.9); }
+        .total-amount .info-value { color: white; font-size: 24px; font-weight: 700; }
+        h3 { color: #333; font-size: 24px; margin-bottom: 20px; font-weight: 600; }
+        .items-section { margin-bottom: 40px; }
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        th { background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 16px; text-align: left; font-weight: 600; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; }
+        td { padding: 16px; text-align: left; border-bottom: 1px solid #f0f0f0; transition: background-color 0.2s ease; }
+        tr:hover td { background-color: #f8f9ff; }
+        tr:last-child td { border-bottom: none; }
+        .footer { margin-top: 40px; font-size: 14px; color: #888; text-align: center; padding-top: 20px; border-top: 1px solid #f0f0f0; }
+        .company-name { color: #667eea; font-weight: 600; }
+        @media (max-width: 768px) { .container { padding: 20px; margin: 10px; } .order-info { grid-template-columns: 1fr; } h2 { font-size: 24px; } table { font-size: 14px; } th, td { padding: 12px 8px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>Order Details</h2>
+            <p class="subtitle">Thank you for choosing our laundry service</p>
+        </div>
+        <div class="order-info">
+            <div class="info-card">
+                <div class="info-label">Customer Name</div>
+                <div class="info-value">${this.emailDetails.customerName}</div>
+            </div>
+            <div class="info-card">
+                <div class="info-label">Laundry Name</div>
+                <div class="info-value">${this.emailDetails.laundryName}</div>
+            </div>
+            <div class="info-card">
+                <div class="info-label">Order ID</div>
+                <div class="info-value">${this.emailDetails.orderId}</div>
+            </div>
+            <div class="info-card">
+                <div class="info-label">Laundry ID</div>
+                <div class="info-value">${this.emailDetails.laundryId}</div>
+            </div>
+            <div class="info-card total-amount">
+                <div class="info-label">Total Amount</div>
+                <div class="info-value">Rs. ${this.emailDetails.totalAmount}</div>
+            </div>
+        </div>
+        <div class="items-section">
+            <h3>Items</h3>
+            ${itemsTable}
+        </div>
+        <div class="footer">
+            &copy; 2024 <span class="company-name">Freshly</span>. All rights reserved.
+        </div>
+    </div>
+</body>
+</html>
+    `;
+
+    const payload = {
+      toEmail: this.emailDetails.customerEmail,
+      subject: `Invoice for Order #${this.emailDetails.orderId}`,
+      body: htmlBody,
+      isHtml: true,
+      emailDetails: this.emailDetails
+    };
+    this.orderService.sendInvoiceEmail(payload).subscribe({
+      next: () => {
+        this.sendingInvoice = false;
+        this.cdr.markForCheck();
+        this.router.navigate(['/processing-orders']);
+      },
+      error: (err) => {
+        this.error = 'Failed to send invoice email.';
+        this.sendingInvoice = false;
+        this.cdr.markForCheck();
+      }
+    });
   }
 
   calculateTotalAmount(): void {
