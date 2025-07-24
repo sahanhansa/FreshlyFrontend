@@ -12,6 +12,8 @@ import { CommonModule } from '@angular/common';
 import { environment } from '@environments/environment';
 import { DriverNavbarComponent } from "@app/components/driver/driver-navbar/driver-navbar.component";
 import { FooterComponent } from '@app/components/shared/footer/footer.component'; // Assuming you have a footer component
+import { ToastService } from '../../../services/driver/ToastService'
+
 @Component({
   selector: 'app-edit-details-form',
   templateUrl: './edit-details-form.component.html',
@@ -37,8 +39,7 @@ export class EditDetailsFormComponent implements OnInit {
   selectedImage: File | null = null;
   imagePreview: string | ArrayBuffer | null = null;
   profilePhoto: string = '';
-
-  constructor(private fb: FormBuilder, private http: HttpClient) {
+  constructor(private fb: FormBuilder, private http: HttpClient, private toastService: ToastService) {
     this.accountForm = this.fb.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
@@ -87,6 +88,7 @@ export class EditDetailsFormComponent implements OnInit {
         if (data.profilePhoto) {
           this.profilePhoto = data.profilePhoto;
         }
+        
       },
       error: (err) => {
         console.error('Failed to load account details:', err);
@@ -115,6 +117,7 @@ export class EditDetailsFormComponent implements OnInit {
         next: (res) => console.log('Account updated:', res),
         error: (err) => console.error(err),
       });
+       this.toastService.success('Saved!', 'Your changes have been saved.');
       alert('Account details updated successfully!');
       this.loadAccountDetails();
     } else {
