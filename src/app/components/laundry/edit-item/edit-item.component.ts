@@ -36,6 +36,7 @@ export class EditItemComponent implements OnInit {
   imageUrl: string = 'assets/default.png';
   loading: boolean = false;
   isSubmitting: boolean = false;
+  successMessage: string = '';
   
   categories: { id: string; name: string }[] = [
     { id: 'dc9b80ab-6671-11f0-9664-0022481a06a0', name: 'Ladies' },
@@ -63,7 +64,7 @@ export class EditItemComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router,
+    public router: Router,
     private itemService: ItemService,
     private dataService: DataService
   ) {}
@@ -224,9 +225,12 @@ export class EditItemComponent implements OnInit {
     console.log('Updating item with payload:', payload);
     this.itemService.updateItem(this.itemId, payload).subscribe({
       next: () => {
-        alert('Item updated successfully!');
+        this.successMessage = 'Item updated successfully!';
+        setTimeout(() => {
+          this.successMessage = '';
+          this.router.navigate(['/laundry-items']);
+        }, 1500);
         this.itemUpdated.emit(); // Emit event to notify parent
-        this.router.navigate(['/laundry-items']); // Navigate back to items page
         this.isSubmitting = false;
       },
       error: err => {
@@ -321,6 +325,10 @@ export class EditItemComponent implements OnInit {
 
   isAnyServiceIdLoading(): boolean {
     return Object.values(this.serviceIdLoading).some(arr => arr && arr.some(loading => loading));
+  }
+
+  goBackToItems() {
+    this.router.navigate(['/laundry-items']);
   }
 
 }

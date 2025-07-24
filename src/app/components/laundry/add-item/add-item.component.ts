@@ -27,6 +27,8 @@ export class AddItemComponent implements OnInit {
   services: ServiceWithPrice[] = [];
   isImageUploading: boolean = false;
   isSubmitting: boolean = false;
+  successMessage: string = '';
+  errorMessage: string = '';
 
   // --- Material Types State ---
   materialInput: string = '';
@@ -167,22 +169,34 @@ export class AddItemComponent implements OnInit {
 
   onSubmit() {
     if (!this.itemName || !this.categoryId || this.services.length === 0) {
-      alert('Please fill all required fields and add at least one service.');
+      this.errorMessage = 'Please fill all required fields and add at least one service.';
       return;
     }
 
     if (this.isImageUploading) {
-      alert('Please wait for image upload to complete.');
+      this.errorMessage = 'Please wait for image upload to complete.';
       return;
+    }
+
+    // Check all material services for valid serviceName and price > 0
+    for (const mat of this.materials) {
+      const services = this.materialServices[mat];
+      for (const service of services) {
+        if (!service.serviceName || service.price == null || service.price <= 0) {
+          this.errorMessage = 'All services must have a name and a price greater than zero.';
+          return;
+        }
+      }
     }
 
     for (const service of this.services) {
       if (!service.serviceId) {
-        alert('Please wait for service IDs to be loaded or try again.');
+        this.errorMessage = 'Please wait for service IDs to be loaded or try again.';
         return;
       }
     }
 
+    this.errorMessage = '';
     this.isSubmitting = true;
     // Step 1: Resolve garmentTypeId for each material
     const materialIdObservables = this.materials.map(mat =>
@@ -278,7 +292,11 @@ export class AddItemComponent implements OnInit {
         console.log('Sending payload:', payload);
         this.itemService.addItem(payload).subscribe({
           next: () => {
-            alert('Item added successfully!');
+            this.successMessage = 'Item added successfully!';
+            setTimeout(() => {
+              this.successMessage = '';
+              this.goBackToItems();
+            }, 1500);
             this.resetForm();
             this.itemAdded.emit(); // Emit event to refresh item grid
             this.isSubmitting = false;
@@ -312,5 +330,9 @@ export class AddItemComponent implements OnInit {
     if (fileInput) {
       fileInput.value = '';
     }
+  }
+
+  goBackToItems() {
+    window.location.href = '/laundry-items';
   }
 }

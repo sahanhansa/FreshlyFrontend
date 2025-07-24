@@ -7,11 +7,12 @@ import { SearchBarComponent } from '../../../components/shared/search-bar/search
 import { PaginationComponent } from '../../../components/laundry/pagination/pagination.component'; 
 import { FooterComponent } from '../../../components/shared/footer/footer.component'; 
 import { RouterModule } from '@angular/router'; 
+import { NavbarComponent } from '../../../components/shared/navbar/navbar.component';
 
 @Component({
   selector: 'app-completed-orders',
   standalone: true,
-  imports: [CommonModule, RouterModule, HttpClientModule, PaginationComponent, SearchBarComponent, FooterComponent],
+  imports: [CommonModule, RouterModule, HttpClientModule, PaginationComponent, SearchBarComponent, FooterComponent, NavbarComponent],
   templateUrl: './completed-orders.component.html'
 })
 export class CompletedOrdersComponent implements OnInit {

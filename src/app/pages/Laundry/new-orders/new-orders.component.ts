@@ -8,11 +8,12 @@ import { SearchBarComponent } from '../../../components/shared/search-bar/search
 import { PaginationComponent } from '../../../components/laundry/pagination/pagination.component'; 
 import { FooterComponent } from '../../../components/shared/footer/footer.component'; 
 import { RouterModule } from '@angular/router'; 
+import { NavbarComponent } from '../../../components/shared/navbar/navbar.component';
 
 @Component({
   selector: 'app-new-orders', 
   standalone: true, 
-  imports: [CommonModule, RouterModule, HttpClientModule, PaginationComponent, SearchBarComponent, FooterComponent], 
+  imports: [CommonModule, RouterModule, HttpClientModule, PaginationComponent, SearchBarComponent, FooterComponent, NavbarComponent], 
   templateUrl: './new-orders.component.html'
 })
 export class NewOrdersComponent implements OnInit { // The component class that implements OnInit lifecycle hook
