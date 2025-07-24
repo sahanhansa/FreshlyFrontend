@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { DriverNavbarComponent } from "@app/components/driver/driver-navbar/driver-navbar.component";
 import { FooterComponent } from "@app/components/shared/footer/footer.component";
+import { Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 
 export interface DriverReportDto {
   totalPickups: number;
@@ -19,7 +21,7 @@ export interface DriverReportDto {
 @Component({
   selector: 'app-reports',
   standalone: true,
-  imports: [CommonModule, DriverNavbarComponent, FooterComponent],
+  imports: [CommonModule, DriverNavbarComponent, FooterComponent, FormsModule],
   templateUrl: './reports.component.html',
   styleUrl: './reports.component.css'
 })
@@ -27,39 +29,39 @@ export class ReportsComponent implements OnInit {
   driverId: string | null = localStorage.getItem('userId'); // Or hardcode
   reportData: DriverReportDto | null = null;
   totalRevenue: number | null = null;
-
+  filterOrder: string = '';
   isLoadingReport = false;
   isLoadingRevenue = false;
-
-  constructor(private http: HttpClient) {}
-
+  isLoadingExport = false;
+  errorMessage: string = '';
+  constructor(private http: HttpClient, private router: Router) { }
   ngOnInit(): void {
     this.fetchDriverReport();
     this.fetchTotalRevenue();
   }
 
   fetchDriverReport(): void {
-  if (!this.driverId) {
-    console.error('Driver ID not found in localStorage');
-    return;
-  }
-
-  this.isLoadingReport = true;
-
-  const apiUrl = `http://localhost:5027/api/driver/DriverReportDash/${this.driverId}`;
-
-  this.http.get<DriverReportDto>(apiUrl).subscribe({
-    next: (data) => {
-      this.reportData = data;
-    },
-    error: (err) => {
-      console.error('Error fetching driver report:', err);
-    },
-    complete: () => {
-      this.isLoadingReport = false;
+    if (!this.driverId) {
+      console.error('Driver ID not found in localStorage');
+      return;
     }
-  });
-}
+
+    this.isLoadingReport = true;
+
+    const apiUrl = `http://localhost:5027/api/driver/DriverReportDash/${this.driverId}`;
+
+    this.http.get<DriverReportDto>(apiUrl).subscribe({
+      next: (data) => {
+        this.reportData = data;
+      },
+      error: (err) => {
+        console.error('Error fetching driver report:', err);
+      },
+      complete: () => {
+        this.isLoadingReport = false;
+      }
+    });
+  }
 
 
   fetchTotalRevenue(): void {
@@ -83,5 +85,36 @@ export class ReportsComponent implements OnInit {
         this.isLoadingRevenue = false;
       }
     });
+  }
+
+  goToTasks(): void {
+    this.router.navigate(['/tasks']);
+  }
+
+  exportReport(): void {
+    this.isLoadingExport = true;
+    if (!this.filterOrder) {
+      this.errorMessage = 'Please Enter the OrderId to export the report.';
+      this.isLoadingExport = false;
+      return;
+    }
+
+    const apiUrl = `http://localhost:5027/api/driver/generate-reports/${this.filterOrder}`;
+    
+    this.http.post(apiUrl, null, { responseType: 'blob' }).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `report-${this.filterOrder}.pdf`;
+        a.click();
+        window.URL.revokeObjectURL(url);
+        this.isLoadingExport = false;
+      },
+      error: (err) => {
+        console.error('Error exporting report:', err);
+      }
+    });
+
   }
 }

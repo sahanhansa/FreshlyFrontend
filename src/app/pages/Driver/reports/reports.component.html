@@ -9,7 +9,7 @@
     </div>
 
     <!-- Filters -->
-    <div class="bg-white rounded-xl shadow-sm border p-6 mb-10">
+    <div class="bg-white rounded-xl shadow-sm border p-6 mb-10 justify-between flex items-center gap-4">
       <div class="flex flex-wrap gap-4 items-center">
         <span class="text-sm font-semibold text-gray-700 flex items-center gap-2">
           <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -17,21 +17,40 @@
             <line x1="12" y1="8" x2="12" y2="12"></line>
             <line x1="12" y1="16" x2="12.01" y2="16"></line>
           </svg>
-          Filters:
+          Filter Order:
         </span>
 
+        <!-- Replaced dropdown with input type date -->
+        <input [(ngModel)]="filterOrder" type="text" placeholder="Enter Order ID"
+          class="border border-gray-300 w-full rounded-md px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition" />
+        <div *ngIf="errorMessage" class="text-red-600 text-sm mt-2">
+          {{ errorMessage }}
+        </div>
+        <button (click)="exportReport()" [disabled]="isLoadingExport"
+          class="bg-blue-600 text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-blue-700 shadow transition flex items-center gap-2">
 
-        <select
-          class="border border-gray-300 rounded-md px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
-          <option>Today</option>
-          <option selected>This Week</option>
-          <option>This Month</option>
-          <option>This Quarter</option>
-        </select>
+          <ng-container *ngIf="isLoadingExport; else defaultText">
+            <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
+              viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z">
+              </path>
+            </svg>
+            Exporting...
+          </ng-container>
 
-        <button
+          <ng-template #defaultText>
+            Export Report
+          </ng-template>
+
+        </button>
+
+      </div>
+
+      <div>
+        <button (click)="goToTasks()"
           class="bg-blue-600 text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-blue-700 shadow transition">
-          Export Report
+          Go To Completed Tasks
         </button>
       </div>
     </div>
