@@ -9,6 +9,7 @@ export interface AdminStats {
 export interface AdminPanelMember {
   id: number;
   name: string;
+  fullName?: string;
   role: string;
   image: string;
   email: string;
@@ -29,6 +30,7 @@ export interface Driver {
   rating: number;
   location: string;
   email: string;
+  accountStatus?: string;
 }
 
 export interface PendingAction {

@@ -183,6 +183,7 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit {
         this.adminPanel = admins.map((admin: any) => ({
           id: admin.id || admin.adminId || '',
           name: admin.name || admin.username || '',
+          fullName: ((admin.firstName || '') + (admin.lastName ? ' ' + admin.lastName : '')).trim(),
           role: admin.role || '',
           image: admin.laundryImageLink || admin.image || 'assets/images/admin.jpg',
           email: admin.email || ''
