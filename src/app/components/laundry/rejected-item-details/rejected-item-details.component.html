@@ -1,13 +1,124 @@
-<div *ngIf="rejectedItem" class="p-6 bg-white rounded shadow-md max-w-xl mx-auto mt-8">
-  <h2 class="text-2xl font-bold mb-4">Rejected Item Details</h2>
-  <div class="mb-2"><strong>Item Name:</strong> {{ rejectedItem.itemName }}</div>
-  <div class="mb-2"><strong>Quantity:</strong> {{ rejectedItem.quantity }}</div>
-  <div class="mb-2"><strong>Reason:</strong> {{ rejectedItem.reason }}</div>
-  <div class="mb-2"><strong>Rejected By:</strong> {{ rejectedItem.rejectedBy }}</div>
-  <div class="mb-2"><strong>Rejected At:</strong> {{ rejectedItem.rejectedAt | date:'medium' }}</div>
-  <div class="mb-2"><strong>Order ID:</strong> {{ rejectedItem.orderId }}</div>
-  <div class="mb-2"><strong>Item ID:</strong> {{ rejectedItem.itemId }}</div>
-  <div class="mb-2"><strong>Service ID:</strong> {{ rejectedItem.serviceId }}</div>
-  <div class="mb-2"><strong>Laundry ID:</strong> {{ rejectedItem.laundryId }}</div>
+<div class="min-h-screen flex flex-col">
+  <!-- Loading State -->
+  <div *ngIf="loading" class="flex-1 flex items-center justify-center">
+    <div class="text-center">
+      <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      <p class="mt-2 text-gray-600">Loading order details...</p>
+    </div>
+  </div>
+
+  <!-- Order Details Content -->
+  <div *ngIf="!loading && orderDetails" class="flex-1 p-6">
+    <div class="max-w-6xl mx-auto">
+      <!-- Header -->
+      <div class="mb-6">
+        <h1 class="text-3xl font-bold text-gray-900">Order Summary</h1>
+      </div>
+
+      <!-- Order Summary Card -->
+      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <h2 class="text-xl font-semibold text-gray-900 mb-4">Order Information</h2>
+        <div class="space-y-3">
+          <div>
+            <span class="text-gray-600 font-medium">Order ID:</span>
+            <span class="ml-2 text-lg font-semibold text-blue-600">{{ orderDetails.orderIdFormatted || orderDetails.orderId }}</span>
+          </div>
+          <div>
+            <span class="text-gray-600 font-medium">Order Date:</span>
+            <span class="ml-2">{{ orderDetails.orderDateFormatted || orderDetails.orderDate }}</span>
+          </div>
+          <div *ngIf="orderDetails.customer">
+            <span class="text-gray-600 font-medium">Customer:</span>
+            <span class="ml-2">{{ orderDetails.customer.customerFName }} {{ orderDetails.customer.customerLName }}</span>
+          </div>
+          <div>
+            <span class="text-gray-600 font-medium">Status:</span>
+            <span class="ml-2 px-3 py-1 rounded-full text-sm font-semibold"
+                  [ngClass]="{
+                    'bg-green-100 text-green-800': orderDetails.status === 'delivered',
+                    'bg-yellow-100 text-yellow-800': orderDetails.status === 'Processing in Laundry' || orderDetails.status === 'processing',
+                    'bg-blue-200 text-blue-800': orderDetails.status === 'Finished Processing' || orderDetails.status === 'finished',
+                    'bg-orange-100 text-orange-800': orderDetails.status === 'order picked up' || orderDetails.status === 'picked up',
+                    'bg-purple-100 text-purple-800': orderDetails.status === 'out for delivery' || orderDetails.status === 'delivery',
+                    'bg-gray-100 text-gray-800': orderDetails.status === 'order placed' || orderDetails.status === 'placed'
+                  }">
+              {{ orderDetails.status }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Services and Items -->
+      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <h2 class="text-xl font-semibold text-gray-900 mb-4">Services & Items</h2>
+        <div class="space-y-8">
+          <div *ngFor="let item of orderDetails.items" class="border rounded-lg p-6 transition-all duration-200 hover:shadow-md"
+               [ngClass]="{'bg-red-100 border-red-400': rejectedItem && item.itemId === rejectedItem.itemId, 'bg-gray-50': !rejectedItem || item.itemId !== rejectedItem.itemId}">
+            <div class="grid grid-cols-1 lg:grid-cols-5 gap-4 items-center">
+              <div>
+                <span class="text-gray-600 font-medium">Item Name:</span>
+                <p class="font-semibold">{{ item.itemName }}</p>
+              </div>
+              <div>
+                <span class="text-gray-600 font-medium">Quantity:</span>
+                <p class="font-semibold">{{ item.quantity || item.count }}</p>
+              </div>
+              <div>
+                <span class="text-gray-600 font-medium">Unit Price:</span>
+                <p class="font-semibold">Rs. {{ item.price || item.pricePerItem }}</p>
+              </div>
+              <div>
+                <span class="text-gray-600 font-medium">Total:</span>
+                <p class="font-semibold">Rs. {{ (item.price || item.pricePerItem) * (item.quantity || item.count) }}</p>
+              </div>
+              <div *ngIf="rejectedItem && item.itemId === rejectedItem.itemId" class="col-span-1 lg:col-span-5">
+                <span class="text-red-600 font-bold">[Rejected: {{ rejectedItem.reason }}]</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Modified Items Section -->
+          <div *ngIf="orderDetails.modifiedItems && orderDetails.modifiedItems.length > 0">
+            <h3 class="text-lg font-semibold text-red-700 mt-8 mb-4">Rejected Items</h3>
+            <div class="space-y-4">
+              <div *ngFor="let mItem of orderDetails.modifiedItems" class="border rounded-lg p-6 bg-red-100 border-red-400 transition-all duration-200 hover:shadow-md">
+                <div class="grid grid-cols-1 lg:grid-cols-5 gap-4 items-center">
+                  <div>
+                    <span class="text-gray-600 font-medium">Item Name:</span>
+                    <p class="font-semibold">{{ mItem.itemName }}</p>
+                  </div>
+                  <div>
+                    <span class="text-gray-600 font-medium">Quantity:</span>
+                    <p class="font-semibold">{{ mItem.quantity }}</p>
+                  </div>
+                  <div>
+                    <span class="text-gray-600 font-medium">Unit Price:</span>
+                    <p class="font-semibold">Rs. {{ mItem.price }}</p>
+                  </div>
+                  <div>
+                    <span class="text-gray-600 font-medium">Service:</span>
+                    <p class="font-semibold">{{ mItem.serviceName }}</p>
+                  </div>
+                  <!-- No label needed in the last column -->
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- End Modified Items Section -->
+        </div>
+      </div>
+
+      <!-- Total Amount -->
+      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <div class="flex justify-between items-center">
+          <h2 class="text-xl font-semibold text-gray-900">Total Amount</h2>
+          <span class="text-2xl font-bold text-blue-600">Rs. {{ orderDetails.totalAmount }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && !orderDetails" class="text-center mt-8">No details found.</div>
+
+  <app-footer></app-footer>
 </div>
-<div *ngIf="!rejectedItem" class="text-center mt-8">Loading...</div> 

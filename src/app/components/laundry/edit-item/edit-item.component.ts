@@ -206,7 +206,7 @@ export class EditItemComponent implements OnInit {
     for (const gt of garmentTypesPayload) {
       for (const service of gt.services) {
         if (!service.serviceId) {
-          alert('Please wait for service IDs to be loaded or try again.');
+          // Instead of alert, just return and rely on button disabling/loading indicator
           return;
         }
       }
@@ -317,6 +317,10 @@ export class EditItemComponent implements OnInit {
   onAddService(mat: string, serviceSelect: HTMLSelectElement) {
     this.addServiceToGarment(mat, serviceSelect.value);
     serviceSelect.value = '';
+  }
+
+  isAnyServiceIdLoading(): boolean {
+    return Object.values(this.serviceIdLoading).some(arr => arr && arr.some(loading => loading));
   }
 
 }

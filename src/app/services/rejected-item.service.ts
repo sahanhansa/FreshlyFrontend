@@ -31,6 +31,7 @@ export class RejectedItemService {
       );
   }
 
+
   // Get all rejected items
   getRejectedItems(): Observable<RejectedItem[]> {
     return this.http.get<RejectedItem[]>(this.apiUrl);
@@ -51,8 +52,18 @@ export class RejectedItemService {
     return this.http.get<RejectedItem[]>(`${this.apiUrl}/${laundryId}`);
   }
 
+  // Get all rejected items for a laundry using the new endpoint
+  getRejectedItemsByLaundryV2(laundryId: string) {
+    return this.http.get<RejectedItem[]>(`${this.apiUrl}/laundry/${laundryId}`);
+  }
+
   // Post a new rejected item
   postRejectedItem(rejectedItem: RejectedItem): Observable<RejectedItem> {
     return this.http.post<RejectedItem>(`${this.apiUrl}/${rejectedItem.rejectedItemId}`, rejectedItem);
   }
-}
+
+  // Post a new rejected item to /api/RejectedItem/{laundryId}
+  postRejectedItemByLaundry(laundryId: string, rejectedItem: any) {
+    return this.http.post(`${this.apiUrl}/${laundryId}`, rejectedItem);
+  }
+} 

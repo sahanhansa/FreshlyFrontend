@@ -42,7 +42,7 @@
       [date]="order.date"
       [totalAmount]="order.totalAmount"
       [items]="order.items"
-      (payNow)="initiatePayment(order.orderId)"
+      (payNow)="initiatePayment(order.orderId, order.totalAmount,order.items)"
     ></app-to-pay-order-card>
   </div>
 </div>

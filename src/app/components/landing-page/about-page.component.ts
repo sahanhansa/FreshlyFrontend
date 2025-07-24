@@ -1,29 +1,40 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
+import {environment} from '../../../environments/environment';
 import { HeaderComponent } from './header.component';
 import { FooterComponent } from '../shared/footer/footer.component';
 
+interface TableCounts {
+  customerCount: number;
+  laundryCount: number;
+  orderCount: number;
+}
+
 @Component({
   selector: 'app-about-page',
+  standalone: true,
   imports: [CommonModule, HeaderComponent, FooterComponent],
   template: `
-  <div class="about-container">
-  <app-header></app-header>
+    <div class="about-container">
+      <app-header></app-header>
       <div class="header-section pt-[15vh]">
-        <div class="logo"> <img src="assets/images/freshly-logo.png" alt="Freshly Logo" class="logo-img"
-          style="height:60px;width:auto;object-fit:contain;" /></div>
+        <div class="logo">
+          <img src="assets/images/freshly-logo.png" alt="Freshly Logo" class="logo-img"
+            style="height:60px;width:auto;object-fit:contain;" />
+        </div>
         <h2>About Us</h2>
         <p class="intro">Freshly is a comprehensive laundry management system that connects customers, laundries, and drivers to provide seamless pickup and delivery laundry services.</p>
       </div>
 
       <div class="content-section">
         <div class="mission-section">
-          <h3 className="text-center">Our Mission</h3>
+          <h3 class="text-center">Our Mission</h3>
           <p>We believe that laundry shouldn't be a hassle. Our mission is to simplify laundry management by connecting customers with trusted laundries through our efficient pickup and delivery system, making clean clothes accessible and convenient for everyone.</p>
         </div>
 
         <div class="values-section">
-          <h3 className="text-center">How It Works</h3>
+          <h3 class="text-center">How It Works</h3>
           <div class="values-grid">
             <div class="value-item">
               <h4>👤 Customer Registration</h4>
@@ -45,31 +56,20 @@ import { FooterComponent } from '../shared/footer/footer.component';
         </div>
 
         <div class="stats-section">
-          <h3 className="text-center">Our Numbers</h3>
+          <h3 class="text-center">Our Numbers</h3>
+          <div *ngIf="error" class="text-red-500 text-center mb-4">
+            {{ error }}
+          </div>
           <div class="stats-grid">
-            <div class="stat-item">
-              <div class="stat-number">5K+</div>
-              <div class="stat-label">Active Customers</div>
-            </div>
-            <div class="stat-item">
-              <div class="stat-number">200+</div>
-              <div class="stat-label">Partner Laundries</div>
-            </div>
-            <div class="stat-item">
-              <div class="stat-number">150+</div>
-              <div class="stat-label">Active Drivers</div>
-            </div>
-            <div class="stat-item">
-              <div class="stat-number">25K+</div>
-              <div class="stat-label">Orders Completed</div>
+            <div class="stat-item" *ngFor="let stat of stats">
+              <div class="stat-number">{{ stat.number }}</div>
+              <div class="stat-label">{{ stat.label }}</div>
             </div>
           </div>
         </div>
 
-       
-
         <div class="features-section">
-          <h3 className="text-center">Key Features</h3>
+          <h3 class="text-center">Key Features</h3>
           <div class="features-list">
             <div class="feature-item">
               <h4>📋 Customer Registration & Booking</h4>
@@ -98,8 +98,8 @@ import { FooterComponent } from '../shared/footer/footer.component';
           </div>
         </div>
       </div>
-    </div>
-    <app-footer></app-footer>
+      </div>
+      <app-footer></app-footer>
   `,
   styles: [`
     .about-container {
@@ -109,6 +109,7 @@ import { FooterComponent } from '../shared/footer/footer.component';
       padding: 50px;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
       border: 1px solid #e9ecef;
+      background: linear-gradient(to bottom right, #f8fafc, #e2e8f0);
     }
 
     .header-section {
@@ -146,7 +147,7 @@ import { FooterComponent } from '../shared/footer/footer.component';
       transform: translateX(-50%);
       width: 60px;
       height: 4px;
-      background: #667eea;
+      background: #0A84FF;
       border-radius: 2px;
     }
 
@@ -187,7 +188,13 @@ import { FooterComponent } from '../shared/footer/footer.component';
       padding: 20px;
       background: #f8f9fa;
       border-radius: 8px;
-      border-left: 4px solid #667eea;
+      border-left: 4px solid #0A84FF;
+      transition: all 0.3s ease;
+    }
+
+    .value-item:hover {
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      transform: translateY(-5px);
     }
 
     .value-item h4 {
@@ -214,12 +221,18 @@ import { FooterComponent } from '../shared/footer/footer.component';
       background: #fff;
       border: 2px solid #e9ecef;
       border-radius: 10px;
+      transition: all 0.3s ease;
+    }
+
+    .stat-item:hover {
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      transform: translateY(-5px);
     }
 
     .stat-number {
       font-size: 2.2rem;
       font-weight: bold;
-      color: #667eea;
+      color: #0A84FF;
       margin-bottom: 5px;
     }
 
@@ -228,52 +241,6 @@ import { FooterComponent } from '../shared/footer/footer.component';
       font-size: 0.9rem;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-    }
-
-    .team-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 30px;
-      margin: 30px 0;
-    }
-
-    .team-member {
-      text-align: center;
-      padding: 25px;
-      background: #f8f9fa;
-      border-radius: 10px;
-    }
-
-    .member-avatar {
-      width: 80px;
-      height: 80px;
-      background: #667eea;
-      border-radius: 50%;
-      margin: 0 auto 15px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      color: white;
-      font-weight: bold;
-    }
-
-    .team-member h4 {
-      color: #2c3e50;
-      margin-bottom: 5px;
-    }
-
-    .member-title {
-      color: #667eea;
-      font-weight: 600;
-      margin-bottom: 10px;
-      font-size: 0.9rem;
-    }
-
-    .team-member p:last-child {
-      color: #666;
-      font-size: 0.9rem;
-      line-height: 1.5;
     }
 
     .features-section {
@@ -292,7 +259,13 @@ import { FooterComponent } from '../shared/footer/footer.component';
       background: #fff;
       border: 1px solid #e9ecef;
       border-radius: 8px;
-      border-left: 4px solid #667eea;
+      border-left: 4px solid #0A84FF;
+      transition: all 0.3s ease;
+    }
+
+    .feature-item:hover {
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      transform: translateY(-5px);
     }
 
     .feature-item h4 {
@@ -318,7 +291,6 @@ import { FooterComponent } from '../shared/footer/footer.component';
 
       .values-grid,
       .stats-grid,
-      .team-grid,
       .features-list {
         grid-template-columns: 1fr;
       }
@@ -332,6 +304,34 @@ import { FooterComponent } from '../shared/footer/footer.component';
       }
     }
   `],
-  standalone: true
 })
-export class AboutPageComponent {}
+export class AboutPageComponent implements OnInit {
+  stats = [
+    { number: '0', label: 'Active Customers' },
+    { number: '0', label: 'Partner Laundries' },
+    { number: '0', label: 'Orders Completed' },
+  ];
+  error: string | null = null;
+
+  constructor(private http: HttpClient) {}
+
+  ngOnInit(): void {
+    this.loadTableCounts();
+  }
+
+  loadTableCounts(): void {
+    this.http.get<TableCounts>(`${environment.apiUrl}/api/Basic/counts`).subscribe({
+      next: (data) => {
+        this.stats = [
+          { number: data.customerCount.toString(), label: 'Active Customers' },
+          { number: data.laundryCount.toString(), label: 'Partner Laundries' },
+          { number: data.orderCount.toString(), label: 'Orders Completed' },
+        ];
+      },
+      error: (err) => {
+        this.error = 'Failed to load statistics';
+        console.error('Error fetching table counts:', err);
+      },
+    });
+  }
+}
