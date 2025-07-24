@@ -4,7 +4,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { OrderService } from '../../../services/order.service';
 import { Order } from '../../../models/order.model';
 import { SearchBarComponent } from '@app/components/laundry/search-bar/search-bar.component';
-import { PaginationComponent } from '../../../components/shared/pagination/pagination.component'; 
+import { PaginationComponent } from '../../../components/laundry/pagination/pagination.component'; 
 import { RouterModule, Router } from '@angular/router';
 import { NavbarComponent } from '@app/components/shared/navbar/navbar.component';
 import { FooterComponent } from '../../../components/shared/footer/footer.component';
