@@ -1,0 +1,36 @@
+<div class="p-6 max-w-3xl mx-auto">
+  <!-- Title -->
+  <h2 class="text-2xl font-bold mb-6 text-center">Laundry Insights</h2>
+
+  <!-- Download and Year Picker Row -->
+  <div class="flex justify-between items-center mb-6">
+    <label class="font-semibold">Year:
+      <select [(ngModel)]="selectedYear" (change)="onYearChange(selectedYear)" class="ml-2 border rounded px-2 py-1">
+        <option *ngFor="let y of years" [value]="y">{{ y }}</option>
+      </select>
+    </label>
+    <div class="flex items-center gap-2">
+      <button (click)="downloadInsightsReport()" [disabled]="isDownloading" class="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-60">
+        {{ isDownloading ? 'Downloading...' : 'Download Insights Report (PDF)' }}
+      </button>
+      <span *ngIf="downloadError" class="text-red-600 text-sm">{{ downloadError }}</span>
+    </div>
+  </div>
+
+  <!-- Chart Type Toggle -->
+  <div class="flex justify-center mb-6">
+    <button (click)="setChartType('monthly')" [class.bg-blue-500]="chartType==='monthly'" class="px-4 py-1 rounded text-white bg-gray-400 mr-2">Monthly</button>
+    <button (click)="setChartType('yearly')" [class.bg-blue-500]="chartType==='yearly'" class="px-4 py-1 rounded text-white bg-gray-400">Yearly</button>
+  </div>
+
+  <!-- Orders Chart -->
+  <div class="bg-gray-50 border rounded p-4 mb-6 flex flex-col items-center">
+    <div class="font-semibold mb-2">Orders</div>
+    <canvas #ordersChart width="600" height="250"></canvas>
+  </div>
+  <!-- Revenue Chart -->
+  <div class="bg-gray-50 border rounded p-4 mb-6 flex flex-col items-center">
+    <div class="font-semibold mb-2">Revenue</div>
+    <canvas #revenueChart width="600" height="250"></canvas>
+  </div>
+</div> 
