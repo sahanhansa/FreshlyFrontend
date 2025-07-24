@@ -42,6 +42,14 @@
     </div>
 
     <!-- Table Container -->
+    <div class="flex items-center mb-2">
+      <button (click)="toggleSort()" class="flex items-center px-4 py-2 rounded-full border bg-gray-100 hover:bg-blue-100 text-sm font-medium ml-2 mb-2">
+        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M3 7h18M3 12h12M3 17h6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Sort: New to Older
+      </button>
+    </div>
     <div *ngIf="!loading && !error && orders.length > 0" class="overflow-x-auto mt-2 max-w-full sm:max-w-3xl md:max-w-4xl lg:max-w-6xl mx-auto px-2 sm:px-0">
 
       <!-- Table -->

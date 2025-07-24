@@ -1,6 +1,6 @@
 <div class="max-w-4xl mx-auto px-4 py-2 space-y-6" *ngIf="feedbacks.length">
   <div
-    *ngFor="let feedback of feedbacks; let i = index"
+    *ngFor="let feedback of paginatedFeedbacks; let i = index"
     class="border rounded-xl p-4 bg-white shadow-sm"
   >
     <h3 class="font-semibold text-lg text-black">
@@ -44,3 +44,9 @@
     </div>
   </div>
 </div>
+<app-pagination
+  *ngIf="feedbacks.length > 0"
+  [totalItems]="feedbacks.length"
+  (pageChange)="onPageChange($event)"
+  class="mt-4"
+></app-pagination>

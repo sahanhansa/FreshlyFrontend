@@ -18,6 +18,8 @@ export class processingOrdersComponent implements OnInit { // The component clas
   orders: Order[] = []; // Declare an array to store the orders fetched from the backend
   loading = false; // Flag to indicate if data is still being loaded
   error: string | null = null; // Variable to store any error message
+  isSorted = false;
+  originalOrders: Order[] = [];
 
   constructor(private orderService: OrderService) {} // Inject the OrderService to interact with the backend API
 
@@ -56,6 +58,22 @@ export class processingOrdersComponent implements OnInit { // The component clas
         console.error('Error loading processing orders:', err); // Log the error for debugging
       }
     });
+  }
+
+  toggleSort() {
+    this.isSorted = !this.isSorted;
+    if (this.isSorted) {
+      const laundryId = localStorage.getItem('laundryId');
+      if (!laundryId) return;
+      this.orderService.getSortedOrderIds(laundryId).subscribe(sortedIds => {
+        this.originalOrders = [...this.orders];
+        this.orders = sortedIds
+          .map(id => this.orders.find(order => order.orderId === id))
+          .filter(order => !!order) as Order[];
+      });
+    } else {
+      this.orders = [...this.originalOrders];
+    }
   }
 
   // Method to format the current date into a readable format

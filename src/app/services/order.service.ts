@@ -110,6 +110,14 @@ export class OrderService {
     );
   }
 
+  /**
+   * Get sorted order IDs for a laundry
+   */
+  getSortedOrderIds(laundryId: string): Observable<string[]> {
+    return this.http.get<{ orderIds: string[] }>(`${this.apiUrl}/${laundryId}/sorted-order-ids`)
+      .pipe(map(res => res.orderIds));
+  }
+
   private handleError(error: HttpErrorResponse) {
     console.error('OrderService Error:', error);
     

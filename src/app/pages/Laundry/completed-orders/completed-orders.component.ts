@@ -18,6 +18,8 @@ export class CompletedOrdersComponent implements OnInit {
   orders: Order[] = [];
   loading = false;
   error: string | null = null;
+  isSorted = false;
+  originalOrders: Order[] = [];
 
   constructor(private orderService: OrderService) {}
 
@@ -53,6 +55,22 @@ export class CompletedOrdersComponent implements OnInit {
         console.error('Error loading completed orders:', err);
       }
     });
+  }
+
+  toggleSort() {
+    this.isSorted = !this.isSorted;
+    if (this.isSorted) {
+      const laundryId = localStorage.getItem('laundryId');
+      if (!laundryId) return;
+      this.orderService.getSortedOrderIds(laundryId).subscribe(sortedIds => {
+        this.originalOrders = [...this.orders];
+        this.orders = sortedIds
+          .map(id => this.orders.find(order => order.orderId === id))
+          .filter(order => !!order) as Order[];
+      });
+    } else {
+      this.orders = [...this.originalOrders];
+    }
   }
 
   getFormattedDate(): string {
