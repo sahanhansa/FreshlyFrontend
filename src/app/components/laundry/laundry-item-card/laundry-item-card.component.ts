@@ -35,6 +35,7 @@ export class LaundryItemCardComponent implements OnInit {
   @Input() item!: any;
   
   isDropdownOpen: boolean = false;
+  isMaterialDropdownOpen: boolean = false;
   selectedServiceId: string = '';
   selectedGarmentTypeId: string = '';
   garmentTypes: GarmentType[] = [];
@@ -85,11 +86,29 @@ export class LaundryItemCardComponent implements OnInit {
 
   toggleDropdown(): void {
     this.isDropdownOpen = !this.isDropdownOpen;
+    // Close material dropdown when service dropdown is opened
+    if (this.isDropdownOpen) {
+      this.isMaterialDropdownOpen = false;
+    }
+  }
+
+  toggleMaterialDropdown(): void {
+    this.isMaterialDropdownOpen = !this.isMaterialDropdownOpen;
+    // Close service dropdown when material dropdown is opened
+    if (this.isMaterialDropdownOpen) {
+      this.isDropdownOpen = false;
+    }
   }
 
   selectService(serviceId: string): void {
     this.selectedServiceId = serviceId;
     this.isDropdownOpen = false;
+  }
+
+  selectGarmentType(garmentTypeId: string): void {
+    this.selectedGarmentTypeId = garmentTypeId;
+    this.isMaterialDropdownOpen = false;
+    this.onGarmentTypeChange(garmentTypeId);
   }
 
   getCurrentPrice(): number {
@@ -100,5 +119,10 @@ export class LaundryItemCardComponent implements OnInit {
   getSelectedServiceName(): string {
     const selectedService = this.services?.find(s => s.serviceId === this.selectedServiceId);
     return selectedService?.serviceName || 'Select Service';
+  }
+
+  getSelectedGarmentTypeName(): string {
+    const selectedGarmentType = this.garmentTypes?.find(gt => gt.garmentTypeId === this.selectedGarmentTypeId);
+    return selectedGarmentType?.garmentTypeName || 'Select Material';
   }
 }
