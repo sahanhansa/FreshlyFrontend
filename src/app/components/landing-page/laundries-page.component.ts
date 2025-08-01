@@ -3,13 +3,13 @@ import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { HeaderComponent } from './header.component';
 import { FooterComponent } from '../shared/footer/footer.component';
+import { environment } from '../../../environments/environment';
 
 interface Laundry {
   id: number;
-  name: string;
-  address: string;
-  contact: string;
-  imageUrl: string;
+  laundryName: string;
+  city: string;
+  laundryImageLink: string;
 }
 
 @Component({
@@ -30,11 +30,10 @@ interface Laundry {
       <div class="content-section">
         <div class="laundries-grid">
           <div *ngFor="let laundry of laundries" class="laundry-item">
-            <img [src]="laundry.imageUrl" [alt]="laundry.name" class="laundry-img" />
+            <img [src]="laundry.laundryImageLink" [alt]="laundry.laundryName" class="laundry-img" />
             <div class="laundry-details">
-              <h4>{{ laundry.name }}</h4>
-              <p><strong>Address:</strong> {{ laundry.address }}</p>
-              <p><strong>Contact:</strong> {{ laundry.contact }}</p>
+              <h4>{{ laundry.laundryName }}</h4>
+              <p>{{ laundry.city }}</p>
             </div>
           </div>
         </div>
@@ -50,6 +49,7 @@ interface Laundry {
       padding: 50px;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
       border: 1px solid #e9ecef;
+      background: linear-gradient(to bottom right, #f8fafc, #e2e8f0);
     }
 
     .header-section {
@@ -87,7 +87,7 @@ interface Laundry {
       transform: translateX(-50%);
       width: 60px;
       height: 4px;
-      background: #667eea;
+      background: #0A84FF;
       border-radius: 2px;
     }
 
@@ -114,11 +114,17 @@ interface Laundry {
       padding: 20px;
       background: #f8f9fa;
       border-radius: 8px;
-      border-left: 4px solid #667eea;
+      border-left: 4px solid #0A84FF;
       display: flex;
       flex-direction: column;
       align-items: center;
       text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .laundry-item:hover {
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      transform: translateY(-5px);
     }
 
     .laundry-img {
@@ -139,10 +145,6 @@ interface Laundry {
       color: #666;
       font-size: 0.95rem;
       margin: 5px 0;
-    }
-
-    .laundry-details p strong {
-      color: #2c3e50;
     }
 
     @media (max-width: 768px) {
@@ -175,7 +177,7 @@ export class LaundriesPageComponent implements OnInit {
   constructor(private http: HttpClient) {}
 
   ngOnInit() {
-    this.http.get<Laundry[]>('/api/laundries').subscribe({
+    this.http.get<Laundry[]>(`${environment.apiUrl}/api/Basic/laundries-with-image`).subscribe({
       next: (data) => {
         this.laundries = data;
       },

@@ -20,7 +20,7 @@ export class PaymentMethodPopupComponent {
   onConfirm(): void {
     this.paymentSelected.emit({
       method: this.selectedPaymentMethod,
-      orderId: this.orderId
+      orderId: this.orderId,
     });
   }
 
