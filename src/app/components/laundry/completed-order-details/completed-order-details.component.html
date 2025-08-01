@@ -45,7 +45,9 @@
           </div>
           <div>
             <span class="text-gray-600 font-medium">Status:</span>
-            <span class="ml-2 text-blue-600">{{ orderDetails.status }}</span>
+            <span class="ml-2 px-3 py-1 rounded-full text-sm font-semibold" [ngClass]="getStatusBadgeClass(orderDetails.status)">
+              {{ getDisplayStatus(orderDetails.status) }}
+            </span>
           </div>
         </div>
         <div *ngIf="customerContactNumbers && customerContactNumbers.length > 0" class="mt-6">

@@ -75,6 +75,8 @@ export class ProcessingOrderDetailsComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   private itemsByServiceCache: { [key: string]: OrderItem[] } = {};
   emailDetails: any = null; // Store fetched email details
+  orderFinishedProcessing = false; // Track if order has been finished processing
+  processingSuccessMessage: string | null = null; // Success message after finishing processing
 
   // Set this to the actual statusId for 'Finished Processing' from your backend
   private readonly finishedProcessingStatusId = 'b8dfb70c-5f5e-11f0-8064-0022481a06a0';
@@ -96,6 +98,14 @@ export class ProcessingOrderDetailsComponent implements OnInit, OnDestroy {
     this.noteForm = this.fb.group({
       note: ['', Validators.required]
     });
+  }
+
+  // Method to clear success message after a delay
+  private clearSuccessMessage(): void {
+    setTimeout(() => {
+      this.processingSuccessMessage = null;
+      this.cdr.markForCheck();
+    }, 5000); // Clear after 5 seconds
   }
 
   ngOnInit(): void {
@@ -122,6 +132,8 @@ export class ProcessingOrderDetailsComponent implements OnInit, OnDestroy {
   loadOrderDetails(): void {
     this.loading = true;
     this.error = null;
+    this.processingSuccessMessage = null; // Clear success message when loading new details
+    this.orderFinishedProcessing = false; // Reset the finished processing flag
     this.cdr.markForCheck();
 
     const laundryId = localStorage.getItem('laundryId');
@@ -141,6 +153,7 @@ export class ProcessingOrderDetailsComponent implements OnInit, OnDestroy {
         catchError(err => {
           this.error = 'Failed to load order details. Please try again.';
           this.loading = false;
+          this.processingSuccessMessage = null; // Clear success message on error
           this.cdr.markForCheck();
           console.error('Error loading order details:', err);
           return of(null);
@@ -324,6 +337,7 @@ export class ProcessingOrderDetailsComponent implements OnInit, OnDestroy {
         catchError(err => {
           this.error = 'Failed to update order status. Please try again.';
           this.processing = false;
+          this.processingSuccessMessage = null; // Clear success message on error
           this.cdr.markForCheck();
           console.error('Error updating order status:', err);
           return of(null);
@@ -334,6 +348,8 @@ export class ProcessingOrderDetailsComponent implements OnInit, OnDestroy {
           if (this.orderDetails) {
             this.orderDetails.status = 'Finished Processing';
           }
+          // Set the flag to indicate order has been finished processing
+          this.orderFinishedProcessing = true;
           // Clear saved statuses from localStorage
           localStorage.removeItem(`processingOrderStatus-${orderId}`);
           // Fetch email details for invoice
@@ -341,12 +357,15 @@ export class ProcessingOrderDetailsComponent implements OnInit, OnDestroy {
             next: (details) => {
               this.emailDetails = details;
               this.processing = false;
+              this.processingSuccessMessage = 'Order processing completed successfully! You can now send the invoice.';
               this.cdr.markForCheck();
+              this.clearSuccessMessage(); // Clear the message after 5 seconds
               // Optionally show a success message
             },
             error: (err) => {
               this.error = 'Order status updated, but failed to fetch email details.';
               this.processing = false;
+              this.processingSuccessMessage = null; // Clear success message on error
               this.cdr.markForCheck();
             }
           });
@@ -475,6 +494,7 @@ export class ProcessingOrderDetailsComponent implements OnInit, OnDestroy {
     this.orderService.sendInvoiceEmail(payload).subscribe({
       next: () => {
         this.sendingInvoice = false;
+        this.processingSuccessMessage = null; // Clear success message when invoice is sent
         this.cdr.markForCheck();
         this.router.navigate(['/processing-orders']);
       },
@@ -560,5 +580,37 @@ export class ProcessingOrderDetailsComponent implements OnInit, OnDestroy {
       localStorage.setItem(`orderId: ${orderId}`, note);
       this.closeNoteModal();
     }
+  }
+
+  // Method to get status badge styling
+  getStatusBadgeClass(status: string): string {
+    const statusLower = status?.toLowerCase();
+    switch (statusLower) {
+      case 'completed':
+      case 'delivered':
+        return 'bg-green-100 text-green-800';
+      case 'finished processing':
+        return 'bg-blue-200 text-blue-800';
+      case 'processing in laundry':
+        return 'bg-yellow-100 text-yellow-800';
+      case 'order picked up':
+      case 'picked up':
+        return 'bg-orange-100 text-orange-800';
+      case 'out for delivery':
+        return 'bg-purple-100 text-purple-800';
+      case 'order placed':
+        return 'bg-gray-100 text-gray-800';
+      default:
+        return 'bg-gray-200 text-gray-600';
+    }
+  }
+
+  // Method to get display status text
+  getDisplayStatus(status: string): string {
+    const statusLower = status?.toLowerCase();
+    if (statusLower === 'order picked up' || statusLower === 'picked up') {
+      return 'New';
+    }
+    return status;
   }
 } 

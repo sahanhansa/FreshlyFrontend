@@ -17,6 +17,19 @@
     <!-- Search Bar -->
     <app-search-bar class="max-w-full sm:max-w-3xl md:max-w-4xl lg:max-w-6xl mx-auto px-2 sm:px-0 mb-2"></app-search-bar>
 
+    <!-- Highlighted Order Message -->
+    <div *ngIf="highlightedOrderId" class="max-w-full sm:max-w-3xl md:max-w-4xl lg:max-w-6xl mx-auto px-2 sm:px-0 mb-4">
+      <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-center">
+        <svg class="w-5 h-5 text-blue-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <div>
+          <p class="text-blue-800 font-medium">Order #{{ highlightedOrderId }} has been started for processing!</p>
+          <p class="text-blue-600 text-sm">This order will remain highlighted for easy identification. Click "View More" to see details.</p>
+        </div>
+      </div>
+    </div>
+
     <!-- Loading State -->
     <div *ngIf="loading" class="text-center py-4">
       <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
@@ -55,8 +68,13 @@
         </thead>
         <tbody>
           <tr *ngFor="let order of orders; let i = index"
-         [ngClass]="{ 'bg-white': i % 2 === 0, 'bg-[#D0F6FF]': i % 2 === 1 }"
-         class="h-12">
+         [ngClass]="{ 
+           'bg-white': i % 2 === 0 && !isOrderHighlighted(order.orderId), 
+           'bg-[#D0F6FF]': i % 2 === 1 && !isOrderHighlighted(order.orderId),
+           'bg-blue-100 border-l-4 border-blue-500 shadow-md': isOrderHighlighted(order.orderId)
+         }"
+         class="h-12 transition-all duration-300"
+         [class.animate-pulse]="isOrderHighlighted(order.orderId)">
           <td class="px-4 sm:px-6 py-2 sm:py-3 font-semibold text-black text-sm sm:text-base">
               #{{ order.orderId }}
             </td>
@@ -65,7 +83,8 @@
             </td>
             <td class="px-4 sm:px-6 py-2 sm:py-3">
               <button [routerLink]="['/processing-order-details', order.orderId, order.status.statusID]"
-                      class="flex items-center gap-2 text-black border border-black rounded-full px-3 sm:px-4 py-1 text-xs sm:text-sm hover:bg-gray-500 hover:text-white transition">
+                      (click)="onOrderClick(order.orderId)"
+                      class="flex items-center gap-2 text-black border border-black rounded-full px-3 sm:px-4 py-1 text-xs sm:text-sm hover:bg-blue-600 hover:text-white transition">
                 <img src="assets/eye.png" class="w-3 sm:w-4 h-3 sm:h-4" alt="View Icon" />
                 View More
               </button>

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { OrderService } from '../../../services/order.service'; // Import OrderService for fetching orders
@@ -15,17 +15,67 @@ import { NavbarComponent } from '../../../components/shared/navbar/navbar.compon
   imports: [CommonModule, RouterModule, HttpClientModule, PaginationComponent, SearchBarComponent, FooterComponent, NavbarComponent], 
   templateUrl: './processing-orders.component.html'
 })
-export class processingOrdersComponent implements OnInit { // The component class that implements OnInit lifecycle hook
+export class processingOrdersComponent implements OnInit, OnDestroy { // The component class that implements OnInit lifecycle hook
   orders: Order[] = []; // Declare an array to store the orders fetched from the backend
   loading = false; // Flag to indicate if data is still being loaded
   error: string | null = null; // Variable to store any error message
   isSorted = false;
   originalOrders: Order[] = [];
+  highlightedOrderId: string | null = null;
 
   constructor(private orderService: OrderService) {} // Inject the OrderService to interact with the backend API
 
   ngOnInit(): void {
     this.loadProcessingOrders(); // Fetch the new orders when the component is initialized
+    this.checkHighlightedOrder();
+  }
+
+  ngOnDestroy(): void {
+    // Clear highlighted order data when component is destroyed
+    localStorage.removeItem('highlightedOrderId');
+    localStorage.removeItem('highlightedOrderTimestamp');
+  }
+
+  // Method to check for highlighted order and manage highlighting
+  checkHighlightedOrder(): void {
+    const highlightedOrderId = localStorage.getItem('highlightedOrderId');
+    const highlightedOrderTimestamp = localStorage.getItem('highlightedOrderTimestamp');
+    
+    if (highlightedOrderId && highlightedOrderTimestamp) {
+      const timestamp = parseInt(highlightedOrderTimestamp);
+      const currentTime = Date.now();
+      const timeDiff = currentTime - timestamp;
+      
+      // Highlight for 30 seconds (30000ms) instead of 10 seconds
+      if (timeDiff < 30000) {
+        this.highlightedOrderId = highlightedOrderId;
+        // Clear the highlight after 30 seconds
+        setTimeout(() => {
+          this.highlightedOrderId = null;
+          localStorage.removeItem('highlightedOrderId');
+          localStorage.removeItem('highlightedOrderTimestamp');
+        }, 30000 - timeDiff);
+      } else {
+        // Clear old highlighted order data
+        localStorage.removeItem('highlightedOrderId');
+        localStorage.removeItem('highlightedOrderTimestamp');
+      }
+    }
+  }
+
+  // Method to check if an order should be highlighted
+  isOrderHighlighted(orderId: string): boolean {
+    return this.highlightedOrderId === orderId;
+  }
+
+  // Method to clear highlight when user clicks on a different order
+  onOrderClick(orderId: string): void {
+    // If clicking on a different order, clear the highlight
+    if (this.highlightedOrderId && this.highlightedOrderId !== orderId) {
+      this.highlightedOrderId = null;
+      localStorage.removeItem('highlightedOrderId');
+      localStorage.removeItem('highlightedOrderTimestamp');
+    }
   }
 
   // Method to fetch regular orders from the backend

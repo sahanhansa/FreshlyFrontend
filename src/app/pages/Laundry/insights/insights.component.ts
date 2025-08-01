@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import Chart from 'chart.js/auto';
+import { environment } from '../../../../environments/environment';
+import { NavbarComponent } from "@app/components/shared/navbar/navbar.component";
 
 interface MonthlyStatsResponse {
   laundryId: string;
@@ -22,7 +24,7 @@ interface YearlyStatsResponse {
 @Component({
   selector: 'app-insights',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, NavbarComponent],
   templateUrl: './insights.component.html',
   styleUrls: ['./insights.component.css']
 })
@@ -78,7 +80,7 @@ export class InsightsComponent implements AfterViewInit, OnDestroy {
     const headers = new HttpHeaders({ 'Authorization': `Bearer ${token}` });
     let completed = 0;
     for (let m = 1; m <= 12; m++) {
-      const url = `/api/Profile/stats/monthly/${this.laundryId}?year=${this.selectedYear}&month=${m}`;
+      const url = `${environment.apiUrl}/api/Profile/stats/monthly/${this.laundryId}?year=${this.selectedYear}&month=${m}`;
       this.http.get<MonthlyStatsResponse>(url, { headers }).subscribe(data => {
         this.monthlyStatsArr[m-1] = data;
         completed++;
@@ -97,7 +99,7 @@ export class InsightsComponent implements AfterViewInit, OnDestroy {
     let completed = 0;
     for (let i = 0; i < 6; i++) {
       const year = this.years[i];
-      const url = `/api/Profile/stats/yearly/${this.laundryId}?year=${year}`;
+      const url = `${environment.apiUrl}/api/Profile/stats/yearly/${this.laundryId}?year=${year}`;
       this.http.get<YearlyStatsResponse>(url, { headers }).subscribe(data => {
         this.yearlyStatsArr[i] = data;
         completed++;
@@ -112,7 +114,7 @@ export class InsightsComponent implements AfterViewInit, OnDestroy {
     if (!this.laundryId) return;
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders({ 'Authorization': `Bearer ${token}` });
-    const url = `/api/Profile/stats/monthly/${this.laundryId}?year=${this.selectedYear}&month=${this.selectedMonth}`;
+    const url = `${environment.apiUrl}/api/Profile/stats/monthly/${this.laundryId}?year=${this.selectedYear}&month=${this.selectedMonth}`;
     this.http.get<MonthlyStatsResponse>(url, { headers }).subscribe(data => {
       this.monthlyStats = data;
       if (this.chartType === 'monthly') {
@@ -125,7 +127,7 @@ export class InsightsComponent implements AfterViewInit, OnDestroy {
     if (!this.laundryId) return;
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders({ 'Authorization': `Bearer ${token}` });
-    const url = `/api/Profile/stats/yearly/${this.laundryId}?year=${this.selectedYear}`;
+    const url = `${environment.apiUrl}/api/Profile/stats/yearly/${this.laundryId}?year=${this.selectedYear}`;
     this.http.get<YearlyStatsResponse>(url, { headers }).subscribe(data => {
       this.yearlyStats = data;
       if (this.chartType === 'yearly') {
@@ -254,7 +256,7 @@ export class InsightsComponent implements AfterViewInit, OnDestroy {
     this.downloadError = null;
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders({ 'Authorization': `Bearer ${token}` });
-    const url = `/api/Profile/insights-report/${this.laundryId}?year=${this.selectedYear}`;
+    const url = `${environment.apiUrl}/api/Profile/insights-report/${this.laundryId}?year=${this.selectedYear}`;
     this.http.get(url, { headers, responseType: 'blob' }).subscribe({
       next: (blob) => {
         const a = document.createElement('a');

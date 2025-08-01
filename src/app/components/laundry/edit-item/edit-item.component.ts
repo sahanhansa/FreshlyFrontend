@@ -54,6 +54,10 @@ export class EditItemComponent implements OnInit {
   newServiceInput: { [garmentTypeId: string]: string } = {};
   serviceIdLoading: { [garmentTypeId: string]: boolean[] } = {};
 
+  // --- Custom Dropdown State ---
+  isCategoryDropdownOpen: boolean = false;
+  isServiceDropdownOpen: { [garmentTypeId: string]: boolean } = {};
+
   item = {
     name: '',
     description: '',
@@ -76,6 +80,40 @@ export class EditItemComponent implements OnInit {
     } else {
       console.error('No itemId provided to EditItemComponent');
     }
+  }
+
+  // Method to toggle category dropdown
+  toggleCategoryDropdown(): void {
+    this.isCategoryDropdownOpen = !this.isCategoryDropdownOpen;
+  }
+
+  // Method to select category
+  selectCategory(category: { id: string; name: string }): void {
+    this.item.categoryId = category.id;
+    this.item.categoryName = category.name;
+    this.isCategoryDropdownOpen = false;
+    this.onCategoryChange();
+  }
+
+  // Method to get selected category display text
+  getSelectedCategoryText(): string {
+    return this.item.categoryName || 'Select Category';
+  }
+
+  // Method to toggle service dropdown for a specific material
+  toggleServiceDropdown(garmentTypeId: string): void {
+    this.isServiceDropdownOpen[garmentTypeId] = !this.isServiceDropdownOpen[garmentTypeId];
+  }
+
+  // Method to select service for a specific material
+  selectService(garmentTypeId: string, serviceName: string): void {
+    this.addServiceToGarment(garmentTypeId, serviceName);
+    this.isServiceDropdownOpen[garmentTypeId] = false;
+  }
+
+  // Method to get selected service display text for a specific material
+  getSelectedServiceText(garmentTypeId: string): string {
+    return 'Select service...';
   }
 
   loadItem() {

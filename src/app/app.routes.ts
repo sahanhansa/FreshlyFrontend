@@ -61,7 +61,7 @@ import {WhoAreYouComponentSign} from './components/whoareyou/whoareyou.component
 import { ReportsComponent } from './pages/Driver/reports/reports.component';
 
 import { AuthHelperService } from './services/auth-helper.service';
-import { LaundryInsightsPage } from './pages/Laundry/insights/insights.page';
+import { InsightsComponent } from './pages/Laundry/insights/insights.component';
 
 // Define the application's routes
 export const routes: Routes = [
@@ -224,7 +224,7 @@ export const routes: Routes = [
      {path: 'rejected-items-details/:laundryId/:orderId/:statusId', component: RejectedItemDetailsComponent },
     
       {path: 'laundry-contactus', component:ContactUsComponent },
-      { path: 'laundry/insights', component: LaundryInsightsPage }
+      { path: 'laundry-insights', component: InsightsComponent }
     ]
 
 

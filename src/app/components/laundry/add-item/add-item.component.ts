@@ -16,7 +16,7 @@ import { catchError, switchMap, map } from 'rxjs/operators';
 export class AddItemComponent implements OnInit {
   @Output() itemAdded = new EventEmitter<void>();
   
-  categories: string[] = ['ladies', 'gents', 'kids', 'other'];
+  categories: string[] = ['Ladies', 'Gents', 'Kids', 'Other'];
   availableServices: string[] = ['Regular Wash', 'Dry Clean', 'Press Only','Hand Wash'];
 
   imageUrl: string = '';
@@ -35,6 +35,9 @@ export class AddItemComponent implements OnInit {
   materials: string[] = [];
   materialServices: { [material: string]: ServiceWithPrice[] } = {};
 
+  // --- Custom Dropdown State ---
+  isCategoryDropdownOpen: boolean = false;
+
   constructor(
     private dataService: DataService, 
     private itemService: ItemService
@@ -47,6 +50,23 @@ export class AddItemComponent implements OnInit {
     }
     
     this.addService();
+  }
+
+  // Method to toggle category dropdown
+  toggleCategoryDropdown(): void {
+    this.isCategoryDropdownOpen = !this.isCategoryDropdownOpen;
+  }
+
+  // Method to select category
+  selectCategory(category: string): void {
+    this.selectedCategory = category;
+    this.isCategoryDropdownOpen = false;
+    this.onCategoryChange();
+  }
+
+  // Method to get selected category display text
+  getSelectedCategoryText(): string {
+    return this.selectedCategory || 'Select Category';
   }
 
   onCategoryChange() {

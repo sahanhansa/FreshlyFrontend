@@ -44,6 +44,7 @@ export class ItemGridComponent implements OnInit {
   sortAZ: boolean = false;
   selectedService: string = 'All';
   availableServices: string[] = [];
+  isServiceDropdownOpen: boolean = false;
 
   get filteredItems(): ItemResponse[] {
     let items = this.allItems;
@@ -124,6 +125,16 @@ export class ItemGridComponent implements OnInit {
   }
   setService(service: string) {
     this.selectedService = service;
+    this.currentPage = 1;
+  }
+
+  toggleServiceDropdown(): void {
+    this.isServiceDropdownOpen = !this.isServiceDropdownOpen;
+  }
+
+  selectService(service: string): void {
+    this.selectedService = service;
+    this.isServiceDropdownOpen = false;
     this.currentPage = 1;
   }
 }

@@ -62,6 +62,38 @@ export class CompletedOrderDetailsComponent implements OnInit {
     this.loadOrderDetails();
   }
 
+  // Method to get status badge styling
+  getStatusBadgeClass(status: string): string {
+    const statusLower = status?.toLowerCase();
+    switch (statusLower) {
+      case 'completed':
+      case 'delivered':
+        return 'bg-green-100 text-green-800';
+      case 'finished processing':
+        return 'bg-blue-200 text-blue-800';
+      case 'processing in laundry':
+        return 'bg-yellow-100 text-yellow-800';
+      case 'order picked up':
+      case 'picked up':
+        return 'bg-orange-100 text-orange-800';
+      case 'out for delivery':
+        return 'bg-purple-100 text-purple-800';
+      case 'order placed':
+        return 'bg-gray-100 text-gray-800';
+      default:
+        return 'bg-gray-200 text-gray-600';
+    }
+  }
+
+  // Method to get display status text
+  getDisplayStatus(status: string): string {
+    const statusLower = status?.toLowerCase();
+    if (statusLower === 'order picked up' || statusLower === 'picked up') {
+      return 'New';
+    }
+    return status;
+  }
+
   loadOrderDetails(): void {
     this.loading = true;
     this.error = null;
