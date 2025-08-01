@@ -53,16 +53,14 @@ import {  RejectedItemDetailsComponent } from './components/laundry/rejected-ite
 import { RejectedItemsComponent}  from './pages/Laundry/rejected-items/rejected-items.component';
 import { ContactUsComponent } from './pages/Laundry/contact-us/contact-us.component';
 import {MultiStepFormComponent} from './components/laundry/lau-sign/multi-step-form.component';
-
 import { RequestResetComponent } from './pages/request-reset/request-reset.component';
 import { VerifyResetComponent } from './pages/verify-reset/verify-reset.component';
 import {WhoAreYouComponentSign} from './components/whoareyou/whoareyou.component';
-
 import { ReportsComponent } from './pages/Driver/reports/reports.component';
-
 import { AuthHelperService } from './services/auth-helper.service';
 import {ContactPageComponent2} from './components/customer/contact-page.component';
-import {AuthGuard} from './guards/role.guard'
+import {AuthGuard} from './guards/role.guard';
+import {InsightsComponent} from './pages/laundry/insights/insights.component';
 
 // Define the application's routes
 export const routes: Routes = [
