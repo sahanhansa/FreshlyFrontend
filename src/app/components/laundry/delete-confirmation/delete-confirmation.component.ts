@@ -14,10 +14,16 @@ export class DeleteConfirmationComponent {
   @Input() isDeleting: boolean = false;
   @Output() confirmed = new EventEmitter<string>();
   @Output() cancelled = new EventEmitter<void>();
+  successMessage: string = '';
 
   constructor(private router: Router) {}
 
   onConfirm() {
+    this.successMessage = 'Item deleted successfully!';
+    setTimeout(() => {
+      this.successMessage = '';
+      this.router.navigate(['/laundry-items']);
+    }, 1500);
     this.confirmed.emit(this.itemId);
   }
 

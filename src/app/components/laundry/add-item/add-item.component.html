@@ -1,3 +1,16 @@
+<div *ngIf="successMessage" class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-30">
+  <div class="bg-white border-2 border-green-400 text-green-700 px-10 py-8 rounded-2xl shadow-2xl flex flex-col items-center animate-bounce-in">
+    <div class="flex items-center justify-center mb-4">
+      <svg class="w-16 h-16 text-green-500 animate-pulse" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="#e6ffed"/>
+        <path stroke-linecap="round" stroke-linejoin="round" d="M8 12l3 3 5-5" stroke-width="3" />
+      </svg>
+    </div>
+    <div class="text-2xl font-bold mb-2 text-green-700">Success!</div>
+    <div class="text-lg mb-4 text-gray-700">{{ successMessage }}</div>
+    <button (click)="goBackToItems()" class="mt-2 px-8 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition text-lg font-semibold shadow">Go Back to Items</button>
+  </div>
+</div>
 <div class="min-h-screen flex items-center justify-center p-6">
   <div class="w-full max-w-3xl bg-blue-100 rounded-xl p-6 shadow-lg">
     <div class="flex flex-col items-center mb-6">
@@ -14,6 +27,9 @@
 
       <!-- Form -->
       <form (submit)="onSubmit()" class="bg-white p-6 rounded-xl w-full space-y-4 mt-5">
+        <div *ngIf="errorMessage" class="mb-4 px-4 py-3 rounded-lg bg-red-100 border border-red-400 text-red-700 text-center font-semibold">
+          {{ errorMessage }}
+        </div>
         <div>
           <label class="block text-gray-600">Item Name</label>
           <input type="text" [(ngModel)]="itemName" name="itemName" required class="w-full mt-1 p-2 border rounded-md" />
@@ -26,11 +42,36 @@
 
         <div>
           <label class="block text-gray-600">Category</label>
-          <select [(ngModel)]="selectedCategory" name="selectedCategory" (change)="onCategoryChange()" required class="w-full mt-1 p-2 border rounded-md bg-white cursor-pointer">
-            <option *ngFor="let category of categories" [value]="category">
-              {{ category }}
-            </option>
-          </select>
+          <div class="relative">
+            <button 
+              type="button"
+              (click)="toggleCategoryDropdown()"
+              class="w-full mt-1 p-2 border rounded-md bg-white cursor-pointer flex items-center justify-between hover:bg-gray-50 transition duration-200"
+            >
+              <span class="flex-1 text-left">{{ getSelectedCategoryText() }}</span>
+              <span class="flex items-center h-full ml-2">
+                <svg class="w-4 h-4 transition-transform duration-200" [class.rotate-180]="isCategoryDropdownOpen" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+              </span>
+            </button>
+            <!-- Category Dropdown Menu -->
+            <div 
+              *ngIf="isCategoryDropdownOpen"
+              class="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-md shadow-md z-10 min-w-full w-full"
+            >
+              <button 
+                *ngFor="let category of categories"
+                (click)="selectCategory(category)"
+                class="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 first:rounded-t-md last:rounded-b-md transition"
+                [class.bg-blue-50]="selectedCategory === category"
+                [class.text-blue-600]="selectedCategory === category"
+                [class.font-medium]="selectedCategory === category"
+              >
+                {{ category | titlecase }}
+              </button>
+            </div>
+          </div>
         </div>
 
         <!-- Material Types Input -->
@@ -41,7 +82,7 @@
             <button type="button" (click)="addMaterial()" class="bg-gray-200 px-4 py-2 rounded-md text-gray-700">Add</button>
           </div>
           <div class="mt-2">
-            <span class="block text-gray-500 text-sm">Enter the material types for this item (e.g., cotton, silk, polyester)</span>
+            <span class="block text-gray-500 text-sm">Enter the material types for this item (e.g., cotton)</span>
           </div>
           <!-- Selected Materials Chips -->
           <div class="mt-2 flex flex-wrap gap-2">
@@ -64,7 +105,7 @@
             <div class="space-y-3 mt-4">
               <div *ngFor="let service of materialServices[mat]; let i = index" class="flex gap-2 items-center">
                 <span class="flex-1">{{ service.serviceName }}</span>
-                <input type="number" [(ngModel)]="materialServices[mat][i].price" [name]="mat + '_service_' + i + '_price'" placeholder="$0.00" class="w-28 p-2 border rounded-md text-right" />
+                <input type="number" [(ngModel)]="materialServices[mat][i].price" [name]="mat + '_service_' + i + '_price'" placeholder="0.00" class="w-28 p-2 border rounded-md text-right" />
                 <button type="button" (click)="removeMaterialService(mat, i)" *ngIf="materialServices[mat].length > 1" class="text-red-500 hover:text-red-700 px-2">
                   <svg xmlns='http://www.w3.org/2000/svg' class='h-5 w-5' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M6 18L18 6M6 6l12 12'/></svg>
                 </button>
@@ -89,3 +130,15 @@
     </div>
   </div>
 </div>
+
+<style>
+@keyframes bounce-in {
+  0% { transform: scale(0.8); opacity: 0; }
+  60% { transform: scale(1.05); opacity: 1; }
+  80% { transform: scale(0.97); }
+  100% { transform: scale(1); }
+}
+.animate-bounce-in {
+  animation: bounce-in 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+</style>

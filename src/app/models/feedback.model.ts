@@ -10,6 +10,8 @@ export interface Feedback {
   customerFName: string;
   customerLName: string;
   submittedByType?: 'c' | 'd' | 'l';
+  orderId?: string;
+  statusId?: string;
 }
 
 export interface FeedbackDTO {
