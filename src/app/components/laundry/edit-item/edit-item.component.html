@@ -1,8 +1,4 @@
 <div *ngIf="successMessage" class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-30">
-  <!-- Debug info -->
-  <div class="absolute top-4 left-4 bg-red-500 text-white p-2 rounded z-60">
-    Debug: Success message is set to: {{ successMessage }}
-  </div>
   <div class="bg-white border-2 border-green-400 text-green-700 px-10 py-8 rounded-2xl shadow-2xl flex flex-col items-center animate-bounce-in">
     <div class="flex items-center justify-center mb-4">
       <svg class="w-16 h-16 text-green-500 animate-pulse" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -12,7 +8,10 @@
     </div>
     <div class="text-2xl font-bold mb-2 text-green-700">Success!</div>
     <div class="text-lg mb-4 text-gray-700">{{ successMessage }}</div>
-    <button (click)="goBackToItems()" class="mt-2 px-8 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition text-lg font-semibold shadow">Go Back to Items</button>
+    <div class="flex gap-3">
+      <button (click)="goBackToItems()" class="mt-2 px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition text-lg font-semibold shadow">Done Editing</button>
+      <button (click)="successMessage = ''" class="mt-2 px-6 py-2 bg-gray-500 text-white rounded-full hover:bg-gray-600 transition text-lg font-semibold shadow">Continue Editing</button>
+    </div>
   </div>
 </div>
 <div class="min-h-screen flex items-center justify-center p-6">
@@ -35,7 +34,7 @@
   </div>
 
     <!-- Form -->
-    <form (ngSubmit)="onSubmit()" class="bg-white p-6 rounded-xl w-full space-y-4">
+    <form class="bg-white p-6 rounded-xl w-full space-y-4">
       <!-- Loading indicator -->
       <div *ngIf="loading" class="text-center py-4">
         <div class="text-blue-600 text-sm">Loading item details...</div>
@@ -154,6 +153,7 @@
                   class="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-md shadow-md z-10 min-w-full w-full"
                 >
                   <button 
+                    type="button"
                     *ngFor="let service of getAvailableServicesForMaterial(mat)"
                     (click)="selectService(mat, service)"
                     class="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 first:rounded-t-md last:rounded-b-md transition"
@@ -183,7 +183,7 @@
           Remove Item
         </button>
 
-        <button type="submit" [disabled]="isSubmitting || isAnyServiceIdLoading() || !hasMinimumRequirements()" class="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition duration-200 flex items-center justify-center min-w-[120px]">
+        <button type="button" (click)="onSubmit()" [disabled]="isSubmitting || isAnyServiceIdLoading() || !hasMinimumRequirements()" class="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition duration-200 flex items-center justify-center min-w-[120px]">
           <ng-container *ngIf="isSubmitting || isAnyServiceIdLoading(); else updateText">
             <svg class="animate-spin h-5 w-5 mr-2 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>

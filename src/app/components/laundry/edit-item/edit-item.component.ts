@@ -188,7 +188,7 @@ export class EditItemComponent implements OnInit {
           },
           error: (error) => {
             console.error('Error fetching service ID:', error);
-            alert('Error fetching service ID. Please try again.');
+            // Don't show alert, just log the error
           }
         });
     }
@@ -239,7 +239,7 @@ export class EditItemComponent implements OnInit {
 
   onSubmit() {
     if (!this.item.name || !this.item.categoryId || this.materials.length === 0) {
-      alert('Please fill all required fields and add at least one garment type.');
+      // Don't show alert, just return silently
       return;
     }
 
@@ -258,7 +258,7 @@ export class EditItemComponent implements OnInit {
     }
 
     if (!hasValidService) {
-      alert('Please add at least one service with a price greater than zero.');
+      // Don't show alert, just return silently
       return;
     }
 
@@ -313,7 +313,7 @@ export class EditItemComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error resolving service IDs:', error);
-        alert('Error resolving service information. Please try again.');
+        // Don't show alert, just log the error
         this.isSubmitting = false;
       }
     });
@@ -333,7 +333,7 @@ export class EditItemComponent implements OnInit {
     })).filter(gt => gt.services.length > 0); // Only include garment types with services
 
     if (garmentTypesPayload.length === 0) {
-      alert('Please add at least one garment type with services.');
+      // Don't show alert, just return silently
       this.isSubmitting = false;
       return;
     }
@@ -348,21 +348,21 @@ export class EditItemComponent implements OnInit {
 
     console.log('Updating item with payload:', payload);
     this.itemService.updateItem(this.itemId, payload).subscribe({
-      next: () => {
-        console.log('Item updated successfully, setting success message');
-        this.successMessage = 'Item updated successfully!';
-        console.log('Success message set:', this.successMessage);
-        this.isSubmitting = false;
-        setTimeout(() => {
-          console.log('Clearing success message and navigating');
-          this.successMessage = '';
-          this.itemUpdated.emit(); // Emit event to notify parent
-          this.router.navigate(['/laundry-items']);
-        }, 3000);
-      },
+              next: () => {
+          console.log('Item updated successfully, setting success message');
+          this.successMessage = 'Successfully updated!';
+          console.log('Success message set:', this.successMessage);
+          this.isSubmitting = false;
+          setTimeout(() => {
+            console.log('Clearing success message and navigating');
+            this.successMessage = '';
+            this.itemUpdated.emit(); // Emit event to notify parent
+            this.router.navigate(['/laundry-items']);
+          }, 3000);
+        },
       error: err => {
         console.error('Full error:', err);
-        alert('Error: ' + err.message);
+        // Don't show alert, just log the error
         this.isSubmitting = false;
       },
     });
@@ -449,7 +449,7 @@ export class EditItemComponent implements OnInit {
       name => name.toLowerCase() === matName.toLowerCase()
     );
     if (existingMaterial) {
-      alert(`Material "${existingMaterial}" already exists.`);
+      // Don't show alert, just clear input and return silently
       this.newMaterialInput = '';
       return;
     }
@@ -483,19 +483,15 @@ export class EditItemComponent implements OnInit {
             console.log('Success:', res.message);
           }
         } else {
-          // Show error message if garment type creation failed
-          if (res.message) {
-            alert(`Failed to create garment type: ${res.message}`);
-          } else {
-            alert('Failed to create garment type. Please try again.');
-          }
+          // Don't show alert for garment type creation failure, just log it
+          console.log('Failed to create garment type:', res.message || 'Unknown error');
         }
         this.newMaterialInput = '';
         this.isAddingMaterial = false;
       },
       error: (error) => {
         console.error('Error creating garment type:', error);
-        alert('Error creating garment type. Please try again.');
+        // Don't show alert, just log the error
         this.newMaterialInput = '';
         this.isAddingMaterial = false;
       }
@@ -524,6 +520,7 @@ export class EditItemComponent implements OnInit {
   }
 
   goBackToItems() {
+    // Only navigate back if user explicitly wants to go back
     this.router.navigate(['/laundry-items']);
   }
 
