@@ -17,6 +17,7 @@ export class ContactUsComponent implements OnInit {
   loading = false;
   error: string | null = null;
   laundryId: string | null = null;
+  isSubjectDropdownOpen: boolean = false;
 
   constructor(private fb: FormBuilder, private laundryService: LaundryService, private http: HttpClient) {}
 
@@ -71,5 +72,19 @@ export class ContactUsComponent implements OnInit {
         alert('Failed to send message. Please try again.');
       }
     });
+  }
+
+  toggleSubjectDropdown(): void {
+    this.isSubjectDropdownOpen = !this.isSubjectDropdownOpen;
+  }
+
+  selectSubject(subject: string): void {
+    this.contactForm.get('subject')?.setValue(subject);
+    this.isSubjectDropdownOpen = false;
+  }
+
+  getSelectedSubject(): string {
+    const subject = this.contactForm.get('subject')?.value;
+    return subject || 'Select Subject';
   }
 }

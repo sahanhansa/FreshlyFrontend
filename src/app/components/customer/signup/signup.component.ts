@@ -4,18 +4,23 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { NgIf, CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
+import {FooterComponent} from '../../shared/footer/footer.component';
+import {HeaderComponent} from '../../landing-page/header.component'
 
 @Component({
   selector: 'app-signup',
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.css'],
   standalone: true,
-  imports: [ReactiveFormsModule, NgIf, CommonModule]
+  imports: [ReactiveFormsModule, NgIf, CommonModule,FooterComponent,HeaderComponent]
 })
 export class SignupComponent implements OnInit {
   signupForm: FormGroup;
   isSubmitting = false;
-  
+
+  // Profile image file
+  profileImageFile: File | null = null;
+
   // Notification properties
   showNotification = false;
   notificationType: 'success' | 'error' = 'success';
@@ -58,42 +63,48 @@ export class SignupComponent implements OnInit {
     return password.value === confirmPassword.value ? null : { passwordMismatch: true };
   }
 
+  onProfileImageChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.profileImageFile = input.files[0];
+    } else {
+      this.profileImageFile = null;
+    }
+  }
+
   onSubmit(): void {
     if (this.signupForm.valid) {
       this.isSubmitting = true;
-      const formData = this.signupForm.value;
-      console.log('Form submitted with data:', formData);
-
-      // Send to backend
+      const formData = new FormData();
+      Object.entries(this.signupForm.value).forEach(([key, value]) => {
+        formData.append(key, value as string);
+      });
+      if (this.profileImageFile) {
+        formData.append('ProfileImage', this.profileImageFile);
+      }
       this.authService.customerRegister(formData).subscribe({
         next: (res) => {
           this.isSubmitting = false;
           this.showSuccessNotification('Account Created Successfully!', 'Welcome! Your account has been created. Redirecting to login...');
           this.signupForm.reset();
-          
-          // Navigate to login after 2 seconds
+          this.profileImageFile = null;
           setTimeout(() => {
             this.router.navigate(['/cus-login']);
           }, 2000);
         },
         error: (err) => {
+          console.log(err);
           this.isSubmitting = false;
-          console.error('Signup error:', err.error.error );
           let errorMessage = `${err.error.error}, Account creation failed. Please try again.`;
-          
-          // Handle specific error messages from backend
           if (err.error?.Error) {
             errorMessage = err.error.Error;
           } else if (err.error?.message) {
             errorMessage = err.error.message;
           }
-          
           this.showErrorNotification('Account Creation Failed', errorMessage);
-          console.error('Signup error:', err);
         }
       });
     } else {
-      // Mark all fields as touched to show validation errors
       this.markFormGroupTouched(this.signupForm);
     }
   }

@@ -1,4 +1,3 @@
-
 <div class="relative min-h-screen overflow-hidden bg-gradient-to-br bg-[#F5F5F5]">
   <!-- Background decorative shape -->
   <div class="absolute top-0 right-0 bg-blue-500 rounded-bl-full w-96 h-96 opacity-80"></div>
@@ -16,15 +15,16 @@
           </h1>
 
           <p class="max-w-lg text-lg leading-relaxed text-gray-600">
-            Lorem Ipsum Dolor Sit Amet, Consectetur Adipiscing Elit. Vivamus Sit Amet Mi Nec Massa Tincidunt Blandit Et
-            Eu Sem. Maecenas Laoreet Ultrices Dignissim
+            Enjoy fast, reliable, and hassle-free laundry services right at your doorstep.
+            We pick up, clean, and deliver your clothes with care — so you can focus on what matters most.
           </p>
         </div>
 
         <!-- CTA Button -->
         <div class="flex">
-          <button
-            class="inline-flex items-center px-8 py-4 text-lg font-semibold text-white transition-all duration-300 bg-blue-500 rounded-lg shadow-lg group hover:bg-blue-600 hover:shadow-xl">
+          <button (click)="goTo('/cus-home/how-it-works')"
+             class=" inline-flex items-center px-8 py-4 text-lg font-semibold text-white transition-all duration-300 bg-blue-500
+            rounded-lg shadow-lg group hover:bg-blue-600 hover:shadow-xl">
             See How It Works
             <span class="inline-block ml-2 transition-transform duration-300 transform group-hover:translate-x-1">
               →
@@ -54,7 +54,6 @@
 
 
   <app-laundries></app-laundries>
-  <app-clothing-list></app-clothing-list>
   <app-contact-prompt></app-contact-prompt>
 
 

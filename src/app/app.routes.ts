@@ -53,9 +53,12 @@ import {  RejectedItemDetailsComponent } from './components/laundry/rejected-ite
 import { RejectedItemsComponent}  from './pages/Laundry/rejected-items/rejected-items.component';
 import { ContactUsComponent } from './pages/Laundry/contact-us/contact-us.component';
 import {MultiStepFormComponent} from './components/laundry/lau-sign/multi-step-form.component';
+import { RequestResetComponent } from './pages/request-reset/request-reset.component';
+import { VerifyResetComponent } from './pages/verify-reset/verify-reset.component';
+import {WhoAreYouComponentSign} from './components/whoareyou/whoareyou.component';
 import { ReportsComponent } from './pages/Driver/reports/reports.component';
 import { AuthHelperService } from './services/auth-helper.service';
-import { TasksComponent } from './pages/Driver/tasks/tasks.component';
+
 
 
 
@@ -73,8 +76,12 @@ export const routes: Routes = [
     { path: 'laundries', component: LaundriesPageComponent },
     { path: 'contact', component: ContactPageComponent },
 
+    { path: 'request-reset', component: RequestResetComponent },
+  { path: 'verify-reset', component: VerifyResetComponent },
+
     // Route to identify the user type
     { path: 'whoareyou', component: WhoAreYouComponent }, 
+    { path: 'whoareyousign', component: WhoAreYouComponentSign }, 
 
     // Route for user login
     {path:'cus-login', component: LoginComponent},    // Route for general user signup
@@ -100,7 +107,7 @@ export const routes: Routes = [
   // {path: 'laundry/:id', component: ItemPageComponent},
 
   //driver routes
-  {path: 'driver-home-page', component:DriverHomePageComponent, canActivate: [() => import('./guards/role.guard').then(m => m.RoleGuard)], data: { role: 'driver' } },
+  {path: 'driver-home-page', component:DriverHomePageComponent, canActivate: [AuthGuard], },
   {path: 'pickups-tasks-mainpage', component: PickupsTasksMainpageComponent },
   {path: 'delivery-tasks-mainpage', component: DeliveryTasksMainpageComponent},
   {path: 'driver-contactus-page', component: DriverContactusPageComponent},
@@ -112,6 +119,9 @@ export const routes: Routes = [
   {path: 'reports', component: ReportsComponent},
   {path: 'tasks', component: TasksComponent}, // Redirect to tasks page
   {path: 'logout-page', component: LogoutPageComponent},
+  { path: 'payment', loadComponent: () => import('./components/payment/payment.component').then(m => m.PaymentComponent) },
+  { path: 'payment-success', loadComponent: () => import('./components/payment-success/payment-success.component').then(m => m.PaymentSuccessComponent) },
+  { path: 'payment-cancel', loadComponent: () => import('./components/payment-cancel/payment-cancel.component').then(m => m.PaymentCancelComponent) },
   
   
   
@@ -119,7 +129,7 @@ export const routes: Routes = [
   {
     path: 'admin',
     component: AdminLayoutComponent,
-    canActivate: [() => import('./guards/role.guard').then(m => m.RoleGuard)],
+    canActivate: [AuthGuard],
     data: { role: 'admin' },
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -137,13 +147,14 @@ export const routes: Routes = [
   {
     path: 'cus-home',
     component: CustomerLayoutComponent,
-    canActivate: [() => import('./guards/role.guard').then(m => m.RoleGuard)],
+    canActivate: [AuthGuard],
     data: { role: 'customer' },
     children: [
       { path: '', redirectTo: 'home', pathMatch: 'full' },
       
       { path: 'home', component: CusHomeComponent }, 
       {path: 'how-it-works', component:HowItWorksComponent},
+       { path: 'contact', component: ContactPageComponent2 },
       { path: 'order', component: LaundryPageComponent },      // Laundry list page
       { path: 'basket', component: BasketComponent, canActivate: [() => AuthHelperService.prototype.isLoggedIn()] },
       {path: 'laundry/:id', component: ItemPageComponent},
@@ -154,6 +165,7 @@ export const routes: Routes = [
     ]
   },
   
+   
   
  // Route for laundry home
    {path: 'laundry-home', component: HomeComponent},
@@ -209,9 +221,11 @@ export const routes: Routes = [
      {path: 'rejected-item-details' , component: RejectedItemDetailsComponent },
 
       {path: 'rejected-items', component:RejectedItemsComponent },
-   
+
+     {path: 'rejected-items-details/:laundryId/:orderId/:statusId', component: RejectedItemDetailsComponent },
     
       {path: 'laundry-contactus', component:ContactUsComponent },
+      { path: 'laundry-insights', component: InsightsComponent }
     ]
 
 

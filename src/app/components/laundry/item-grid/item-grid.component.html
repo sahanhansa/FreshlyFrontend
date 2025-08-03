@@ -1,20 +1,70 @@
 
    
 <div class="flex flex-col items-center px-4">
-  <!-- Mini Navbar for Category Selection -->
-  <div class="flex space-x-2 mt-4 mb-4"> <!-- mb-4 for more space below navbar -->
-    <button 
-      class="px-4 py-2 rounded-full border transition-all text-sm font-medium"
-      [ngClass]="{'bg-[#0A84FF] text-white': selectedCategory === 'All', 'bg-gray-200 text-gray-700': selectedCategory !== 'All'}"
-      (click)="setCategory('All')"
-    >All</button>
-    <button 
-      *ngFor="let category of categories"
-      class="px-4 py-2 rounded-full border transition-all text-sm font-medium"
-      [ngClass]="{'bg-[#0A84FF] text-white': selectedCategory === category, 'bg-gray-200 text-gray-700': selectedCategory !== category}"
-      (click)="setCategory(category)"
-    >{{ category }}</button>
+  <!-- Top Bar: Categories (left) and Filters (right) -->
+  <div class="w-full flex flex-wrap items-center justify-between mt-4 mb-4">
+    <!-- Categories on the left -->
+    <div class="flex space-x-2 items-center">
+      <button 
+        class="px-4 py-2 rounded-full border transition-all text-sm font-medium"
+        [ngClass]="{'bg-[#0A84FF] text-white': selectedCategory === 'All', 'bg-gray-200 text-gray-700': selectedCategory !== 'All'}"
+        (click)="setCategory('All')"
+      >All</button>
+      <button 
+        *ngFor="let category of categories"
+        class="px-4 py-2 rounded-full border transition-all text-sm font-medium"
+        [ngClass]="{'bg-[#0A84FF] text-white': selectedCategory === category, 'bg-gray-200 text-gray-700': selectedCategory !== category}"
+        (click)="setCategory(category)"
+      >{{ category }}</button>
+    </div>
+    <!-- Filters on the right -->
+    <div class="flex flex-wrap gap-4 items-center">
+      <!-- A-Z Sort -->
+      <button (click)="setSortAZ(!sortAZ)" [ngClass]="sortAZ ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'" class="px-4 py-2 rounded-md font-medium shadow">
+        Sort A-Z
+      </button>
+      <!-- Service Filter -->
+      <div class="relative">
+        <button 
+          (click)="toggleServiceDropdown()"
+          class="px-4 py-2 bg-white hover:bg-gray-50 text-gray-700 rounded-md font-medium shadow flex items-center justify-between min-w-[150px] transition duration-200"
+        >
+          <span class="flex-1 text-left">{{ selectedService }}</span>
+          <span class="flex items-center h-full ml-2">
+            <svg class="w-4 h-4 transition-transform duration-200" [class.rotate-180]="isServiceDropdownOpen" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </span>
+        </button>
+        <!-- Service Dropdown Menu -->
+        <div 
+          *ngIf="isServiceDropdownOpen"
+          class="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-md shadow-md z-10 min-w-full"
+        >
+          <button 
+            (click)="selectService('All')"
+            class="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 first:rounded-t-md last:rounded-b-md transition"
+            [class.bg-blue-50]="selectedService === 'All'"
+            [class.text-blue-600]="selectedService === 'All'"
+            [class.font-medium]="selectedService === 'All'"
+          >
+            All Services
+          </button>
+          <button 
+            *ngFor="let service of availableServices"
+            (click)="selectService(service)"
+            class="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 first:rounded-t-md last:rounded-b-md transition"
+            [class.bg-blue-50]="selectedService === service"
+            [class.text-blue-600]="selectedService === service"
+            [class.font-medium]="selectedService === service"
+          >
+            {{ service }}
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
+  <hr class="w-full mb-4" />
   <!-- Loading State -->
   <div *ngIf="loading" class="flex-1 flex items-center justify-center mb-8 mt-6"> <!-- mb-8 for space below spinner -->
     <div class="text-center">
@@ -42,33 +92,8 @@
   </div>
 
   <!-- Pagination -->
-  <div class="flex items-center space-x-2 justify-center p-4 mt-8 w-full">
-    <button 
-      (click)="prevPage()"
-      class="px-4 py-2 text-gray-500 hover:text-gray-700"
-      [disabled]="currentPage === 1"
-    >
-      Previous
-    </button>
-
-    <button 
-      *ngFor="let page of [].constructor(totalPages); let i = index"
-      (click)="setPage(i + 1)"
-      class="px-4 py-2 rounded-md border transition-all"
-      [ngClass]="{
-        'bg-[#0A84FF] text-white': currentPage === i + 1,
-        'bg-gray-200 text-gray-700': currentPage !== i + 1
-      }"
-    >
-      {{ i + 1 }}
-    </button>
-
-    <button 
-      (click)="nextPage()"
-      class="px-4 py-2 text-gray-500 hover:text-gray-700"
-      [disabled]="currentPage === totalPages"
-    >
-      Next
-    </button>
-  </div>
+  <app-pagination
+    [totalItems]="filteredItems.length"
+    (pageChange)="onPageChange($event)"
+  ></app-pagination>
 </div>

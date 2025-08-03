@@ -4,7 +4,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { OrderService } from '../../../services/order.service';
 import { Order } from '../../../models/order.model';
 import { SearchBarComponent } from '@app/components/laundry/search-bar/search-bar.component';
-import { PaginationComponent } from '../../../components/shared/pagination/pagination.component'; 
+import { PaginationComponent } from '../../../components/laundry/pagination/pagination.component'; 
 import { RouterModule, Router } from '@angular/router';
 import { NavbarComponent } from '@app/components/shared/navbar/navbar.component';
 import { FooterComponent } from '../../../components/shared/footer/footer.component';
@@ -19,6 +19,25 @@ export class LaundryOrdersComponent implements OnInit {
   orderDetails: Order[] = [];
   loading = false;
   error: string | null = null;
+  statusFilter: string = 'All';
+  availableStatuses: string[] = [];
+  currentPage = 1;
+  pageSize = 10;
+  isSorted = false;
+  originalOrders: Order[] = [];
+
+  get filteredOrders(): Order[] {
+    if (this.statusFilter === 'All') return this.orders;
+    return this.orders.filter(order => {
+      const status = order.status.statusName === 'order picked up' ? 'New' : order.status.statusName;
+      return status === this.statusFilter;
+    });
+  }
+
+  get paginatedOrders() {
+    const start = (this.currentPage - 1) * this.pageSize;
+    return this.filteredOrders.slice(start, start + this.pageSize);
+  }
 
   constructor(private orderService: OrderService, private router: Router) {}
 
@@ -41,10 +60,17 @@ export class LaundryOrdersComponent implements OnInit {
     }
     
 
-    // Call the service method to fetch regular orders for today
-    this.orderService.getAllOrders(laundryId).subscribe({
+    // Call the service method to fetch filtered orders
+    this.orderService.getFilteredOrders(laundryId).subscribe({
       next: (data: Order[]) => {
         this.orders = data; // Assign the fetched orders to the orders array
+        // Compute available statuses
+        const statusSet = new Set<string>();
+        for (const order of data) {
+          const status = order.status.statusName === 'order picked up' ? 'New' : order.status.statusName;
+          statusSet.add(status);
+        }
+        this.availableStatuses = Array.from(statusSet);
         this.loading = false; // Set loading to false when data has been successfully fetched
       },
       error: (err: any) => {
@@ -153,5 +179,29 @@ export class LaundryOrdersComponent implements OnInit {
   goToOrderDetails(order: Order): void {
     const route = this.getOrderDetailsRoute(order);
     this.router.navigate(route);
+  }
+
+  setStatusFilter(status: string) {
+    this.statusFilter = status;
+  }
+
+  onPageChange(page: number) {
+    this.currentPage = page;
+  }
+
+  toggleSort() {
+    this.isSorted = !this.isSorted;
+    if (this.isSorted) {
+      const laundryId = localStorage.getItem('laundryId');
+      if (!laundryId) return;
+      this.orderService.getSortedOrderIds(laundryId).subscribe(sortedIds => {
+        this.originalOrders = [...this.orders];
+        this.orders = sortedIds
+          .map(id => this.orders.find(order => order.orderId === id))
+          .filter(order => !!order) as Order[];
+      });
+    } else {
+      this.orders = [...this.originalOrders];
+    }
   }
 }

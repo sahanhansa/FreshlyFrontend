@@ -33,9 +33,10 @@ export class EditItemComponent implements OnInit {
   @Output() itemUpdated = new EventEmitter<void>();
   @Input() itemId: string = '';
   
-  imageUrl: string = 'assets/shirt.jpg';
+  imageUrl: string = 'assets/default.png';
   loading: boolean = false;
   isSubmitting: boolean = false;
+  successMessage: string = '';
   
   categories: { id: string; name: string }[] = [
     { id: 'dc9b80ab-6671-11f0-9664-0022481a06a0', name: 'Ladies' },
@@ -53,6 +54,10 @@ export class EditItemComponent implements OnInit {
   newServiceInput: { [garmentTypeId: string]: string } = {};
   serviceIdLoading: { [garmentTypeId: string]: boolean[] } = {};
 
+  // --- Custom Dropdown State ---
+  isCategoryDropdownOpen: boolean = false;
+  isServiceDropdownOpen: { [garmentTypeId: string]: boolean } = {};
+
   item = {
     name: '',
     description: '',
@@ -63,7 +68,7 @@ export class EditItemComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router,
+    public router: Router,
     private itemService: ItemService,
     private dataService: DataService
   ) {}
@@ -75,6 +80,40 @@ export class EditItemComponent implements OnInit {
     } else {
       console.error('No itemId provided to EditItemComponent');
     }
+  }
+
+  // Method to toggle category dropdown
+  toggleCategoryDropdown(): void {
+    this.isCategoryDropdownOpen = !this.isCategoryDropdownOpen;
+  }
+
+  // Method to select category
+  selectCategory(category: { id: string; name: string }): void {
+    this.item.categoryId = category.id;
+    this.item.categoryName = category.name;
+    this.isCategoryDropdownOpen = false;
+    this.onCategoryChange();
+  }
+
+  // Method to get selected category display text
+  getSelectedCategoryText(): string {
+    return this.item.categoryName || 'Select Category';
+  }
+
+  // Method to toggle service dropdown for a specific material
+  toggleServiceDropdown(garmentTypeId: string): void {
+    this.isServiceDropdownOpen[garmentTypeId] = !this.isServiceDropdownOpen[garmentTypeId];
+  }
+
+  // Method to select service for a specific material
+  selectService(garmentTypeId: string, serviceName: string): void {
+    this.addServiceToGarment(garmentTypeId, serviceName);
+    this.isServiceDropdownOpen[garmentTypeId] = false;
+  }
+
+  // Method to get selected service display text for a specific material
+  getSelectedServiceText(garmentTypeId: string): string {
+    return 'Select service...';
   }
 
   loadItem() {
@@ -98,7 +137,7 @@ export class EditItemComponent implements OnInit {
         // Set categoryName based on loaded categoryId
         const foundCat = this.categories.find(cat => cat.id === this.item.categoryId);
         if (foundCat) this.item.categoryName = foundCat.name;
-        this.imageUrl = item.imageUrl || 'assets/shirt.jpg';
+        this.imageUrl = item.imageUrl || 'assets/default.png';
         // Populate garment types state
         this.materials = [];
         this.materialServices = {};
@@ -206,7 +245,7 @@ export class EditItemComponent implements OnInit {
     for (const gt of garmentTypesPayload) {
       for (const service of gt.services) {
         if (!service.serviceId) {
-          alert('Please wait for service IDs to be loaded or try again.');
+          // Instead of alert, just return and rely on button disabling/loading indicator
           return;
         }
       }
@@ -224,9 +263,12 @@ export class EditItemComponent implements OnInit {
     console.log('Updating item with payload:', payload);
     this.itemService.updateItem(this.itemId, payload).subscribe({
       next: () => {
-        alert('Item updated successfully!');
+        this.successMessage = 'Item updated successfully!';
+        setTimeout(() => {
+          this.successMessage = '';
+          this.router.navigate(['/laundry-items']);
+        }, 1500);
         this.itemUpdated.emit(); // Emit event to notify parent
-        this.router.navigate(['/laundry-items']); // Navigate back to items page
         this.isSubmitting = false;
       },
       error: err => {
@@ -317,6 +359,14 @@ export class EditItemComponent implements OnInit {
   onAddService(mat: string, serviceSelect: HTMLSelectElement) {
     this.addServiceToGarment(mat, serviceSelect.value);
     serviceSelect.value = '';
+  }
+
+  isAnyServiceIdLoading(): boolean {
+    return Object.values(this.serviceIdLoading).some(arr => arr && arr.some(loading => loading));
+  }
+
+  goBackToItems() {
+    this.router.navigate(['/laundry-items']);
   }
 
 }

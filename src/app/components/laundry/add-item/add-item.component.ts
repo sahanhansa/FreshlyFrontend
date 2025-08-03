@@ -16,7 +16,7 @@ import { catchError, switchMap, map } from 'rxjs/operators';
 export class AddItemComponent implements OnInit {
   @Output() itemAdded = new EventEmitter<void>();
   
-  categories: string[] = ['ladies', 'gents', 'kids', 'other'];
+  categories: string[] = ['Ladies', 'Gents', 'Kids', 'Other'];
   availableServices: string[] = ['Regular Wash', 'Dry Clean', 'Press Only','Hand Wash'];
 
   imageUrl: string = '';
@@ -27,11 +27,16 @@ export class AddItemComponent implements OnInit {
   services: ServiceWithPrice[] = [];
   isImageUploading: boolean = false;
   isSubmitting: boolean = false;
+  successMessage: string = '';
+  errorMessage: string = '';
 
   // --- Material Types State ---
   materialInput: string = '';
   materials: string[] = [];
   materialServices: { [material: string]: ServiceWithPrice[] } = {};
+
+  // --- Custom Dropdown State ---
+  isCategoryDropdownOpen: boolean = false;
 
   constructor(
     private dataService: DataService, 
@@ -45,6 +50,23 @@ export class AddItemComponent implements OnInit {
     }
     
     this.addService();
+  }
+
+  // Method to toggle category dropdown
+  toggleCategoryDropdown(): void {
+    this.isCategoryDropdownOpen = !this.isCategoryDropdownOpen;
+  }
+
+  // Method to select category
+  selectCategory(category: string): void {
+    this.selectedCategory = category;
+    this.isCategoryDropdownOpen = false;
+    this.onCategoryChange();
+  }
+
+  // Method to get selected category display text
+  getSelectedCategoryText(): string {
+    return this.selectedCategory || 'Select Category';
   }
 
   onCategoryChange() {
@@ -123,17 +145,22 @@ export class AddItemComponent implements OnInit {
       this.materialInput = '';
       return;
     }
-    // Add to UI immediately, then ensure it exists in DB
+    // Check if garmentType exists in DB, if not, create it, then add to UI
+    this.dataService.getGarmentTypeIdByName(mat).pipe(
+      catchError(() => this.dataService.addGarmentType(mat)),
+      switchMap(res => {
+        if (res && res.garmentTypeId) {
+          // Only add to UI if DB operation is successful
     this.materials.push(mat);
     this.materialServices[mat] = this.availableServices.map(s => ({
       serviceId: '',
       serviceName: s,
       price: null
     }));
+        }
     this.materialInput = '';
-    // Check if garmentType exists in DB, if not, create it
-    this.dataService.getGarmentTypeIdByName(mat).pipe(
-      catchError(() => this.dataService.addGarmentType(mat))
+        return of(null);
+      })
     ).subscribe();
   }
 
@@ -162,22 +189,34 @@ export class AddItemComponent implements OnInit {
 
   onSubmit() {
     if (!this.itemName || !this.categoryId || this.services.length === 0) {
-      alert('Please fill all required fields and add at least one service.');
+      this.errorMessage = 'Please fill all required fields and add at least one service.';
       return;
     }
 
     if (this.isImageUploading) {
-      alert('Please wait for image upload to complete.');
+      this.errorMessage = 'Please wait for image upload to complete.';
       return;
+    }
+
+    // Check all material services for valid serviceName and price > 0
+    for (const mat of this.materials) {
+      const services = this.materialServices[mat];
+      for (const service of services) {
+        if (!service.serviceName || service.price == null || service.price <= 0) {
+          this.errorMessage = 'All services must have a name and a price greater than zero.';
+          return;
+        }
+      }
     }
 
     for (const service of this.services) {
       if (!service.serviceId) {
-        alert('Please wait for service IDs to be loaded or try again.');
+        this.errorMessage = 'Please wait for service IDs to be loaded or try again.';
         return;
       }
     }
 
+    this.errorMessage = '';
     this.isSubmitting = true;
     // Step 1: Resolve garmentTypeId for each material
     const materialIdObservables = this.materials.map(mat =>
@@ -273,7 +312,11 @@ export class AddItemComponent implements OnInit {
         console.log('Sending payload:', payload);
         this.itemService.addItem(payload).subscribe({
           next: () => {
-            alert('Item added successfully!');
+            this.successMessage = 'Item added successfully!';
+            setTimeout(() => {
+              this.successMessage = '';
+              this.goBackToItems();
+            }, 1500);
             this.resetForm();
             this.itemAdded.emit(); // Emit event to refresh item grid
             this.isSubmitting = false;
@@ -307,5 +350,9 @@ export class AddItemComponent implements OnInit {
     if (fileInput) {
       fileInput.value = '';
     }
+  }
+
+  goBackToItems() {
+    window.location.href = '/laundry-items';
   }
 }

@@ -100,9 +100,9 @@ export class BasketService {
   /**
    * Deletes an item from a temporary order
    */
-  deleteItemFromOrder(temporaryOrderId: string, itemId: string, serviceId: string) {
+  deleteItemFromOrder(temporaryOrderId: string, itemId: string, serviceId: string, garmentTypeId: string) {
     return this.http.delete(
-      `${this.apiUrl}/${temporaryOrderId}/item/${itemId}/service/${serviceId}`
+      `${this.apiUrl}/${temporaryOrderId}/item/${itemId}/service/${serviceId}/garment/${garmentTypeId}`
     );
   }
 

@@ -1,0 +1,48 @@
+<header class="header">
+  <nav class="navbar">
+    <div class="nav-brand">
+      <div class="logo">
+        <img src="assets/images/freshly-logo.png" alt="Freshly Logo" class="logo-img"
+          style="height:60px;width:auto;object-fit:contain;" />
+      </div>
+    </div>
+    <ul class="nav-menu">
+      <li>
+        <a 
+          routerLink="/" 
+          routerLinkActive="active-link" 
+          [routerLinkActiveOptions]="{ exact: true }" 
+          class="nav-link"
+        >Home</a>
+      </li>
+      <li>
+        <a 
+          routerLink="/services" 
+          routerLinkActive="active-link" 
+          class="nav-link"
+        >Services</a>
+      </li>
+      <li>
+        <a 
+          routerLink="/about" 
+          routerLinkActive="active-link" 
+          class="nav-link"
+        >About Us</a>
+      </li>
+      <li>
+        <a 
+          routerLink="/laundries" 
+          routerLinkActive="active-link" 
+          class="nav-link"
+        >Laundries</a>
+      </li>
+      <li>
+        <a 
+          routerLink="/contact" 
+          routerLinkActive="active-link" 
+          class="nav-link"
+        >Contact us</a>
+      </li>
+    </ul>
+  </nav>
+</header>

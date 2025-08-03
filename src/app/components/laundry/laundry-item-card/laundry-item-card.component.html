@@ -9,41 +9,83 @@
   </div>
 
   <!-- Item Name -->
-  <h3 class="text-xl font-semibold text-gray-800 text-center mb-3">{{ item.itemName }}</h3>
+  <h3 class="text-xl font-semibold text-gray-800 text-center mb-1">{{ item.itemName }}</h3>
 
   <!-- Current Price -->
   <div class="text-center mb-3">
     <span class="text-lg font-bold text-blue-600">Rs {{ getCurrentPrice() }}</span>
   </div>
 
+  <!-- Garment Type Dropdown -->
+  <div class="flex flex-col items-center mb-4" *ngIf="garmentTypes.length > 0">
+    <div class="flex items-center mb-1 w-full justify-between">
+      <span class="block text-gray-700 text-sm font-semibold mr-2">Material:</span>
+      <div class="relative w-full">
+        <button 
+          (click)="toggleMaterialDropdown()"
+          class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md text-sm font-medium transition duration-200 flex w-full items-center justify-between"
+          style="align-items: center;"
+        >
+          <span class="flex-1 text-left">{{ selectedGarmentTypeId ? (getSelectedGarmentTypeName() | titlecase) : 'Select Material' }}</span>
+          <span class="flex items-center h-full">
+            <svg class="w-4 h-4 transition-transform duration-200" [class.rotate-180]="isMaterialDropdownOpen" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="vertical-align: middle;">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </span>
+        </button>
+        <!-- Material Dropdown Menu -->
+        <div 
+          *ngIf="isMaterialDropdownOpen"
+          class="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-md shadow-md z-10 min-w-full"
+        >
+          <button 
+            *ngFor="let garmentType of garmentTypes"
+            (click)="selectGarmentType(garmentType.garmentTypeId)"
+            class="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 first:rounded-t-md last:rounded-b-md transition"
+            [class.bg-blue-50]="selectedGarmentTypeId === garmentType.garmentTypeId"
+            [class.text-blue-600]="selectedGarmentTypeId === garmentType.garmentTypeId"
+            [class.font-medium]="selectedGarmentTypeId === garmentType.garmentTypeId"
+          >
+            {{ garmentType.garmentTypeName | titlecase }} 
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Service Dropdowns -->
-  <div class="flex justify-center mb-4">
-    <div class="relative">
+  <div class="flex flex-col items-center mb-4">
+    <div class="flex items-center mb-1 w-full justify-between">
+      <span class="block text-gray-700 text-sm font-semibold mr-2">Service:</span>
+      <div class="relative w-full">
       <button 
         (click)="toggleDropdown()"
-        class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md text-sm font-medium transition duration-200 flex items-center gap-2 min-w-[120px] justify-between"
+          class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md text-sm font-medium transition duration-200 flex w-full items-center justify-between"
+          style="align-items: center;"
       >
-        {{ getSelectedServiceName() }}
-        <svg class="w-4 h-4 transition-transform duration-200" [class.rotate-180]="isDropdownOpen" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <span class="flex-1 text-left">{{ selectedServiceId ? (getSelectedServiceName() | titlecase) : 'Select Service' }}</span>
+          <span class="flex items-center h-full">
+            <svg class="w-4 h-4 transition-transform duration-200" [class.rotate-180]="isDropdownOpen" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="vertical-align: middle;">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
         </svg>
+          </span>
       </button>
-      
       <!-- Dropdown Menu -->
       <div 
         *ngIf="isDropdownOpen"
         class="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-md shadow-md z-10 min-w-full"
       >
         <button 
-          *ngFor="let service of item.services"
+            *ngFor="let service of services"
           (click)="selectService(service.serviceId)"
           class="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 first:rounded-t-md last:rounded-b-md transition"
           [class.bg-blue-50]="selectedServiceId === service.serviceId"
           [class.text-blue-600]="selectedServiceId === service.serviceId"
           [class.font-medium]="selectedServiceId === service.serviceId"
         >
-          {{ service.serviceName }} - Rs {{ service.price }}
+            {{ service.serviceName | titlecase }} 
         </button>
+        </div>
       </div>
     </div>
   </div>

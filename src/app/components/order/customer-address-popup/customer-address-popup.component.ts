@@ -8,7 +8,7 @@ import { BasketService } from '../../../services/basket.service';
 @Component({
   selector: 'app-customer-address-popup',
   standalone: true,
-  imports: [CommonModule,FormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './customer-address-popup.component.html',
   styleUrl: './customer-address-popup.component.css',
 })
@@ -21,6 +21,8 @@ export class CustomerAddressPopupComponent implements OnInit {
   @Output() confirmOrder = new EventEmitter<CustomerAddress>();
   @Output() cancel = new EventEmitter<void>();
   @Output() back = new EventEmitter<void>();
+
+  newContactNumber: string = '';
 
   constructor(
     private customerService: CustomerService,
@@ -35,6 +37,10 @@ export class CustomerAddressPopupComponent implements OnInit {
       this.customerService.getCustomerAddress(customerId).subscribe({
         next: (addr) => {
           this.address = addr;
+          // Ensure contactNumbers is initialized
+          if (!this.address.contactNumbers) {
+            this.address.contactNumbers = [];
+          }
           this.loading = false;
         },
         error: () => {
@@ -45,6 +51,35 @@ export class CustomerAddressPopupComponent implements OnInit {
     } else {
       this.error = 'Please log in to continue.';
       this.loading = false;
+    }
+  }
+
+  addEmptyContactNumber() {
+    if (!this.address.contactNumbers) {
+      this.address.contactNumbers = [];
+    }
+    
+    this.address.contactNumbers.push('');
+  }
+
+  addContactNumber() {
+    if (!this.newContactNumber.trim()) return;
+    
+    if (!this.address.contactNumbers) {
+      this.address.contactNumbers = [];
+    }
+    
+    // Add number if it doesn't already exist
+    if (!this.address.contactNumbers.includes(this.newContactNumber)) {
+      this.address.contactNumbers.push(this.newContactNumber);
+    }
+    
+    this.newContactNumber = ''; // Clear the input
+  }
+
+  removeContactNumber(index: number) {
+    if (this.address.contactNumbers && this.address.contactNumbers.length > index) {
+      this.address.contactNumbers.splice(index, 1);
     }
   }
 

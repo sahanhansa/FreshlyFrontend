@@ -13,9 +13,10 @@ export class LaundryDeleteConfirmationComponent implements OnInit {
   itemId: string = '';
   itemName: string = '';
   isDeleting: boolean = false;
+  successMessage: string = '';
 
   constructor(
-    private router: Router,
+    public router: Router,
     private route: ActivatedRoute,
     private itemService: ItemService
   ) {}
@@ -42,8 +43,11 @@ export class LaundryDeleteConfirmationComponent implements OnInit {
       next: () => {
         console.log('Item deleted successfully');
         this.isDeleting = false;
-        alert('Item deleted successfully!');
-        this.router.navigate(['/laundry-items']);
+        this.successMessage = 'Item deleted successfully!';
+        setTimeout(() => {
+          this.successMessage = '';
+          this.router.navigate(['/laundry-items']);
+        }, 1500);
       },
       error: (error) => {
         console.error('Delete failed:', error);
@@ -56,5 +60,9 @@ export class LaundryDeleteConfirmationComponent implements OnInit {
   onDeleteCancelled() {
     // Navigate back to edit page
     this.router.navigate(['/laundry-edit-item', this.itemId]);
+  }
+
+  goBackToItems() {
+    this.router.navigate(['/laundry-items']);
   }
 } 

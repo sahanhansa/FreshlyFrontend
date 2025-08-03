@@ -1,5 +1,6 @@
+    <app-header></app-header>
 <!-- Full screen container with gradient background -->
-<div class="flex items-center justify-center min-h-screen ">
+<div class="flex items-center justify-center min-h-screen pt-[18vh] ">
   <div class="container px-4 mx-auto">
     <div class="flex items-center justify-center mx-auto lg:justify-between max-w-7xl">
       
@@ -100,6 +101,7 @@
               <div class="flex justify-end mb-6">
                 <button 
                   type="button"
+                  (click)="goToReset()"
                   class="text-sm font-medium text-blue-600 transition-colors duration-200 hover:text-blue-800 hover:underline focus:outline-none"
                 >
                   Forgot Password?
@@ -116,16 +118,8 @@
               </button>
 
               <!-- Signup Navigation -->
-              <div class="mt-6 text-sm text-center text-gray-600">
-                Don't have an account?
-                <button 
-                  type="button" 
-                  class="ml-1 font-bold text-blue-600 transition-colors duration-200 hover:text-blue-800 hover:underline focus:outline-none"
-                >
-                  Register Now
-                </button>
-              </div>
-
+              
+            
               <!-- Test Login Buttons (Development Only) -->
               
             </form>
@@ -151,3 +145,4 @@
     </div>
   </div>
 </div>
+ <app-footer></app-footer>

@@ -2,13 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { LaundryRegistrationService, LaundryRegistrationRequest } from '../../../services/laundry-registration.service';
+import {FooterComponent} from '../../shared/footer/footer.component';
+import {HeaderComponent} from '../../landing-page/header.component';
 
 @Component({
   selector: 'app-multi-step-form',
   templateUrl: './multi-step-form.component.html',
   styleUrls: ['./multi-step-form.component.css'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule]
+  imports: [CommonModule, ReactiveFormsModule,FooterComponent,HeaderComponent]
 })
 export class MultiStepFormComponent implements OnInit {
   accountStateMessage: string = '';
@@ -23,6 +25,7 @@ export class MultiStepFormComponent implements OnInit {
     this.registrationForm = this.fb.group({
       // Step 1: Laundry Details
       laundryName: ['', [Validators.required, Validators.minLength(2)]],
+      laundryLogo: '',
       streetNumber: ['', [Validators.required]],
       street: ['', [Validators.required]],
       city: ['', [Validators.required]],
@@ -30,13 +33,13 @@ export class MultiStepFormComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       contactNumber1: ['', [Validators.required, Validators.pattern(/^[0-9+\-\s()]+$/)]],
       contactNumber2: ['', [Validators.pattern(/^[0-9+\-\s()]+$/)]],
-      
+
       // Step 2: Owner Details
       ownerName: ['', [Validators.required, Validators.minLength(2)]],
       ownerAddress: ['', [Validators.required]],
       ownerContact: ['', [Validators.required, Validators.pattern(/^[0-9+\-\s()]+$/)]],
       ownerEmail: ['', [Validators.required, Validators.email]],
-      
+
       // Step 3: Create Account
       username: ['', [Validators.required, Validators.minLength(3)]],
       displayName: ['', [Validators.required, Validators.minLength(2)]],
@@ -53,12 +56,12 @@ export class MultiStepFormComponent implements OnInit {
   passwordMatchValidator(form: FormGroup) {
     const password = form.get('password');
     const confirmPassword = form.get('confirmPassword');
-    
+
     if (password && confirmPassword && password.value !== confirmPassword.value) {
       confirmPassword.setErrors({ passwordMismatch: true });
       return { passwordMismatch: true };
     }
-    
+
     return null;
   }
 
@@ -81,11 +84,27 @@ export class MultiStepFormComponent implements OnInit {
         return [];
     }
   }
+  profileImageFile: File | null = null;
+  imagePreviewUrl: string | ArrayBuffer | null = null;
+
+  onProfileImageSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.profileImageFile = input.files[0];
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.imagePreviewUrl = reader.result;
+      };
+      reader.readAsDataURL(this.profileImageFile);
+    }
+  }
+
 
   // Check if current step is valid
   isStepValid(): boolean {
     const stepFields = this.getStepFields();
-    
+
     for (const fieldName of stepFields) {
       const field = this.registrationForm.get(fieldName);
       if (!field || field.invalid) {
@@ -97,7 +116,7 @@ export class MultiStepFormComponent implements OnInit {
     if (this.currentStep === 3) {
       const password = this.registrationForm.get('password');
       const confirmPassword = this.registrationForm.get('confirmPassword');
-      
+
       if (password && confirmPassword && password.value !== confirmPassword.value) {
         return false;
       }
@@ -109,7 +128,7 @@ export class MultiStepFormComponent implements OnInit {
   // Mark step fields as touched to show validation errors
   markStepFieldsAsTouched(): void {
     const stepFields = this.getStepFields();
-    
+
     stepFields.forEach(fieldName => {
       const field = this.registrationForm.get(fieldName);
       if (field) {
@@ -138,23 +157,29 @@ export class MultiStepFormComponent implements OnInit {
   submitForm(): void {
     if (this.isStepValid()) {
       this.currentStep = 4;
-      const formData: LaundryRegistrationRequest = {
-        laundryName: this.registrationForm.value.laundryName,
-        streetNumber: this.registrationForm.value.streetNumber,
-        street: this.registrationForm.value.street,
-        city: this.registrationForm.value.city,
-        postalCode: this.registrationForm.value.postalCode,
-        email: this.registrationForm.value.email,
-        contactNumber1: this.registrationForm.value.contactNumber1,
-        contactNumber2: this.registrationForm.value.contactNumber2,
-        ownerName: this.registrationForm.value.ownerName,
-        ownerAddress: this.registrationForm.value.ownerAddress,
-        ownerContact: this.registrationForm.value.ownerContact,
-        ownerEmail: this.registrationForm.value.ownerEmail,
-        username: this.registrationForm.value.username,
-        displayName: this.registrationForm.value.displayName,
-        password: this.registrationForm.value.password
-      };
+      const formData = new FormData();
+      formData.append('laundryName', this.registrationForm.value.laundryName);
+      formData.append('streetNumber', this.registrationForm.value.streetNumber);
+      formData.append('street', this.registrationForm.value.street);
+      formData.append('city', this.registrationForm.value.city);
+      formData.append('postalCode', this.registrationForm.value.postalCode);
+      formData.append('email', this.registrationForm.value.email);
+      formData.append('contactNumber1', this.registrationForm.value.contactNumber1);
+      formData.append('contactNumber2', this.registrationForm.value.contactNumber2 || '');
+      formData.append('ownerName', this.registrationForm.value.ownerName);
+      formData.append('ownerAddress', this.registrationForm.value.ownerAddress);
+      formData.append('ownerContact', this.registrationForm.value.ownerContact);
+      formData.append('ownerEmail', this.registrationForm.value.ownerEmail);
+      formData.append('username', this.registrationForm.value.username);
+      formData.append('displayName', this.registrationForm.value.displayName);
+      formData.append('password', this.registrationForm.value.password);
+
+      // Add image file if selected
+      if (this.profileImageFile) {
+        formData.append('ProfileImage', this.profileImageFile);
+      }
+
+
       console.log('Submitting registration data:', formData);
       this.isLoading = true;
       this.laundryRegistrationService.registerLaundry(formData).subscribe({
@@ -198,7 +223,7 @@ export class MultiStepFormComponent implements OnInit {
     this.registrationForm.reset();
     this.currentStep = 1;
     console.log('Registration process completed');
-    
+
     // You might want to emit an event or navigate to another route
     // this.router.navigate(['/dashboard']);
   }
@@ -211,7 +236,7 @@ export class MultiStepFormComponent implements OnInit {
   // Get error message for a field
   getFieldError(fieldName: string): string {
     const field = this.registrationForm.get(fieldName);
-    
+
     if (field && field.errors && field.touched) {
       if (field.errors['required']) {
         return `${fieldName} is required`;
@@ -229,7 +254,7 @@ export class MultiStepFormComponent implements OnInit {
         return 'Passwords do not match';
       }
     }
-    
+
     return '';
   }
 }

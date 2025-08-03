@@ -29,33 +29,34 @@
 
       <!-- Order Summary Card -->
       <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-        <h2 class="text-xl font-semibold text-gray-900 mb-4">Order Information</h2>
         <div class="space-y-3">
+          <h2 class="text-xl font-semibold text-gray-900 mb-4">Order Information</h2>
           <div>
             <span class="text-gray-600 font-medium">Order ID:</span>
-            <span class="ml-2 text-lg font-semibold text-blue-600">{{ orderDetails.orderIdFormatted }}</span>
+            <span class="ml-2 text-blue-600">{{ orderDetails.orderId }}</span>
           </div>
           <div>
             <span class="text-gray-600 font-medium">Order Date:</span>
-            <span class="ml-2">{{ orderDetails.orderDateFormatted }}</span>
+            <span class="ml-2 text-blue-600">{{ orderDetails.orderDateFormatted }}</span>
           </div>
-          <div *ngIf="orderDetails.customer">
-            <span class="text-gray-600 font-medium">Customer:</span>
-            <span class="ml-2">{{ orderDetails.customer.customerFName }} {{ orderDetails.customer.customerLName }}</span>
+          <div *ngIf="customerName">
+            <span class="text-gray-600 font-medium ">Customer Name:</span>
+            <span class="ml-2 text-blue-600">{{ customerName }}</span>
           </div>
           <div>
             <span class="text-gray-600 font-medium">Status:</span>
-            <span class="ml-2 px-3 py-1 rounded-full text-sm font-semibold"
-                  [ngClass]="{
-                    'bg-green-100 text-green-800': orderDetails.status === 'delivered',
-                    'bg-yellow-100 text-yellow-800': orderDetails.status === 'Processing in Laundry' || orderDetails.status === 'processing',
-                    'bg-blue-200 text-blue-800': orderDetails.status === 'Finished Processing' || orderDetails.status === 'finished',
-                    'bg-orange-100 text-orange-800': orderDetails.status === 'order picked up' || orderDetails.status === 'picked up',
-                    'bg-purple-100 text-purple-800': orderDetails.status === 'out for delivery' || orderDetails.status === 'delivery',
-                    'bg-gray-100 text-gray-800': orderDetails.status === 'order placed' || orderDetails.status === 'placed'
-                  }">
-              {{ orderDetails.status }}
+            <span class="ml-2 px-3 py-1 rounded-full text-sm font-semibold" [ngClass]="getStatusBadgeClass(orderDetails.status)">
+              {{ getDisplayStatus(orderDetails.status) }}
             </span>
+          </div>
+        </div>
+        <div *ngIf="customerContactNumbers && customerContactNumbers.length > 0" class="mt-6">
+          <h2 class="text-xl font-semibold text-gray-900 mb-4">Contact Information</h2>
+          <div class="space-y-2">
+            <div *ngFor="let number of customerContactNumbers">
+              <span class="text-gray-600 font-medium ">Contact Number:</span>
+              <span class="ml-2 text-blue-600">{{ number }}</span>
+            </div>
           </div>
         </div>
       </div>
@@ -76,23 +77,20 @@
                   <!-- Item Name -->
                   <div>
                     <span class="text-gray-600 font-medium">Item Name:</span>
-                    <p class="font-semibold">{{ item.itemName }}</p>
+                    <p class="font-semibold">
+                      {{ item.itemName }}<span *ngIf="item.garmentTypeName"> ({{ item.garmentTypeName }})</span>
+                    </p>
                   </div>
                   
                   <!-- Quantity with +/- buttons -->
                   <div>
                     <span class="text-gray-600 font-medium">Quantity:</span>
                     <div class="flex items-center gap-2 mt-1">
+                      <span class="font-semibold min-w-[2rem] text-center">{{ item.quantity }}</span>
                       <button 
                         (click)="openAdjustmentModal(item, 'remove')"
                         class="w-8 h-8 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600 transition-all duration-200 hover:scale-105 active:scale-95">
                         -
-                      </button>
-                      <span class="font-semibold min-w-[2rem] text-center">{{ item.quantity }}</span>
-                      <button 
-                        (click)="openAdjustmentModal(item, 'add')"
-                        class="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center hover:bg-blue-700 transition-all duration-200 hover:scale-105 active:scale-95">
-                        +
                       </button>
                     </div>
                   </div>
@@ -146,28 +144,44 @@
         <p *ngIf="!canFinishOrder()" class="text-center text-gray-500 mt-2">
           All items must be marked as "Finished" to complete processing
         </p>
+        <p *ngIf="processingSuccessMessage" class="text-center text-green-600 mt-2 font-semibold">
+          {{ processingSuccessMessage }}
+        </p>
       </div>
 
       <!-- Total Amount and Invoice -->
       <div class="bg-white rounded-lg shadow-md p-6">
         <div class="flex justify-between items-center mb-4">
-          <h2 class="text-xl font-semibold text-gray-900">Total Amount</h2>
-          <span class="text-2xl font-bold text-blue-600">Rs. {{ orderDetails.totalAmount }}</span>
-        </div>
-        <div class="flex justify-center">
-          <button 
-            (click)="sendInvoice()" 
-            [disabled]="sendingInvoice"
-            class="px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed font-semibold transition-all duration-200">
-            <span *ngIf="!sendingInvoice">Send Invoice</span>
-            <span *ngIf="sendingInvoice" class="flex items-center">
-              <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
-              Sending...
-            </span>
-          </button>
+          <div class="flex-1"></div>
+          <div class="flex justify-center flex-1">
+            <div class="text-center">
+              <button 
+                (click)="sendInvoice()" 
+                [disabled]="!orderFinishedProcessing || sendingInvoice"
+                class="px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed font-semibold transition-all duration-200">
+                <span *ngIf="!sendingInvoice">Send Invoice</span>
+                <span *ngIf="sendingInvoice" class="flex items-center">
+                  <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Sending...
+                </span>
+              </button>
+              <p *ngIf="!orderFinishedProcessing" class="text-center text-gray-500 mt-2">
+                Click "Finish Processing" first to enable invoice sending
+              </p>
+            </div>
+            <button
+              class="ml-4 px-8 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 font-semibold transition-all duration-200"
+              (click)="openNoteModal()">
+              {{ hasNote ? 'Edit Note' : 'Add Note' }}
+            </button>
+          </div>
+          <div class="flex-1 flex justify-end items-center gap-2">
+            <span class="text-3xl font-bold text-blue-600">Total Amount</span>
+            <span class="text-3xl font-bold text-blue-600">Rs. {{ orderDetails.totalAmount }}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -175,7 +189,7 @@
 
 <!-- Adjustment Modal -->
 <div *ngIf="showAdjustmentModal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
-  <div class="bg-white rounded-lg p-6 w-full max-w-md mx-4 animate-pulse">
+  <div class="bg-white rounded-lg p-6 w-full max-w-md mx-4">
     <h3 class="text-lg font-semibold mb-4">
       {{ adjustmentType === 'add' ? 'Add Item' : 'Remove Item' }}
     </h3>
@@ -192,18 +206,6 @@
             Name is required
           </div>
         </div>
-        
-        <div>
-          <label class="block text-sm font-medium text-gray-700">Mobile Number</label>
-          <input 
-            type="tel" 
-            formControlName="mobileNumber"
-            [class]="'mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 ' + (adjustmentForm.get('mobileNumber')?.invalid && adjustmentForm.get('mobileNumber')?.touched ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : 'border-gray-300')">
-          <div *ngIf="adjustmentForm.get('mobileNumber')?.invalid && adjustmentForm.get('mobileNumber')?.touched" class="text-red-500 text-sm mt-1">
-            Valid 10-digit mobile number is required
-          </div>
-        </div>
-        
         <div>
           <label class="block text-sm font-medium text-gray-700">Reason</label>
           <textarea 
@@ -214,7 +216,6 @@
             Reason is required
           </div>
         </div>
-        
         <div class="grid grid-cols-2 gap-4">
           <div>
             <label class="block text-sm font-medium text-gray-700">Date</label>
@@ -223,13 +224,12 @@
               formControlName="date"
               class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200">
           </div>
-          
           <div>
             <label class="block text-sm font-medium text-gray-700">Time</label>
             <input 
               type="time" 
               formControlName="time"
-              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200">
+              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200">
           </div>
         </div>
       </div>
@@ -243,9 +243,51 @@
         </button>
         <button 
           type="submit"
-          [disabled]="adjustmentForm.invalid"
-          class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200">
-          Submit
+          [disabled]="adjustmentForm.invalid || submittingRejection"
+          class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 flex items-center justify-center min-w-[90px]">
+          <span *ngIf="!submittingRejection">Submit</span>
+          <span *ngIf="submittingRejection" class="flex items-center">
+            <svg class="animate-spin -ml-1 mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Submitting...
+          </span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Add Note Modal -->
+<div *ngIf="showNoteModal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
+  <div class="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+    <h3 class="text-lg font-semibold mb-4">Add Note</h3>
+    <form [formGroup]="noteForm" (ngSubmit)="submitNote()">
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Note</label>
+          <textarea 
+            formControlName="note"
+            rows="4"
+            class="mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors duration-200 border-gray-300"></textarea>
+          <div *ngIf="noteForm.get('note')?.invalid && noteForm.get('note')?.touched" class="text-red-500 text-sm mt-1">
+            Note is required
+          </div>
+        </div>
+      </div>
+      <div class="flex justify-end space-x-3 mt-6">
+        <button 
+          type="button"
+          (click)="closeNoteModal()"
+          class="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors duration-200">
+          Cancel
+        </button>
+        <button 
+          type="submit"
+          [disabled]="noteForm.invalid"
+          class="px-4 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 flex items-center justify-center min-w-[90px]">
+          Add
         </button>
       </div>
     </form>

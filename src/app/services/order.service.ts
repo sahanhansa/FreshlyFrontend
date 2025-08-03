@@ -42,6 +42,16 @@ export class OrderService {
     );
   }
 
+  getFilteredOrders(laundryId: string): Observable<Order[]> {
+    return this.http.get<Order[]>(`${this.apiUrl}/${laundryId}/filtered-orders`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  getModifiedOrderDetailsById(laundryId: string, orderId: string, statusId: string): Observable<any> {
+    return this.http.get<any>(`${this.laundryApiUrl}/modified-order-details/${laundryId}/${orderId}/${statusId}`);
+  }
+  
   getOrderDetails(): Observable<Order[]> {
     return this.http.get<Order[]>(`${this.apiUrl}/details`).pipe(
       catchError(this.handleError)
@@ -87,6 +97,41 @@ export class OrderService {
 
   getOrder(id: string): Observable<Order> {
     return this.http.get<Order>(`${this.apiUrl}/${id}`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  /**
+   * Get the count of orders for a given laundry and status
+   */
+  getOrderCountByStatus(laundryId: string, statusId: string): Observable<number> {
+    return this.http.get<number>(`${this.apiUrl}/count-by-status/${laundryId}/${statusId}`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  /**
+   * Get sorted order IDs for a laundry
+   */
+  getSortedOrderIds(laundryId: string): Observable<string[]> {
+    return this.http.get<{ orderIds: string[] }>(`${this.apiUrl}/${laundryId}/sorted-order-ids`)
+      .pipe(map(res => res.orderIds));
+  }
+
+  /**
+   * Get email details for invoice
+   */
+  getEmailDetails(laundryId: string, orderId: string): Observable<any> {
+    return this.http.get<any>(`${environment.apiUrl}/api/Laundry/get-email-details/${laundryId}/${orderId}`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  /**
+   * Send invoice email
+   */
+  sendInvoiceEmail(payload: any): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrl}/api/Email/send`, payload).pipe(
       catchError(this.handleError)
     );
   }
