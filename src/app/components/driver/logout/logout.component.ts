@@ -1,19 +1,20 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';  // ✅ Correct for Angular
 
 @Component({
   selector: 'app-logout',
-  imports: [],
   templateUrl: './logout.component.html',
-  styleUrl: './logout.component.css'
+  styleUrls: ['./logout.component.css'] // ✅ should be style**s** not style
 })
 export class LogoutComponent {
+  constructor(private router: Router) {}
+
   confirmLogout() {
-    alert('Logging out...');
-    // Add actual logout logic here
+    localStorage.clear();
+    this.router.navigate(['/']); // Or wherever you want after logout
   }
 
   cancelLogout() {
-    alert('Logout canceled');
-    // Add logic to close the modal or return to the previous page
+    this.router.navigate(['/driver-profile-page']);
   }
 }

@@ -5,38 +5,65 @@
     <table class="w-full">
       <thead>
         <tr class="bg-gray-50">
-          <!-- <th class="p-4 text-left font-medium text-gray-700 whitespace-nowrap border-b border-gray-100">Tracking ID</th> -->
-          <th class="p-4 text-left font-medium text-gray-700 whitespace-nowrap border-b border-gray-100 ">Customer</th>
-          <th class="p-4 text-left font-medium text-gray-700 whitespace-nowrap border-b border-gray-100">Order ID</th>
-          <th class="p-4 text-left font-medium text-gray-700 whitespace-nowrap border-b border-gray-100">Payment Method</th>
-          <th class="p-4 text-left font-medium text-gray-700 whitespace-nowrap border-b border-gray-100 ">Action</th>
-          <th class="p-4 text-center font-medium text-gray-700 whitespace-nowrap border-b border-gray-100">Order Summary</th>
+          <th class="p-4 text-left font-medium text-gray-700 border-b border-gray-100">Customer</th>
+          <th class="p-4 text-left font-medium text-gray-700 border-b border-gray-100">Order ID</th>
+          <th class="p-4 text-left font-medium text-gray-700 border-b border-gray-100">Payment Method</th>
+          <th class="p-4 text-left font-medium text-gray-700 border-b border-gray-100">Status</th>
+          <th class="p-4 text-center font-medium text-gray-700 border-b border-gray-100">Order Summary</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let order of paginatedOrders; let i = index"
-            class="whitespace-nowrap hover:bg-gray-100 transition-colors duration-150"
-            [ngClass]="{'bg-[#D0F6FF]': i % 2 === 0}">
-          <!-- <td class="p-4 text-gray-700 border-b border-gray-100 ">{{ order.orderId }}</td> -->
-          <td class="p-4 text-gray-700 border-b border-gray-100 justify-center">{{ order.customerName }}</td>
-          <td class="p-4 text-gray-700 border-b border-gray-100 justify-center">{{ order.orderId }}</td>
-          <td class="p-4 text-gray-700 border-b border-gray-100 justify-center" >Cash on Delivery</td>
-          <td class="p-4 border-b border-gray-100 justify-center">
-            <span class="px-3 py-1.5 rounded-full text-sm font-medium"
-                  [class.bg-green-100]="order.status === 'order placed'"
-                  [class.text-green-800]="order.status === 'order placed'"
-                  [class.bg-orange-100]="order.status === 'delivered'"
-                  [class.text-orange-800]="order.status === 'delivered'">
-              {{ order.status }}
+        <!-- Hardcoded row 1 -->
+        <tr class="whitespace-nowrap hover:bg-gray-100 transition-colors duration-150 bg-[#D0F6FF]">
+          <td class="p-4 text-gray-700 border-b border-gray-100">Navoda Chathurya</td>
+          <td class="p-4 text-gray-700 border-b border-gray-100">5cb179b8-a2d1-4020-b2f4-dbf84b5b528e</td>
+          <td class="p-4 text-gray-700 border-b border-gray-100">Cash on Delivery</td>
+          <td class="p-4 border-b border-gray-100">
+            <span class="px-3 py-1.5 rounded-full text-sm font-medium bg-orange-100 text-orange-800">
+              delivered
             </span>
           </td>
           <td class="p-4 border-b border-gray-100 flex items-center justify-center">
-            <button (click)="openSummary(order)"
-              class="flex items-center justify-center w-8 h-8 text-blue-600 hover:text-blue-800 transition-colors">
+            <button class="flex items-center justify-center w-8 h-8 text-blue-600 hover:text-blue-800 transition-colors">
               <i class="fas fa-file-alt"></i>
             </button>
           </td>
         </tr>
+
+        <!-- Hardcoded row 2 -->
+        <tr class="whitespace-nowrap hover:bg-gray-100 transition-colors duration-150">
+          <td class="p-4 text-gray-700 border-b border-gray-100">Sachin Jayasinghe</td>
+          <td class="p-4 text-gray-700 border-b border-gray-100">e9c13d72-f5b7-408f-8708-55f8b0a73bf8</td>
+          <td class="p-4 text-gray-700 border-b border-gray-100">Cash on Delivery</td>
+          <td class="p-4 border-b border-gray-100">
+            <span class="px-3 py-1.5 rounded-full text-sm font-medium bg-orange-100 text-orange-800">
+              delivered
+            </span>
+          </td>
+          <td class="p-4 border-b border-gray-100 flex items-center justify-center">
+            <button class="flex items-center justify-center w-8 h-8 text-blue-600 hover:text-blue-800 transition-colors">
+              <i class="fas fa-file-alt"></i>
+            </button>
+          </td>
+        </tr>
+
+        <!-- Hardcoded row 3 -->
+        <tr class="whitespace-nowrap hover:bg-gray-100 transition-colors duration-150 bg-[#D0F6FF]">
+          <td class="p-4 text-gray-700 border-b border-gray-100">Navoda Chathurya</td>
+          <td class="p-4 text-gray-700 border-b border-gray-100">fa767fbe-e222-4d11-9f0c-02c0f491f585</td>
+          <td class="p-4 text-gray-700 border-b border-gray-100">Cash on Delivery</td>
+          <td class="p-4 border-b border-gray-100">
+            <span class="px-3 py-1.5 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+              finished processing
+            </span>
+          </td>
+          <td class="p-4 border-b border-gray-100 flex items-center justify-center">
+            <button class="flex items-center justify-center w-8 h-8 text-blue-600 hover:text-blue-800 transition-colors">
+              <i class="fas fa-file-alt"></i>
+            </button>
+          </td>
+        </tr>
+
       </tbody>
     </table>
   </div>
