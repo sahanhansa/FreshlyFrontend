@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
@@ -14,6 +14,12 @@ interface LaundryDetails {
   logoUrl: string | null;
 }
 
+// Add interface for order count response
+interface OrderCountResponse {
+  laundryId: string;
+  orderCount: number;
+}
+
 @Component({
   selector: 'app-laundry-details-card',
   standalone: true,
@@ -22,16 +28,23 @@ interface LaundryDetails {
 })
 export class LaundryDetailsCardComponent implements OnInit {
   @Input() laundryId: string = '';
+  // Add Output for order count
+  @Output() orderCountChanged = new EventEmitter<number>();
   
   laundry: LaundryDetails | null = null;
   isLoading = false;
   error: string | null = null;
+
+  // Add order count state
+  orderCount: number | null = null;
+  orderCountError: string | null = null;
 
   constructor(private http: HttpClient) {}
 
   ngOnInit() {
     if (this.laundryId) {
       this.loadLaundryDetails();
+      this.loadOrderCount();
     }
   }
 
@@ -76,6 +89,39 @@ export class LaundryDetailsCardComponent implements OnInit {
         console.log('Laundry details received:', data);
         this.laundry = data;
         this.isLoading = false;
+      });
+  }
+
+  // Add method to load order count
+  loadOrderCount() {
+    this.orderCount = null;
+    this.orderCountError = null;
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    const url = `${environment.apiUrl}/api/Profile/order-count/${this.laundryId}`;
+    this.http.get<OrderCountResponse>(url, { headers })
+      .pipe(
+        catchError(error => {
+          let errorMessage = 'Failed to load order count';
+          if (error.status === 401) {
+            errorMessage = 'Unauthorized - Please login again';
+          } else if (error.status === 404) {
+            errorMessage = 'Order count not found';
+          } else if (error.status === 0) {
+            errorMessage = 'Network error - Check your connection';
+          }
+          this.orderCountError = errorMessage;
+          return of(null);
+        })
+      )
+      .subscribe(data => {
+        if (data && typeof data.orderCount === 'number') {
+          this.orderCount = data.orderCount;
+          // Emit to parent
+          this.orderCountChanged.emit(data.orderCount);
+        }
       });
   }
 }
