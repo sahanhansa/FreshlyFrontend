@@ -1,7 +1,7 @@
 
 <div class="min-h-screen flex flex-col">
   <app-navbar></app-navbar>
-  <app-search-bar></app-search-bar>
+  <app-search-bar (search)="onSearch($event)"></app-search-bar>
   
   <!-- Loading State -->
   <div *ngIf="loading" class="text-center py-8">

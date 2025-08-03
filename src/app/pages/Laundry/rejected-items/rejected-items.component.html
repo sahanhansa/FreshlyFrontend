@@ -10,6 +10,9 @@
       </p>
     </div>
 
+    <!-- Search Bar -->
+    <app-search-bar (search)="onSearch($event)" class="max-w-full sm:max-w-3xl md:max-w-4xl lg:max-w-6xl mx-auto px-2 sm:px-0 mb-2"></app-search-bar>
+
     <!-- Loading State -->
     <div *ngIf="loading" class="text-center py-4">
       <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
@@ -50,7 +53,7 @@
         *ngIf="!loading && rejectedItems.length > 0" 
         class="mt-4 max-w-full sm:max-w-3xl md:max-w-4xl lg:max-w-6xl mx-auto px-2 sm:px-0"
         [currentPage]="currentPage"
-        [totalItems]="rejectedItems.length"
+        [totalItems]="filteredItems.length"
         (pageChange)="onPageChange($event)">
       </app-pagination>
     </div>

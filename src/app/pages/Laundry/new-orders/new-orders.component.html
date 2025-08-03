@@ -15,7 +15,7 @@
     </div>
 
     <!-- Search Bar -->
-    <app-search-bar class="max-w-full sm:max-w-3xl md:max-w-4xl lg:max-w-6xl mx-auto px-2 sm:px-0 mb-2"></app-search-bar>
+    <app-search-bar (search)="onSearch($event)" class="max-w-full sm:max-w-3xl md:max-w-4xl lg:max-w-6xl mx-auto px-2 sm:px-0 mb-2"></app-search-bar>
 
     <!-- Loading State -->
     <div *ngIf="loading" class="text-center py-4">
@@ -79,7 +79,7 @@
     <!-- Pagination -->
     <app-pagination 
       [currentPage]="currentPage"
-      [totalItems]="orders.length"
+      [totalItems]="filteredOrders.length"
       (pageChange)="onPageChange($event)"
       class="mt-4 max-w-full sm:max-w-3xl md:max-w-4xl lg:max-w-6xl mx-auto px-2 sm:px-0">
     </app-pagination>

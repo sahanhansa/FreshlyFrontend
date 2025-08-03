@@ -1,8 +1,4 @@
 <div *ngIf="successMessage" class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-30">
-  <!-- Debug info -->
-  <div class="absolute top-4 left-4 bg-red-500 text-white p-2 rounded z-60">
-    Debug: Success message is set to: {{ successMessage }}
-  </div>
   <div class="bg-white border-2 border-green-400 text-green-700 px-10 py-8 rounded-2xl shadow-2xl flex flex-col items-center animate-bounce-in">
     <div class="flex items-center justify-center mb-4">
       <svg class="w-16 h-16 text-green-500 animate-pulse" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -118,7 +114,7 @@
             <div class="space-y-3 mt-4">
               <div *ngFor="let service of materialServices[mat]; let i = index" class="flex gap-2 items-center">
                 <span class="flex-1">{{ service.serviceName }}</span>
-                <input type="number" [(ngModel)]="materialServices[mat][i].price" [name]="mat + '_service_' + i + '_price'" placeholder="0.00" class="w-28 p-2 border rounded-md text-right" />
+                <input type="number" [(ngModel)]="materialServices[mat][i].price" [name]="mat + '_service_' + i + '_price'" placeholder="0" class="w-28 p-2 border rounded-md text-right" />
                 <button type="button" (click)="removeMaterialService(mat, i)" *ngIf="materialServices[mat].length > 1" class="text-red-500 hover:text-red-700 px-2">
                   <svg xmlns='http://www.w3.org/2000/svg' class='h-5 w-5' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M6 18L18 6M6 6l12 12'/></svg>
                 </button>

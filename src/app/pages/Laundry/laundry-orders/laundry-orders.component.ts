@@ -25,13 +25,33 @@ export class LaundryOrdersComponent implements OnInit {
   pageSize = 10;
   isSorted = false;
   originalOrders: Order[] = [];
+  searchText: string = '';
 
   get filteredOrders(): Order[] {
-    if (this.statusFilter === 'All') return this.orders;
-    return this.orders.filter(order => {
-      const status = order.status.statusName === 'order picked up' ? 'New' : order.status.statusName;
-      return status === this.statusFilter;
-    });
+    let filtered = this.orders;
+    
+    // Apply search filter
+    if (this.searchText.trim()) {
+      const searchLower = this.searchText.toLowerCase();
+      filtered = filtered.filter(order => 
+        order.orderId.toLowerCase().includes(searchLower) ||
+        order.customer.customerFName.toLowerCase().includes(searchLower) ||
+        order.customer.customerLName.toLowerCase().includes(searchLower) ||
+        `${order.customer.customerFName} ${order.customer.customerLName}`.toLowerCase().includes(searchLower) ||
+        order.status.statusName.toLowerCase().includes(searchLower) ||
+        order.totalCost.toString().includes(searchLower)
+      );
+    }
+    
+    // Apply status filter
+    if (this.statusFilter !== 'All') {
+      filtered = filtered.filter(order => {
+        const status = order.status.statusName === 'order picked up' ? 'New' : order.status.statusName;
+        return status === this.statusFilter;
+      });
+    }
+    
+    return filtered;
   }
 
   get paginatedOrders() {
@@ -189,10 +209,16 @@ export class LaundryOrdersComponent implements OnInit {
 
   setStatusFilter(status: string) {
     this.statusFilter = status;
+    this.currentPage = 1; // Reset to first page when filter changes
   }
 
   onPageChange(page: number) {
     this.currentPage = page;
+  }
+
+  onSearch(searchText: string) {
+    this.searchText = searchText;
+    this.currentPage = 1; // Reset to first page when searching
   }
 
   applySorting(): void {
