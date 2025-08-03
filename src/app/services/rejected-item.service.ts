@@ -65,4 +65,15 @@ export class RejectedItemService {
   postRejectedItemByLaundry(laundryId: string, rejectedItem: any) {
     return this.http.post(`${this.apiUrl}/${laundryId}`, rejectedItem);
   }
+
+  // Get rejected items count for a laundry
+  getRejectedItemsCount(laundryId: string): Observable<{laundryId: string, rejectedItemCount: number}> {
+    return this.http.get<{laundryId: string, rejectedItemCount: number}>(`${this.apiUrl}/laundry/${laundryId}/count`)
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          console.error('Error fetching rejected items count:', error);
+          return throwError(() => new Error('Failed to load rejected items count'));
+        })
+      );
+  }
 } 

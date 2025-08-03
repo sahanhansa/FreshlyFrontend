@@ -3,10 +3,10 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { OrderService } from '../../../services/order.service'; // Import OrderService for fetching orders
 import { Order } from '../../../models/order.model'; // Import Order model to type the orders array
-import { SearchBarComponent } from '../../../components/shared/search-bar/search-bar.component';
+import { SearchBarComponent } from '../../../components/laundry/search-bar/search-bar.component';
 import { PaginationComponent } from '../../../components/laundry/pagination/pagination.component'; 
 import { FooterComponent } from '../../../components/shared/footer/footer.component'; 
-import { RouterModule } from '@angular/router'; 
+import { RouterModule, Router } from '@angular/router'; 
 import { NavbarComponent } from '../../../components/shared/navbar/navbar.component';
 
 @Component({
@@ -22,8 +22,11 @@ export class processingOrdersComponent implements OnInit, OnDestroy { // The com
   isSorted = false;
   originalOrders: Order[] = [];
   highlightedOrderId: string | null = null;
+  currentPage = 1;
+  pageSize = 10;
+  searchText: string = '';
 
-  constructor(private orderService: OrderService) {} // Inject the OrderService to interact with the backend API
+  constructor(private orderService: OrderService, private router: Router) {} // Inject the OrderService to interact with the backend API
 
   ngOnInit(): void {
     this.loadProcessingOrders(); // Fetch the new orders when the component is initialized
@@ -137,6 +140,42 @@ export class processingOrdersComponent implements OnInit, OnDestroy { // The com
       year: 'numeric', 
       month: 'long', 
       day: 'numeric' 
+    });
+  }
+
+  // Search and pagination methods
+  get filteredOrders(): Order[] {
+    if (!this.searchText.trim()) return this.orders;
+    
+    const searchLower = this.searchText.toLowerCase();
+    return this.orders.filter(order => 
+      order.orderId.toLowerCase().includes(searchLower) ||
+      order.customer.customerFName.toLowerCase().includes(searchLower) ||
+      order.customer.customerLName.toLowerCase().includes(searchLower) ||
+      `${order.customer.customerFName} ${order.customer.customerLName}`.toLowerCase().includes(searchLower) ||
+      order.status.statusName.toLowerCase().includes(searchLower) ||
+      order.totalCost.toString().includes(searchLower)
+    );
+  }
+
+  get paginatedOrders(): Order[] {
+    const start = (this.currentPage - 1) * this.pageSize;
+    return this.filteredOrders.slice(start, start + this.pageSize);
+  }
+
+  onPageChange(page: number): void {
+    this.currentPage = page;
+  }
+
+  onSearch(searchText: string) {
+    this.searchText = searchText;
+    this.currentPage = 1; // Reset to first page when searching
+  }
+
+  viewOrderDetails(orderId: string, statusId: string): void {
+    // Navigate to order details with source parameter for home
+    this.router.navigate(['/processing-order-details', orderId, statusId], { 
+      queryParams: { source: 'home' } 
     });
   }
 }

@@ -23,7 +23,8 @@ export class LaundryEditItemComponent implements OnInit {
   }
 
   onItemUpdated() {
-    // Navigate back to items page after successful item update
-    this.router.navigate(['/laundry-items']);
+    // Don't navigate away - stay on the current edit page
+    // The user can manually navigate back when they're done editing
+    console.log('Item updated successfully - staying on edit page');
   }
 }
