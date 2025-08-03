@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule, DatePipe } from '@angular/common';
 import { RejectedItemService } from '../../../services/rejected-item.service';
 import { OrderService } from '../../../services/order.service';
@@ -19,6 +19,7 @@ export class RejectedItemDetailsComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private rejectedItemService: RejectedItemService,
     private orderService: OrderService
   ) {}
@@ -43,5 +44,10 @@ export class RejectedItemDetailsComponent implements OnInit {
     } else {
       this.loading = false;
     }
+  }
+
+  goBackToRejectedItems(): void {
+    console.log('Navigating back to rejected items');
+    this.router.navigate(['/rejected-items']);
   }
 } 

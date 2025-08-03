@@ -4,12 +4,13 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RejectedItemService } from '../../../services/rejected-item.service';
 import { RejectedItem } from '../../../models/rejected-item.model';
+import { NavbarComponent } from '@app/components/shared/navbar/navbar.component';
 import { FooterComponent } from '@app/components/shared/footer/footer.component';
 import { PaginationComponent } from '@app/components/shared/pagination/pagination.component';
 
 @Component({
   selector: 'app-rejected-items',
-  imports: [CommonModule, FormsModule,RouterModule,FooterComponent, PaginationComponent],
+  imports: [CommonModule, FormsModule,RouterModule, NavbarComponent,FooterComponent, PaginationComponent],
   templateUrl: './rejected-items.component.html'
 })
 export class RejectedItemsComponent implements OnInit {

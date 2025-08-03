@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { forkJoin, of, Observable } from 'rxjs';
 import { catchError, switchMap, map } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-add-item',
@@ -40,7 +41,8 @@ export class AddItemComponent implements OnInit {
 
   constructor(
     private dataService: DataService, 
-    private itemService: ItemService
+    private itemService: ItemService,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -312,14 +314,17 @@ export class AddItemComponent implements OnInit {
         console.log('Sending payload:', payload);
         this.itemService.addItem(payload).subscribe({
           next: () => {
+            console.log('Item added successfully, setting success message');
             this.successMessage = 'Item added successfully!';
-            setTimeout(() => {
-              this.successMessage = '';
-              this.goBackToItems();
-            }, 1500);
-            this.resetForm();
-            this.itemAdded.emit(); // Emit event to refresh item grid
+            console.log('Success message set:', this.successMessage);
             this.isSubmitting = false;
+            setTimeout(() => {
+              console.log('Clearing success message and navigating');
+              this.successMessage = '';
+              this.resetForm();
+              this.itemAdded.emit(); // Emit event to refresh item grid
+              this.router.navigate(['/laundry-items']);
+            }, 3000);
           },
           error: err => {
             console.error('Full error:', err);
@@ -353,6 +358,6 @@ export class AddItemComponent implements OnInit {
   }
 
   goBackToItems() {
-    window.location.href = '/laundry-items';
+    this.router.navigate(['/laundry-items']);
   }
 }

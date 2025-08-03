@@ -96,6 +96,7 @@
     </table>
   </div>
   <app-pagination
+    [currentPage]="currentPage"
     [totalItems]="filteredOrders.length"
     (pageChange)="onPageChange($event)"
   ></app-pagination>

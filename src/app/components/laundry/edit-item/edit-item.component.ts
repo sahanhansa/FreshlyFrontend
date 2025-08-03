@@ -263,13 +263,16 @@ export class EditItemComponent implements OnInit {
     console.log('Updating item with payload:', payload);
     this.itemService.updateItem(this.itemId, payload).subscribe({
       next: () => {
+        console.log('Item updated successfully, setting success message');
         this.successMessage = 'Item updated successfully!';
+        console.log('Success message set:', this.successMessage);
+        this.isSubmitting = false;
         setTimeout(() => {
+          console.log('Clearing success message and navigating');
           this.successMessage = '';
           this.router.navigate(['/laundry-items']);
-        }, 1500);
+        }, 3000);
         this.itemUpdated.emit(); // Emit event to notify parent
-        this.isSubmitting = false;
       },
       error: err => {
         console.error('Full error:', err);

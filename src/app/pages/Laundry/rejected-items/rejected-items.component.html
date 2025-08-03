@@ -1,4 +1,5 @@
 <div class="flex flex-col min-h-screen">
+   <app-navbar></app-navbar>
   <div class="flex-grow px-2 sm:px-4 md:px-6 lg:px-10 pt-4">
     <div class="text-center mt-2 sm:mt-4 mb-4 sm:mb-6 max-w-full sm:max-w-3xl md:max-w-4xl lg:max-w-5xl mx-auto px-2">
       <h1 class="font-bold drop-shadow-md text-1xl sm:text-2xl md:text-3xl lg:text-4xl">
@@ -38,7 +39,7 @@
       <td class="px-4 sm:px-6 py-3">{{ item.reason }}</td>
       <td class="px-4 sm:px-6 py-3 flex justify-center items-center gap-2 flex-wrap">
               <button [routerLink]="['/rejected-items-details', item.laundryId, item.orderId, item.statusId]"
-        class="flex items-center gap-1 border border-black text-black rounded-full px-3 py-1 text-xs sm:text-sm hover:bg-gray-500 hover:text-white transition">
+        class="flex items-center gap-1 border border-black text-black rounded-full px-3 py-1 text-xs sm:text-sm hover:bg-blue-600 hover:text-white transition">
           View Order
         </button>
       </td>
@@ -48,6 +49,7 @@
       <app-pagination 
         *ngIf="!loading && rejectedItems.length > 0" 
         class="mt-4 max-w-full sm:max-w-3xl md:max-w-4xl lg:max-w-6xl mx-auto px-2 sm:px-0"
+        [currentPage]="currentPage"
         [totalItems]="rejectedItems.length"
         (pageChange)="onPageChange($event)">
       </app-pagination>

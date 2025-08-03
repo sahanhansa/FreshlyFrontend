@@ -178,7 +178,8 @@ export class LaundryOrdersComponent implements OnInit {
 
   goToOrderDetails(order: Order): void {
     const route = this.getOrderDetailsRoute(order);
-    this.router.navigate(route);
+    // Add source parameter to indicate user came from orders tab
+    this.router.navigate(route, { queryParams: { source: 'orders' } });
   }
 
   setStatusFilter(status: string) {

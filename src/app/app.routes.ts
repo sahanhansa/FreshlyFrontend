@@ -219,18 +219,19 @@ export const routes: Routes = [
 
      {path: 'rejected-item-details' , component: RejectedItemDetailsComponent },
 
-      {path: 'rejected-items', component:RejectedItemsComponent },
+     {path: 'rejected-items', component:RejectedItemsComponent },
 
      {path: 'rejected-items-details/:laundryId/:orderId/:statusId', component: RejectedItemDetailsComponent },
     
-      {path: 'laundry-contactus', component:ContactUsComponent },
-      { path: 'laundry-insights', component: InsightsComponent }
+     {path: 'laundry-contactus', component:ContactUsComponent },
+
+     { path: 'laundry-insights', component: InsightsComponent }
     ]
 
 
 // Define the routing module
  @NgModule({
-    imports: [RouterModule.forRoot(routes)],
+    imports: [RouterModule.forRoot(routes)], 
     exports: [RouterModule]
   })
   export class AppRoutingModule {}

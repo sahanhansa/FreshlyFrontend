@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
+import { Router } from '@angular/router';
 import { OrderService } from '../../../services/order.service';
 import { Order } from '../../../models/order.model';
 import { SearchBarComponent } from '../../../components/shared/search-bar/search-bar.component';
@@ -21,8 +22,10 @@ export class CompletedOrdersComponent implements OnInit {
   error: string | null = null;
   isSorted = false;
   originalOrders: Order[] = [];
+  currentPage = 1;
+  pageSize = 10;
 
-  constructor(private orderService: OrderService) {}
+  constructor(private orderService: OrderService, private router: Router) {}
 
   ngOnInit(): void {
     this.loadCompletedOrders();
@@ -81,6 +84,23 @@ export class CompletedOrdersComponent implements OnInit {
       year: 'numeric', 
       month: 'long', 
       day: 'numeric' 
+    });
+  }
+
+  // Pagination methods
+  get paginatedOrders(): Order[] {
+    const start = (this.currentPage - 1) * this.pageSize;
+    return this.orders.slice(start, start + this.pageSize);
+  }
+
+  onPageChange(page: number): void {
+    this.currentPage = page;
+  }
+
+  viewOrderDetails(orderId: string, statusId: string): void {
+    // Navigate to order details with source parameter for home
+    this.router.navigate(['/completed-order-details', orderId, statusId], { 
+      queryParams: { source: 'home' } 
     });
   }
 }
