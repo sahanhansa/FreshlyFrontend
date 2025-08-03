@@ -96,10 +96,21 @@
       <div class="mt-6">
         <label class="block text-gray-600">Add Material</label>
         <div class="flex gap-2 mt-1">
-          <input type="text" [(ngModel)]="newMaterialInput" name="newMaterialInput" placeholder="Enter material type..." class="flex-1 p-2 border rounded-md" (keyup.enter)="addMaterial()" />
-          <button type="button" (click)="addMaterial()" class="bg-gray-200 px-4 py-2 rounded-md text-gray-700">Add</button>
+          <input type="text" [(ngModel)]="newMaterialInput" name="newMaterialInput" placeholder="Enter material type..." class="flex-1 p-2 border rounded-md" (keyup.enter)="addMaterial()" [disabled]="isAddingMaterial" />
+          <button type="button" (click)="addMaterial()" [disabled]="isAddingMaterial" class="bg-gray-200 px-4 py-2 rounded-md text-gray-700 flex items-center justify-center min-w-[60px]">
+            <ng-container *ngIf="isAddingMaterial; else addText">
+              <svg class="animate-spin h-4 w-4 mr-2 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+              </svg>
+              Adding...
+            </ng-container>
+            <ng-template #addText>Add</ng-template>
+          </button>
         </div>
       </div>
+
+
 
       <!-- Garment Types & Services -->
       <div *ngIf="materials.length > 0" class="mt-8 space-y-8">
@@ -172,15 +183,15 @@
           Remove Item
         </button>
 
-        <button type="submit" [disabled]="isSubmitting || isAnyServiceIdLoading()" class="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition duration-200 flex items-center justify-center min-w-[110px]">
-          <ng-container *ngIf="isSubmitting || isAnyServiceIdLoading(); else doneText">
+        <button type="submit" [disabled]="isSubmitting || isAnyServiceIdLoading() || !hasMinimumRequirements()" class="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition duration-200 flex items-center justify-center min-w-[120px]">
+          <ng-container *ngIf="isSubmitting || isAnyServiceIdLoading(); else updateText">
             <svg class="animate-spin h-5 w-5 mr-2 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
             </svg>
-            {{ isAnyServiceIdLoading() ? 'Saving service...' : 'Saving...' }}
+            {{ isAnyServiceIdLoading() ? 'Loading services...' : 'Updating Item...' }}
           </ng-container>
-          <ng-template #doneText>Done</ng-template>
+          <ng-template #updateText>Update Item</ng-template>
         </button>
       </div>
     </form>
