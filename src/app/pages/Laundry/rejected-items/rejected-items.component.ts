@@ -15,6 +15,17 @@ import { PaginationComponent } from '@app/components/shared/pagination/paginatio
 export class RejectedItemsComponent implements OnInit {
   rejectedItems: RejectedItem[] = [];
   loading = false;
+  currentPage = 1;
+  pageSize = 10;
+
+  get paginatedItems() {
+    const start = (this.currentPage - 1) * this.pageSize;
+    return this.rejectedItems.slice(start, start + this.pageSize);
+  }
+
+  onPageChange(page: number) {
+    this.currentPage = page;
+  }
 
   constructor(private rejectedItemService: RejectedItemService) {}
 

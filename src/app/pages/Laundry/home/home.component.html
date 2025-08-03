@@ -27,13 +27,16 @@
         <!-- New Orders -->
         <div 
           (click)="goToNewOrder()"
-          class="flex items-center gap-4 transition-transform bg-white shadow-sm rounded-xl cursor-pointer transform hover:scale-105 hover:shadow-lg duration-200" 
+          class="flex items-center gap-4 transition-transform bg-white shadow-sm rounded-xl cursor-pointer transform hover:scale-105 hover:shadow-lg duration-200 relative" 
           style="width: 100%; height: 160px;"
         >
+          <span *ngIf="newOrdersCount !== null && newOrdersCount !== undefined" class="absolute right-6 bottom-6 flex items-center justify-center w-10 h-10 text-xl font-extrabold leading-none text-white bg-orange-500 rounded-full shadow-lg z-10">{{ newOrdersCount }}</span>
           <div class="flex items-center w-full h-full gap-4 p-6">
             <img src="assets/customer/order.png" alt="New Orders" class="w-16 h-16" />
             <div>
-              <h2 class="mb-1 text-xl sm:text-2xl font-semibold text-gray-800">New Orders</h2>
+              <h2 class="mb-1 text-xl sm:text-2xl font-semibold text-gray-800 flex items-center">
+                New Orders
+              </h2>
               <p class="text-gray-600 text-sm sm:text-base">View all new orders</p>
             </div>
           </div>
@@ -42,13 +45,16 @@
         <!-- Processing Orders -->
         <div 
           (click)="goToProcessingOrder()"
-          class="flex items-center gap-4 transition-transform bg-white shadow-sm rounded-xl cursor-pointer transform hover:scale-105 hover:shadow-lg duration-200" 
+          class="flex items-center gap-4 transition-transform bg-white shadow-sm rounded-xl cursor-pointer transform hover:scale-105 hover:shadow-lg duration-200 relative" 
           style="width: 100%; height: 160px;"
         >
+          <span *ngIf="processingOrdersCount !== null && processingOrdersCount !== undefined" class="absolute right-6 bottom-6 flex items-center justify-center w-10 h-10 text-xl font-extrabold leading-none text-white bg-yellow-500 rounded-full shadow-lg z-10">{{ processingOrdersCount }}</span>
           <div class="flex items-center w-full h-full gap-4 p-6">
             <img src="assets/customer/processing.png" alt="Processing Orders" class="w-16 h-16 animate-bounce" style="animation-delay: 100ms;" />
             <div>
-              <h2 class="mb-1 text-xl sm:text-2xl font-semibold text-gray-800">Processing Orders</h2>
+              <h2 class="mb-1 text-xl sm:text-2xl font-semibold text-gray-800 flex items-center">
+                Processing Orders
+              </h2>
               <p class="text-gray-600 text-sm sm:text-base">Orders in progress</p>
             </div>
           </div>
@@ -57,13 +63,16 @@
         <!-- Completed Orders -->
         <div 
           (click)="goToCompletedOrder()"
-          class="flex items-center gap-4 transition-transform bg-white shadow-sm rounded-xl cursor-pointer transform hover:scale-105 hover:shadow-lg duration-200" 
+          class="flex items-center gap-4 transition-transform bg-white shadow-sm rounded-xl cursor-pointer transform hover:scale-105 hover:shadow-lg duration-200 relative" 
           style="width: 100%; height: 160px;"
         >
+          <span *ngIf="completedOrdersCount !== null && completedOrdersCount !== undefined" class="absolute right-6 bottom-6 flex items-center justify-center w-10 h-10 text-xl font-extrabold leading-none text-white bg-green-600 rounded-full shadow-lg z-10">{{ completedOrdersCount }}</span>
           <div class="flex items-center w-full h-full gap-4 p-6">
             <img src="assets/customer/cleaned.png" alt="Completed Orders" class="w-16 h-16" />
             <div>
-              <h2 class="mb-1 text-xl sm:text-2xl font-semibold text-gray-800">Completed Orders</h2>
+              <h2 class="mb-1 text-xl sm:text-2xl font-semibold text-gray-800 flex items-center">
+                Completed Orders
+              </h2>
               <p class="text-gray-600 text-sm sm:text-base">Successfully delivered</p>
             </div>
           </div>

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { LaundryItemCardComponent } from '../laundry-item-card/laundry-item-card.component';
 import { ItemService } from '../../../services/item.service';
+import { PaginationComponent } from '../pagination/pagination.component';
 
 // Interface matching the API response
 interface ItemResponse {
@@ -26,7 +27,7 @@ interface ItemResponse {
 @Component({
   selector: 'app-item-grid',
   standalone: true,
-  imports: [CommonModule, FormsModule, LaundryItemCardComponent],
+  imports: [CommonModule, FormsModule, LaundryItemCardComponent, PaginationComponent],
   templateUrl: './item-grid.component.html'
 })
 export class ItemGridComponent implements OnInit {
@@ -36,13 +37,14 @@ export class ItemGridComponent implements OnInit {
   error: string | null = null;
 
   currentPage = 1;
-  pageSize = 16;
+  pageSize = 10; // Set to 10 rows per page
 
   categories: string[] = ['Ladies', 'Gents', 'Kids', 'Other'];
   selectedCategory: string = 'All';
   sortAZ: boolean = false;
   selectedService: string = 'All';
   availableServices: string[] = [];
+  isServiceDropdownOpen: boolean = false;
 
   get filteredItems(): ItemResponse[] {
     let items = this.allItems;
@@ -109,16 +111,8 @@ export class ItemGridComponent implements OnInit {
     return this.filteredItems.slice(start, start + this.pageSize);
   }
 
-  setPage(page: number) {
+  onPageChange(page: number) {
     this.currentPage = page;
-  }
-
-  prevPage() {
-    if (this.currentPage > 1) this.currentPage--;
-  }
-
-  nextPage() {
-    if (this.currentPage < this.totalPages) this.currentPage++;
   }
 
   setCategory(category: string) {
@@ -131,6 +125,16 @@ export class ItemGridComponent implements OnInit {
   }
   setService(service: string) {
     this.selectedService = service;
+    this.currentPage = 1;
+  }
+
+  toggleServiceDropdown(): void {
+    this.isServiceDropdownOpen = !this.isServiceDropdownOpen;
+  }
+
+  selectService(service: string): void {
+    this.selectedService = service;
+    this.isServiceDropdownOpen = false;
     this.currentPage = 1;
   }
 }

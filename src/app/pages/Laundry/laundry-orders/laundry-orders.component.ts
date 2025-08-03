@@ -4,7 +4,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { OrderService } from '../../../services/order.service';
 import { Order } from '../../../models/order.model';
 import { SearchBarComponent } from '@app/components/laundry/search-bar/search-bar.component';
-import { PaginationComponent } from '../../../components/shared/pagination/pagination.component'; 
+import { PaginationComponent } from '../../../components/laundry/pagination/pagination.component'; 
 import { RouterModule, Router } from '@angular/router';
 import { NavbarComponent } from '@app/components/shared/navbar/navbar.component';
 import { FooterComponent } from '../../../components/shared/footer/footer.component';
@@ -21,6 +21,10 @@ export class LaundryOrdersComponent implements OnInit {
   error: string | null = null;
   statusFilter: string = 'All';
   availableStatuses: string[] = [];
+  currentPage = 1;
+  pageSize = 10;
+  isSorted = false;
+  originalOrders: Order[] = [];
 
   get filteredOrders(): Order[] {
     if (this.statusFilter === 'All') return this.orders;
@@ -28,6 +32,11 @@ export class LaundryOrdersComponent implements OnInit {
       const status = order.status.statusName === 'order picked up' ? 'New' : order.status.statusName;
       return status === this.statusFilter;
     });
+  }
+
+  get paginatedOrders() {
+    const start = (this.currentPage - 1) * this.pageSize;
+    return this.filteredOrders.slice(start, start + this.pageSize);
   }
 
   constructor(private orderService: OrderService, private router: Router) {}
@@ -174,5 +183,25 @@ export class LaundryOrdersComponent implements OnInit {
 
   setStatusFilter(status: string) {
     this.statusFilter = status;
+  }
+
+  onPageChange(page: number) {
+    this.currentPage = page;
+  }
+
+  toggleSort() {
+    this.isSorted = !this.isSorted;
+    if (this.isSorted) {
+      const laundryId = localStorage.getItem('laundryId');
+      if (!laundryId) return;
+      this.orderService.getSortedOrderIds(laundryId).subscribe(sortedIds => {
+        this.originalOrders = [...this.orders];
+        this.orders = sortedIds
+          .map(id => this.orders.find(order => order.orderId === id))
+          .filter(order => !!order) as Order[];
+      });
+    } else {
+      this.orders = [...this.originalOrders];
+    }
   }
 }

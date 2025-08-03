@@ -27,7 +27,7 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let item of rejectedItems; let i = index"
+    <tr *ngFor="let item of paginatedItems; let i = index"
         [ngClass]="{ 'bg-white': i % 2 === 0, 'bg-[#D0F6FF]': i % 2 === 1 }"
         class="h-14 text-sm sm:text-base text-black">
             <td class="px-4 sm:px-6 py-3 font-semibold">
@@ -45,7 +45,12 @@
     </tr>
   </tbody>
 </table>
-      <app-pagination *ngIf="!loading && rejectedItems.length > 0" class="mt-4 max-w-full sm:max-w-3xl md:max-w-4xl lg:max-w-6xl mx-auto px-2 sm:px-0"></app-pagination>
+      <app-pagination 
+        *ngIf="!loading && rejectedItems.length > 0" 
+        class="mt-4 max-w-full sm:max-w-3xl md:max-w-4xl lg:max-w-6xl mx-auto px-2 sm:px-0"
+        [totalItems]="rejectedItems.length"
+        (pageChange)="onPageChange($event)">
+      </app-pagination>
     </div>
     <ng-template #noRejectedItems>
       <div *ngIf="!loading && rejectedItems.length === 0" class="text-center text-gray-500 py-8">

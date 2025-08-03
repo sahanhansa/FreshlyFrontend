@@ -101,6 +101,41 @@ export class OrderService {
     );
   }
 
+  /**
+   * Get the count of orders for a given laundry and status
+   */
+  getOrderCountByStatus(laundryId: string, statusId: string): Observable<number> {
+    return this.http.get<number>(`${this.apiUrl}/count-by-status/${laundryId}/${statusId}`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  /**
+   * Get sorted order IDs for a laundry
+   */
+  getSortedOrderIds(laundryId: string): Observable<string[]> {
+    return this.http.get<{ orderIds: string[] }>(`${this.apiUrl}/${laundryId}/sorted-order-ids`)
+      .pipe(map(res => res.orderIds));
+  }
+
+  /**
+   * Get email details for invoice
+   */
+  getEmailDetails(laundryId: string, orderId: string): Observable<any> {
+    return this.http.get<any>(`${environment.apiUrl}/api/Laundry/get-email-details/${laundryId}/${orderId}`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  /**
+   * Send invoice email
+   */
+  sendInvoiceEmail(payload: any): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrl}/api/Email/send`, payload).pipe(
+      catchError(this.handleError)
+    );
+  }
+
   private handleError(error: HttpErrorResponse) {
     console.error('OrderService Error:', error);
     

@@ -5,20 +5,23 @@ import { Router } from '@angular/router';
 import { OrderService } from '../../../services/order.service'; // Import OrderService for fetching orders
 import { Order } from '../../../models/order.model'; // Import Order model to type the orders array
 import { SearchBarComponent } from '../../../components/shared/search-bar/search-bar.component';
-import { PaginationComponent } from '../../../components/shared/pagination/pagination.component'; 
+import { PaginationComponent } from '../../../components/laundry/pagination/pagination.component'; 
 import { FooterComponent } from '../../../components/shared/footer/footer.component'; 
 import { RouterModule } from '@angular/router'; 
+import { NavbarComponent } from '../../../components/shared/navbar/navbar.component';
 
 @Component({
   selector: 'app-new-orders', 
   standalone: true, 
-  imports: [CommonModule, RouterModule, HttpClientModule, PaginationComponent, SearchBarComponent, FooterComponent], 
+  imports: [CommonModule, RouterModule, HttpClientModule, PaginationComponent, SearchBarComponent, FooterComponent, NavbarComponent], 
   templateUrl: './new-orders.component.html'
 })
 export class NewOrdersComponent implements OnInit { // The component class that implements OnInit lifecycle hook
   orders: Order[] = []; // Declare an array to store the orders fetched from the backend
   loading = false; // Flag to indicate if data is still being loaded
   error: string | null = null; // Variable to store any error message
+  isSorted = false;
+  originalOrders: Order[] = [];
 
   constructor(
     private orderService: OrderService,
@@ -65,6 +68,22 @@ export class NewOrdersComponent implements OnInit { // The component class that 
         console.error('Error loading new orders:', err); // Log the error for debugging
       }
     });
+  }
+
+  toggleSort() {
+    this.isSorted = !this.isSorted;
+    if (this.isSorted) {
+      const laundryId = localStorage.getItem('laundryId');
+      if (!laundryId) return;
+      this.orderService.getSortedOrderIds(laundryId).subscribe(sortedIds => {
+        this.originalOrders = [...this.orders];
+        this.orders = sortedIds
+          .map(id => this.orders.find(order => order.orderId === id))
+          .filter(order => !!order) as Order[];
+      });
+    } else {
+      this.orders = [...this.originalOrders];
+    }
   }
 
   // Method to format the current date into a readable format

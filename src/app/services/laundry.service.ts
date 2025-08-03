@@ -93,7 +93,7 @@ export class LaundryService {
       location: dto.city || dto.City || 'Location not available',
       rating: roundedRating,
       hasRatings: hasRatings,
-      imageUrl: 'assets/laundry.png',
+      imageUrl: dto.laundryImageLink || dto.LaundryImageLink || 'assets/laundry.png',
       itemIds: []
     };
   }

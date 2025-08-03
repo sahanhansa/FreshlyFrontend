@@ -9,6 +9,7 @@ export interface OrderItems {
   quantity: number;
 }
 
+
 // Interface representing the structure of a delivery order
 export interface DeliveryOrder {
   id: string;
@@ -19,7 +20,7 @@ export interface DeliveryOrder {
   contact: string;
   laundryName: string;
   detailsLink: string;
-  orderItems: string[];       // Array of item names (can be extended to use OrderItems[])
+  orderItems: OrderItems[];       // Array of item names (can be extended to use OrderItems[])
   paymenthMethod: string;
   deliverDriver?: string;
   note?:string;
@@ -63,6 +64,7 @@ export class DeliveryService {
     return this.http.get<any>(url).pipe(
       // Map raw response to DeliveryOrder object
       map(order => this.mapToDeliveryOrder(order)),
+
       catchError(error => {
         // Log and handle any error
         console.error('Error fetching delivery by ID:', error.message || error);

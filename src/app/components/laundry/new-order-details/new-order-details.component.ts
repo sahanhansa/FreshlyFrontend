@@ -13,6 +13,8 @@ interface OrderItem {
   itemId: string;
   serviceId: string;
   serviceName: string;
+  garmentTypeId?: string;
+  garmentTypeName?: string;
 }
 
 interface OrderDetails {
@@ -45,6 +47,8 @@ interface OrderDetails {
 })
 export class NewOrderDetailsComponent implements OnInit {
   orderDetails: OrderDetails | null = null;
+  customerName: string | null = null;
+  customerContactNumbers: string[] = [];
   loading = false;
   error: string | null = null;
   processing = false;
@@ -57,6 +61,38 @@ export class NewOrderDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadOrderDetails();
+  }
+
+  // Method to get status badge styling
+  getStatusBadgeClass(status: string): string {
+    const statusLower = status?.toLowerCase();
+    switch (statusLower) {
+      case 'completed':
+      case 'delivered':
+        return 'bg-green-100 text-green-800';
+      case 'finished processing':
+        return 'bg-blue-200 text-blue-800';
+      case 'processing in laundry':
+        return 'bg-yellow-100 text-yellow-800';
+      case 'order picked up':
+      case 'picked up':
+        return 'bg-orange-100 text-orange-800';
+      case 'out for delivery':
+        return 'bg-purple-100 text-purple-800';
+      case 'order placed':
+        return 'bg-gray-100 text-gray-800';
+      default:
+        return 'bg-gray-200 text-gray-600';
+    }
+  }
+
+  // Method to get display status text
+  getDisplayStatus(status: string): string {
+    const statusLower = status?.toLowerCase();
+    if (statusLower === 'order picked up' || statusLower === 'picked up') {
+      return 'New';
+    }
+    return status;
   }
 
   loadOrderDetails(): void {
@@ -74,8 +110,17 @@ export class NewOrderDetailsComponent implements OnInit {
     }
 
     this.orderService.getOrderDetailsById(laundryId, orderId, statusId).subscribe({
-      next: (data: OrderDetails) => {
-        this.orderDetails = data;
+      next: (data: any) => {
+        // Support new API response structure
+        if (data.orderDetails) {
+          this.orderDetails = data.orderDetails;
+          this.customerName = data.customerName || null;
+          this.customerContactNumbers = data.customerContactNumbers || [];
+        } else {
+          this.orderDetails = data;
+          this.customerName = null;
+          this.customerContactNumbers = [];
+        }
         this.loading = false;
       },
       error: (err) => {
@@ -106,6 +151,9 @@ export class NewOrderDetailsComponent implements OnInit {
         if (this.orderDetails) {
           this.orderDetails.status = 'Processing in Laundry';
         }
+        // Store the order ID to highlight it in the processing orders list
+        localStorage.setItem('highlightedOrderId', orderId);
+        localStorage.setItem('highlightedOrderTimestamp', Date.now().toString());
         this.processing = false;
         this.router.navigate(['/processing-orders']);
       },

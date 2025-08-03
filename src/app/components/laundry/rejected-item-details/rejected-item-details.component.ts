@@ -13,6 +13,8 @@ import { FooterComponent } from '@app/components/shared/footer/footer.component'
 export class RejectedItemDetailsComponent implements OnInit {
   rejectedItem: any;
   orderDetails: any;
+  customerName: string | null = null;
+  customerContactNumbers: string[] = [];
   loading = true;
 
   constructor(
@@ -27,7 +29,15 @@ export class RejectedItemDetailsComponent implements OnInit {
     const statusId = this.route.snapshot.paramMap.get('statusId');
     if (laundryId && orderId && statusId) {
       this.orderService.getModifiedOrderDetailsById(laundryId, orderId, statusId).subscribe(details => {
-        this.orderDetails = details;
+        if (details.orderDetails) {
+          this.orderDetails = details.orderDetails;
+          this.customerName = details.customerName || null;
+          this.customerContactNumbers = details.customerContactNumbers || [];
+        } else {
+          this.orderDetails = details;
+          this.customerName = null;
+          this.customerContactNumbers = [];
+        }
         this.loading = false;
       }, () => { this.loading = false; });
     } else {

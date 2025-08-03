@@ -43,6 +43,7 @@ export class DeliveryPendingOrderDetailsComponent {
         next: (order) => {
           if (order) {
             console.log('Fetched delivery order:', order);
+            
             this.deliveryOrder = order;
             this.orderId = order.id;
             this.driverId = order.deliverDriver || null;

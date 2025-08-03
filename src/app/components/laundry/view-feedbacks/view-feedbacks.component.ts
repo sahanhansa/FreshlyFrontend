@@ -4,16 +4,28 @@ import { FeedbackService } from '../../../services/feedback.service';
 import { Feedback } from '@app/models/feedback.model';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { PaginationComponent } from '@app/components/laundry/pagination/pagination.component';
 
 @Component({
   selector: 'app-view-feedbacks',
   standalone: true,
-  imports: [CommonModule,FormsModule],
+  imports: [CommonModule, FormsModule, PaginationComponent],
   templateUrl: './view-feedbacks.component.html'
 })
 export class ViewFeedbacksComponent implements OnInit {
   feedbacks: (Feedback & { showReply?: boolean; replyText?: string; read?: boolean })[] = [];
   loading: boolean = true;
+  currentPage = 1;
+  pageSize = 5;
+
+  get paginatedFeedbacks() {
+    const start = (this.currentPage - 1) * this.pageSize;
+    return this.feedbacks.slice(start, start + this.pageSize);
+  }
+
+  onPageChange(page: number) {
+    this.currentPage = page;
+  }
 
   constructor(private feedbackService: FeedbackService, private router: Router) {}
 
@@ -69,8 +81,8 @@ export class ViewFeedbacksComponent implements OnInit {
 
   viewOrder(feedback: any): void {
     // Navigate to delivered/completed order details
-    if (feedback.orderId && feedback.status?.statusID) {
-      this.router.navigate(['/completed-order-details', feedback.orderId, feedback.status.statusID]);
+    if (feedback.orderId && feedback.statusId) {
+      this.router.navigate(['/completed-order-details', feedback.orderId, feedback.statusId]);
     } else {
       alert('Order details not available for this feedback.');
     }

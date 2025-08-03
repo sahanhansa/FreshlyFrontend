@@ -17,12 +17,11 @@ export interface CompleteTasksDetailsDto {
 })
 export class CompleteTasksService {
   private apiUrl = 'http://localhost:5027/api/Order';
-  driverId = localStorage.getItem('driverId');
+  driverId = localStorage.getItem('userId');
 
   constructor(private http: HttpClient) {}
 
   getAllCompleteTasks(): Observable<CompleteTasksDetailsDto[]> {
     return this.http.get<CompleteTasksDetailsDto[]>(`${this.apiUrl}/GetAllCompleteTasks/${this.driverId}`);
-   
   }
 }
