@@ -64,6 +64,11 @@ export class LaundryOrdersComponent implements OnInit {
     this.orderService.getFilteredOrders(laundryId).subscribe({
       next: (data: Order[]) => {
         this.orders = data; // Assign the fetched orders to the orders array
+        this.originalOrders = [...data]; // Store original order for sorting toggle
+        
+        // Apply automatic sorting
+        this.applySorting();
+        
         // Compute available statuses
         const statusSet = new Set<string>();
         for (const order of data) {
@@ -190,17 +195,30 @@ export class LaundryOrdersComponent implements OnInit {
     this.currentPage = page;
   }
 
+  applySorting(): void {
+    const laundryId = localStorage.getItem('laundryId');
+    if (!laundryId) return;
+    
+    this.orderService.getSortedOrderIds(laundryId).subscribe({
+      next: (sortedIds) => {
+        this.orders = sortedIds
+          .map(id => this.originalOrders.find(order => order.orderId === id))
+          .filter(order => !!order) as Order[];
+        this.isSorted = true;
+      },
+      error: (err) => {
+        console.error('Error applying sorting:', err);
+        // If sorting fails, keep the original order
+        this.orders = [...this.originalOrders];
+        this.isSorted = false;
+      }
+    });
+  }
+
   toggleSort() {
     this.isSorted = !this.isSorted;
     if (this.isSorted) {
-      const laundryId = localStorage.getItem('laundryId');
-      if (!laundryId) return;
-      this.orderService.getSortedOrderIds(laundryId).subscribe(sortedIds => {
-        this.originalOrders = [...this.orders];
-        this.orders = sortedIds
-          .map(id => this.orders.find(order => order.orderId === id))
-          .filter(order => !!order) as Order[];
-      });
+      this.applySorting();
     } else {
       this.orders = [...this.originalOrders];
     }

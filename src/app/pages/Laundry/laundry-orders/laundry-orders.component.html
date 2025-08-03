@@ -40,11 +40,12 @@
       [ngClass]="{'bg-[#0A84FF] text-white': statusFilter === status, 'bg-gray-200 text-gray-700': statusFilter !== status}"
       (click)="setStatusFilter(status)"
     >{{ status }}</button>
-    <button (click)="toggleSort()" class="flex items-center px-4 py-2 rounded-full border bg-gray-100 hover:bg-blue-100 text-sm font-medium ml-4">
+    <button (click)="toggleSort()" class="flex items-center px-4 py-2 rounded-full border text-sm font-medium ml-4"
+            [ngClass]="{'bg-blue-100 text-blue-700': isSorted, 'bg-gray-100 hover:bg-blue-100': !isSorted}">
       <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
         <path d="M3 7h18M3 12h12M3 17h6" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
-      Sort: New to Older
+      {{ isSorted ? 'Sorted: New to Older' : 'Sort: New to Older' }}
     </button>
   </div>
 
