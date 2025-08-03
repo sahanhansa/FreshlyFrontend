@@ -46,15 +46,10 @@ export class DataService {
     return this.http.post<ImageUploadResponse>(`${this.baseUrl}/Image/upload`, formData);
   }
 
-  getGarmentTypeIdByName(name: string): Observable<{ garmentTypeId: string }> {
-    return this.http.get<{ garmentTypeId: string }>(`${this.baseUrl}/Item/garment-type-id-by-name/${encodeURIComponent(name)}`);
+  getGarmentTypeIdByName(name: string): Observable<{ garmentTypeId: string | boolean, message?: string }> {
+    return this.http.get<{ garmentTypeId: string | boolean, message?: string }>(`${this.baseUrl}/Item/garment-type-id-by-name/${encodeURIComponent(name)}`);
   }
 
-  addGarmentType(name: string): Observable<any> {
-    return this.http.post(
-      `${this.baseUrl}/Item/add-garment-type`,
-      { name },
-      { responseType: 'text' as 'json' }
-    );
-  }
+  // Note: addGarmentType is no longer needed as the backend automatically creates garment types
+  // when calling getGarmentTypeIdByName with a non-existent name
 }
