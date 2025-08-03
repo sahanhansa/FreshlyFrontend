@@ -33,7 +33,9 @@
           </div>
           <div>
             <span class="text-gray-600 font-medium">Status:</span>
-            <span class="ml-2 text-blue-600">{{ orderDetails.status }}</span>
+            <span class="ml-2 px-3 py-1 rounded-full text-sm font-semibold border" [ngClass]="getStatusBadgeClass(orderDetails.status)">
+              {{ getDisplayStatus(orderDetails.status) }}
+            </span>
           </div>
         </div>
         <div *ngIf="customerContactNumbers && customerContactNumbers.length > 0" class="mt-6">
@@ -72,8 +74,21 @@
                 <span class="text-gray-600 font-medium">Total:</span>
                 <p class="font-semibold">Rs. {{ (item.price || item.pricePerItem) * (item.quantity || item.count) }}</p>
               </div>
-              <div *ngIf="rejectedItem && item.itemId === rejectedItem.itemId" class="col-span-1 lg:col-span-5">
-                <span class="text-red-600 font-bold">[Rejected: {{ rejectedItem.reason }}]</span>
+              <div *ngIf="item.reason" class="col-span-1 lg:col-span-5">
+                <span class="text-red-600 font-bold">[Rejected: {{ item.reason }}]</span>
+              </div>
+              <div *ngIf="rejectedItem && item.itemId === rejectedItem.itemId" class="col-span-1 lg:col-span-5 mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                <div class="space-y-2">
+                  <div class="text-red-600 font-bold">[Rejected: {{ rejectedItem.reason }}]</div>
+                  <div *ngIf="rejectedBy" class="text-sm">
+                    <span class="text-gray-600 font-medium">Rejected By:</span>
+                    <span class="ml-2 text-red-600 font-semibold">{{ rejectedBy }}</span>
+                  </div>
+                  <div *ngIf="rejectedAt" class="text-sm">
+                    <span class="text-gray-600 font-medium">Rejected At:</span>
+                    <span class="ml-2 text-red-600">{{ rejectedAt | date:'dd/MM/yyyy HH:mm' }}</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -103,6 +118,20 @@
                     <p class="font-semibold">{{ mItem.serviceName }}</p>
                   </div>
                   <!-- No label needed in the last column -->
+                </div>
+                <!-- Rejection Details for Modified Items -->
+                <div class="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                  <div class="space-y-2">
+                    <div *ngIf="mItem.reason" class="text-red-600 font-bold">[Rejected: {{ mItem.reason }}]</div>
+                    <div *ngIf="rejectedBy" class="text-sm">
+                      <span class="text-gray-600 font-medium">Rejected By:</span>
+                      <span class="ml-2 text-red-600 font-semibold">{{ rejectedBy }}</span>
+                    </div>
+                    <div *ngIf="rejectedAt" class="text-sm">
+                      <span class="text-gray-600 font-medium">Rejected At:</span>
+                      <span class="ml-2 text-red-600">{{ rejectedAt | date:'dd/MM/yyyy HH:mm' }}</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

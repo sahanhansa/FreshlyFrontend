@@ -3,6 +3,7 @@ import { FooterComponent } from '../../../components/shared/footer/footer.compon
 import { Router } from '@angular/router';
 import { NavbarComponent } from '../../../components/shared/navbar/navbar.component';
 import { OrderService } from '../../../services/order.service';
+import { RejectedItemService } from '../../../services/rejected-item.service';
 import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 
@@ -19,9 +20,10 @@ export class HomeComponent implements OnInit, OnDestroy {
   newOrdersCount: number | null = null;
   processingOrdersCount: number | null = null;
   completedOrdersCount: number | null = null;
+  rejectedItemsCount: number | null = null;
   private subscriptions: Subscription[] = [];
 
-  constructor(private router: Router, private orderService: OrderService) {}
+  constructor(private router: Router, private orderService: OrderService, private rejectedItemService: RejectedItemService) {}
 
   ngOnInit(): void {
     // Get the laundry name from localStorage (set during login)
@@ -38,7 +40,8 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.subscriptions.push(
         this.orderService.getOrderCountByStatus(laundryId, statusIds.new).subscribe(count => this.newOrdersCount = count),
         this.orderService.getOrderCountByStatus(laundryId, statusIds.processing).subscribe(count => this.processingOrdersCount = count),
-        this.orderService.getOrderCountByStatus(laundryId, statusIds.completed).subscribe(count => this.completedOrdersCount = count)
+        this.orderService.getOrderCountByStatus(laundryId, statusIds.completed).subscribe(count => this.completedOrdersCount = count),
+        this.rejectedItemService.getRejectedItemsCount(laundryId).subscribe(response => this.rejectedItemsCount = response.rejectedItemCount)
       );
     }
   }
