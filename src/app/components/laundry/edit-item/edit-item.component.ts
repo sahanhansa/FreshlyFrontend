@@ -356,9 +356,9 @@ export class EditItemComponent implements OnInit {
         setTimeout(() => {
           console.log('Clearing success message and navigating');
           this.successMessage = '';
+          this.itemUpdated.emit(); // Emit event to notify parent
           this.router.navigate(['/laundry-items']);
         }, 3000);
-        this.itemUpdated.emit(); // Emit event to notify parent
       },
       error: err => {
         console.error('Full error:', err);
