@@ -86,4 +86,16 @@ export class CustomerAddressPopupComponent implements OnInit {
   onConfirmOrder() {
     this.confirmOrder.emit(this.address);
   }
+
+  initializeContactNumber(event: any) {
+    if (!this.address.contactNumbers) {
+      this.address.contactNumbers = [];
+    }
+    
+    if (this.address.contactNumbers.length === 0) {
+      this.address.contactNumbers.push(event.target.value);
+    } else {
+      this.address.contactNumbers[0] = event.target.value;
+    }
+  }
 }
