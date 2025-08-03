@@ -49,10 +49,11 @@
       <span class="value">
         <ul>
           <li *ngFor="let item of deliveryOrder?.orderItems">
-            {{ item }}
+            {{ item.itemName }} - {{ item.quantity }}
           </li>
         </ul>
       </span>
+
     </div>
     <div class="row">
       <span class="label">Laundry Name:</span>
@@ -63,8 +64,7 @@
       <span class="value">{{ deliveryOrder.paymenthMethod === "COD" ? 'Cash On Delivery' : 'Online Payment' }}
       </span>
     </div>
-    <div class="row"
-      *ngIf="deliveryOrder.paymenthMethod === 'COD'||  !deliveryOrder.isPaid">
+    <div class="row" *ngIf="deliveryOrder.paymenthMethod === 'COD'||  !deliveryOrder.isPaid">
       <span class="label">Total Amount:</span>
       <span class="value">Rs.{{ deliveryOrder.totalAmount }}</span>
     </div>
@@ -84,17 +84,14 @@
     </div>
 
     <div class="row">
-  <span></span>
-  <span 
-    class="value px-3 py-1 rounded-full text-white text-sm font-semibold"
-    [ngClass]="{
+      <span></span>
+      <span class="value px-3 py-1 rounded-full text-white text-sm font-semibold" [ngClass]="{
       'bg-green-600': deliveryOrder.isPaid,
       'bg-red-600': !deliveryOrder.isPaid
-    }"
-  >
-    {{ deliveryOrder.isPaid ? 'PAID' : 'NOT PAID' }}
-  </span>
-</div>
+    }">
+        {{ deliveryOrder.isPaid ? 'PAID' : 'NOT PAID' }}
+      </span>
+    </div>
 
   </div>
 

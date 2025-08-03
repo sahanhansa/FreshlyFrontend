@@ -4,20 +4,23 @@ import { HttpClientModule } from '@angular/common/http';
 import { OrderService } from '../../../services/order.service';
 import { Order } from '../../../models/order.model';
 import { SearchBarComponent } from '../../../components/shared/search-bar/search-bar.component';
-import { PaginationComponent } from '../../../components/shared/pagination/pagination.component'; 
+import { PaginationComponent } from '../../../components/laundry/pagination/pagination.component'; 
 import { FooterComponent } from '../../../components/shared/footer/footer.component'; 
 import { RouterModule } from '@angular/router'; 
+import { NavbarComponent } from '../../../components/shared/navbar/navbar.component';
 
 @Component({
   selector: 'app-completed-orders',
   standalone: true,
-  imports: [CommonModule, RouterModule, HttpClientModule, PaginationComponent, SearchBarComponent, FooterComponent],
+  imports: [CommonModule, RouterModule, HttpClientModule, PaginationComponent, SearchBarComponent, FooterComponent, NavbarComponent],
   templateUrl: './completed-orders.component.html'
 })
 export class CompletedOrdersComponent implements OnInit {
   orders: Order[] = [];
   loading = false;
   error: string | null = null;
+  isSorted = false;
+  originalOrders: Order[] = [];
 
   constructor(private orderService: OrderService) {}
 
@@ -53,6 +56,22 @@ export class CompletedOrdersComponent implements OnInit {
         console.error('Error loading completed orders:', err);
       }
     });
+  }
+
+  toggleSort() {
+    this.isSorted = !this.isSorted;
+    if (this.isSorted) {
+      const laundryId = localStorage.getItem('laundryId');
+      if (!laundryId) return;
+      this.orderService.getSortedOrderIds(laundryId).subscribe(sortedIds => {
+        this.originalOrders = [...this.orders];
+        this.orders = sortedIds
+          .map(id => this.orders.find(order => order.orderId === id))
+          .filter(order => !!order) as Order[];
+      });
+    } else {
+      this.orders = [...this.originalOrders];
+    }
   }
 
   getFormattedDate(): string {
