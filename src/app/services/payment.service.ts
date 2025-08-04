@@ -8,6 +8,7 @@ export class PaymentService {
   constructor(private http: HttpClient) { }
 
   createPayHerePayment(order: any) {
+    debugger; // Only triggers when PayHere payment is created
     return this.http.post(`${this.apiUrl}/create-payhere-payment`, order);
   }
 }
