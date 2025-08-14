@@ -1,10 +1,9 @@
 import { Component, EventEmitter, Inject, Input, Output } from '@angular/core';
-import { MarksToDoneButtonComponent } from '../marks-to-done-button/marks-to-done-button.component';
 import { DeliveryService } from '@app/services/driver/delivery.service';
 
 @Component({
   selector: 'app-delivery-question-2',
-  imports: [MarksToDoneButtonComponent],
+  imports: [],
   templateUrl: './delivery-question-2.component.html',
   styleUrl: './delivery-question-2.component.css'
 })

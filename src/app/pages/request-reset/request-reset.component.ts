@@ -2,13 +2,13 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { PasswordResetService } from '../../services/password-reset.service';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
-import { CommonModule, NgClass, NgIf } from '@angular/common';
+import { CommonModule, NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-request-reset',
   templateUrl: './request-reset.component.html',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, NgClass, NgIf, RouterModule]
+  imports: [CommonModule, ReactiveFormsModule, NgIf, RouterModule]
 })
 export class RequestResetComponent {
   resetForm: FormGroup;

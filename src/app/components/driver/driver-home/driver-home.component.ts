@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { environment } from '@environments/environment';
 import { catchError, map, Observable, of } from 'rxjs';
 
@@ -16,7 +16,7 @@ export interface DriverHome {
 @Component({
   selector: 'app-driver-home',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule],
   templateUrl: './driver-home.component.html',
   styleUrls: ['./driver-home.component.css']
 })

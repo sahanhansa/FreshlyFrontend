@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import {LaundriesCardCustomerComponent} from './laundries-list.component'
-import {ClothingListComponent} from './clothing-list.component';
 import {ContactPromptComponent} from './contact-prompt.component';
 
 
@@ -11,7 +10,6 @@ import {ContactPromptComponent} from './contact-prompt.component';
   styleUrls: ['./cus-home.component.css'], // Optional, if you're not using inline styles
   imports: [
     LaundriesCardCustomerComponent,
-    ClothingListComponent,
     ContactPromptComponent
     // Import your laundries card component
  
