@@ -4,7 +4,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { OrderService } from '../../../services/order.service'; // Import OrderService for fetching orders
 import { Order } from '../../../models/order.model'; // Import Order model to type the orders array
-import { SearchBarComponent } from '../../../components/shared/search-bar/search-bar.component';
+import { SearchBarComponent } from '../../../components/laundry/search-bar/search-bar.component';
 import { PaginationComponent } from '../../../components/laundry/pagination/pagination.component'; 
 import { FooterComponent } from '../../../components/shared/footer/footer.component'; 
 import { RouterModule } from '@angular/router'; 
@@ -22,6 +22,9 @@ export class NewOrdersComponent implements OnInit { // The component class that 
   error: string | null = null; // Variable to store any error message
   isSorted = false;
   originalOrders: Order[] = [];
+  currentPage = 1;
+  pageSize = 10;
+  searchText: string = '';
 
   constructor(
     private orderService: OrderService,
@@ -32,10 +35,7 @@ export class NewOrdersComponent implements OnInit { // The component class that 
     this.loadNewOrders(); // Fetch the new orders when the component is initialized
   }
 
-  viewOrderDetails(orderId: string, statusId: string): void {
-    console.log('Navigating to order details:', orderId, statusId);
-    this.router.navigate(['/new-order-details', orderId, statusId]);
-  }
+
 
   // Method to fetch regular orders from the backend
   loadNewOrders(): void {
@@ -96,6 +96,38 @@ export class NewOrdersComponent implements OnInit { // The component class that 
       year: 'numeric', 
       month: 'long', 
       day: 'numeric' 
+    });
+  }
+
+  // Search and pagination methods
+  get filteredOrders(): Order[] {
+    if (!this.searchText.trim()) return this.orders;
+    
+    const searchLower = this.searchText.toLowerCase();
+    return this.orders.filter(order => 
+      order.orderId.toLowerCase().includes(searchLower) ||
+      order.placedDate.toString().toLowerCase().includes(searchLower)
+    );
+  }
+
+  get paginatedOrders(): Order[] {
+    const start = (this.currentPage - 1) * this.pageSize;
+    return this.filteredOrders.slice(start, start + this.pageSize);
+  }
+
+  onPageChange(page: number): void {
+    this.currentPage = page;
+  }
+
+  onSearch(searchText: string) {
+    this.searchText = searchText;
+    this.currentPage = 1; // Reset to first page when searching
+  }
+
+  viewOrderDetails(orderId: string, statusId: string): void {
+    // Navigate to order details with source parameter for home
+    this.router.navigate(['/new-order-details', orderId, statusId], { 
+      queryParams: { source: 'home' } 
     });
   }
 }

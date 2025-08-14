@@ -15,7 +15,7 @@
     </div>
 
     <!-- Search Bar -->
-    <app-search-bar class="max-w-full sm:max-w-3xl md:max-w-4xl lg:max-w-6xl mx-auto px-2 sm:px-0 mb-2"></app-search-bar>
+    <app-search-bar (search)="onSearch($event)" class="max-w-full sm:max-w-3xl md:max-w-4xl lg:max-w-6xl mx-auto px-2 sm:px-0 mb-2"></app-search-bar>
 
     <!-- Loading State -->
     <div *ngIf="loading" class="text-center py-4">
@@ -54,7 +54,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let order of orders; let i = index"
+          <tr *ngFor="let order of paginatedOrders; let i = index"
               [ngClass]="{ 'bg-white': i % 2 === 0, 'bg-[#D0F6FF]': i % 2 === 1 }"
               class="h-12">
             <td class="px-4 sm:px-6 py-2 sm:py-3 font-semibold text-black text-sm sm:text-base">
@@ -64,9 +64,7 @@
               {{ order.placedDate }}
             </td>
             <td class="px-4 sm:px-6 py-2 sm:py-3">
-          
-
-              <button [routerLink]="['/completed-order-details', order.orderId, order.status.statusID]"
+              <button (click)="viewOrderDetails(order.orderId, order.status.statusID)"
                       class="flex items-center gap-2 text-black border border-black rounded-full px-3 sm:px-4 py-1 text-xs sm:text-sm hover:bg-blue-600 hover:text-white transition">
                 <img src="assets/eye.png" class="w-3 sm:w-4 h-3 sm:h-4" alt="View Icon" />
                 View More
@@ -79,7 +77,12 @@
     </div>
 
     <!-- Pagination -->
-    <app-pagination class="mt-4 max-w-full sm:max-w-3xl md:max-w-4xl lg:max-w-6xl mx-auto px-2 sm:px-0"></app-pagination>
+    <app-pagination 
+      [currentPage]="currentPage"
+      [totalItems]="filteredOrders.length"
+      (pageChange)="onPageChange($event)"
+      class="mt-4 max-w-full sm:max-w-3xl md:max-w-4xl lg:max-w-6xl mx-auto px-2 sm:px-0">
+    </app-pagination>
 
   </div>
 

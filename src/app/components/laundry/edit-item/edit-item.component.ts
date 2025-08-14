@@ -4,6 +4,8 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { ItemService } from '../../../services/item.service';
 import { DataService } from '../../../services/data.services';
+import { forkJoin, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { ServiceWithPrice } from '@app/models/item.model';
 import { catchError } from 'rxjs/operators';
 
@@ -57,6 +59,9 @@ export class EditItemComponent implements OnInit {
   // --- Custom Dropdown State ---
   isCategoryDropdownOpen: boolean = false;
   isServiceDropdownOpen: { [garmentTypeId: string]: boolean } = {};
+  
+  // --- Loading States ---
+  isAddingMaterial: boolean = false;
 
   item = {
     name: '',
@@ -143,18 +148,26 @@ export class EditItemComponent implements OnInit {
         this.materialServices = {};
         this.materialNames = {};
         if (item.garmentTypes && Array.isArray(item.garmentTypes)) {
+          console.log('Loading garment types:', item.garmentTypes);
           for (const gt of item.garmentTypes) {
             if (gt.garmentTypeId) {
+              console.log('Adding garment type:', gt.garmentTypeId, 'with name:', gt.garmentTypeName);
               this.materials.push(gt.garmentTypeId);
               this.materialServices[gt.garmentTypeId] = (gt.services || []).map((s: any) => ({
                 serviceId: s.serviceId,
                 serviceName: s.serviceName,
                 price: s.price
               }));
-              this.materialNames[gt.garmentTypeId] = gt.garmentTypeName || gt.garmentTypeId;
+              // Use the proper garment type name from backend
+              this.materialNames[gt.garmentTypeId] = gt.garmentTypeName || 'Unknown Material';
             }
           }
         }
+        console.log('Final materials state:', {
+          materials: this.materials,
+          materialNames: this.materialNames,
+          materialServices: this.materialServices
+        });
         this.loading = false;
       },
       error: (error) => {
@@ -175,7 +188,7 @@ export class EditItemComponent implements OnInit {
           },
           error: (error) => {
             console.error('Error fetching service ID:', error);
-            alert('Error fetching service ID. Please try again.');
+            // Don't show alert, just log the error
           }
         });
     }
@@ -226,32 +239,105 @@ export class EditItemComponent implements OnInit {
 
   onSubmit() {
     if (!this.item.name || !this.item.categoryId || this.materials.length === 0) {
-      alert('Please fill all required fields and add at least one garment type.');
+      // Don't show alert, just return silently
       return;
     }
 
-    // Build garmentTypes array for the payload
-    const garmentTypesPayload = this.materials.map(mat => ({
-      garmentTypeId: mat,
-      garmentTypeName: this.materialNames[mat],
-      services: (this.materialServices[mat] || []).map(s => ({
-        serviceId: s.serviceId,
-        serviceName: s.serviceName,
-        price: s.price ?? 0
-      }))
-    }));
-
-    // Check if all services have serviceId
-    for (const gt of garmentTypesPayload) {
-      for (const service of gt.services) {
-        if (!service.serviceId) {
-          // Instead of alert, just return and rely on button disabling/loading indicator
-          return;
+    // Validate that at least one material has services with prices
+    let hasValidService = false;
+    for (const material of this.materials) {
+      const services = this.materialServices[material];
+      if (services && services.length > 0) {
+        for (const service of services) {
+          if (service.serviceName && service.price && service.price > 0) {
+            hasValidService = true;
+            break;
+          }
         }
       }
     }
 
+    if (!hasValidService) {
+      // Don't show alert, just return silently
+      return;
+    }
+
     this.isSubmitting = true;
+
+    // Step 1: Resolve serviceId for each service that doesn't have one
+    const serviceIdRequests: Observable<any>[] = [];
+    const materialServiceMap: { [material: string]: { [serviceName: string]: number } } = {};
+
+    this.materials.forEach(material => {
+      const services = this.materialServices[material] || [];
+      services.forEach((service, idx) => {
+        if (!service.serviceId && service.serviceName) {
+          if (!materialServiceMap[material]) materialServiceMap[material] = {};
+          materialServiceMap[material][service.serviceName] = idx;
+          
+          serviceIdRequests.push(
+            this.dataService.getServiceIdByName(service.serviceName).pipe(
+              map(res => ({
+                material,
+                serviceName: service.serviceName,
+                serviceIdx: idx,
+                serviceId: res.serviceId
+              }))
+            )
+          );
+        }
+      });
+    });
+
+    // If no serviceId resolution needed, proceed directly
+    if (serviceIdRequests.length === 0) {
+      this.submitUpdate();
+      return;
+    }
+
+    // Resolve all serviceIds first
+    forkJoin(serviceIdRequests).subscribe({
+      next: (serviceIdResults) => {
+        // Fill in the resolved serviceIds
+        serviceIdResults.forEach(res => {
+          if (res.material && res.serviceIdx !== undefined) {
+            const services = this.materialServices[res.material];
+            if (services && services[res.serviceIdx]) {
+              services[res.serviceIdx].serviceId = res.serviceId;
+            }
+          }
+        });
+        
+        // Now submit the update
+        this.submitUpdate();
+      },
+      error: (error) => {
+        console.error('Error resolving service IDs:', error);
+        // Don't show alert, just log the error
+        this.isSubmitting = false;
+      }
+    });
+  }
+
+  private submitUpdate() {
+    // Build garmentTypes array for the payload (matching backend UpdateItemDTO)
+    const garmentTypesPayload = this.materials.map(mat => ({
+      garmentTypeId: mat,
+      services: (this.materialServices[mat] || [])
+        .filter(s => s.serviceName && s.price && s.price > 0) // Only include valid services
+        .map(s => ({
+          serviceId: s.serviceId,
+          serviceName: s.serviceName,
+          price: s.price ?? 0
+        }))
+    })).filter(gt => gt.services.length > 0); // Only include garment types with services
+
+    if (garmentTypesPayload.length === 0) {
+      // Don't show alert, just return silently
+      this.isSubmitting = false;
+      return;
+    }
+
     const payload = {
       name: this.item.name,
       description: this.item.description,
@@ -262,21 +348,51 @@ export class EditItemComponent implements OnInit {
 
     console.log('Updating item with payload:', payload);
     this.itemService.updateItem(this.itemId, payload).subscribe({
-      next: () => {
-        this.successMessage = 'Item updated successfully!';
-        setTimeout(() => {
-          this.successMessage = '';
-          this.router.navigate(['/laundry-items']);
-        }, 1500);
-        this.itemUpdated.emit(); // Emit event to notify parent
-        this.isSubmitting = false;
-      },
+              next: () => {
+          console.log('Item updated successfully, setting success message');
+          this.successMessage = 'Successfully updated!';
+          console.log('Success message set:', this.successMessage);
+          this.isSubmitting = false;
+          setTimeout(() => {
+            console.log('Clearing success message and navigating');
+            this.successMessage = '';
+            this.itemUpdated.emit(); // Emit event to notify parent
+            this.router.navigate(['/laundry-items']);
+          }, 3000);
+        },
       error: err => {
         console.error('Full error:', err);
-        alert('Error: ' + err.message);
+        // Don't show alert, just log the error
         this.isSubmitting = false;
       },
     });
+  }
+
+  // Check if form meets minimum requirements for update
+  hasMinimumRequirements(): boolean {
+    // Check if all required fields are filled
+    if (!this.item.name || !this.item.categoryId || !this.imageUrl) {
+      return false;
+    }
+    
+    // Check if at least one material is added
+    if (this.materials.length === 0) {
+      return false;
+    }
+    
+    // Check if at least one material has at least one service with price
+    for (const material of this.materials) {
+      const services = this.materialServices[material];
+      if (services && services.length > 0) {
+        for (const service of services) {
+          if (service.serviceName && service.price && service.price > 0) {
+            return true; // Found at least one valid service
+          }
+        }
+      }
+    }
+    
+    return false; // No valid service found
   }
 
   // Update categoryId when categoryName changes
@@ -322,24 +438,62 @@ export class EditItemComponent implements OnInit {
   }
 
   addMaterial() {
-    const matName = this.newMaterialInput.trim().toLowerCase();
-    if (!matName || Object.values(this.materialNames).includes(matName)) {
+    const matName = this.newMaterialInput.trim();
+    if (!matName) {
       this.newMaterialInput = '';
       return;
     }
-    this.dataService.getGarmentTypeIdByName(matName).pipe(
-      catchError(() => this.dataService.addGarmentType(matName))
-    ).subscribe({
+    
+    // Check if material already exists (case-insensitive)
+    const existingMaterial = Object.values(this.materialNames).find(
+      name => name.toLowerCase() === matName.toLowerCase()
+    );
+    if (existingMaterial) {
+      // Don't show alert, just clear input and return silently
+      this.newMaterialInput = '';
+      return;
+    }
+    
+    // Set loading state
+    this.isAddingMaterial = true;
+    
+    // The backend will automatically create the garment type if it doesn't exist
+    this.dataService.getGarmentTypeIdByName(matName).subscribe({
       next: (res: any) => {
-        const garmentTypeId = res.garmentTypeId;
-        this.materials.push(garmentTypeId);
-        this.materialNames[garmentTypeId] = matName;
-        this.materialServices[garmentTypeId] = this.availableServices.map(s => ({
-          serviceId: '',
-          serviceName: s,
-          price: 0
-        }));
+        console.log('Backend response for new material:', res);
+        if (res && res.garmentTypeId && typeof res.garmentTypeId === 'string') {
+          const garmentTypeId = res.garmentTypeId;
+          console.log('Adding new material with ID:', garmentTypeId, 'and name:', matName);
+          this.materials.push(garmentTypeId);
+          this.materialNames[garmentTypeId] = matName; // Store original case
+          this.materialServices[garmentTypeId] = this.availableServices.map(s => ({
+            serviceId: '',
+            serviceName: s,
+            price: 0
+          }));
+          
+          console.log('Updated materials state after adding:', {
+            materials: this.materials,
+            materialNames: this.materialNames,
+            materialServices: this.materialServices
+          });
+          
+          // Show success message if garment type was created
+          if (res.message) {
+            console.log('Success:', res.message);
+          }
+        } else {
+          // Don't show alert for garment type creation failure, just log it
+          console.log('Failed to create garment type:', res.message || 'Unknown error');
+        }
         this.newMaterialInput = '';
+        this.isAddingMaterial = false;
+      },
+      error: (error) => {
+        console.error('Error creating garment type:', error);
+        // Don't show alert, just log the error
+        this.newMaterialInput = '';
+        this.isAddingMaterial = false;
       }
     });
   }
@@ -366,8 +520,10 @@ export class EditItemComponent implements OnInit {
   }
 
   goBackToItems() {
+    // Only navigate back if user explicitly wants to go back
     this.router.navigate(['/laundry-items']);
   }
+
 
 }
 

@@ -77,6 +77,7 @@ export class ProcessingOrderDetailsComponent implements OnInit, OnDestroy {
   emailDetails: any = null; // Store fetched email details
   orderFinishedProcessing = false; // Track if order has been finished processing
   processingSuccessMessage: string | null = null; // Success message after finishing processing
+  showSuccessModal = false; // Show success modal for invoice
 
   // Set this to the actual statusId for 'Finished Processing' from your backend
   private readonly finishedProcessingStatusId = 'b8dfb70c-5f5e-11f0-8064-0022481a06a0';
@@ -494,9 +495,15 @@ export class ProcessingOrderDetailsComponent implements OnInit, OnDestroy {
     this.orderService.sendInvoiceEmail(payload).subscribe({
       next: () => {
         this.sendingInvoice = false;
-        this.processingSuccessMessage = null; // Clear success message when invoice is sent
+        this.showSuccessModal = true;
         this.cdr.markForCheck();
-        this.router.navigate(['/processing-orders']);
+        
+        // Close modal and navigate back after 2 seconds
+        setTimeout(() => {
+          this.showSuccessModal = false;
+          this.cdr.markForCheck();
+          this.router.navigate(['/processing-orders']);
+        }, 2000);
       },
       error: (err) => {
         this.error = 'Failed to send invoice email.';
@@ -544,7 +551,22 @@ export class ProcessingOrderDetailsComponent implements OnInit, OnDestroy {
   }
 
   goBack(): void {
-    this.router.navigate(['/laundry/orders']);
+    // Get the source from route parameters or localStorage
+    const source = this.route.snapshot.queryParamMap.get('source') || localStorage.getItem('orderDetailsSource') || 'home';
+    
+    switch (source) {
+      case 'home':
+        this.router.navigate(['/completed-orders']);
+        break;
+      case 'orders':
+        this.router.navigate(['/laundry-orders']);
+        break;
+      case 'feedbacks':
+        this.router.navigate(['/laundry-feedbacks']);
+        break;
+      default:
+        this.router.navigate(['/processing-orders']);
+    }
   }
 
   get noteKey(): string | null {

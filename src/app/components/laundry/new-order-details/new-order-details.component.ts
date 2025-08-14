@@ -166,6 +166,21 @@ export class NewOrderDetailsComponent implements OnInit {
   }
 
   goBack(): void {
-    this.router.navigate(['/new-orders']);
+    // Get the source from route parameters or localStorage
+    const source = this.route.snapshot.queryParamMap.get('source') || localStorage.getItem('orderDetailsSource') || 'home';
+    
+    switch (source) {
+      case 'home':
+        this.router.navigate(['/completed-orders']);
+        break;
+      case 'orders':
+        this.router.navigate(['/laundry-orders']);
+        break;
+      case 'feedbacks':
+        this.router.navigate(['/laundry-feedbacks']);
+        break;
+      default:
+        this.router.navigate(['/new-orders']);
+    }
   }
 } 

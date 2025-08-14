@@ -11,7 +11,7 @@ import { CommonModule } from '@angular/common';
 export class PaginationComponent {
   @Input() currentPage = 1;
   @Input() totalItems = 0;
-  @Input() itemsPerPage = 5;
+  @Input() itemsPerPage = 10;
   @Output() pageChange = new EventEmitter<number>();
 
   get totalPages(): number {
@@ -20,18 +20,21 @@ export class PaginationComponent {
 
 
    setPage(page: number) {
+    this.currentPage = page;
     this.pageChange.emit(page);
   }
 
   prevPage() {
     if (this.currentPage > 1) {
-      this.pageChange.emit(this.currentPage - 1);
+      this.currentPage--;
+      this.pageChange.emit(this.currentPage);
     }
   }
 
   nextPage() {
     if (this.currentPage < this.totalPages) {
-      this.pageChange.emit(this.currentPage + 1);
+      this.currentPage++;
+      this.pageChange.emit(this.currentPage);
     }
   }
 }

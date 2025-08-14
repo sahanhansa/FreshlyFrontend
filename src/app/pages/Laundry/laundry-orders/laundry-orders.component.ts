@@ -25,13 +25,33 @@ export class LaundryOrdersComponent implements OnInit {
   pageSize = 10;
   isSorted = false;
   originalOrders: Order[] = [];
+  searchText: string = '';
 
   get filteredOrders(): Order[] {
-    if (this.statusFilter === 'All') return this.orders;
-    return this.orders.filter(order => {
-      const status = order.status.statusName === 'order picked up' ? 'New' : order.status.statusName;
-      return status === this.statusFilter;
-    });
+    let filtered = this.orders;
+    
+    // Apply search filter
+    if (this.searchText.trim()) {
+      const searchLower = this.searchText.toLowerCase();
+      filtered = filtered.filter(order => 
+        order.orderId.toLowerCase().includes(searchLower) ||
+        order.customer.customerFName.toLowerCase().includes(searchLower) ||
+        order.customer.customerLName.toLowerCase().includes(searchLower) ||
+        `${order.customer.customerFName} ${order.customer.customerLName}`.toLowerCase().includes(searchLower) ||
+        order.status.statusName.toLowerCase().includes(searchLower) ||
+        order.totalCost.toString().includes(searchLower)
+      );
+    }
+    
+    // Apply status filter
+    if (this.statusFilter !== 'All') {
+      filtered = filtered.filter(order => {
+        const status = order.status.statusName === 'order picked up' ? 'New' : order.status.statusName;
+        return status === this.statusFilter;
+      });
+    }
+    
+    return filtered;
   }
 
   get paginatedOrders() {
@@ -64,6 +84,11 @@ export class LaundryOrdersComponent implements OnInit {
     this.orderService.getFilteredOrders(laundryId).subscribe({
       next: (data: Order[]) => {
         this.orders = data; // Assign the fetched orders to the orders array
+        this.originalOrders = [...data]; // Store original order for sorting toggle
+        
+        // Apply automatic sorting
+        this.applySorting();
+        
         // Compute available statuses
         const statusSet = new Set<string>();
         for (const order of data) {
@@ -178,28 +203,48 @@ export class LaundryOrdersComponent implements OnInit {
 
   goToOrderDetails(order: Order): void {
     const route = this.getOrderDetailsRoute(order);
-    this.router.navigate(route);
+    // Add source parameter to indicate user came from orders tab
+    this.router.navigate(route, { queryParams: { source: 'orders' } });
   }
 
   setStatusFilter(status: string) {
     this.statusFilter = status;
+    this.currentPage = 1; // Reset to first page when filter changes
   }
 
   onPageChange(page: number) {
     this.currentPage = page;
   }
 
+  onSearch(searchText: string) {
+    this.searchText = searchText;
+    this.currentPage = 1; // Reset to first page when searching
+  }
+
+  applySorting(): void {
+    const laundryId = localStorage.getItem('laundryId');
+    if (!laundryId) return;
+    
+    this.orderService.getSortedOrderIds(laundryId).subscribe({
+      next: (sortedIds) => {
+        this.orders = sortedIds
+          .map(id => this.originalOrders.find(order => order.orderId === id))
+          .filter(order => !!order) as Order[];
+        this.isSorted = true;
+      },
+      error: (err) => {
+        console.error('Error applying sorting:', err);
+        // If sorting fails, keep the original order
+        this.orders = [...this.originalOrders];
+        this.isSorted = false;
+      }
+    });
+  }
+
   toggleSort() {
     this.isSorted = !this.isSorted;
     if (this.isSorted) {
-      const laundryId = localStorage.getItem('laundryId');
-      if (!laundryId) return;
-      this.orderService.getSortedOrderIds(laundryId).subscribe(sortedIds => {
-        this.originalOrders = [...this.orders];
-        this.orders = sortedIds
-          .map(id => this.orders.find(order => order.orderId === id))
-          .filter(order => !!order) as Order[];
-      });
+      this.applySorting();
     } else {
       this.orders = [...this.originalOrders];
     }

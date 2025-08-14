@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { forkJoin, of, Observable } from 'rxjs';
 import { catchError, switchMap, map } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-add-item',
@@ -37,10 +38,14 @@ export class AddItemComponent implements OnInit {
 
   // --- Custom Dropdown State ---
   isCategoryDropdownOpen: boolean = false;
+  
+  // --- Loading States ---
+  isAddingMaterial: boolean = false;
 
   constructor(
     private dataService: DataService, 
-    private itemService: ItemService
+    private itemService: ItemService,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -145,23 +150,46 @@ export class AddItemComponent implements OnInit {
       this.materialInput = '';
       return;
     }
-    // Check if garmentType exists in DB, if not, create it, then add to UI
-    this.dataService.getGarmentTypeIdByName(mat).pipe(
-      catchError(() => this.dataService.addGarmentType(mat)),
-      switchMap(res => {
-        if (res && res.garmentTypeId) {
-          // Only add to UI if DB operation is successful
-    this.materials.push(mat);
-    this.materialServices[mat] = this.availableServices.map(s => ({
-      serviceId: '',
-      serviceName: s,
-      price: null
-    }));
+    
+    // Set loading state
+    this.isAddingMaterial = true;
+    
+    // The backend will automatically create the garment type if it doesn't exist
+    this.dataService.getGarmentTypeIdByName(mat).subscribe({
+      next: (response) => {
+        console.log('Garment type response:', response);
+        
+        if (response.garmentTypeId && typeof response.garmentTypeId === 'string') {
+          // Add to UI if we got a valid garment type ID
+          this.materials.push(mat);
+          this.materialServices[mat] = this.availableServices.map(s => ({
+            serviceId: '',
+            serviceName: s,
+            price: null
+          }));
+          
+          // Show success message if garment type was created
+          if (response.message) {
+            console.log('Success:', response.message);
+          }
+        } else {
+          // Show error message if garment type creation failed
+          if (response.message) {
+            alert(`Failed to create garment type: ${response.message}`);
+          } else {
+            alert('Failed to create garment type. Please try again.');
+          }
         }
-    this.materialInput = '';
-        return of(null);
-      })
-    ).subscribe();
+        this.materialInput = '';
+        this.isAddingMaterial = false;
+      },
+      error: (error) => {
+        console.error('Error creating garment type:', error);
+        alert('Error creating garment type. Please try again.');
+        this.materialInput = '';
+        this.isAddingMaterial = false;
+      }
+    });
   }
 
   // Remove a material
@@ -187,9 +215,37 @@ export class AddItemComponent implements OnInit {
     this.materialServices[mat][idx].serviceName = name;
   }
 
+  // Check if form meets minimum requirements
+  hasMinimumRequirements(): boolean {
+    // Check if all required fields are filled
+    if (!this.itemName || !this.categoryId || !this.imageUrl) {
+      return false;
+    }
+    
+    // Check if at least one material is added
+    if (this.materials.length === 0) {
+      return false;
+    }
+    
+    // Check if at least one material has at least one service with price
+    for (const material of this.materials) {
+      const services = this.materialServices[material];
+      if (services && services.length > 0) {
+        for (const service of services) {
+          if (service.serviceName && service.price && service.price > 0) {
+            return true; // Found at least one valid service
+          }
+        }
+      }
+    }
+    
+    return false; // No valid service found
+  }
+
   onSubmit() {
-    if (!this.itemName || !this.categoryId || this.services.length === 0) {
-      this.errorMessage = 'Please fill all required fields and add at least one service.';
+    // Check minimum requirements
+    if (!this.hasMinimumRequirements()) {
+      this.errorMessage = 'Please fill all required fields (Item Name, Category, Image) and add at least one material with one service and price.';
       return;
     }
 
@@ -198,38 +254,30 @@ export class AddItemComponent implements OnInit {
       return;
     }
 
-    // Check all material services for valid serviceName and price > 0
-    for (const mat of this.materials) {
-      const services = this.materialServices[mat];
-      for (const service of services) {
-        if (!service.serviceName || service.price == null || service.price <= 0) {
-          this.errorMessage = 'All services must have a name and a price greater than zero.';
-          return;
-        }
-      }
-    }
-
-    for (const service of this.services) {
-      if (!service.serviceId) {
-        this.errorMessage = 'Please wait for service IDs to be loaded or try again.';
-        return;
-      }
-    }
-
     this.errorMessage = '';
     this.isSubmitting = true;
-    // Step 1: Resolve garmentTypeId for each material
+
+    // Get laundry ID from localStorage
+    const laundryId = localStorage.getItem('laundryId');
+    if (!laundryId) {
+      this.errorMessage = 'Laundry ID not found. Please log in again.';
+      this.isSubmitting = false;
+      return;
+    }
+
+    // Step 1: Resolve garmentTypeId for each material (backend will auto-create if needed)
     const materialIdObservables = this.materials.map(mat =>
       this.dataService.getGarmentTypeIdByName(mat).pipe(
-        catchError(() =>
-          this.dataService.addGarmentType(mat)
-        ),
-        switchMap(res => {
-          if (res && res.garmentTypeId) {
-            return of({ name: mat, garmentTypeId: res.garmentTypeId });
+        map(res => {
+          if (res && res.garmentTypeId && typeof res.garmentTypeId === 'string') {
+            return { name: mat, garmentTypeId: res.garmentTypeId as string };
           } else {
-            return of({ name: mat, garmentTypeId: null });
+            return { name: mat, garmentTypeId: null };
           }
+        }),
+        catchError(error => {
+          console.error(`Error getting garment type ID for ${mat}:`, error);
+          return of({ name: mat, garmentTypeId: null });
         })
       )
     );
@@ -247,7 +295,8 @@ export class AddItemComponent implements OnInit {
       // Prevent null garmentTypeId
       const invalidGarment = materialResults.find(g => !g.garmentTypeId);
       if (invalidGarment) {
-        alert('Failed to resolve garmentTypeId for one or more materials. Please check your input.');
+        this.errorMessage = 'Failed to resolve garmentTypeId for one or more materials. Please check your input.';
+        this.isSubmitting = false;
         return;
       }
 
@@ -258,7 +307,6 @@ export class AddItemComponent implements OnInit {
           if (!service.serviceId) {
             serviceIdRequests.push(
               this.dataService.getServiceIdByName(service.serviceName!).pipe(
-                // Attach context for where to put the result
                 map(res => ({
                   garmentTypeName: gt.name,
                   serviceIdx: idx,
@@ -286,7 +334,7 @@ export class AddItemComponent implements OnInit {
         // Now build the final payload
         const garmentTypesPayload = garmentTypesWithNames.map(gt => ({
           garmentTypeId: gt.garmentTypeId,
-          garmentTypeName: gt.name, // <-- Add this line to match backend expectation
+          garmentTypeName: gt.name,
           services: gt.services.map(s => ({
             serviceId: s.serviceId,
             serviceName: s.serviceName,
@@ -312,14 +360,17 @@ export class AddItemComponent implements OnInit {
         console.log('Sending payload:', payload);
         this.itemService.addItem(payload).subscribe({
           next: () => {
+            console.log('Item added successfully, setting success message');
             this.successMessage = 'Item added successfully!';
-            setTimeout(() => {
-              this.successMessage = '';
-              this.goBackToItems();
-            }, 1500);
-            this.resetForm();
-            this.itemAdded.emit(); // Emit event to refresh item grid
+            console.log('Success message set:', this.successMessage);
             this.isSubmitting = false;
+            setTimeout(() => {
+              console.log('Clearing success message and navigating');
+              this.successMessage = '';
+              this.resetForm();
+              this.itemAdded.emit(); // Emit event to refresh item grid
+              this.router.navigate(['/laundry-items']);
+            }, 3000);
           },
           error: err => {
             console.error('Full error:', err);
@@ -341,6 +392,11 @@ export class AddItemComponent implements OnInit {
     this.services = [];
     this.isImageUploading = false;
     
+    // Reset materials
+    this.materials = [];
+    this.materialServices = {};
+    this.materialInput = '';
+    
     // Reset category and add initial service
     this.onCategoryChange();
     this.addService();
@@ -353,6 +409,6 @@ export class AddItemComponent implements OnInit {
   }
 
   goBackToItems() {
-    window.location.href = '/laundry-items';
+    this.router.navigate(['/laundry-items']);
   }
 }

@@ -37,7 +37,7 @@ export class ItemGridComponent implements OnInit {
   error: string | null = null;
 
   currentPage = 1;
-  pageSize = 10; // Set to 10 rows per page
+  pageSize = 12; // Set to 12 rows per page for laundry items
 
   categories: string[] = ['Ladies', 'Gents', 'Kids', 'Other'];
   selectedCategory: string = 'All';

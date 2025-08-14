@@ -16,4 +16,9 @@ export class SearchBarComponent {
   onSearch() {
     this.search.emit(this.searchText);
   }
+
+  clearSearch() {
+    this.searchText = '';
+    this.search.emit(this.searchText);
+  }
 }

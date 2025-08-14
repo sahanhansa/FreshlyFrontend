@@ -93,6 +93,7 @@
 
   <!-- Pagination -->
   <app-pagination
+    [currentPage]="currentPage"
     [totalItems]="filteredItems.length"
     (pageChange)="onPageChange($event)"
   ></app-pagination>
