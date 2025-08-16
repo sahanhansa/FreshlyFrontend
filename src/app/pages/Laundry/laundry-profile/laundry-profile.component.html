@@ -15,34 +15,78 @@
   </div>
 </div>
 
-<div class="min-h-screen flex flex-col">
+<div class="min-h-screen flex flex-col bg-gradient-to-br from-blue-50 via-white to-indigo-50">
 <app-navbar></app-navbar>
 
-  <main class="flex-grow p-6 space-y-6 bg-white text-black">
+  <!-- Hero Section -->
+  <div class="text-white py-8 px-6" style="background-color: #0A84FF;">
+    <div class="max-w-7xl mx-auto">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-4">
+          <!-- Laundry Logo/Image -->
+          <div class="w-16 h-16 rounded-full overflow-hidden bg-white/20 backdrop-blur-sm border-2 border-white/30 flex items-center justify-center">
+            <img *ngIf="laundryDetails?.logoUrl; else defaultLogo" 
+                 [src]="laundryDetails.logoUrl" 
+                 [alt]="laundryDetails.laundryName + ' logo'" 
+                 class="w-full h-full object-cover rounded-full">
+            <ng-template #defaultLogo>
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-4m-5 0H3m2 0h4M9 7h6m-6 4h6m-6 4h6"/>
+              </svg>
+            </ng-template>
+          </div>
+          <div>
+            <h1 class="text-3xl font-bold">{{ laundryDetails?.laundryName || 'Laundry Dashboard' }}</h1>
+            <p class="text-blue-100 mt-1">{{ laundryDetails?.laundryName ? 'Manage your business efficiently' : 'Loading...' }}</p>
+          </div>
+        </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <app-stats-card *ngFor="let stat of stats" [stat]="stat"></app-stats-card>
+      </div>
+    </div>
+  </div>
+
+  <main class="flex-grow p-6 space-y-8 max-w-7xl mx-auto w-full">
+
+    <!-- Enhanced Stats Section -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <app-stats-card *ngFor="let stat of stats; let i = index" [stat]="stat" 
+        [ngClass]="'transform hover:scale-105 transition-all duration-300 delay-' + (i * 100)"></app-stats-card>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div class="h-[500px]">
-        <app-laundry-details-card [laundryId]="laundryId" (orderCountChanged)="onOrderCountChanged($event)"></app-laundry-details-card>
+        <!-- Combined Details Section -->
+    <div class="w-full">
+      <app-combined-details [laundryId]="laundryId" (orderCountChanged)="onOrderCountChanged($event)"></app-combined-details>
+    </div>
+
+    <!-- Access Notice Section -->
+    <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+      <div class="bg-gradient-to-r from-amber-500 to-orange-600 text-white p-4">
+        <h2 class="text-xl font-bold flex items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+          </svg>
+          Important Notice
+        </h2>
       </div>
-      <div class="h-[500px]">
-        <app-owner-details-card [laundryId]="laundryId"></app-owner-details-card>
+      <div class="p-4">
+        <app-access-notice></app-access-notice>
       </div>
     </div>
 
-    <div class="ml-2 mr-2 mt-5"><app-access-notice></app-access-notice></div>
-    
+    <!-- Logout Section -->
+    <div class="flex justify-end mt-8">
+      <button 
+        (click)="logout()"
+        class="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 flex items-center space-x-3 group">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 group-hover:rotate-12 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+        </svg>
+        <span class="text-lg">Sign Out</span>
+        <div class="w-2 h-2 bg-white/30 rounded-full group-hover:bg-white/50 transition-colors duration-300"></div>
+      </button>
+    </div>
 
   </main>
-
-  <div class="flex justify-end mt-2 mb-5 mr-10">
-    <button class="bg-red-600 text-white text-sm px-4 py-1.5 rounded-full hover:bg-blue-700 transition" (click)="logout()">
-      Log Out
-    </button>
-  </div>
 
   <app-footer></app-footer>
 </div>
@@ -54,7 +98,39 @@
   80% { transform: scale(0.97); }
   100% { transform: scale(1); }
 }
+
+@keyframes slideInUp {
+  0% { transform: translateY(50px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes fadeInScale {
+  0% { transform: scale(0.9); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
 .animate-bounce-in {
   animation: bounce-in 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+.animate-slide-up {
+  animation: slideInUp 0.6s ease-out;
+}
+
+.animate-fade-scale {
+  animation: fadeInScale 0.8s ease-out;
+}
+
+/* Hover effects for cards */
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Custom gradient backgrounds */
+.bg-hero-pattern {
+  background-image: 
+    radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
 }
 </style>

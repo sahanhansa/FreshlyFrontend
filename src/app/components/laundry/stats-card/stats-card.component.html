@@ -1,17 +1,69 @@
-<div class="border rounded-lg p-6 text-center shadow-sm">
-  <div class="text-gray-600 font-semibold">{{ stat?.title }}</div>
-  <div class="text-2xl font-bold mt-1">
-    <ng-container *ngIf="stat?.title === 'Average Rating' && ratingObj; else defaultStat">
-      <span>
-        <ng-container *ngFor="let star of getStarsArray(ratingObj.max); let i = index">
-          <svg *ngIf="i < Math.floor(ratingObj.rating)" xmlns="http://www.w3.org/2000/svg" class="inline w-6 h-6 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.175c.969 0 1.371 1.24.588 1.81l-3.38 2.455a1 1 0 00-.364 1.118l1.287 3.966c.3.922-.755 1.688-1.54 1.118l-3.38-2.455a1 1 0 00-1.175 0l-3.38 2.455c-.784.57-1.838-.196-1.54-1.118l1.287-3.966a1 1 0 00-.364-1.118L2.05 9.394c-.783-.57-.38-1.81.588-1.81h4.175a1 1 0 00.95-.69l1.286-3.967z"/></svg>
-          <svg *ngIf="i >= Math.ceil(ratingObj.rating)" xmlns="http://www.w3.org/2000/svg" class="inline w-6 h-6 text-gray-300" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.175c.969 0 1.371 1.24.588 1.81l-3.38 2.455a1 1 0 00-.364 1.118l1.287 3.966c.3.922-.755 1.688-1.54 1.118l-3.38-2.455a1 1 0 00-1.175 0l-3.38 2.455c-.784.57-1.838-.196-1.54-1.118l1.287-3.966a1 1 0 00-.364-1.118L2.05 9.394c-.783-.57-.38-1.81.588-1.81h4.175a1 1 0 00.95-.69l1.286-3.967z"/></svg>
-          <svg *ngIf="i >= Math.floor(ratingObj.rating) && i < Math.ceil(ratingObj.rating)" xmlns="http://www.w3.org/2000/svg" class="inline w-6 h-6 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><defs><linearGradient id="half"><stop offset="50%" stop-color="#facc15"/><stop offset="50%" stop-color="#d1d5db"/></linearGradient></defs><path fill="url(#half)" d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.175c.969 0 1.371 1.24.588 1.81l-3.38 2.455a1 1 0 00-.364 1.118l1.287 3.966c.3.922-.755 1.688-1.54 1.118l-3.38-2.455a1 1 0 00-1.175 0l-3.38 2.455c-.784.57-1.838-.196-1.54-1.118l1.287-3.966a1 1 0 00-.364-1.118L2.05 9.394c-.783-.57-.38-1.81.588-1.81h4.175a1 1 0 00.95-.69l1.286-3.967z"/></svg>
-        </ng-container>
-      </span>
-    </ng-container>
-    <ng-template #defaultStat>
-      {{ stat?.value }}
-    </ng-template>
+<div class="relative overflow-hidden rounded-2xl bg-gradient-to-br shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+     [ngClass]="{
+       'from-blue-500 to-blue-600': stat?.title === 'Order Count',
+       'from-yellow-500 to-orange-600': stat?.title === 'Average Rating', 
+       'from-green-500 to-emerald-600': stat?.title === 'Revenue'
+     }">
+  
+  <!-- Background Pattern -->
+  <div class="absolute inset-0 opacity-10">
+    <div class="absolute top-2 right-2 w-20 h-20 border-2 border-white/30 rounded-full"></div>
+    <div class="absolute bottom-2 left-2 w-12 h-12 border border-white/30 rounded-full"></div>
+  </div>
+  
+  <!-- Content -->
+  <div class="relative z-10 p-6 text-white">
+    <!-- Icon Section -->
+    <div class="flex items-center justify-between mb-4">
+      <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
+        <!-- Order Count Icon -->
+        <svg *ngIf="stat?.title === 'Order Count'" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v6a2 2 0 002 2h2m0 0h2m-2 0v4a2 2 0 002 2h2a2 2 0 002-2v-4m0 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v0"/>
+        </svg>
+        <!-- Rating Icon -->
+        <svg *ngIf="stat?.title === 'Average Rating'" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.175c.969 0 1.371 1.24.588 1.81l-3.38 2.455a1 1 0 00-.364 1.118l1.287 3.966c.3.922-.755 1.688-1.54 1.118l-3.38-2.455a1 1 0 00-1.175 0l-3.38 2.455c-.784.57-1.838-.196-1.54-1.118l1.287-3.966a1 1 0 00-.364-1.118L2.05 9.394c-.783-.57-.38-1.81.588-1.81h4.175a1 1 0 00.95-.69l1.286-3.967z"/>
+        </svg>
+        <!-- Revenue Icon -->
+        <svg *ngIf="stat?.title === 'Revenue'" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"/>
+        </svg>
+      </div>
+      <div class="text-right">
+        <div class="text-white/80 text-sm font-medium">{{ stat?.title }}</div>
+      </div>
+    </div>
+    
+    <!-- Value Section -->
+    <div class="text-3xl font-bold mb-2">
+      <ng-container *ngIf="stat?.title === 'Average Rating' && ratingObj; else defaultStat">
+        <div class="flex items-center justify-between">
+          <span class="text-2xl">{{ ratingObj.rating.toFixed(1) }}</span>
+          <div class="flex">
+            <ng-container *ngFor="let star of getStarsArray(ratingObj.max); let i = index">
+              <svg *ngIf="i < Math.floor(ratingObj.rating)" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.175c.969 0 1.371 1.24.588 1.81l-3.38 2.455a1 1 0 00-.364 1.118l1.287 3.966c.3.922-.755 1.688-1.54 1.118l-3.38-2.455a1 1 0 00-1.175 0l-3.38 2.455c-.784.57-1.838-.196-1.54-1.118l1.287-3.966a1 1 0 00-.364-1.118L2.05 9.394c-.783-.57-.38-1.81.588-1.81h4.175a1 1 0 00.95-.69l1.286-3.967z"/>
+              </svg>
+              <svg *ngIf="i >= Math.ceil(ratingObj.rating)" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white/40" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.175c.969 0 1.371 1.24.588 1.81l-3.38 2.455a1 1 0 00-.364 1.118l1.287 3.966c.3.922-.755 1.688-1.54 1.118l-3.38-2.455a1 1 0 00-1.175 0l-3.38 2.455c-.784.57-1.838-.196-1.54-1.118l1.287-3.966a1 1 0 00-.364-1.118L2.05 9.394c-.783-.57-.38-1.81.588-1.81h4.175a1 1 0 00.95-.69l1.286-3.967z"/>
+              </svg>
+              <svg *ngIf="i >= Math.floor(ratingObj.rating) && i < Math.ceil(ratingObj.rating)" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                <defs><linearGradient id="half"><stop offset="50%" stop-color="currentColor"/><stop offset="50%" stop-color="rgba(255,255,255,0.4)"/></linearGradient></defs>
+                <path fill="url(#half)" d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.175c.969 0 1.371 1.24.588 1.81l-3.38 2.455a1 1 0 00-.364 1.118l1.287 3.966c.3.922-.755 1.688-1.54 1.118l-3.38-2.455a1 1 0 00-1.175 0l-3.38 2.455c-.784.57-1.838-.196-1.54-1.118l1.287-3.966a1 1 0 00-.364-1.118L2.05 9.394c-.783-.57-.38-1.81.588-1.81h4.175a1 1 0 00.95-.69l1.286-3.967z"/>
+              </svg>
+            </ng-container>
+          </div>
+        </div>
+      </ng-container>
+      <ng-template #defaultStat>
+        {{ stat?.value }}
+      </ng-template>
+    </div>
+    
+    <!-- Progress Bar for Visual Effect -->
+    <div class="w-full bg-white/20 rounded-full h-2">
+      <div class="bg-white rounded-full h-2 transition-all duration-1000"
+           [style.width]="getProgressWidth() + '%'"></div>
+    </div>
   </div>
 </div>
