@@ -60,6 +60,7 @@ import { ReportsComponent } from './pages/Driver/reports/reports.component';
 import { AuthHelperService } from './services/auth-helper.service';
 import { AuthGuard } from './guards/role.guard';
 import { InsightsComponent } from './pages/Laundry/insights/insights.component';
+import { TasksComponent } from './pages/Driver/tasks/tasks.component';
 
 
 
@@ -120,7 +121,7 @@ export const routes: Routes = [
   {path: 'complete-tasks-page',component: CompleteTasksPageComponent} ,
   {path: 'edit-details-form', component: EditDetailsFormComponent},
   {path: 'reports', component: ReportsComponent},
-  {path: 'tasks', component: BasketComponent}, // Redirect to tasks page
+  {path: 'tasks', component: TasksComponent}, // Redirect to tasks page
   {path: 'logout-page', component: LogoutPageComponent},
   { path: 'payment', loadComponent: () => import('./components/payment/payment.component').then(m => m.PaymentComponent) },
   { path: 'payment-success', loadComponent: () => import('./components/payment-success/payment-success.component').then(m => m.PaymentSuccessComponent) },
