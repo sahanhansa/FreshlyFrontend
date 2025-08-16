@@ -16,6 +16,7 @@ export class ContactUsComponent implements OnInit {
   contactForm!: FormGroup;
   loading = false;
   error: string | null = null;
+  successMessage: string = '';
   laundryId: string | null = null;
   isSubjectDropdownOpen: boolean = false;
 
@@ -57,19 +58,31 @@ export class ContactUsComponent implements OnInit {
 
   onSubmit() {
     if (this.contactForm.invalid || !this.laundryId) return;
+    
+    this.loading = true;
+    this.error = null;
+    
     const payload = {
       laundryID: this.laundryId,
       selectedSubject: this.contactForm.get('subject')?.value,
       message: this.contactForm.get('message')?.value
     };
+    
     this.laundryService.addMessage(payload).subscribe({
       next: () => {
-        alert('Message sent successfully!');
+        this.successMessage = 'Message sent successfully!';
         this.contactForm.get('subject')?.reset('');
         this.contactForm.get('message')?.reset('');
+        this.loading = false;
+        
+        // Clear success message after 3 seconds
+        setTimeout(() => {
+          this.successMessage = '';
+        }, 3000);
       },
       error: () => {
-        alert('Failed to send message. Please try again.');
+        this.error = 'Failed to send message. Please try again.';
+        this.loading = false;
       }
     });
   }

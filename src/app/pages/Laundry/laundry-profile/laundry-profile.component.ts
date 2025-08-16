@@ -9,6 +9,8 @@ import { AccessNoticeComponent } from '@app/components/laundry/access-notice/acc
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import type { StatsCardStat } from '@app/components/laundry/stats-card/stats-card.component';
+import { Router } from '@angular/router';
+import { AuthHelperService } from '../../../services/auth-helper.service';
 
 
 @Component({
@@ -43,7 +45,14 @@ export class LaundryProfileComponent implements OnInit {
   averageRating: number = 0;
   maxRating: number = 5;
 
-  constructor(private http: HttpClient) {}
+  // Logout confirmation state
+  showLogoutConfirmation: boolean = false;
+
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private authHelper: AuthHelperService
+  ) {}
 
   ngOnInit() {
     this.laundryId = localStorage.getItem('laundryId') || '';
@@ -103,7 +112,28 @@ export class LaundryProfileComponent implements OnInit {
     ];
   }
 
-  logout() {
+  // Show logout confirmation dialog
+  showLogoutDialog() {
+    this.showLogoutConfirmation = true;
+  }
+
+  // Cancel logout
+  cancelLogout() {
+    this.showLogoutConfirmation = false;
+  }
+
+  // Confirm and execute logout
+  confirmLogout() {
     console.log('Logging out...');
+    
+    // Clear all user data using AuthHelperService
+    this.authHelper.logout();
+    
+    // Redirect to home page
+    this.router.navigate(['/']);
+  }
+
+  logout() {
+    this.showLogoutDialog();
   }
 }
