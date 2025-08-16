@@ -9,7 +9,7 @@
     </div>
 
     <!-- Filters -->
-    <div class="bg-white rounded-xl shadow-sm border p-6 mb-10">
+    <div class="bg-white rounded-xl shadow-sm border p-6 mb-10 justify-between flex items-center gap-4">
       <div class="flex flex-wrap gap-4 items-center">
         <span class="text-sm font-semibold text-gray-700 flex items-center gap-2">
           <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -17,112 +17,151 @@
             <line x1="12" y1="8" x2="12" y2="12"></line>
             <line x1="12" y1="16" x2="12.01" y2="16"></line>
           </svg>
-          Filters:
+          Filter Order:
         </span>
 
-        <select class="border border-gray-300 rounded-md px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
-          <option>All Drivers</option>
-          <option>John Smith</option>
-          <option>Priya Fernando</option>
-          <option>Kumar Perera</option>
-          <option>Saman Silva</option>
-        </select>
+        <!-- Replaced dropdown with input type date -->
+        <input [(ngModel)]="filterOrder" type="text" placeholder="Enter Order ID"
+          class="border border-gray-300 w-full rounded-md px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition" />
+        <div *ngIf="errorMessage" class="text-red-600 text-sm mt-2">
+          {{ errorMessage }}
+        </div>
+        <button (click)="exportReport()" [disabled]="isLoadingExport"
+          class="bg-blue-600 text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-blue-700 shadow transition flex items-center gap-2">
 
-        <select class="border border-gray-300 rounded-md px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
-          <option>Today</option>
-          <option selected>This Week</option>
-          <option>This Month</option>
-          <option>This Quarter</option>
-        </select>
+          <ng-container *ngIf="isLoadingExport; else defaultText">
+            <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
+              viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z">
+              </path>
+            </svg>
+            Exporting...
+          </ng-container>
 
-        <button class="bg-blue-600 text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-blue-700 shadow transition">
-          Export Report
+          <ng-template #defaultText>
+            Export Report
+          </ng-template>
+
+        </button>
+
+      </div>
+
+      <div>
+        <button (click)="goToTasks()"
+          class="bg-blue-600 text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-blue-700 shadow transition">
+          Go To Completed Tasks
         </button>
       </div>
     </div>
 
     <!-- Stats Overview -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-      <div class="bg-white rounded-xl shadow-md border p-6">
-        <p class="text-sm font-semibold text-gray-500">Total Pickups</p>
-        <p class="text-3xl font-bold text-green-600 mt-1">164</p>
-        <p class="text-xs text-gray-400 mt-1">156 completed</p>
-      </div>
-      <div class="bg-white rounded-xl shadow-md border p-6">
-        <p class="text-sm font-semibold text-gray-500">Total Deliveries</p>
-        <p class="text-3xl font-bold text-blue-600 mt-1">164</p>
-        <p class="text-xs text-gray-400 mt-1">156 completed</p>
-      </div>
-      <div class="bg-white rounded-xl shadow-md border p-6">
-        <p class="text-sm font-semibold text-gray-500">Total Revenue</p>
-        <p class="text-3xl font-bold text-purple-600 mt-1">Rs. 57,700</p>
-        <p class="text-xs text-gray-400 mt-1">This period</p>
-      </div>
-      <div class="bg-white rounded-xl shadow-md border p-6">
-        <p class="text-sm font-semibold text-gray-500">Pending Orders</p>
-        <p class="text-3xl font-bold text-orange-600 mt-1">8</p>
-        <p class="text-xs text-gray-400 mt-1">Awaiting delivery</p>
+    <div *ngIf="reportData; else loading">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+        <div class="bg-white rounded-xl shadow-md border p-6">
+          <p class="text-sm font-semibold text-gray-500">Total Pickups</p>
+          <p class="text-3xl font-bold text-green-600 mt-1">{{ reportData.totalPickups }}</p>
+          <p class="text-xs text-gray-400 mt-1">{{ reportData.completedPickups }} completed</p>
+        </div>
+        <div class="bg-white rounded-xl shadow-md border p-6">
+          <p class="text-sm font-semibold text-gray-500">Total Deliveries</p>
+          <p class="text-3xl font-bold text-blue-600 mt-1">{{ reportData.totalDelivery }}</p>
+          <p class="text-xs text-gray-400 mt-1">{{ reportData.completedDelivery }} completed</p>
+        </div>
+        <div class="bg-white rounded-xl shadow-md border p-6">
+          <p class="text-sm font-semibold text-gray-500">Total Revenue</p>
+          <div *ngIf="isLoadingRevenue; else revenueLoaded">
+            <div class="flex flex-col items-center justify-right mt-3">
+              <div class="spinner w-3 h-3 border-4 border-gray-600 border-t-transparent rounded-full animate-spin">
+              </div>
+            </div>
+          </div>
+          <ng-template #revenueLoaded>
+            <p class="text-3xl font-bold text-purple-600 mt-1">Rs. {{ totalRevenue | number:'1.2-2' }}</p>
+          </ng-template>
+        </div>
+        <div class="bg-white rounded-xl shadow-md border p-6">
+          <p class="text-sm font-semibold text-gray-500">Pending Orders</p>
+          <p class="text-3xl font-bold text-orange-600 mt-1">{{ reportData.pendingOrders }}</p>
+          <p class="text-xs text-gray-400 mt-1">Awaiting delivery</p>
+        </div>
       </div>
     </div>
+    <ng-template #loading class="text-center mt-5 mb-5">
+      <div class="flex flex-col items-center justify-center py-10">
+        <div class="spinner w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+        <p class="text-gray-600 mt-4 text-center">Loading Data...</p>
+      </div>
+    </ng-template>
 
     <!-- Driver Performance Table & Recent Pickups and Deliveries -->
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
-  <!-- Recent Pickups -->
-  <div class="bg-white rounded-xl shadow-md border">
-    <div class="p-6 border-b">
-      <h3 class="text-lg font-semibold text-gray-900">Recent Pickups</h3>
-    </div>
-    <div class="divide-y divide-gray-200 max-h-96 overflow-y-auto">
-      <!-- Example Pickup -->
-      <div class="p-6 hover:bg-gray-50">
-        <div class="flex items-center justify-between">
-          <div class="flex-1">
-            <div class="flex items-center gap-2 mb-1">
-              <span class="font-medium text-gray-900">#LD001</span>
-              <span class="px-2 py-1 text-xs rounded-full text-green-600 bg-green-50">Completed</span>
+      <!-- Recent Pickups -->
+      <div class="bg-white rounded-xl shadow-md border">
+        <!-- Card Header -->
+        <div class="p-6 border-b flex items-center justify-between">
+          <h3 class="text-lg font-semibold text-gray-900">Most Engaged Laundry</h3>
+          <span class="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800">
+            Top Partner
+          </span>
+        </div>
+
+        <!-- Card Body -->
+        <div class="p-6">
+          <div class="flex items-center justify-between">
+            <div class="flex flex-col">
+              <h4 class="text-xl font-bold text-gray-900">{{ reportData?.mostEngagedLaundryName }}</h4>
+              <p class="text-sm text-gray-500">Laundry ID:</p>
+              <p class="text-xs text-gray-400">{{ reportData?.mostEngagedLaundryId }}</p>
             </div>
-            <p class="text-sm text-gray-600">Customer: A. Wickramasinghe</p>
-            <p class="text-xs text-gray-400">Driver: John Smith</p>
-          </div>
-          <div class="text-right">
-            <p class="font-medium text-gray-900">Rs. 450</p>
-            <p class="text-xs text-gray-400">9:30 AM</p>
+
+            <!-- Icon -->
+            <div class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-50">
+              <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M3 7v4a1 1 0 001 1h3l3 5V5l-3 5H4a1 1 0 01-1-1z" />
+              </svg>
+            </div>
           </div>
         </div>
       </div>
-      <!-- Add more pickup items as needed -->
-    </div>
-  </div>
 
-  <!-- Recent Deliveries -->
-  <div class="bg-white rounded-xl shadow-md border">
-    <div class="p-6 border-b">
-      <h3 class="text-lg font-semibold text-gray-900">Recent Deliveries</h3>
-    </div>
-    <div class="divide-y divide-gray-200 max-h-96 overflow-y-auto">
-      <!-- Example Delivery -->
-      <div class="p-6 hover:bg-gray-50">
-        <div class="flex items-center justify-between">
-          <div class="flex-1">
-            <div class="flex items-center gap-2 mb-1">
-              <span class="font-medium text-gray-900">#LD001</span>
-              <span class="px-2 py-1 text-xs rounded-full text-green-600 bg-green-50">Delivered</span>
+      <!-- Recent Deliveries -->
+      <div class="bg-white rounded-xl shadow-md border">
+        <!-- Card Header -->
+        <div class="p-6 border-b flex items-center justify-between">
+          <h3 class="text-lg font-semibold text-gray-900">Most Engaged Customer</h3>
+          <span class="px-2 py-1 text-xs rounded-full text-green-600 bg-green-50">Top Customer</span>
+        </div>
+
+        <!-- Card Body -->
+        <div class="divide-y divide-gray-200">
+          <!-- Customer Info -->
+          <div class="p-6 hover:bg-gray-50">
+            <div class="flex items-center justify-between">
+              <div class="flex-1">
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="font-medium text-gray-900">{{ reportData?.mostEngagedCustomerName }}</span>
+                </div>
+                <p class="text-sm text-gray-600">Customer ID:</p>
+                <p class="text-xs text-gray-400">{{ reportData?.mostEngagedCustomerId }}</p>
+              </div>
+              <!-- Icon or Avatar -->
+              <div class="flex items-center justify-center w-12 h-12 rounded-full bg-green-50">
+                <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" stroke-width="2"
+                  viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M5.121 17.804A13.937 13.937 0 0112 15c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+              </div>
             </div>
-            <p class="text-sm text-gray-600">Customer: A. Wickramasinghe</p>
-            <p class="text-xs text-gray-400">Driver: John Smith</p>
-          </div>
-          <div class="text-right">
-            <p class="font-medium text-gray-900">Rs. 450</p>
-            <p class="text-xs text-gray-400">9:30 AM</p>
           </div>
         </div>
       </div>
-      <!-- Add more delivery items as needed -->
-    </div>
-  </div>
 
-</div>
+
+    </div>
 
 
   </div>

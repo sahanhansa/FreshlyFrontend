@@ -58,9 +58,13 @@ import { VerifyResetComponent } from './pages/verify-reset/verify-reset.componen
 import {WhoAreYouComponentSign} from './components/whoareyou/whoareyou.component';
 import { ReportsComponent } from './pages/Driver/reports/reports.component';
 import { AuthHelperService } from './services/auth-helper.service';
-import {ContactPageComponent2} from './components/customer/contact-page.component';
-import {AuthGuard} from './guards/role.guard';
-import {InsightsComponent} from './pages/laundry/insights/insights.component';
+import { AuthGuard } from './guards/role.guard';
+import { InsightsComponent } from './pages/Laundry/insights/insights.component';
+import { TasksComponent } from './pages/Driver/tasks/tasks.component';
+
+
+
+
 
 // Define the application's routes
 export const routes: Routes = [
@@ -117,12 +121,12 @@ export const routes: Routes = [
   {path: 'complete-tasks-page',component: CompleteTasksPageComponent} ,
   {path: 'edit-details-form', component: EditDetailsFormComponent},
   {path: 'reports', component: ReportsComponent},
+  {path: 'tasks', component: TasksComponent}, // Redirect to tasks page
   {path: 'logout-page', component: LogoutPageComponent},
   { path: 'payment', loadComponent: () => import('./components/payment/payment.component').then(m => m.PaymentComponent) },
   { path: 'payment-success', loadComponent: () => import('./components/payment-success/payment-success.component').then(m => m.PaymentSuccessComponent) },
   { path: 'payment-cancel', loadComponent: () => import('./components/payment-cancel/payment-cancel.component').then(m => m.PaymentCancelComponent) },
-  
-  
+
   
   // Admin routes with nested paths
   {
@@ -153,7 +157,7 @@ export const routes: Routes = [
       
       { path: 'home', component: CusHomeComponent }, 
       {path: 'how-it-works', component:HowItWorksComponent},
-       { path: 'contact', component: ContactPageComponent2 },
+       { path: 'contact', component: ContactPageComponent },
       { path: 'order', component: LaundryPageComponent },      // Laundry list page
       { path: 'basket', component: BasketComponent, canActivate: [() => AuthHelperService.prototype.isLoggedIn()] },
       {path: 'laundry/:id', component: ItemPageComponent},
