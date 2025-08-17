@@ -1,14 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { DeleteConfirmationComponent  } from './delete-confirmation.component';
+import { Router } from '@angular/router';
+import { DeleteConfirmationComponent } from './delete-confirmation.component';
 
 describe('DeleteConfirmationComponent', () => {
   let component: DeleteConfirmationComponent;
   let fixture: ComponentFixture<DeleteConfirmationComponent>;
+  let mockRouter: jasmine.SpyObj<Router>;
 
   beforeEach(async () => {
+    mockRouter = jasmine.createSpyObj('Router', ['navigate']);
+    
     await TestBed.configureTestingModule({
-      imports: [DeleteConfirmationComponent]
+      imports: [DeleteConfirmationComponent],
+      providers: [
+        { provide: Router, useValue: mockRouter }
+      ]
     })
     .compileComponents();
 
