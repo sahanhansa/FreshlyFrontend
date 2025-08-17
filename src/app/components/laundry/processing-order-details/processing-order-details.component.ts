@@ -4,6 +4,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { OrderService } from '../../../services/order.service';
+import { LaundryService } from '../../../services/laundry.service';
 import { FooterComponent } from '../../../components/shared/footer/footer.component';
 import { Subject, takeUntil, catchError, of } from 'rxjs';
 import { RejectedItemService } from '../../../services/rejected-item.service';
@@ -79,8 +80,9 @@ export class ProcessingOrderDetailsComponent implements OnInit, OnDestroy {
   processingSuccessMessage: string | null = null; // Success message after finishing processing
   showSuccessModal = false; // Show success modal for invoice
 
-  // Set this to the actual statusId for 'Finished Processing' from your backend
-  private readonly finishedProcessingStatusId = 'b8dfb70c-5f5e-11f0-8064-0022481a06a0';
+  // Dynamic status ID for 'Finished Processing' loaded from backend
+  private finishedProcessingStatusId: string | null = null;
+  public isLoadingStatusIds = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -88,7 +90,8 @@ export class ProcessingOrderDetailsComponent implements OnInit, OnDestroy {
     private orderService: OrderService,
     private fb: FormBuilder,
     private cdr: ChangeDetectorRef,
-    private rejectedItemService: RejectedItemService // Injected
+    private rejectedItemService: RejectedItemService, // Injected
+    private laundryService: LaundryService
   ) {
     this.adjustmentForm = this.fb.group({
       name: ['', Validators.required],
@@ -111,7 +114,27 @@ export class ProcessingOrderDetailsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.setCurrentDateTime();
+    this.loadStatusIds();
     this.loadOrderDetails();
+  }
+
+  // Method to load status IDs from the backend
+  loadStatusIds(): void {
+    this.isLoadingStatusIds = true;
+    this.laundryService.getNewStatusIds().subscribe({
+      next: (statusIds) => {
+        this.finishedProcessingStatusId = statusIds.finishedProcessing;
+        this.isLoadingStatusIds = false;
+        console.log('Status IDs loaded dynamically:', statusIds);
+        this.cdr.markForCheck();
+      },
+      error: (error) => {
+        console.error('Error loading status IDs:', error);
+        this.isLoadingStatusIds = false;
+        this.finishedProcessingStatusId = null;
+        this.cdr.markForCheck();
+      }
+    });
   }
 
   ngOnDestroy(): void {
@@ -310,11 +333,20 @@ export class ProcessingOrderDetailsComponent implements OnInit, OnDestroy {
   }
 
   canFinishOrder(): boolean {
-    return this.orderDetails?.items.every(item => item.status === 'finished') || false;
+    // Check if status IDs are loaded and all items are finished
+    return this.finishedProcessingStatusId !== null && 
+           (this.orderDetails?.items.every(item => item.status === 'finished') || false);
   }
 
   finishProcessing(): void {
     if (!this.orderDetails || !this.canFinishOrder()) return;
+
+    // Check if status ID is loaded
+    if (!this.finishedProcessingStatusId) {
+      this.error = 'Status information not loaded. Please try again.';
+      this.cdr.markForCheck();
+      return;
+    }
 
     this.processing = true;
     this.cdr.markForCheck();

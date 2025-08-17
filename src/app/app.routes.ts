@@ -28,7 +28,7 @@ import { AboutPageComponent } from './components/landing-page/about-page.compone
 import { LaundriesPageComponent } from './components/landing-page/laundries-page.component';
 import { ContactPageComponent } from './components/landing-page/contact-page.component';
 import { NewOrdersComponent } from './pages/Laundry/new-orders/new-orders.component';
-import { processingOrdersComponent } from './pages/Laundry/processing-orders/processing-orders.component';
+import { ProcessingOrdersComponent } from './pages/Laundry/processing-orders/processing-orders.component';
 import { CompletedOrdersComponent } from './pages/Laundry/completed-orders/completed-orders.component';
 import { ConfirmOrdersComponent } from './pages/Laundry/confirm-orders/confirm-orders.component';
 import { InvoiceSuccessedComponent } from './pages/Laundry/invoice-successed/invoice-successed.component';
@@ -181,7 +181,7 @@ export const routes: Routes = [
   {path: 'new-orders', component:NewOrdersComponent},
 
     // Route for processingorders page
-  {path: 'processing-orders', component:processingOrdersComponent},
+  {path: 'processing-orders', component: ProcessingOrdersComponent},
 
     // Route for completed orders page
   {path: 'completed-orders', component:CompletedOrdersComponent},

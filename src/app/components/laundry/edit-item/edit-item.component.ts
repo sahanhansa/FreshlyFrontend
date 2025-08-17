@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { ItemService } from '../../../services/item.service';
 import { DataService } from '../../../services/data.services';
+import { LaundryService } from '../../../services/laundry.service';
 import { forkJoin, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ServiceWithPrice } from '@app/models/item.model';
@@ -40,12 +41,7 @@ export class EditItemComponent implements OnInit {
   isSubmitting: boolean = false;
   successMessage: string = '';
   
-  categories: { id: string; name: string }[] = [
-    { id: 'dc9b80ab-6671-11f0-9664-0022481a06a0', name: 'Ladies' },
-    { id: 'dc9b8643-6671-11f0-9664-0022481a06a0', name: 'Gents' },
-    { id: 'dc9b879d-6671-11f0-9664-0022481a06a0', name: 'Kids' },
-    { id: 'dc9b8811-6671-11f0-9664-0022481a06a0', name: 'Other' }
-  ];
+  categories: { id: string; name: string }[] = [];
   availableServices: string[] = ['Regular Wash', 'Dry Clean', 'Press Only', 'Hand Wash'];
 
   // --- Garment Types State ---
@@ -62,6 +58,7 @@ export class EditItemComponent implements OnInit {
   
   // --- Loading States ---
   isAddingMaterial: boolean = false;
+  isLoadingCategories: boolean = false;
 
   item = {
     name: '',
@@ -75,16 +72,43 @@ export class EditItemComponent implements OnInit {
     private route: ActivatedRoute,
     public router: Router,
     private itemService: ItemService,
-    private dataService: DataService
+    private dataService: DataService,
+    private laundryService: LaundryService
   ) {}
 
   ngOnInit() {
     console.log('EditItemComponent ngOnInit - itemId:', this.itemId);
+    this.loadCategories();
     if (this.itemId) {
       this.loadItem();
     } else {
       console.error('No itemId provided to EditItemComponent');
     }
+  }
+
+  // Method to load categories from the backend
+  loadCategories(): void {
+    this.isLoadingCategories = true;
+    this.laundryService.getCategories().subscribe({
+      next: (categories) => {
+        this.categories = categories;
+        this.isLoadingCategories = false;
+        console.log('Categories loaded dynamically:', this.categories);
+      },
+      error: (error) => {
+        console.error('Error loading categories:', error);
+        this.isLoadingCategories = false;
+        // Set empty categories array instead of hard-coded fallback
+        this.categories = [];
+        // You could show a user-friendly error message here
+      }
+    });
+  }
+
+  // Method to retry loading categories
+  retryLoadCategories(): void {
+    console.log('Retrying to load categories...');
+    this.loadCategories();
   }
 
   // Method to toggle category dropdown
@@ -102,7 +126,21 @@ export class EditItemComponent implements OnInit {
 
   // Method to get selected category display text
   getSelectedCategoryText(): string {
-    return this.item.categoryName || 'Select Category';
+    if (this.isLoadingCategories) {
+      return 'Loading categories...';
+    }
+    if (this.categories.length === 0) {
+      return 'No categories available';
+    }
+    if (this.item.categoryName) {
+      return this.item.categoryName;
+    }
+    return 'Select Category';
+  }
+
+  // Method to check if categories are available
+  areCategoriesAvailable(): boolean {
+    return !this.isLoadingCategories && this.categories.length > 0;
   }
 
   // Method to toggle service dropdown for a specific material
