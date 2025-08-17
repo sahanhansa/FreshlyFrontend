@@ -30,8 +30,17 @@
 
   <!-- Chart Type Toggle -->
   <div class="flex justify-center mb-6">
-    <button (click)="setChartType('monthly')" [class.bg-blue-600]="chartType==='monthly'" class="px-4 py-1 rounded text-black bg-white mr-2 border">Monthly</button>
-    <button (click)="setChartType('yearly')" [class.bg-blue-600]="chartType==='yearly'" class="px-4 py-1 rounded text-black bg-white border">Yearly</button>
+    <button 
+      (click)="setChartType('monthly')" 
+      [class]="chartType === 'monthly' ? 'px-6 py-2 rounded-lg font-medium text-white bg-blue-600 shadow-md' : 'px-6 py-2 rounded-lg font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 hover:border-gray-400 transition-all duration-200'"
+      class="mr-2">
+      Monthly
+    </button>
+    <button 
+      (click)="setChartType('yearly')" 
+      [class]="chartType === 'yearly' ? 'px-6 py-2 rounded-lg font-medium text-white bg-blue-600 shadow-md' : 'px-6 py-2 rounded-lg font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 hover:border-gray-400 transition-all duration-200'">
+      Yearly
+    </button>
   </div>
 
   <!-- Orders Chart -->
