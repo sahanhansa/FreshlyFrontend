@@ -49,3 +49,4 @@ Thumbs.db
 
 # Binary AppleDouble files already in subfolders
 ._*.DS_Store
+config.bat
