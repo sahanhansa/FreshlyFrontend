@@ -36,7 +36,6 @@ import { LaundryFeedbacksComponent } from './pages/Laundry/laundry-feedbacks/lau
 import { LaundryItemsComponent } from './pages/Laundry/laundry-items/laundry-items.component';
 import { LaundryOrdersComponent } from './pages/Laundry/laundry-orders/laundry-orders.component';
 import { LaundryProfileComponent } from './pages/Laundry/laundry-profile/laundry-profile.component';
-import { LaundrySummaryComponent } from './pages/Laundry/laundry-summary/laundry-summary.component';
 import { LaundryPageComponent } from './pages/order/laundry-list-page/laundry-list-page.component';
 import { BasketComponent } from './pages/order/basket/basket.component';
 import { ItemPageComponent } from './pages/order/item-list-page/item-list-page.component';
@@ -204,10 +203,6 @@ export const routes: Routes = [
 
     // Route for laundry-profile page
     {path: 'laundry-profile', component:LaundryProfileComponent},
-
-    // Route for laundry-summary page
-    {path: 'laundry-summary', component:LaundrySummaryComponent},
-
 
      {path: 'laundry-add-item', component:LaundryAddItemComponent},
 
