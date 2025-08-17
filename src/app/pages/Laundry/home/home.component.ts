@@ -10,6 +10,7 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-home',
+  standalone: true,
   imports: [CommonModule, FooterComponent, NavbarComponent],
   templateUrl: './home.component.html'
 })

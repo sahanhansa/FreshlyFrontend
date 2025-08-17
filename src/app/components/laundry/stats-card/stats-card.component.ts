@@ -31,6 +31,29 @@ export class StatsCardComponent {
   get ratingObj() {
     return this.isRatingObj(this.stat?.value) ? (this.stat?.value as { rating: number; max: number }) : null;
   }
+
+  // Calculate progress width for visual effect
+  getProgressWidth(): number {
+    if (this.stat?.title === 'Average Rating' && this.ratingObj) {
+      return (this.ratingObj.rating / this.ratingObj.max) * 100;
+    }
+    
+    if (this.stat?.title === 'Order Count') {
+      const value = Number(this.stat.value);
+      // Assume max orders for visualization is 100, adjust as needed
+      return Math.min((value / 100) * 100, 100);
+    }
+    
+    if (this.stat?.title === 'Revenue') {
+      // For revenue, we'll use a logarithmic scale or percentage
+      const valueStr = String(this.stat.value);
+      const numericValue = parseFloat(valueStr.replace(/[^\d.]/g, ''));
+      // Assume max revenue for visualization is 100000, adjust as needed
+      return Math.min((numericValue / 100000) * 100, 100);
+    }
+    
+    return 80; // Default progress
+  }
 }
 
 
