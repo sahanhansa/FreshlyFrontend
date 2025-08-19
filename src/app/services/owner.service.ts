@@ -3,7 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
-import { OwnerDetails } from '@app/models/owner';
+import { OwnerDetails } from '../models/owner';
+// import { OwnerDetails } from '@app/models/owner';
 
 
 @Injectable({
@@ -13,7 +14,7 @@ export class OwnerService {
 
   private apiUrl = `${environment.apiUrl}/api/Owner`; 
 
-   private readonly TEST_LAUNDRY_ID = 'efaa5020-331b-11f0-a791-c138d5830fc3';
+  private readonly TEST_LAUNDRY_ID = 'efaa5020-331b-11f0-a791-c138d5830fc3';
 
   constructor(private http: HttpClient) {
   }

@@ -3,8 +3,7 @@ import { NavbarComponent } from '@app/components/shared/navbar/navbar.component'
 import { FooterComponent } from "../../../components/shared/footer/footer.component";
 import { CommonModule } from '@angular/common';
 import { StatsCardComponent } from '@app/components/laundry/stats-card/stats-card.component';
-import { LaundryDetailsCardComponent } from '@app/components/laundry/laundry-details-card/laundry-details-card.component';
-import { OwnerDetailsCardComponent } from '@app/components/laundry/owner-details-card/owner-details-card.component';
+import { CombinedDetailsComponent } from '@app/components/laundry/combined-details/combined-details.component';
 import { AccessNoticeComponent } from '@app/components/laundry/access-notice/access-notice.component';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
@@ -21,8 +20,7 @@ import { AuthHelperService } from '../../../services/auth-helper.service';
     NavbarComponent,
     FooterComponent,
     StatsCardComponent,
-    LaundryDetailsCardComponent,
-    OwnerDetailsCardComponent,
+    CombinedDetailsComponent,
     AccessNoticeComponent,
 
 ],
@@ -48,6 +46,9 @@ export class LaundryProfileComponent implements OnInit {
   // Logout confirmation state
   showLogoutConfirmation: boolean = false;
 
+  // Laundry details for hero section
+  laundryDetails: any = null;
+
   constructor(
     private http: HttpClient,
     private router: Router,
@@ -58,9 +59,31 @@ export class LaundryProfileComponent implements OnInit {
     this.laundryId = localStorage.getItem('laundryId') || '';
     console.log('LaundryProfileComponent - laundryId from localStorage:', this.laundryId);
     if (this.laundryId) {
+      this.fetchLaundryDetails();
       this.fetchAverageRating();
       this.fetchRevenue();
     }
+  }
+
+  // Fetch laundry details for hero section
+  fetchLaundryDetails() {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+
+    const url = `${environment.apiUrl}/api/Laundry/details/${this.laundryId}`;
+    console.log('Fetching laundry details from:', url);
+
+    this.http.get(url, { headers }).subscribe({
+      next: (data: any) => {
+        console.log('Laundry details received:', data);
+        this.laundryDetails = data;
+      },
+      error: (error) => {
+        console.error('Error fetching laundry details:', error);
+      }
+    });
   }
 
   // Fetch average rating from API
