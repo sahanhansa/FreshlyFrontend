@@ -13,7 +13,6 @@ interface OwnerDetails {
   email: string;
   address: string;
   contactNumber: string;
-  profileImageUrl: string | null;
 }
 
 @Component({

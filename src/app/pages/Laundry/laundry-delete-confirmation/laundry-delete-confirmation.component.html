@@ -1,5 +1,5 @@
 <div *ngIf="successMessage" class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-30">
-  <div class="bg-white border-2 border-green-400 text-green-700 px-10 py-8 rounded-2xl shadow-2xl flex flex-col items-center animate-bounce-in">
+  <div class="bg-white border-2 border-green-400 text-green-700 px-10 py-8 rounded-2xl shadow-2xl flex flex-col items-center animate-bounce">
     <div class="flex items-center justify-center mb-4">
       <svg class="w-16 h-16 text-green-500 animate-pulse" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
         <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="#e6ffed"/>
@@ -17,16 +17,4 @@
   [isDeleting]="isDeleting"
   (confirmed)="onDeleteConfirmed($event)"
   (cancelled)="onDeleteCancelled()"
-></app-delete-confirmation>
-
-<style>
-@keyframes bounce-in {
-  0% { transform: scale(0.8); opacity: 0; }
-  60% { transform: scale(1.05); opacity: 1; }
-  80% { transform: scale(0.97); }
-  100% { transform: scale(1); }
-}
-.animate-bounce-in {
-  animation: bounce-in 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-}
-</style> 
+></app-delete-confirmation> 

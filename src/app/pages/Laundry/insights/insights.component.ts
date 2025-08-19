@@ -4,7 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import Chart from 'chart.js/auto';
 import { environment } from '../../../../environments/environment';
-import { NavbarComponent } from "@app/components/shared/navbar/navbar.component";
+import { NavbarComponent } from '@app/components/shared/navbar/navbar.component';
+
 
 interface MonthlyStatsResponse {
   laundryId: string;
@@ -25,8 +26,7 @@ interface YearlyStatsResponse {
   selector: 'app-insights',
   standalone: true,
   imports: [CommonModule, FormsModule, NavbarComponent],
-  templateUrl: './insights.component.html',
-  styleUrls: ['./insights.component.css']
+  templateUrl: './insights.component.html'
 })
 export class InsightsComponent implements AfterViewInit, OnDestroy {
   @ViewChild('ordersChart') ordersChartRef!: ElementRef<HTMLCanvasElement>;

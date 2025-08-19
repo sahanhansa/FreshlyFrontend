@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { CommonModule } from '@angular/common';
 import { DeleteConfirmationComponent } from '@app/components/laundry/delete-confirmation/delete-confirmation.component';
 import { ItemService } from '@app/services/item.service';
 
 @Component({
   selector: 'app-laundry-delete-confirmation',
   standalone: true,
-  imports: [DeleteConfirmationComponent],
+  imports: [CommonModule, DeleteConfirmationComponent],
   templateUrl: './laundry-delete-confirmation.component.html'
 })
 export class LaundryDeleteConfirmationComponent implements OnInit {

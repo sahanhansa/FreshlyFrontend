@@ -73,6 +73,48 @@ export class LaundryService {
     return this.http.post(`${this.apiUrl}/add-message`, payload);
   }
 
+  // Get status IDs for laundry operations
+  getStatusIds(): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/status-ids`)
+      .pipe(
+        tap(response => {
+          console.log('Status IDs API response:', response);
+        }),
+        catchError(error => {
+          console.error('Error fetching status IDs:', error);
+          return throwError(() => new Error('Failed to load status IDs. Please try again later.'));
+        })
+      );
+  }
+
+  // Get categories for laundry operations
+  getCategories(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/categories`)
+      .pipe(
+        tap(response => {
+          console.log('Categories API response:', response);
+        }),
+        catchError(error => {
+          console.error('Error fetching categories:', error);
+          return throwError(() => new Error('Failed to load categories. Please try again later.'));
+        })
+      );
+  }
+
+  // Get new status IDs for laundry operations
+  getNewStatusIds(): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/new-status-ids`)
+      .pipe(
+        tap(response => {
+          console.log('New Status IDs API response:', response);
+        }),
+        catchError(error => {
+          console.error('Error fetching new status IDs:', error);
+          return throwError(() => new Error('Failed to load new status IDs. Please try again later.'));
+        })
+      );
+  }
+
 
 
 
