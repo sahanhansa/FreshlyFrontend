@@ -22,7 +22,6 @@ import { CusHomeComponent } from './components/customer/cus-home/cus-home.compon
 import { LaundrySignupComponent } from './components/customer/laundry-signup/laundry-signup.component';
 import { HowItWorksComponent } from './components/customer/how-it-works/how-it-works.component';
 import { LandingPageComponent } from './components/landing-page/landing-page.component';
-import { HomePageComponent } from './components/landing-page/home-page.component';
 import { ServicesPageComponent } from './components/landing-page/services-page.component';
 import { AboutPageComponent } from './components/landing-page/about-page.component';
 import { LaundriesPageComponent } from './components/landing-page/laundries-page.component';
@@ -74,7 +73,6 @@ export const routes: Routes = [
         { path: 'landing-page', component: LandingPageComponent },
 
     // Landing page navigation routes
-    { path: 'home', component: HomePageComponent },
     { path: 'services', component: ServicesPageComponent },
     { path: 'about', component: AboutPageComponent },
     { path: 'laundries', component: LaundriesPageComponent },

@@ -62,30 +62,24 @@
     </section>
 
     <!-- Process Section -->
-    <section class="px-4 !py-20 bg-gradient-to-br from-blue-400 via-blue-500 to-blue-600">
-        <div class="mx-auto max-w-7xl">
+    <section class="process-section">
+        <div class="process-container">
             <!-- Header -->
-            <div class="mb-16 text-center">
-                <p class="mb-4 text-sm font-medium tracking-wider text-blue-100 uppercase">SERVICES</p>
-                <h2 class="!mb-8 text-5xl font-bold text-white md:text-6xl">Get it done in 4 steps</h2>
+            <div class="process-header">
+                <p class="process-subtitle">SERVICES</p>
+                <h2 class="process-title">Get it done in 4 steps</h2>
             </div>
 
             <!-- Process Grid -->
-            <div class="flex justify-center w-full">
-                <div class="grid grid-cols-1 gap-8 mt-8 md:grid-cols-2 lg:grid-cols-4 w-[80vw] m-0 mx-auto">
-                    <div *ngFor="let step of processSteps; let i = index"
-                        class="p-8 text-center transition-all duration-300 bg-white step-card rounded-3xl hover:scale-105 hover:-translate-y-2">
-                        <div class="mb-6">
-                            <span class="inline-block mb-4 text-sm font-bold tracking-wider text-blue-500">
-                                {{ step.stepLabel }}
-                            </span>
-                            <h3 class="mb-4 text-2xl font-bold text-gray-800">{{ step.title }}</h3>
-                            <div class="flex justify-center w-full">
-                                <div
-                                    class="flex !items-center !justify-center w-24 h-24 mx-auto mb-4 overflow-hidden bg-gray-100 rounded-2xl">
-                                    <img [src]="step.imagePath" [alt]="step.title + ' illustration'"
-                                        class="object-cover w-full h-full" loading="lazy" />
-                                </div>
+            <div class="process-steps-grid">
+                <div *ngFor="let step of processSteps; let i = index" class="process-step-card">
+                    <div class="step-content">
+                        <span class="step-label">{{ step.stepLabel }}</span>
+                        <h3 class="step-title">{{ step.title }}</h3>
+                        <div class="step-image-container">
+                            <div class="step-image-wrapper">
+                                <img [src]="step.imagePath" [alt]="step.title + ' illustration'" 
+                                     class="step-image" loading="lazy" />
                             </div>
                         </div>
                     </div>

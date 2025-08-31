@@ -5,7 +5,26 @@
   <title>Freshly Frontend</title>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <script type="text/javascript" src="https://www.payhere.lk/lib/payhere.js"></script>
+  
+  <!-- Disable debugger statements before loading external scripts -->
+  <script>
+    // Override debugger in production/development
+    if (typeof window !== 'undefined') {
+      const originalEval = window.eval;
+      window.eval = function(code) {
+        if (typeof code === 'string' && code.includes('debugger')) {
+          console.warn('Debugger statement blocked');
+          return;
+        }
+        return originalEval.call(this, code);
+      };
+      
+      // Also override debugger statement directly
+      window.debugger = function() {
+        console.warn('Debugger statement ignored');
+      };
+    }
+  </script>
 
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">

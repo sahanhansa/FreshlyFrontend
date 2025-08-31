@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-contact-prompt',
@@ -33,8 +34,10 @@ import { Component } from '@angular/core';
     styles: []
 })
 export class ContactPromptComponent {
+    constructor(private router: Router) {}
+
     contactUs() {
-        // Handle contact action
-        console.log('Contact us clicked');
+        // Navigate to customer contact page
+        this.router.navigate(['/cus-home/contact']);
     }
 }

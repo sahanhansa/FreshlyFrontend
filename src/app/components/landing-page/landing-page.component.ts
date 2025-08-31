@@ -49,23 +49,6 @@ export class LandingPageComponent implements OnInit {
     { number: '0', label: 'Laundry Partners' },
     { number: '0', label: 'Orders Completed' },
   ];
-  laundries = [
-    {
-      name: 'CleanWave Laundry',
-      location: 'Colombo',
-      features: ['Express Wash', 'Eco-Friendly', 'Free Pickup'],
-    },
-    {
-      name: 'FreshSpin Cleaners',
-      location: 'Kandy',
-      features: ['Dry Cleaning', 'Ironing', '24/7 Service'],
-    },
-    {
-      name: 'PureWash Solutions',
-      location: 'Galle',
-      features: ['Delicate Care', 'Bulk Orders', 'Same-Day Delivery'],
-    },
-  ];
   businessBenefits = [
     { text: 'Reach more customers', iconClass: 'icon-reach' },
     { text: 'Streamlined operations', iconClass: 'icon-streamline' },
