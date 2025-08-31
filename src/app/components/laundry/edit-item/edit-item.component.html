@@ -59,33 +59,64 @@
       <div>
         <label class="block text-gray-600">Category</label>
         <div class="relative">
-          <button 
-            type="button"
-            (click)="toggleCategoryDropdown()"
-            class="w-full mt-1 p-2 border rounded-md bg-white cursor-pointer flex items-center justify-between hover:bg-gray-50 transition duration-200"
-          >
-            <span class="flex-1 text-left">{{ getSelectedCategoryText() }}</span>
-            <span class="flex items-center h-full ml-2">
-              <svg class="w-4 h-4 transition-transform duration-200" [class.rotate-180]="isCategoryDropdownOpen" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </span>
-          </button>
-          <!-- Category Dropdown Menu -->
-          <div 
-            *ngIf="isCategoryDropdownOpen"
-            class="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-md shadow-md z-10 min-w-full w-full"
-          >
+          <!-- Loading state for categories -->
+          <div *ngIf="isLoadingCategories" class="w-full mt-1 p-2 border rounded-md bg-gray-50 flex items-center justify-center">
+            <svg class="animate-spin h-4 w-4 mr-2 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span class="text-gray-600 text-sm">Loading categories...</span>
+          </div>
+
+          <!-- Category dropdown when categories are loaded -->
+          <div *ngIf="!isLoadingCategories && categories.length > 0">
             <button 
-              *ngFor="let category of categories"
-              (click)="selectCategory(category)"
-              class="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 first:rounded-t-md last:rounded-b-md transition"
-              [class.bg-blue-50]="item.categoryId === category.id"
-              [class.text-blue-600]="item.categoryId === category.id"
-              [class.font-medium]="item.categoryId === category.id"
+              type="button"
+              (click)="toggleCategoryDropdown()"
+              [disabled]="!areCategoriesAvailable()"
+              class="w-full mt-1 p-2 border rounded-md bg-white cursor-pointer flex items-center justify-between hover:bg-gray-50 transition duration-200 disabled:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {{ category.name }}
+              <span class="flex-1 text-left">{{ getSelectedCategoryText() }}</span>
+              <span class="flex items-center h-full ml-2">
+                <svg class="w-4 h-4 transition-transform duration-200" [class.rotate-180]="isCategoryDropdownOpen" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+              </span>
             </button>
+            <!-- Category Dropdown Menu -->
+            <div 
+              *ngIf="isCategoryDropdownOpen"
+              class="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-md shadow-md z-10 min-w-full w-full"
+            >
+              <button 
+                *ngFor="let category of categories"
+                (click)="selectCategory(category)"
+                class="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 first:rounded-t-md last:rounded-b-md transition"
+                [class.bg-blue-50]="item.categoryId === category.id"
+                [class.text-blue-600]="item.categoryId === category.id"
+                [class.font-medium]="item.categoryId === category.id"
+              >
+                {{ category.name }}
+              </button>
+            </div>
+          </div>
+
+          <!-- Error state when categories fail to load -->
+          <div *ngIf="!isLoadingCategories && categories.length === 0" class="w-full mt-1 p-2 border border-red-200 rounded-md bg-red-50">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center text-red-600 text-sm">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                </svg>
+                Failed to load categories.
+              </div>
+              <button 
+                (click)="retryLoadCategories()" 
+                class="px-3 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+              >
+                Retry
+              </button>
+            </div>
           </div>
         </div>
       </div>

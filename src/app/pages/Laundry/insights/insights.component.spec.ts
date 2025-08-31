@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { LaundrySummaryComponent } from './laundry-summary.component';
+import { InsightsComponent } from './insights.component';
 
-describe('LaundrySummaryComponent', () => {
-  let component: LaundrySummaryComponent;
-  let fixture: ComponentFixture<LaundrySummaryComponent>;
+describe('InsightsComponent', () => {
+  let component: InsightsComponent;
+  let fixture: ComponentFixture<InsightsComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [LaundrySummaryComponent]
+      imports: [InsightsComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(LaundrySummaryComponent);
+    fixture = TestBed.createComponent(InsightsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

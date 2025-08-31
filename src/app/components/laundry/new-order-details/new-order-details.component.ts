@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { OrderService } from '../../../services/order.service';
+import { LaundryService } from '../../../services/laundry.service';
 import { NavbarComponent } from '@app/components/shared/navbar/navbar.component';
 import { FooterComponent } from '../../../components/shared/footer/footer.component';
 
@@ -53,14 +54,38 @@ export class NewOrderDetailsComponent implements OnInit {
   error: string | null = null;
   processing = false;
 
+  // Dynamic status ID for 'Processing in laundry' loaded from backend
+  private processingStatusId: string | null = null;
+  public isLoadingStatusIds = false;
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private orderService: OrderService
+    private orderService: OrderService,
+    private laundryService: LaundryService
   ) {}
 
   ngOnInit(): void {
+    // Load status IDs first
+    this.loadStatusIds();
     this.loadOrderDetails();
+  }
+
+  // Method to load status IDs from the backend
+  loadStatusIds(): void {
+    this.isLoadingStatusIds = true;
+    this.laundryService.getStatusIds().subscribe({
+      next: (statusIds) => {
+        this.processingStatusId = statusIds.processing;
+        this.isLoadingStatusIds = false;
+        console.log('Status IDs loaded dynamically:', statusIds);
+      },
+      error: (error) => {
+        console.error('Error loading status IDs:', error);
+        this.isLoadingStatusIds = false;
+        this.processingStatusId = null;
+      }
+    });
   }
 
   // Method to get status badge styling
@@ -134,11 +159,17 @@ export class NewOrderDetailsComponent implements OnInit {
   startProcessing(): void {
     if (!this.orderDetails) return;
 
+    // Check if status ID is loaded
+    if (!this.processingStatusId) {
+      this.error = 'Status information not loaded. Please try again.';
+      return;
+    }
+
     this.processing = true;
     const laundryId = localStorage.getItem('laundryId');
     const orderId = this.orderDetails.orderId;
-    // Use the provided statusId for 'Processing in laundry'
-    const newStatusId = 'b8dfb69f-5f5e-11f0-8064-0022481a06a0';
+    // Use the dynamic statusId for 'Processing in laundry'
+    const newStatusId = this.processingStatusId;
 
     if (!laundryId) {
       this.error = 'Laundry ID not found';

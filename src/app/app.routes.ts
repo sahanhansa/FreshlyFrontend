@@ -27,7 +27,7 @@ import { AboutPageComponent } from './components/landing-page/about-page.compone
 import { LaundriesPageComponent } from './components/landing-page/laundries-page.component';
 import { ContactPageComponent } from './components/landing-page/contact-page.component';
 import { NewOrdersComponent } from './pages/Laundry/new-orders/new-orders.component';
-import { processingOrdersComponent } from './pages/Laundry/processing-orders/processing-orders.component';
+import { ProcessingOrdersComponent } from './pages/Laundry/processing-orders/processing-orders.component';
 import { CompletedOrdersComponent } from './pages/Laundry/completed-orders/completed-orders.component';
 import { ConfirmOrdersComponent } from './pages/Laundry/confirm-orders/confirm-orders.component';
 import { InvoiceSuccessedComponent } from './pages/Laundry/invoice-successed/invoice-successed.component';
@@ -35,7 +35,6 @@ import { LaundryFeedbacksComponent } from './pages/Laundry/laundry-feedbacks/lau
 import { LaundryItemsComponent } from './pages/Laundry/laundry-items/laundry-items.component';
 import { LaundryOrdersComponent } from './pages/Laundry/laundry-orders/laundry-orders.component';
 import { LaundryProfileComponent } from './pages/Laundry/laundry-profile/laundry-profile.component';
-import { LaundrySummaryComponent } from './pages/Laundry/laundry-summary/laundry-summary.component';
 import { LaundryPageComponent } from './pages/order/laundry-list-page/laundry-list-page.component';
 import { BasketComponent } from './pages/order/basket/basket.component';
 import { ItemPageComponent } from './pages/order/item-list-page/item-list-page.component';
@@ -180,7 +179,7 @@ export const routes: Routes = [
   {path: 'new-orders', component:NewOrdersComponent},
 
     // Route for processingorders page
-  {path: 'processing-orders', component:processingOrdersComponent},
+  {path: 'processing-orders', component: ProcessingOrdersComponent},
 
     // Route for completed orders page
   {path: 'completed-orders', component:CompletedOrdersComponent},
@@ -202,10 +201,6 @@ export const routes: Routes = [
 
     // Route for laundry-profile page
     {path: 'laundry-profile', component:LaundryProfileComponent},
-
-    // Route for laundry-summary page
-    {path: 'laundry-summary', component:LaundrySummaryComponent},
-
 
      {path: 'laundry-add-item', component:LaundryAddItemComponent},
 

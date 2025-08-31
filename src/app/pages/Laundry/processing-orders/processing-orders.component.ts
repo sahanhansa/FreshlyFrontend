@@ -15,7 +15,7 @@ import { NavbarComponent } from '../../../components/shared/navbar/navbar.compon
   imports: [CommonModule, RouterModule, HttpClientModule, PaginationComponent, SearchBarComponent, FooterComponent, NavbarComponent], 
   templateUrl: './processing-orders.component.html'
 })
-export class processingOrdersComponent implements OnInit, OnDestroy { // The component class that implements OnInit lifecycle hook
+export class ProcessingOrdersComponent implements OnInit, OnDestroy { // The component class that implements OnInit lifecycle hook
   orders: Order[] = []; // Declare an array to store the orders fetched from the backend
   loading = false; // Flag to indicate if data is still being loaded
   error: string | null = null; // Variable to store any error message
