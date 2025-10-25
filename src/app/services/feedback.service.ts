@@ -3,13 +3,22 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
-import { Feedback,FeedbackDTO, FeedbackRequest } from '../models/feedback.model';
+import { Feedback, FeedbackDTO, FeedbackRequest } from '../models/feedback.model';
+
+// ✅ Add this interface
+export interface ReplyPayload {
+  userId: string;
+  userType: string;
+  subject: string;
+  body: string;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class FeedbackService {
   private apiUrl = `${environment.apiUrl}/api/feedback`;
+  
   constructor(private http: HttpClient) { }
 
   //getFeedbacks(id: string = this.TEST_LAUNDRY_ID): Observable<Feedback[]> {
@@ -97,5 +106,10 @@ getFeedbacks(laundryId: string): Observable<Feedback[]> {
   // Get feedback for a specific order
   getFeedbackByOrderId(orderId: string): Observable<FeedbackDTO | null> {
     return this.http.get<FeedbackDTO>(`${this.apiUrl}/order/${orderId}`);
+  }
+
+  // Send reply email
+  sendReplyEmail(payload: ReplyPayload): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/SendReplyEmail`, payload);
   }
 }

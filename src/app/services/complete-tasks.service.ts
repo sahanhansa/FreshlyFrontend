@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { StorageService } from './storage.service'; // ✅ Add import
 
 export interface CompleteTasksDetailsDto {
   orderId: string;
@@ -17,11 +18,14 @@ export interface CompleteTasksDetailsDto {
 })
 export class CompleteTasksService {
   private apiUrl = 'http://localhost:5027/api/Order';
-  driverId = localStorage.getItem('userId');
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private storage: StorageService // ✅ Inject StorageService
+  ) {}
 
   getAllCompleteTasks(): Observable<CompleteTasksDetailsDto[]> {
-    return this.http.get<CompleteTasksDetailsDto[]>(`${this.apiUrl}/GetAllCompleteTasks/${this.driverId}`);
+    const driverId = this.storage.getUserId(); // ✅ Changed
+    return this.http.get<CompleteTasksDetailsDto[]>(`${this.apiUrl}/GetAllCompleteTasks/${driverId}`);
   }
 }

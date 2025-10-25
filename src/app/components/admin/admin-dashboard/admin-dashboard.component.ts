@@ -29,6 +29,7 @@ import {
 import type { ChartConfiguration } from 'chart.js';
 import { environment } from 'src/environments/environment';
 import { NavbarComponent } from "@app/components/shared/navbar/navbar.component";
+import { LoggerService } from '../../../services/logger.service'; // ✅ Add import
 
 // Register Chart.js components
 Chart.register(
@@ -153,7 +154,8 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit {
     private laundryAdminService: LaundryAdminService,
     private driverService: AdminDriverService,
     private http: HttpClient,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private logger: LoggerService
   ) {
     const storedName = localStorage.getItem('adminUsername');
     this.adminName = storedName ? storedName : 'Customer';
@@ -277,21 +279,22 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    // Mark view as ready and try to render chart
     this.viewReady = true;
     this.tryRenderChart();
   }
 
   private tryRenderChart(): void {
-    // Only render chart if both view and data are ready and orders are loaded
     if (this.viewReady && this.dataReady && this.orders && this.orders.length > 0) {
-      // If the ViewChild is not yet available, retry after a short delay
-      if (!this.revenueChart || !this.revenueChart.nativeElement) {
-        console.warn('revenueChart ViewChild not available, retrying in 100ms');
-        setTimeout(() => this.tryRenderChart(), 100);
-        return;
-      }
-      this.initializeChart();
+      this.logger.debug('[AdminDashboard] View and data ready, rendering chart'); // ✅ Changed
+      setTimeout(() => {
+        this.initializeChart();
+      }, 100);
+    } else {
+      this.logger.debug('[AdminDashboard] Chart rendering delayed', { // ✅ Changed
+        viewReady: this.viewReady,
+        dataReady: this.dataReady,
+        ordersLength: this.orders?.length
+      });
     }
   }
 
@@ -305,7 +308,8 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit {
 
   private initializeChart(): void {
     if (!this.revenueChart || !this.revenueChart.nativeElement) {
-      console.warn('revenueChart ViewChild not available');
+      this.logger.warn('revenueChart ViewChild not available, retrying in 100ms'); // ✅ Changed
+      setTimeout(() => this.tryRenderChart(), 100);
       return;
     }
     const ctx = this.revenueChart.nativeElement.getContext('2d');
@@ -345,8 +349,7 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit {
         pointHoverRadius: 6
       };
     });
-    // Debug: log datasets and laundryRevenueData
-    console.log('Chart datasets:', datasets, 'laundryRevenueData:', this.laundryRevenueData);
+    this.logger.log('Chart datasets:', datasets, 'laundryRevenueData:', this.laundryRevenueData); // ✅ Changed
     if (!datasets.length || datasets.every(ds => !ds.data || ds.data.every((v: any) => !v))) {
       // Show a message in the chart area if no data
       const ctx = this.revenueChart.nativeElement.getContext('2d');

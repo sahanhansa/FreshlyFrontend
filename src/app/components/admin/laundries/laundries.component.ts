@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { LaundryAdminDTO } from '../../../models/laundry-admin.model';
 import { LaundryAdminService } from '../../../services/laundry-admin.service';
 import { SharedImports } from '../../../shared/shared-imports';
+import { paginate, calculateTotalPages } from '../../../shared/utils/pagination.util'; // ✅ Fixed path
 
 @Component({
   selector: 'app-laundries',
@@ -283,11 +284,7 @@ export class LaundriesComponent implements OnInit {
    * Get paginated laundries
    */
   get paginatedLaundries(): LaundryAdminDTO[] {
-    if (!this.filteredLaundries() || this.filteredLaundries().length === 0) {
-      return [];
-    }
-    const startIndex = (this.currentPage() - 1) * this.entriesPerPage();
-    return this.filteredLaundries().slice(startIndex, startIndex + this.entriesPerPage());
+    return paginate(this.filteredLaundries(), this.currentPage(), this.entriesPerPage()); // ✅ Changed
   }
 
   /**
@@ -309,7 +306,7 @@ export class LaundriesComponent implements OnInit {
    * Get total number of pages
    */
   get totalPages(): number {
-    return Math.ceil(this.filteredLaundries().length / this.entriesPerPage());
+    return calculateTotalPages(this.filteredLaundries().length, this.entriesPerPage()); // ✅ Changed
   }
 
   /**

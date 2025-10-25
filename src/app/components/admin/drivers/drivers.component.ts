@@ -5,6 +5,7 @@ import { AdminDriverService, Driver, Order } from '../../../services/admin/admin
 import { HttpClientModule } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
+import { paginate, calculateTotalPages } from '../../../shared/utils/pagination.util'; // ✅ Fixed path
 
 export interface DisplayDriver {
   driverId: string;
@@ -381,4 +382,14 @@ export class DriversComponent implements OnInit {
     if (!email) return false;
     return /^\S+@\S+\.\S+$/.test(email);
   }
+
+  get paginatedDrivers(): DisplayDriver[] {
+    return paginate(this.filteredDrivers, this.currentPage, this.entriesPerPage); // ✅ Add this
+  }
+
+  get totalPagesCalculated(): number {
+    return calculateTotalPages(this.filteredDrivers.length, this.entriesPerPage); // ✅ Add this
+  }
+
+  // Update your template to use paginatedDrivers instead of slicing manually
 }

@@ -1,8 +1,12 @@
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import { ApplicationConfig, provideZoneChangeDetection, ErrorHandler } from '@angular/core';
 import { provideRouter, Routes } from '@angular/router';
 import { LaundryPageComponent } from './pages/order/laundry-list-page/laundry-list-page.component';
 import { ItemsListPageComponent } from './pages/order/items-list-page/items-list-page.component';
 import {  routes } from './app.routes';
+import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
+import { provideHttpClient } from '@angular/common/http';
+import { GlobalErrorHandler } from './services/global-error-handler.service';
+
 // export const routes: Routes = [
 //   // { path: '', component: LaundryPageComponent },
 //   { path: 'items/:id', component: ItemsListPageComponent } // Route with laundry ID
@@ -11,14 +15,14 @@ import {  routes } from './app.routes';
 // import { provideRouter } from '@angular/router';
 
 // import { routes } from './app.routes';
-import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
-import { provideHttpClient } from '@angular/common/http';
+
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
     provideHttpClient(),
-    // other providers...
-    provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes), provideClientHydration(withEventReplay()),provideHttpClient()
+    provideZoneChangeDetection({ eventCoalescing: true }),
+    provideClientHydration(withEventReplay()),
+    { provide: ErrorHandler, useClass: GlobalErrorHandler }
   ],
   
 };

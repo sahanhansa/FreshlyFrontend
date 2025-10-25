@@ -4,6 +4,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { environment } from '@environments/environment';
 import { catchError, map, Observable, of } from 'rxjs';
+import { StorageService } from '../../../services/storage.service'; // ✅ Add import
 
 export interface DriverHome {
   AllPickups: number;
@@ -21,9 +22,7 @@ export interface DriverHome {
   styleUrls: ['./driver-home.component.css']
 })
 export class DriverHomeComponent implements OnInit {
-
   private baseUrl = `${environment.apiUrl}/api/Driver`;
-  driverId: string = localStorage.getItem('userId') || '';
 
   AllPickups: number = 0;
   PendingPickups: number = 0;
@@ -31,14 +30,19 @@ export class DriverHomeComponent implements OnInit {
   PendingDelivery: number = 0;
   FullName: string = '';
 
-  constructor(private router: Router, private http: HttpClient) { }
+  constructor(
+    private router: Router,
+    private http: HttpClient,
+    private storage: StorageService // ✅ Inject StorageService
+  ) {}
 
   ngOnInit(): void {
     this.loadDriverProfileIntoForm();
   }
 
   getDriverProfileDetails(): Observable<DriverHome | null> {
-    const url = `${this.baseUrl}/DriverHomePage/${this.driverId}`;
+    const driverId = this.storage.getUserId(); // ✅ Changed
+    const url = `${this.baseUrl}/DriverHomePage/${driverId}`;
 
     return this.http.get<any>(url).pipe(
       map(response => this.mapToDriverHome(response)),

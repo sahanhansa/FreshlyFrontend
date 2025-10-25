@@ -4,6 +4,7 @@ import { SharedImports } from '../../../shared/shared-imports';
 import { Customer } from '../../../models/customer.model';
 import { CustomerAddress } from '../../../models/order-models/customerAddress.model';
 import { CustomerService } from '../../../services/customer.service';
+import { paginate } from '../../../shared/utils/pagination.util'; // ✅ Fixed path
 
 @Component({
   selector: 'app-customers',
@@ -217,11 +218,7 @@ export class CustomersComponent implements OnInit {
    * Get paginated customers
    */
   get paginatedCustomers(): Customer[] {
-    if (!this.filteredCustomers() || this.filteredCustomers().length === 0) {
-      return [];
-    }
-    const startIndex = (this.currentPage() - 1) * this.entriesPerPage();
-    return this.filteredCustomers().slice(startIndex, startIndex + this.entriesPerPage());
+    return paginate(this.filteredCustomers(), this.currentPage(), this.entriesPerPage());
   }
 
   /**

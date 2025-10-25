@@ -8,6 +8,7 @@ import { LaundryService } from '../../../services/laundry.service';
 import { FooterComponent } from '../../../components/shared/footer/footer.component';
 import { Subject, takeUntil, catchError, of } from 'rxjs';
 import { RejectedItemService } from '../../../services/rejected-item.service';
+import { StorageService } from '../../../services/storage.service'; // Import StorageService
 
 
 interface OrderItem {
@@ -91,7 +92,8 @@ export class ProcessingOrderDetailsComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private cdr: ChangeDetectorRef,
     private rejectedItemService: RejectedItemService, // Injected
-    private laundryService: LaundryService
+    private laundryService: LaundryService,
+    private storage: StorageService // Inject StorageService
   ) {
     this.adjustmentForm = this.fb.group({
       name: ['', Validators.required],
@@ -160,7 +162,7 @@ export class ProcessingOrderDetailsComponent implements OnInit, OnDestroy {
     this.orderFinishedProcessing = false; // Reset the finished processing flag
     this.cdr.markForCheck();
 
-    const laundryId = localStorage.getItem('laundryId');
+    const laundryId = this.storage.getLaundryId(); // ✅ Use StorageService
     const orderId = this.route.snapshot.paramMap.get('orderId');
     const statusId = this.route.snapshot.paramMap.get('statusId');
 
@@ -248,7 +250,7 @@ export class ProcessingOrderDetailsComponent implements OnInit, OnDestroy {
         this.cdr.markForCheck();
       } else if (this.adjustmentType === 'remove' && this.selectedItem.quantity > 0) {
         // Prepare rejection payload
-        const laundryId = localStorage.getItem('laundryId');
+        const laundryId = this.storage.getLaundryId(); // ✅ Use StorageService
         const orderId = this.orderDetails?.orderId;
         const itemId = this.selectedItem?.itemId;
         const serviceId = this.selectedItem?.serviceId;
@@ -351,7 +353,7 @@ export class ProcessingOrderDetailsComponent implements OnInit, OnDestroy {
     this.processing = true;
     this.cdr.markForCheck();
     
-    const laundryId = localStorage.getItem('laundryId');
+    const laundryId = this.storage.getLaundryId(); // ✅ Use StorageService
     const orderId = this.orderDetails.orderId;
     const newStatusId = this.finishedProcessingStatusId;
     console.log('Updating order status with:', { laundryId, orderId, newStatusId });
@@ -667,4 +669,4 @@ export class ProcessingOrderDetailsComponent implements OnInit, OnDestroy {
     }
     return status;
   }
-} 
+}
