@@ -43,7 +43,7 @@ import { LaundryAddItemComponent } from './pages/Laundry/laundry-add-item/laundr
 import { LaundryEditItemComponent } from './pages/Laundry/laundry-edit-item/laundry-edit-item.component';
 import { LaundryDeleteConfirmationComponent } from './pages/Laundry/laundry-delete-confirmation/laundry-delete-confirmation.component';
 import { ProcessingOrderDetailsComponent} from './components/laundry/processing-order-details/processing-order-details.component';
-import { CompletedOrderDetailsComponent } from './components/Laundry/completed-order-details/completed-order-details.component';
+import { CompletedOrderDetailsComponent } from './components/laundry/completed-order-details/completed-order-details.component';
 import { LogoutPageComponent } from './pages/Driver/logout-page/logout-page.component';
 import { AdminLoginComponent} from './components/admin/login/admin-login.component';
 import { NewOrderDetailsComponent } from './components/laundry/new-order-details/new-order-details.component';
